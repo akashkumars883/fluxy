@@ -17,7 +17,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
 
     ({ data: automationRows, error: authError } = await supabase
       .from("automations")
-      .select("id, access_token, is_active, ai_enabled, brand_name, page_id, instagram_id")
+      .select("id, access_token, is_active, ai_enabled, brand_name, page_id, ig_business_id")
       .eq("page_id", recipientId)
       .limit(1));
 
@@ -157,7 +157,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     if (needsFollowing && type !== "STORY_MENTION") {
       const followData = await MetaService.checkFollowStatus(senderId, recipientId, pageAccessToken);
       if (followData.success && !followData.isFollowing) {
-        await MetaService.sendFollowGateCard(senderId, automation.brand_name, pageAccessToken, automation.instagram_id);
+        await MetaService.sendFollowGateCard(senderId, automation.brand_name, pageAccessToken, automation.ig_business_id);
         if (type === "COMMENT" && commentId) {
             await delay(8000);
             const publicGatedReply = (match?.variants?.public?.length > 0) ? match.variants.public[0] : "Check your DM to unlock! 🎁";
