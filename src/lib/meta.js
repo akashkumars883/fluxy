@@ -117,15 +117,19 @@ export const MetaService = {
     }
   },
 
-  sendPrivateReply: async (commentId, text, accessToken) => {
+  sendPrivateReply: async (commentId, messagePayload, accessToken) => {
     try {
-      // Correct Instagram Private Reply endpoint: /me/messages with comment_id recipient
+      // Support both simple text and structured message objects (for quick_replies)
+      const messageBody = typeof messagePayload === 'string' 
+        ? { text: messagePayload } 
+        : messagePayload;
+
       const response = await fetch(`${BASE_URL}/me/messages?access_token=${accessToken}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
           recipient: { comment_id: commentId },
-          message: { text: text } 
+          message: messageBody 
         }),
       });
       const data = await response.json();

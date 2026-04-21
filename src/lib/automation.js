@@ -48,6 +48,11 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     console.log(`✅ Automation Found: ${automation.brand_name} (AI: ${automation.ai_enabled})`);
     const pageAccessToken = decryptToken(automation.access_token);
 
+    // --- USER PROFILE & PERMISSIONS (Early Fetch for Personalization) ---
+    const profileResult = await MetaService.getUserProfile(senderId, pageAccessToken);
+    const userName = profileResult.success ? profileResult.data.name : "there";
+    const profilePic = profileResult.success ? profileResult.data.profile_pic : null;
+
     let { data: triggers } = await supabase
       .from("triggers")
       .select("*")
@@ -135,7 +140,37 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       }
     } else {
       const lowerMsg = text.toLowerCase();
-      match = triggers.find(t => lowerMsg.includes(t.keyword.toLowerCase()));
+      // Special Handling for 'Zero Confusion' Quick Reply Tap
+      if (text === "Send me the access 🔗") {
+        // Find the trigger that originally started this (usually matches 'access' or is default)
+        match = triggers.find(t => t.keyword.toLowerCase().includes("access") || t.keyword === "*");
+      } else {
+        match = triggers.find(t => lowerMsg.includes(t.keyword.toLowerCase()));
+      }
+    }
+    
+    // 2b. 'Zero Confusion' First-Engagement Branch for Comments
+    if (type === "COMMENT" && commentId && text !== "Send me the access 🔗") {
+       const initialIntro = {
+         text: `Hey ${userName}! 👋 I've got the link you requested ready for you. Just tap the button below!`,
+         quick_replies: [
+           {
+             content_type: "text",
+             title: "Send me the access 🔗",
+             payload: "GET_ACCESS_PAYLOAD"
+           }
+         ]
+       };
+
+       await MetaService.sendPrivateReply(commentId, initialIntro, pageAccessToken);
+       console.log(`✉️ Fixed Intro DM sent to ${userName}`);
+
+       // Delayed Public Reply
+       await delay(Math.floor(Math.random() * 3000) + 5000);
+       const publicReply = (match?.variants?.public?.length > 0) ? getRandom(match.variants.public) : "Details sent to your DM! 🚀";
+       await MetaService.sendCommentReply(commentId, publicReply, pageAccessToken);
+       
+       return { success: true, phase: "INTRO" };
     }
 
     if (!match) {
@@ -174,10 +209,6 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       }
     }
 
-    const profileResult = await MetaService.getUserProfile(senderId, pageAccessToken);
-    const userName = profileResult.success ? profileResult.data.name : "there";
-    const profilePic = profileResult.success ? profileResult.data.profile_pic : null;
-
     // --- LEAD CAPTURE ---
     try {
       await supabase.from("leads").upsert({
@@ -188,7 +219,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         last_interacted_at: new Date().toISOString()
       }, { onConflict: "sender_id, automation_id" });
     } catch (leadError) {
-      console.warn("⚠️ Lead Capture skipped (Table might not exist yet):", leadError.message);
+      console.warn("⚠️ Lead Capture skipped:", leadError.message);
     }
 
     // 4. Smart Response Branching
@@ -207,14 +238,9 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     const buttonLabel = match?.metadata?.button_text;
 
     if (type === "COMMENT" && commentId) {
-      // 5a. Private Reply to Comment (Always Plain Text - API Restriction)
-      await MetaService.sendPrivateReply(commentId, finalResponse, pageAccessToken);
-      
-      // 5b. Public Comment Reply
-      await delay(Math.floor(Math.random() * 5000) + 8000); // Human-like delay
-      const publicReply = (match?.variants?.public?.length > 0) ? getRandom(match.variants.public) : "Details sent to your DM! 🚀";
-      await MetaService.sendCommentReply(commentId, publicReply, pageAccessToken);
-      
+       // This branch is now handled by the early exit '2b' block above.
+       // It remains here only as a fallback for unexpected flow.
+       return { success: true };
     } else {
       // 5c. Direct DM or Story Reply (Supports Meta Cards!)
       if (foundUrls && foundUrls.length > 0 && buttonLabel) {
