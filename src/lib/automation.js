@@ -28,7 +28,7 @@ const interpolate = (text, name, brand) => {
  */
 export async function processAutomation(senderId, text, type, recipientId, commentId = null, mediaId = null, messageId = null, payload = null) {
   const supabase = createAdminClient();
-  
+
   // --- ANTI-LOOP & SELF-REPLY GUARD ---
   if (senderId === recipientId) {
     console.log(`🤖 Self-reply/Loop detected for ${senderId}. Skipping.`);
@@ -50,7 +50,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       console.error(`❌ Automation Auth Failed for ${recipientId}`);
       return { success: false };
     }
-    
+
     const automation = automationRows[0];
     if (!automation.is_active) return { success: false };
 
@@ -66,7 +66,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
 
     let match = null;
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    
+
     // --- PAYLOAD-BASED RESOLUTION (Interactive Buttons) ---
     if (payload && isUuid.test(payload)) {
       match = triggers.find(t => t.id === payload);
@@ -79,7 +79,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     if (!match) {
       const lowerText = (text || "").toLowerCase().trim();
       const eventTriggers = triggers.filter(t => t.type === type || (!t.type && type === "DM"));
-      
+
       let activePool = eventTriggers;
       if (mediaId && type === "COMMENT") {
         const targeted = eventTriggers.filter(t => t.target_media_ids?.includes(mediaId));
@@ -87,7 +87,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       }
 
       match = activePool.find(t => lowerText.includes((t.keyword || "").toLowerCase()));
-      
+
       if (!match) {
         match = triggers.find(t => t.keyword === "*" || t.keyword === "DEFAULT");
       }
@@ -98,10 +98,10 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     // --- PHASE 1: INITIAL COMMENT ENTRY (Premium Card Style) ---
     if (type === "COMMENT" && commentId && !payload) {
       console.log(`🏃 Phase 1: Handling Comment from ${userName}`);
-      
+
       // A. Intro CARD with Delay (3-5s)
       await delay(Math.floor(Math.random() * 2000) + 3000);
-      
+
       const templates = automation.metadata?.templates || {};
       const introTitle = interpolate(
         templates.intro_title || "Hey {name}! Thanks for the comment. Tap below and i'll send you the access in just a moment",
@@ -109,6 +109,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         automation.brand_name
       );
 
+      const introCardPayload = {
         attachment: {
           type: "template",
           payload: {
@@ -119,7 +120,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
                 {
                   type: "postback",
                   title: "Send me the access",
-                  payload: match.id 
+                  payload: match.id
                 }
               ]
             }]
@@ -133,7 +134,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       const publicOptions = match.variants?.public || [];
       const chosenPublic = publicOptions.length > 0 ? getRandom(publicOptions) : "Check your DM for the link! 🚀";
       await MetaService.sendCommentReply(commentId, chosenPublic, pageAccessToken);
-      
+
       return { success: true, phase: 1 };
     }
 
@@ -145,7 +146,12 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       console.log(`🛡️ Phase 2/3: Checking Follow Gate for ${userName}`);
       const followData = await MetaService.checkFollowStatus(senderId, pageAccessToken);
       
-      if (followData.success && !followData.isFollowing) {
+      // LOGIC: Only lock if we are POSITIVE they are not following.
+      // If the API fails or doesn't return the field, we let them through to avoid a broken funnel.
+      const shouldLock = followData.success && followData.exists && followData.isFollowing === false;
+
+      if (shouldLock) {
+        console.log(`🚫 User ${userName} is NOT following. Showing Gate.`);
         // Not Following -> Show Gate Card (Delayed 2s)
         await delay(2000);
         
@@ -164,7 +170,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         );
         return { success: true, status: "gated" };
       }
-      console.log("✅ Follow check passed.");
+      console.log(`✅ Follow check passed or skipped (Reason: ${followData.exists ? 'Followed' : 'API Missing Field/Error'}).`);
     }
 
     // --- PHASE 4: FINAL FULFILLMENT (Automated Product Card) ---
@@ -182,7 +188,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
 
     if (link) {
       const textWithoutUrl = match.metadata?.button_link ? finalDm : finalDm.replace(link, "").trim();
-      
+
       // AUTO-SCRAPER logic for the card image
       console.log(`🔍 Scraping preview image for: ${link}`);
       const scrapedImage = await getLinkPreview(link);

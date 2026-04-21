@@ -167,11 +167,23 @@ export const MetaService = {
     try {
       const response = await fetch(`${BASE_URL}/${userId}?fields=is_user_follow_business&access_token=${accessToken}`);
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Failed to check follow status");
-      return { success: true, isFollowing: data.is_user_follow_business };
+      
+      console.log(`🔍 [DEBUG] Follow Check Response for ${userId}:`, JSON.stringify(data));
+      
+      if (!response.ok) {
+        console.error("❌ Meta API - checkFollowStatus API Error:", data.error?.message);
+        throw new Error(data.error?.message || "Failed to check follow status");
+      }
+
+      // Explicitly return success and the boolean value
+      return { 
+        success: true, 
+        isFollowing: data.is_user_follow_business === true,
+        exists: data.is_user_follow_business !== undefined
+      };
     } catch (error) {
-      console.error("Meta API - checkFollowStatus Error:", error.message);
-      return { success: false, isFollowing: false };
+      console.error("Meta API - checkFollowStatus Throwable Error:", error.message);
+      return { success: false, isFollowing: false, error: error.message };
     }
   },
 
