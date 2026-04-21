@@ -1,3 +1,4 @@
+/* src/components/dashboard/CampaignWizard.jsx */
 "use client";
 
 import { useState, useRef, useEffect } from "react";
@@ -38,7 +39,83 @@ export default function CampaignWizard({ onPublish, initialData = {} }) {
       button_link: buttonLink
     });
   };
-...
+
+  return (
+    <section className="bg-white border border-border rounded-[32px] shadow-sm flex flex-col h-full overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* HEADER WITH STEP TRACKER */}
+      <div className="p-6 border-b border-border/40 bg-zinc-50/50">
+        <div className="flex items-center justify-between mb-6">
+           <div>
+              <h2 className="text-2xl font-semibold text-foreground flex items-center gap-2 tracking-normal">
+                 Campaign Creator
+              </h2>
+              <p className="text-[10px] text-zinc-muted font-normal mt-1 opacity-50 tracking-normal">Draft your automation</p>
+           </div>
+           
+           <button 
+             onClick={handlePublish}
+             disabled={!keyword || !response}
+             className={`px-6 py-2.5 rounded-xl text-xs font-semibold tracking-normal flex items-center gap-2 transition-all ${
+               !keyword || !response 
+                 ? "bg-zinc-100 text-zinc-300 border border-zinc-200 cursor-not-allowed" 
+                 : "bg-foreground text-background shadow-lg hover:scale-105 active:scale-95"
+             }`}
+           >
+             <Rocket size={16} />
+             <span>Publish</span>
+           </button>
+        </div>
+
+        <div className="flex items-center gap-4">
+           {steps.map((s, idx) => (
+             <div key={s.id} className="flex items-center gap-4 flex-1">
+                <div className="flex flex-col gap-2 flex-1">
+                   <div className={`h-1.5 rounded-full transition-all duration-500 ${idx <= step ? 'bg-foreground' : 'bg-zinc-200'}`} />
+                   <span className={`text-[11px] font-semibold tracking-normal ${idx === step ? 'text-foreground' : 'text-zinc-muted opacity-40'}`}>
+                     {s.title}
+                   </span>
+                </div>
+                {idx < steps.length - 1 && <ArrowRight size={12} className="text-zinc-200 mt-4" />}
+             </div>
+           ))}
+        </div>
+      </div>
+
+      {/* HORIZONTAL CONTENT AREA */}
+      <div className="flex-1 overflow-hidden relative">
+        <div className="flex transition-transform duration-700 ease-[cubic-bezier(0.23, 1, 0.32, 1)] h-full" style={{ transform: `translateX(-${step * 100}%)` }}>
+          
+          {/* STEP 1: KEYWORD */}
+          <div className="min-w-full p-6 md:p-8 flex flex-col justify-center max-w-xl mx-auto">
+             <div className="space-y-6">
+                <div className="space-y-3">
+                   <h3 className="text-2xl font-semibold text-foreground">Setting the Trigger</h3>
+                   <p className="text-[11px] text-zinc-muted font-medium">Choose the word that starts everything.</p>
+                </div>
+
+                <div className="space-y-4">
+                   <div className="flex gap-1.5">
+                     {['DM', 'COMMENT', 'STORY_REPLY'].map((t) => (
+                       <button key={t} onClick={() => setType(t)}
+                         className={`px-4 py-2 rounded-lg text-[9px] font-semibold tracking-normal transition-all border ${
+                           type === t ? "bg-foreground text-background border-foreground shadow-md" : "bg-zinc-50 text-zinc-muted border-border hover:bg-white"
+                         }`}
+                       >
+                         {t.replace('_', ' ')}
+                       </button>
+                     ))}
+                   </div>
+                   <input 
+                     type="text" 
+                     placeholder="e.g. LINK, DEALS"
+                     value={keyword}
+                     onChange={(e) => setKeyword(e.target.value.toUpperCase())}
+                     className="w-full text-3xl font-semibold text-foreground placeholder:text-zinc-200 outline-none border-b-2 focus:border-foreground py-2 tracking-normal transition-all"
+                   />
+                </div>
+             </div>
+          </div>
+
           {/* STEP 2: RESPONSE */}
           <div className="min-w-full p-6 md:p-8 flex flex-col justify-center max-w-xl mx-auto">
              <div className="space-y-6">

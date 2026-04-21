@@ -1,3 +1,4 @@
+/* src/components/dashboard/EditTriggerModal.jsx */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -10,7 +11,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
   const [followerGate, setFollowerGate] = useState(false);
   const [publicReply, setPublicReply] = useState("");
   const [buttonText, setButtonText] = useState("");
-  const [hasLink, setHasLink] = useState(false);
+  const [buttonLink, setButtonLink] = useState("");
 
   useEffect(() => {
     if (trigger && isOpen) {
@@ -20,13 +21,9 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
       setFollowerGate(trigger.metadata?.follower_gate || false);
       setPublicReply(trigger.variants?.public?.[0] || "");
       setButtonText(trigger.metadata?.button_text || "");
+      setButtonLink(trigger.metadata?.button_link || "");
     }
   }, [trigger, isOpen]);
-
-  useEffect(() => {
-    const urlRegex = /((https?:\/\/)|(www\.))[^\s]+|([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?)/gi;
-    setHasLink(urlRegex.test(response));
-  }, [response]);
 
   if (!isOpen) return null;
 
@@ -37,7 +34,8 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
       type,
       metadata: {
         follower_gate: followerGate,
-        button_text: hasLink ? buttonText : null
+        button_text: buttonLink ? (buttonText || "Get Access 🔗") : null,
+        button_link: buttonLink
       },
       variants: {
         dm: response,
