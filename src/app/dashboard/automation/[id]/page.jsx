@@ -36,6 +36,7 @@ export default function AutomationEditor() {
   // Media State for PostPicker and Rule Thumbnails
   const [media, setMedia] = useState([]);
   const [loadingMedia, setLoadingMedia] = useState(true);
+  const [mediaError, setMediaError] = useState(null);
   
   // Real-time Dashboard Stats
   const [dbStats, setDbStats] = useState({
@@ -77,11 +78,18 @@ export default function AutomationEditor() {
       // Fetch Media for the whole page
       try {
         setLoadingMedia(true);
+        setMediaError(null);
         const res = await fetch(`/api/media?automationId=${targetId}`);
         const data = await res.json();
+        
+        if (data.error || data.diagnostic) {
+          setMediaError(data.diagnostic || data.error);
+        }
+        
         setMedia(data.media || []);
       } catch (err) {
         console.error("Failed to fetch media:", err);
+        setMediaError("API Connection Failed");
       } finally {
         setLoadingMedia(false);
       }
@@ -275,6 +283,7 @@ export default function AutomationEditor() {
                     automationId={targetId} 
                     media={media}
                     loading={loadingMedia}
+                    error={mediaError}
                     onSelect={setSelectedMediaIds} 
                     selectedPosts={selectedMediaIds}
                   />
