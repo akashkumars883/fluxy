@@ -44,17 +44,39 @@ export async function GET(req) {
 
     // 3. Decrypt the token
     const decryptedToken = decryptToken(auto.access_token);
+    let instagramId = auto.ig_business_id;
 
-    // 4. Fetch media list from Meta
-    const result = await MetaService.getMediaList(auto.ig_business_id, decryptedToken);
-
-    if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 500 });
+    // --- AUTO-REPAIR: If IG ID is missing, try to fetch it from Meta on the fly ---
+    if (!instagramId) {
+      console.log(`🔍 Auto-Repair: Instagram ID missing for ${auto.page_id}. Fetching...`);
+      const accountsResult = await MetaService.getInstagramAccounts(decryptedToken);
+      
+      if (accountsResult.success) {
+        const matchingAccount = accountsResult.accounts.find(acc => acc.page_id === auto.page_id);
+        if (matchingAccount?.instagram_business_id) {
+           instagramId = matchingAccount.instagram_business_id;
+           // Update DB silently for next time
+           await supabase.from("automations").update({ ig_business_id: instagramId }).eq("id", automationId);
+           console.log(`✅ Auto-Repair success! Saved ID: ${instagramId}`);
+        }
+      }
     }
 
-    return NextResponse.json({ media: result.data });
+    if (!instagramId) {
+      return NextResponse.json({ error: "Instagram account not linked to this page", media: [] });
+    }
+
+    // 4. Fetch media list from Meta
+    const result = await MetaService.getMediaList(instagramId, decryptedToken);
+
+    if (!result.success) {
+      console.error(`❌ Meta Media Fetch Error for ${instagramId}:`, result.error);
+      return NextResponse.json({ error: result.error, media: [] }, { status: 500 });
+    }
+
+    return NextResponse.json({ media: result.data || [] });
   } catch (error) {
     console.error("API /api/media Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error", media: [] }, { status: 500 });
   }
 }
