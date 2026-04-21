@@ -71,10 +71,22 @@ export async function GET(req) {
 
     if (!result.success) {
       console.error(`❌ Meta Media Fetch Error for ${instagramId}:`, result.error);
-      return NextResponse.json({ error: result.error, media: [] }, { status: 500 });
+      // Return 200 with error message so the UI can display it instead of crashing
+      return NextResponse.json({ 
+        media: [], 
+        error: result.error,
+        diagnostic: "Meta API returned an error. Check if 'instagram_basic' permission is granted in Advanced Access." 
+      });
     }
 
-    return NextResponse.json({ media: result.data || [] });
+    if (result.data.length === 0) {
+      console.warn(`⚠️ No media found for Instagram ID: ${instagramId}`);
+    }
+
+    return NextResponse.json({ 
+      media: result.data || [],
+      count: result.data?.length || 0 
+    });
   } catch (error) {
     console.error("API /api/media Error:", error);
     return NextResponse.json({ error: "Internal Server Error", media: [] }, { status: 500 });

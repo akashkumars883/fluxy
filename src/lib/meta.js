@@ -283,12 +283,24 @@ export const MetaService = {
 
   getMediaList: async (instagramId, accessToken) => {
     try {
-      const response = await fetch(`${BASE_URL}/${instagramId}/media?fields=id,media_url,permalink,caption,timestamp,media_type&access_token=${accessToken}`);
+      // Enhanced fields for Reels, Videos and Carousels
+      const fields = "id,media_url,permalink,caption,timestamp,media_type,thumbnail_url,children{media_url,media_type}";
+      const response = await fetch(`${BASE_URL}/${instagramId}/media?fields=${fields}&access_token=${accessToken}`);
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Failed to fetch media list");
-      return { success: true, data: data.data || [] };
+      
+      if (!response.ok) {
+        console.error("❌ Meta API getMediaList Error:", data.error?.message);
+        throw new Error(data.error?.message || "Failed to fetch media list");
+      }
+      
+      // Post-process to ensure even Carousels have a media_url for the UI
+      const processedMedia = (data.data || []).map(item => ({
+        ...item,
+        media_url: item.media_url || (item.children?.data?.[0]?.media_url) || item.thumbnail_url
+      }));
+
+      return { success: true, data: processedMedia };
     } catch (error) {
-      console.error("Meta API - getMediaList Error:", error.message);
       return { success: false, error: error.message };
     }
   }
