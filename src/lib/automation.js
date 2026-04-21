@@ -18,7 +18,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     ({ data: automationRows, error: authError } = await supabase
       .from("automations")
       .select("id, access_token, is_active, ai_enabled, brand_name, page_id, ig_business_id")
-      .eq("page_id", recipientId)
+      .or(`page_id.eq.${recipientId},ig_business_id.eq.${recipientId}`)
       .limit(1));
 
     // Backwards-compat if schema is older (missing columns)
