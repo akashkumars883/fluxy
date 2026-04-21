@@ -205,7 +205,7 @@ export const MetaService = {
     }
   },
 
-  sendFollowGateCard: async (recipientId, brandName, accessToken, instagramId = null) => {
+  sendFollowGateCard: async (recipientId, brandName, accessToken, instagramId = null, customPayload = "VERIFY_FOLLOW_CLICKED") => {
     try {
       const followLink = instagramId ? `https://www.instagram.com/${instagramId}/` : `https://www.instagram.com/`;
       const payload = {
@@ -220,7 +220,7 @@ export const MetaService = {
                 subtitle: `Please follow @${brandName || 'us'} to get your link immediately.`,
                 buttons: [
                   { type: "web_url", url: followLink, title: "Follow Now 🚀" },
-                  { type: "postback", title: "I am following ✅", payload: "VERIFY_FOLLOW_CLICKED" }
+                  { type: "postback", title: "I am following ✅", payload: customPayload }
                 ]
               }]
             }

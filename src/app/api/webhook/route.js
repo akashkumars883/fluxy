@@ -63,14 +63,17 @@ export async function POST(req) {
         const postback = messagingItem.postback;
 
         // 1. Handle Postback (Follow-Gate Verification Click)
-        if (senderId && recipientId && postback && postback.payload === "VERIFY_FOLLOW_CLICKED") {
-          await processAutomation(senderId, "RE_VERIFY_FOLLOW", "DM", recipientId);
+        if (senderId && recipientId && postback) {
+          const payload = postback.payload;
+          // type "DM" is used for processing these structured interactions
+          await processAutomation(senderId, "POSTBACK_CLICKED", "DM", recipientId, null, null, null, payload);
           continue;
         }
 
         if (message) {
           const text = message.text || "";
           const mid = message.mid;
+          const quickReplyPayload = message.quick_reply?.payload;
           let type = "DM";
           
           // --- STORY LOGIC ---
@@ -86,7 +89,7 @@ export async function POST(req) {
           }
 
           if (senderId && recipientId) {
-            await processAutomation(senderId, text, type, recipientId, null, null, mid);
+            await processAutomation(senderId, text, type, recipientId, null, null, mid, quickReplyPayload);
           }
         }
       }
