@@ -1,6 +1,6 @@
 "use client";
 
-export default function LegalLayout({ title, subtitle, lastUpdated, children }) {
+export default function LegalLayout({ title, subtitle = "", lastUpdated = "April 21, 2026", children }) {
   return (
     <main className="flex-1 pt-40 pb-20 px-6">
       <div className="max-w-3xl mx-auto">

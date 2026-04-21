@@ -6,6 +6,7 @@ export default function DataDeletion() {
     <LegalLayout 
       title="Data Deletion Instructions" 
       subtitle="How to manage and delete your information on Automixa."
+      lastUpdated="April 21, 2026"
     >
       <div className="space-y-12">
         <section className="p-8 bg-white border border-border rounded-[40px] shadow-sm">
