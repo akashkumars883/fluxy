@@ -163,7 +163,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
           senderId, 
           automation.brand_name || "us", 
           pageAccessToken, 
-          automation.ig_business_id,
+          automation.metadata?.ig_handle || automation.ig_business_id, 
           `VERIFY_FOLLOW:${match.id}`,
           gateTitle,
           "" // Remove subtitle as requested

@@ -12,7 +12,8 @@ export default function BrandKit({ automation, onUpdate }) {
       intro_title: "Hey {name}! Thanks for the comment. Tap below and i'll send you the access in just a moment",
       follow_gate_title: "One final step to unlock! 🎁",
       follow_gate_subtitle: "Please follow @{brand} to get your link immediately."
-    }
+    },
+    ig_handle: automation?.metadata?.ig_handle || ""
   });
 
   const tones = ["Friendly", "Professional", "Witty", "Aggressive", "Luxury", "Helpful"];
@@ -24,7 +25,8 @@ export default function BrandKit({ automation, onUpdate }) {
       metadata: { 
         ...automation?.metadata, 
         tone: formData.tone,
-        templates: formData.templates
+        templates: formData.templates,
+        ig_handle: formData.ig_handle
       }
     });
     setLoading(false);
@@ -65,6 +67,17 @@ export default function BrandKit({ automation, onUpdate }) {
               onChange={(e) => setFormData({ ...formData, brand_name: e.target.value })}
               className="w-full px-5 py-4 bg-zinc-50 border-2 border-border/60 rounded-2xl outline-none focus:border-foreground focus:bg-white font-bold text-sm transition-all text-foreground"
               placeholder="e.g. Automixa"
+            />
+          </div>
+
+          <div className="space-y-3">
+            <label className="text-[11px] font-bold text-zinc-muted uppercase tracking-wider ml-1">Instagram Handle (@)</label>
+            <input 
+              type="text"
+              value={formData.ig_handle}
+              onChange={(e) => setFormData({ ...formData, ig_handle: e.target.value.replace('@', '') })}
+              className="w-full px-5 py-4 bg-zinc-50 border-2 border-border/60 rounded-2xl outline-none focus:border-foreground focus:bg-white font-bold text-sm transition-all text-foreground"
+              placeholder="e.g. redtitch.official"
             />
           </div>
         </div>

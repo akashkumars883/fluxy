@@ -221,9 +221,11 @@ export const MetaService = {
     }
   },
 
-  sendFollowGateCard: async (recipientId, brandName, accessToken, instagramId = null, customPayload = "VERIFY_FOLLOW_CLICKED", customTitle = null, customSubtitle = null) => {
+  sendFollowGateCard: async (recipientId, brandName, accessToken, profileIdentifier = null, customPayload = "VERIFY_FOLLOW_CLICKED", customTitle = null, customSubtitle = null) => {
     try {
-      const followLink = instagramId ? `https://www.instagram.com/${instagramId}/` : `https://www.instagram.com/`;
+      // Logic: If profileIdentifier is numerical, try to make it a generic link (risky), 
+      // but if it's a string (handle), it's a perfect profile link.
+      const followLink = profileIdentifier ? `https://www.instagram.com/${profileIdentifier}/` : `https://www.instagram.com/`;
       const payload = {
         recipient: { id: recipientId },
         message: {
