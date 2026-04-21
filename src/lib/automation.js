@@ -4,6 +4,7 @@ import { createAdminClient } from "./supabase.js";
 import { MetaService } from "./meta.js";
 import { decryptToken } from "./security.js";
 import { matchIntent, generatePersonalizedResponse } from "./ai.js";
+import { getLinkPreview } from "./scraper.js";
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -80,23 +81,32 @@ export async function processAutomation(senderId, text, type, recipientId, comme
 
     if (!match) return { success: false, reason: "no_trigger_match" };
 
-    // --- PHASE 1: INITIAL COMMENT ENTRY ---
+    // --- PHASE 1: INITIAL COMMENT ENTRY (Premium Card Style) ---
     if (type === "COMMENT" && commentId && !payload) {
       console.log(`🏃 Phase 1: Handling Comment from ${userName}`);
       
-      // A. Intro DM with Delay (3-5s)
+      // A. Intro CARD with Delay (3-5s)
       await delay(Math.floor(Math.random() * 2000) + 3000);
-      const introPayload = {
-        text: `Hey ${userName}! 👋 I've got your link ready. Just tap the button below to get access!`,
-        quick_replies: [
-          {
-            content_type: "text",
-            title: "Send me the access 🔗",
-            payload: match.id 
+      const introCardPayload = {
+        attachment: {
+          type: "template",
+          payload: {
+            template_type: "generic",
+            elements: [{
+              title: "Aapka Link Ready Hai! 🚀",
+              subtitle: `Namaste ${userName}! Please niche diye gaye button par click karke access karein.`,
+              buttons: [
+                {
+                  type: "postback",
+                  title: "Send me the access 🔗",
+                  payload: match.id 
+                }
+              ]
+            }]
           }
-        ]
+        }
       };
-      await MetaService.sendPrivateReply(commentId, introPayload, pageAccessToken);
+      await MetaService.sendPrivateReply(commentId, introCardPayload, pageAccessToken);
 
       // B. Public Comment Reply with Delay (7-10s)
       await delay(Math.floor(Math.random() * 3000) + 7000);
@@ -107,7 +117,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       return { success: true, phase: 1 };
     }
 
-    // --- PHASE 2/3: FOLLOW GATE & VERIFICATION ---
+    // --- PHASE 2/3: FOLLOW GATE & VERIFICATION (Premium Card Style) ---
     const needsFollow = match.metadata?.follower_gate === true;
     const isVerificationStep = payload && (isUuid.test(payload) || payload.includes("VERIFY_FOLLOW:"));
 
@@ -127,50 +137,57 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         );
         return { success: true, status: "gated" };
       }
-      console.log("✅ Follow check passed or not applicable.");
+      console.log("✅ Follow check passed.");
     }
 
-    // --- PHASE 4: FINAL FULFILLMENT ---
-    console.log(`🏁 Phase 4: Delivering Final Response to ${userName}`);
+    // --- PHASE 4: FINAL FULFILLMENT (Automated Product Card) ---
+    console.log(`🏁 Phase 4: Delivering Final Product Card to ${userName}`);
     await delay(Math.floor(Math.random() * 1000) + 2000); // 2-3s delay
 
     const finalDmOptions = match.variants?.dm || [match.response || "Here is your access!"];
     let finalDm = getRandom(finalDmOptions).replace("{{name}}", userName);
 
+    // Prioritize explicit button_link from metadata, fallback to regex scraping
     const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const foundUrls = finalDm.match(urlRegex);
+    const scrapedUrls = (finalDm || "").match(urlRegex);
+    const link = match.metadata?.button_link || (scrapedUrls && scrapedUrls[0]);
     const buttonLabel = match.metadata?.button_text || "Get Access 🔗";
 
-    if (foundUrls && foundUrls.length > 0) {
-      const link = foundUrls[0];
-      const textWithoutUrl = finalDm.replace(link, "").trim();
+    if (link) {
+      const textWithoutUrl = match.metadata?.button_link ? finalDm : finalDm.replace(link, "").trim();
+      
+      // AUTO-SCRAPER logic for the card image
+      console.log(`🔍 Scraping preview image for: ${link}`);
+      const scrapedImage = await getLinkPreview(link);
+
       await MetaService.sendGenericCard(
         senderId,
-        match.keyword?.toUpperCase() || "SUCCESS",
-        textWithoutUrl || "Tap below to open your link.",
+        automation.brand_name || match.keyword?.toUpperCase() || "EXCLUSIVE ACCESS 🎁",
+        textWithoutUrl || "Tap below to get started.",
         buttonLabel,
         link,
-        pageAccessToken
+        pageAccessToken,
+        scrapedImage
       );
     } else {
       await MetaService.sendDM(senderId, finalDm, pageAccessToken);
     }
 
-    // Record History
+    // Log History
     await supabase.from("automation_history").insert({
       automation_id: automation.id,
       sender_id: senderId,
       sender_name: userName,
       type: type,
       keyword: match.keyword,
-      response: "CARD_OR_FULL_MESSAGE",
-      metadata: { funnel_complete: true }
+      response: "PRODUCT_CARD_WITH_PREVIEW",
+      metadata: { funnel_complete: true, scraped: true }
     });
 
     return { success: true };
 
   } catch (error) {
-    console.error("🔥 Automation Execution Error:", error);
+    console.error("🔥 Funnel Execution Error:", error);
     return { success: false, error: error.message };
   }
 }

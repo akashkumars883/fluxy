@@ -150,35 +150,51 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
               {/* RESPONSE AREA */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] font-semibold text-zinc-muted tracking-normal ml-1 opacity-50">The Response Message</label>
-                  {hasLink && <span className="text-[8px] font-semibold text-emerald-600 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full tracking-normal">Link Active 🔗</span>}
+                  <label className="text-[10px] font-semibold text-zinc-muted tracking-normal ml-1 opacity-50">The Response Message (Text Only)</label>
                 </div>
                 <textarea 
                   value={response}
                   onChange={(e) => setResponse(e.target.value)}
-                  className="w-full h-[280px] bg-zinc-50 border-2 border-border/40 rounded-[32px] p-8 text-base font-semibold text-foreground outline-none focus:border-foreground focus:bg-white tracking-normal transition-all resize-none shadow-sm"
+                  className="w-full h-[200px] bg-zinc-50 border-2 border-border/40 rounded-[32px] p-8 text-base font-semibold text-foreground outline-none focus:border-foreground focus:bg-white tracking-normal transition-all resize-none shadow-sm"
                   placeholder="What should Automixa say?"
                 />
 
                 {/* BUTTON OPTION */}
-                <div className={`p-8 rounded-[32px] border-2 transition-all ${hasLink ? 'bg-foreground/5 border-foreground/10 ring-8 ring-emerald-500/5' : 'bg-zinc-50 border-dashed border-border/40 opacity-50'}`}>
+                <div className={`p-8 rounded-[32px] border-2 transition-all bg-foreground/5 border-foreground/10 ring-8 ring-emerald-500/5`}>
                     <div className="flex items-center gap-3 mb-6">
-                      <div className={`p-2.5 rounded-xl ${hasLink ? 'bg-emerald-500 text-white border-none' : 'bg-zinc-200 text-zinc-400'}`}>
+                      <div className={`p-2.5 rounded-xl bg-emerald-500 text-white`}>
                           <MousePointer2 size={18} />
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-[10px] font-semibold text-foreground">Smart CTA Button</span>
-                        <span className="text-[8px] text-zinc-muted font-normal opacity-60">Interactive Link</span>
+                        <span className="text-[10px] font-semibold text-foreground">Premium Fulfillment Card</span>
+                        <span className="text-[8px] text-zinc-muted font-normal opacity-60">Separate Link and Button</span>
                       </div>
                     </div>
-                    <input 
-                      type="text"
-                      value={buttonText}
-                      onChange={(e) => setButtonText(e.target.value)}
-                      disabled={!hasLink}
-                      placeholder={hasLink ? "Button Text (e.g. Shop Now 🛍️)" : "Add a link in the response to enable"}
-                      className="w-full bg-transparent border-b-2 border-border/60 py-2 outline-none text-sm font-semibold placeholder:text-zinc-200 focus:border-foreground transition-all"
-                    />
+                    
+                    <div className="space-y-4">
+                       <div className="space-y-1">
+                          <label className="text-[9px] font-semibold text-zinc-muted opacity-40 ml-1">Destination URL</label>
+                          <input 
+                            type="text"
+                            value={buttonLink}
+                            onChange={(e) => setButtonLink(e.target.value)}
+                            placeholder="https://example.com"
+                            className="w-full bg-white border border-border/60 rounded-xl px-4 py-2.5 outline-none text-sm font-semibold focus:border-foreground transition-all shadow-sm"
+                          />
+                       </div>
+
+                       <div className="space-y-1">
+                          <label className="text-[9px] font-semibold text-zinc-muted opacity-40 ml-1">Button Label</label>
+                          <input 
+                            type="text"
+                            value={buttonText}
+                            onChange={(e) => setButtonText(e.target.value)}
+                            disabled={!buttonLink}
+                            placeholder="e.g. Visit Website 🌐"
+                            className="w-full bg-white border border-border/60 rounded-xl px-4 py-2.5 outline-none text-sm font-semibold focus:border-foreground transition-all shadow-sm disabled:opacity-50"
+                          />
+                       </div>
+                    </div>
                 </div>
               </div>
             </div>

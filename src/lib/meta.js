@@ -245,7 +245,7 @@ export const MetaService = {
     }
   },
 
-  sendGenericCard: async (recipientId, title, subtitle, buttonTitle, url, accessToken) => {
+  sendGenericCard: async (recipientId, title, subtitle, buttonTitle, url, accessToken, imageUrl = null) => {
     try {
       const payload = {
         recipient: { id: recipientId },
@@ -257,6 +257,7 @@ export const MetaService = {
               elements: [{
                 title: title || "Exclusive Access! 🎁",
                 subtitle: subtitle,
+                image_url: imageUrl,
                 buttons: [
                   {
                     type: "web_url",
