@@ -157,7 +157,14 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     if (needsFollowing && type !== "STORY_MENTION") {
       const followData = await MetaService.checkFollowStatus(senderId, recipientId, pageAccessToken);
       if (followData.success && !followData.isFollowing) {
-        await MetaService.sendFollowGateCard(senderId, automation.brand_name, pageAccessToken, automation.ig_business_id);
+        if (type === "COMMENT" && commentId) {
+            // Meta Restriction: First DM from a comment MUST be plain text (Private Reply)
+            const gatedText = `Hey ${userName}! To unlock your exclusive link, please follow @${automation.brand_name || 'us'} first. 🎁 Once you follow, reply back here!`;
+            await MetaService.sendPrivateReply(commentId, gatedText, pageAccessToken);
+        } else {
+            await MetaService.sendFollowGateCard(senderId, automation.brand_name, pageAccessToken, automation.ig_business_id);
+        }
+
         if (type === "COMMENT" && commentId) {
             await delay(8000);
             const publicGatedReply = (match?.variants?.public?.length > 0) ? match.variants.public[0] : "Check your DM to unlock! 🎁";
