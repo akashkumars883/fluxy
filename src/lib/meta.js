@@ -168,8 +168,6 @@ export const MetaService = {
       const response = await fetch(`${BASE_URL}/${userId}?fields=is_user_follow_business&access_token=${accessToken}`);
       const data = await response.json();
       
-      console.log(`🔍 [DEBUG] Follow Check Response for ${userId}:`, JSON.stringify(data));
-      
       if (!response.ok) {
         console.error("❌ Meta API - checkFollowStatus API Error:", data.error?.message);
         throw new Error(data.error?.message || "Failed to check follow status");
