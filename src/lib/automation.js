@@ -1,10 +1,13 @@
 /* src/lib/automation.js - THE ULTIMATE ORCHESTRATOR */
 
-import { createAdminClient } from "./supabase.js";
+import { createClient, createAdminClient } from "./supabase.js";
 import { MetaService } from "./meta.js";
 import { decryptToken } from "./security.js";
 import { matchIntent, generatePersonalizedResponse } from "./ai.js";
 import { getLinkPreview } from "./scraper.js";
+
+const supabase = createClient();
+const supabaseAdmin = createAdminClient();
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const getRandom = (arr) => {
@@ -27,8 +30,6 @@ const interpolate = (text, name, brand) => {
  * Main Engine Orchestrator
  */
 export async function processAutomation(senderId, text, type, recipientId, commentId = null, mediaId = null, messageId = null, payload = null) {
-  const supabase = createAdminClient();
-
   // --- ANTI-LOOP & SELF-REPLY GUARD ---
   if (senderId === recipientId) {
     console.log(`🤖 Self-reply/Loop detected for ${senderId}. Skipping.`);
@@ -98,6 +99,24 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     // --- PHASE 1: INITIAL COMMENT ENTRY (Premium Card Style) ---
     if (type === "COMMENT" && commentId && !payload) {
       console.log(`🏃 Phase 1: Handling Comment from ${userName}`);
+      
+      // Log interaction immediately to DB using Admin Client (Bypasses RLS for writing)
+      const { data: logData, error: logError } = await supabaseAdmin.from("automation_history").insert({
+        automation_id: automation.id,
+        sender_id: senderId,
+        sender_name: userName,
+        type: type,
+        keyword: match.keyword,
+        status: "INTERACTED",
+        metadata: { funnel_complete: false }
+      }).select().single();
+
+      if (logError) {
+        console.error("❌ [DB ERROR] History Logging Failed:", logError.message);
+        console.error("❌ [DB ERROR] Potential Cause: Table schema mismatch or missing columns.");
+      } else {
+        console.log("✅ [DB SUCCESS] History entry created:", logData.id);
+      }
 
       // A. Intro CARD with Delay (3-5s)
       await delay(Math.floor(Math.random() * 2000) + 3000);
@@ -206,16 +225,16 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       await MetaService.sendDM(senderId, finalDm, pageAccessToken);
     }
 
-    // Log History
-    await supabase.from("automation_history").insert({
-      automation_id: automation.id,
-      sender_id: senderId,
-      sender_name: userName,
-      type: type,
-      keyword: match.keyword,
-      response: "PRODUCT_CARD_WITH_PREVIEW",
-      metadata: { funnel_complete: true, scraped: true }
-    });
+    // Update Log to SUCCESS
+    await supabaseAdmin.from("automation_history")
+      .update({ 
+        status: "SUCCESS", 
+        metadata: { funnel_complete: true, scraped: true } 
+      })
+      .eq("automation_id", automation.id)
+      .eq("sender_id", senderId)
+      .order('created_at', { ascending: false })
+      .limit(1);
 
     return { success: true };
 
