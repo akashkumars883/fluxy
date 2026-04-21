@@ -118,35 +118,89 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         console.log("✅ [DB SUCCESS] History entry created:", logData.id);
       }
 
-      // A. Intro CARD with Delay (3-5s)
-      await delay(Math.floor(Math.random() * 2000) + 3000);
+      // A. Smart Funnel Decision: Card vs Link?
+      const needsFollow = match.metadata?.follower_gate === true;
+      let followFound = false;
 
-      const templates = automation.metadata?.templates || {};
-      const introTitle = interpolate(
-        templates.intro_title || "Hey {name}! Thanks for the comment. Tap below and i'll send you the access in just a moment",
-        userName,
-        automation.brand_name
-      );
+      if (needsFollow) {
+        console.log(`🛡️ Checking follow status early for ${userName}...`);
+        const followData = await MetaService.checkFollowStatus(senderId, pageAccessToken);
+        followFound = followData.success && followData.isFollowing;
+      }
 
-      const introCardPayload = {
-        attachment: {
-          type: "template",
-          payload: {
-            template_type: "generic",
-            elements: [{
-              title: introTitle || "Welcome! Tap below for access.",
-              buttons: [
-                {
+      await delay(Math.floor(Math.random() * 2000) + 3000); // 3-5s delay
+
+      if (needsFollow && !followFound) {
+        // CASE A: NEW FAN / NOT FOLLOWING -> Show Intro Card
+        console.log(`🎁 Sending Intro Card to NEW fan ${userName}`);
+        const templates = automation.metadata?.templates || {};
+        const introTitle = interpolate(
+          templates.intro_title || "Hey {name}! Thanks for the comment. Tap below and i'll send you the access in just a moment",
+          userName,
+          automation.brand_name
+        );
+
+        const introCardPayload = {
+          attachment: {
+            type: "template",
+            payload: {
+              template_type: "generic",
+              elements: [{
+                title: introTitle || "Welcome! Tap below for access.",
+                buttons: [{
                   type: "postback",
                   title: "Send me the access",
                   payload: match.id
-                }
-              ]
-            }]
+                }]
+              }]
+            }
           }
+        };
+        await MetaService.sendPrivateReply(commentId, introCardPayload, pageAccessToken);
+      } else {
+        // CASE B: OLD FAN / ALREADY FOLLOWING -> Send Product Link Directly as Private Reply
+        console.log(`⚡ Sending Product Link DIRECTLY to existing fan ${userName}`);
+        
+        const dmVariants = Array.isArray(match.variants?.dm) ? match.variants.dm : [match.response || "Here is your access!"];
+        let finalDm = (getRandom(dmVariants) || "Here is your access!").replace("{{name}}", userName).replace("{name}", userName);
+
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        const scrapedUrls = (finalDm || "").match(urlRegex);
+        const link = match.metadata?.button_link || (scrapedUrls && scrapedUrls[0]);
+        const buttonLabel = match.metadata?.button_text || "Get Access 🔗";
+
+        if (link) {
+          const textWithoutUrl = match.metadata?.button_link ? finalDm : finalDm.replace(link, "").trim();
+          const scrapedImage = await getLinkPreview(link);
+
+          const productCardPayload = {
+            attachment: {
+              type: "template",
+              payload: {
+                template_type: "generic",
+                elements: [{
+                  title: textWithoutUrl || "Exclusive Access! 🎁",
+                  image_url: scrapedImage,
+                  buttons: [{
+                    type: "web_url",
+                    url: link,
+                    title: buttonLabel
+                  }]
+                }]
+              }
+            }
+          };
+          await MetaService.sendPrivateReply(commentId, productCardPayload, pageAccessToken);
+          
+          // Update Log to SUCCESS immediately
+          await supabaseAdmin.from("automation_history")
+            .update({ status: "SUCCESS", metadata: { funnel_complete: true } })
+            .eq("id", logData.id);
+
+        } else {
+          await MetaService.sendPrivateReply(commentId, { text: finalDm }, pageAccessToken);
         }
-      };
-      await MetaService.sendPrivateReply(commentId, introCardPayload, pageAccessToken);
+      }
 
       // B. Public Comment Reply with Delay (7-10s)
       await delay(Math.floor(Math.random() * 3000) + 7000);
