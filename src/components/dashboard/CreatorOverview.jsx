@@ -32,9 +32,9 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
   const metricCards = [
     { label: "Messages received", value: totalDms, icon: MessageSquare, color: "text-foreground" },
     { label: "Replies sent", value: autoReplies, icon: Zap, color: "text-sage" },
-    { label: "Interaction rate", value: engagementRate, icon: Heart, color: "text-pink-500", trend: "+2.4%" },
-    { label: "New followers", value: `+${followerGrowth}`, icon: TrendingUp, color: "text-emerald-500" },
+    { label: "Interaction rate", value: engagementRate, icon: Heart, color: "text-pink-500" },
     { label: "Story replies", value: storyReplies, icon: Camera, color: "text-purple-500" },
+    { label: "New followers", value: `+${followerGrowth}`, icon: TrendingUp, color: "text-emerald-500" },
   ];
 
   return (

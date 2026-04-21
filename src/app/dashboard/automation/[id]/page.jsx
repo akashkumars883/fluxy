@@ -117,7 +117,6 @@ export default function AutomationEditor() {
       const totalCount = totalHistory || 0;
       const storyCount = logsArray.filter(l => l.type === 'STORY_REPLY').length;
       const uniqueSenders = new Set(logsArray.map(l => l.sender_id)).size;
-      const calculatedRate = uniqueSenders > 0 ? Math.min(Math.round((totalCount / uniqueSenders) * 20), 100) : 0;
 
       const { data: latestLogs } = await supabase.from('automation_history').select('*').eq('automation_id', targetId).order('created_at', { ascending: false }).limit(20);
 
@@ -132,10 +131,23 @@ export default function AutomationEditor() {
         keyword, count, percentage: totalCount > 0 ? Math.round((count / totalCount) * 100) : 0
       }));
 
+      // Calculate Follower Growth (estimated as unique users who completed the gate)
+      const followersFromGate = logsArray.filter(l => l.metadata?.funnel_complete).length;
+      
+      // Calculate Realistic Engagement Rate: (Conversations Completed / Total Unique Users)
+      const calculatedRate = uniqueSenders > 0 
+        ? Math.round((followersFromGate / uniqueSenders) * 100) 
+        : 0;
+
       setDbStats({
-        totalDms: totalCount, autoReplies: totalCount, storyReplies: storyCount,
-        uniqueUsers: uniqueSenders, engagementRate: `${calculatedRate}%`,
-        recentLogs: latestLogs || [], topKeywords: sortedKeywords
+        totalDms: totalCount, 
+        autoReplies: totalCount, 
+        storyReplies: storyCount,
+        uniqueUsers: uniqueSenders, 
+        engagementRate: `${calculatedRate}%`,
+        followerGrowth: followersFromGate,
+        recentLogs: latestLogs || [], 
+        topKeywords: sortedKeywords
       });
 
       setLoading(false);
@@ -148,7 +160,9 @@ export default function AutomationEditor() {
 
   useEffect(() => {
     fetchData();
-  }, [id]);
+    const interval = setInterval(fetchData, 30000); // Live sync every 30s
+    return () => clearInterval(interval);
+  }, [targetId]);
 
   const handleUpdateAutomation = async (payload, refresh = true) => {
     const supabase = createClient();
