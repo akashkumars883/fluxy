@@ -33,7 +33,7 @@ export async function GET(req) {
     // 2. Get the automation records to retrieve the token and IG ID
     const { data: auto, error: autoError } = await supabase
       .from("automations")
-      .select("instagram_business_id, access_token, page_token")
+      .select("ig_business_id, access_token, page_token")
       .eq("id", automationId)
       .maybeSingle();
 
@@ -45,7 +45,7 @@ export async function GET(req) {
     const decryptedToken = decryptToken(auto.access_token);
 
     // 4. Fetch media list from Meta
-    const result = await MetaService.getMediaList(auto.instagram_business_id, decryptedToken);
+    const result = await MetaService.getMediaList(auto.ig_business_id, decryptedToken);
 
     if (!result.success) {
       return NextResponse.json({ error: result.error }, { status: 500 });
