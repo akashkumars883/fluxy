@@ -7,7 +7,11 @@ import { matchIntent, generatePersonalizedResponse } from "./ai.js";
 import { getLinkPreview } from "./scraper.js";
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const getRandom = (arr) => {
+  if (Array.isArray(arr) && arr.length > 0) return arr[Math.floor(Math.random() * arr.length)];
+  if (typeof arr === 'string' && arr.length > 0) return arr;
+  return null;
+};
 
 /**
  * String Interpolation Helper
@@ -105,13 +109,12 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         automation.brand_name
       );
 
-      const introCardPayload = {
         attachment: {
           type: "template",
           payload: {
             template_type: "generic",
             elements: [{
-              title: introTitle,
+              title: introTitle || "Welcome! Tap below for access.",
               buttons: [
                 {
                   type: "postback",
@@ -140,7 +143,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
 
     if (isVerificationStep && needsFollow) {
       console.log(`🛡️ Phase 2/3: Checking Follow Gate for ${userName}`);
-      const followData = await MetaService.checkFollowStatus(senderId, recipientId, pageAccessToken);
+      const followData = await MetaService.checkFollowStatus(senderId, pageAccessToken);
       
       if (followData.success && !followData.isFollowing) {
         // Not Following -> Show Gate Card (Delayed 2s)
@@ -168,8 +171,8 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     console.log(`🏁 Phase 4: Delivering Final Product Card to ${userName}`);
     await delay(Math.floor(Math.random() * 1000) + 2000); // 2-3s delay
 
-    const finalDmOptions = match.variants?.dm || [match.response || "Here is your access!"];
-    let finalDm = getRandom(finalDmOptions).replace("{{name}}", userName);
+    const dmVariants = Array.isArray(match.variants?.dm) ? match.variants.dm : [match.response || "Here is your access!"];
+    let finalDm = (getRandom(dmVariants) || "Here is your access!").replace("{{name}}", userName).replace("{name}", userName);
 
     // Prioritize explicit button_link from metadata, fallback to regex scraping
     const urlRegex = /(https?:\/\/[^\s]+)/g;

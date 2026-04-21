@@ -97,6 +97,10 @@ export const MetaService = {
   },
 
   sendDM: async (recipientId, text, accessToken) => {
+    if (!text || text.trim() === "") {
+      console.warn("⚠️ Meta API - sendDM: Attempted to send empty text. Skipping.");
+      return { success: false, error: "Empty text" };
+    }
     try {
       const response = await fetch(`${BASE_URL}/me/messages?access_token=${accessToken}`, {
         method: "POST",
@@ -159,9 +163,9 @@ export const MetaService = {
     }
   },
 
-  checkFollowStatus: async (userId, pageId, accessToken) => {
+  checkFollowStatus: async (userId, accessToken) => {
     try {
-      const response = await fetch(`${BASE_URL}/${pageId}?fields=is_user_follow_business&user_id=${userId}&access_token=${accessToken}`);
+      const response = await fetch(`${BASE_URL}/${userId}?fields=is_user_follow_business&access_token=${accessToken}`);
       const data = await response.json();
       if (!response.ok) throw new Error(data.error?.message || "Failed to check follow status");
       return { success: true, isFollowing: data.is_user_follow_business };

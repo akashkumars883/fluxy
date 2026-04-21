@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
 import { Bell, Plus, Camera } from "lucide-react";
 import AccountCard from "@/components/dashboard/AccountCard";
@@ -9,6 +10,7 @@ import IdentitySelection from "@/components/dashboard/IdentitySelection";
 import Loader from "@/components/ui/Loader";
 
 export default function Dashboard() {
+  const router = useRouter();
   const [user, setUser] = useState(null);
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
