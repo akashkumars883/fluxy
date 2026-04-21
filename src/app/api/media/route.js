@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+export const dynamic = 'force-dynamic';
 import { createAdminClient } from "@/lib/supabase";
 import { MetaService } from "@/lib/meta";
 import { decryptToken } from "@/lib/security";
