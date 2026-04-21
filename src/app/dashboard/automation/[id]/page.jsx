@@ -157,12 +157,16 @@ export default function AutomationEditor() {
       keyword: keyword,
       response: response,
       type: metadata.type || "DM",
-      variants: { dm: response, public: metadata.public_reply ? [metadata.public_reply] : [] },
+      variants: { 
+        dm: [response], 
+        public: metadata.public_reply ? [metadata.public_reply] : [] 
+      },
       metadata: { 
         follower_gate: metadata.follower_gate, 
-        button_text: metadata.button_text 
+        button_text: metadata.button_text,
+        button_link: metadata.button_link 
       },
-      target_media_ids: selectedMediaIds // New column for post-specific automation
+      target_media_ids: selectedMediaIds
     };
     const { error } = await supabase.from("triggers").insert(payload);
     if (error) {

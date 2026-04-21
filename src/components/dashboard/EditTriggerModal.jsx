@@ -38,7 +38,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
         button_link: buttonLink
       },
       variants: {
-        dm: response,
+        dm: [response],
         public: publicReply ? [publicReply] : []
       }
     });
