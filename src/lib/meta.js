@@ -88,7 +88,10 @@ export const MetaService = {
       if (!response.ok) throw new Error(data.error?.message || "Failed to fetch user profile");
       return { success: true, data };
     } catch (error) {
-      console.error("Meta API - getUserProfile Error:", error.message);
+      // Silence Error #230 (Consent required) as it's expected for new commenters
+      if (!error.message.includes("(#230)")) {
+        console.error("Meta API - getUserProfile Error:", error.message);
+      }
       return { success: false, error: error.message };
     }
   },
@@ -116,16 +119,22 @@ export const MetaService = {
 
   sendPrivateReply: async (commentId, text, accessToken) => {
     try {
-      const response = await fetch(`${BASE_URL}/${commentId}/private_replies?access_token=${accessToken}`, {
+      // Correct Instagram Private Reply endpoint: /me/messages with comment_id recipient
+      const response = await fetch(`${BASE_URL}/me/messages?access_token=${accessToken}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text }),
+        body: JSON.stringify({ 
+          recipient: { comment_id: commentId },
+          message: { text: text } 
+        }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Failed to send private reply");
+      if (!response.ok) {
+         console.error("❌ Meta API PrivateReply Error:", data.error?.message);
+         throw new Error(data.error?.message || "Failed to send private reply");
+      }
       return { success: true, data };
     } catch (error) {
-      console.error("Meta API - sendPrivateReply Error:", error.message);
       return { success: false, error: error.message };
     }
   },
