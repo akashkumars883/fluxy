@@ -34,7 +34,7 @@ export async function GET(req) {
     // 2. Get the automation records to retrieve the token and IG ID
     const { data: auto, error: autoError } = await supabase
       .from("automations")
-      .select("ig_business_id, access_token, page_token")
+      .select("ig_business_id, access_token")
       .eq("id", automationId)
       .maybeSingle();
 
