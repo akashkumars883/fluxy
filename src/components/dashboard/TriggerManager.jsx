@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageSquare, Plus, Trash2, ArrowRight, Zap, Camera, ShieldCheck, Globe, Send, MousePointer2, AlertCircle, Pencil } from "lucide-react";
+import { MessageSquare, Plus, Trash2, ArrowRight, Zap, Camera, ShieldCheck, Globe, Send, MousePointer2, AlertCircle, Pencil, Link, LayoutGrid } from "lucide-react";
 import { useState, useEffect } from "react";
 
 /**
@@ -150,84 +150,100 @@ export function TriggerInput({ onAdd }) {
  */
 export function TriggerList({ triggers, media, onDelete, onEdit, error = null }) {
   return (
-    <section className="bg-white border border-border rounded-[32px] shadow-sm flex flex-col h-full overflow-hidden">
-      <div className="p-6 border-b border-border/40 bg-zinc-50/50 flex items-center justify-between shrink-0">
-        <h2 className="font-semibold text-xs text-foreground tracking-normal flex items-center gap-2">
-           <Zap size={14} /> Active Rules
-        </h2>
-        <div className="text-[10px] font-semibold text-zinc-muted bg-foreground/5 px-2 py-1 rounded border border-border leading-none">
-          {triggers?.length || 0}
+    <section className="bg-white border border-border rounded-[40px] shadow-sm flex flex-col h-full overflow-hidden animate-in fade-in duration-700">
+      <div className="px-8 py-6 border-b border-border/40 bg-zinc-50/30 flex items-center justify-between shrink-0">
+        <div>
+          <h2 className="font-bold text-2xl text-foreground flex items-center gap-2">
+             Active Automations
+          </h2>
+          <p className="text-[10px] text-zinc-muted font-medium mt-0.5 opacity-60 uppercase tracking-widest">Live Triggers</p>
+        </div>
+        <div className="flex items-center gap-2">
+           <span className="text-[10px] font-bold text-zinc-muted bg-white border border-border px-3 py-1 rounded-full shadow-sm">
+             {triggers?.length || 0} Total
+           </span>
         </div>
       </div>
 
-
-      <div className="flex-1 overflow-y-auto no-scrollbar bg-zinc-50/10 divide-y divide-border/20">
+      <div className="flex-1 overflow-y-auto no-scrollbar p-6 space-y-4 bg-zinc-50/10">
         {!triggers || triggers.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-zinc-muted/30 text-center px-10">
-             <Zap size={32} className="mb-4 opacity-10" />
-             <p className="text-[11px] font-semibold tracking-normal">No automation active yet</p>
+          <div className="flex flex-col items-center justify-center py-24 text-zinc-muted/30 text-center px-10">
+             <p className="text-xs font-bold text-zinc-400 tracking-normal mb-1 uppercase">No rules active yet</p>
+             <p className="text-[10px] font-medium text-zinc-300">Create your first automation to see it here</p>
           </div>
         ) : (
           triggers.map((t) => {
-            // Find targeted media items
             const activeMedia = t.target_media_ids 
               ? media.filter(m => t.target_media_ids.includes(m.id))
               : [];
 
             return (
-              <div key={t.id} className="p-6 hover:bg-zinc-50/80 group transition-all relative">
-                <div className="space-y-4">
+              <div key={t.id} className="bg-white border border-border/60 p-3 rounded-[32px] hover:shadow-xl hover:shadow-zinc-950/5 hover:border-foreground/10 transition-all duration-300 group relative flex items-center justify-between gap-4 overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-foreground/5 rounded-full -mr-12 -mt-12 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                {/* LEFT: TRIGGER INFO */}
+                <div className="relative z-10 flex-1 min-w-0 space-y-3">
                    <div className="flex items-center gap-2">
-                      <span className="px-2 py-1 bg-foreground text-background rounded-lg text-[10px] font-semibold tracking-normal">
-                        {t.keyword}
-                      </span>
-                      <ArrowRight size={10} className="text-zinc-muted/30" />
-                      <div className="text-[10px] font-semibold text-zinc-muted/60 tracking-normal">
+                      <div className={`px-2.5 py-1 rounded-lg text-[9px] font-bold tracking-widest uppercase border ${
+                         t.type === 'DM' 
+                           ? 'bg-indigo-50 text-indigo-600 border-indigo-100' 
+                           : t.type === 'COMMENT'
+                             ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                             : 'bg-amber-50 text-amber-600 border-amber-100'
+                      }`}>
                          {t.type || "DM"}
                       </div>
-                      {t.target_media_ids ? (
-                         <span className="ml-auto text-[8px] font-semibold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 tracking-normal">
-                           {t.target_media_ids.length} Post{t.target_media_ids.length > 1 ? 's' : ''}
-                         </span>
-                      ) : (
-                         <span className="ml-auto text-[8px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 tracking-normal">
-                           Global ✨
-                         </span>
+                      
+                      {!t.target_media_ids?.length && (
+                         <div className="px-2.5 py-1 bg-foreground/5 text-foreground/60 border border-foreground/10 rounded-lg text-[9px] font-bold tracking-widest uppercase flex items-center gap-1.5">
+                            <Zap size={10} className="fill-current" />
+                            GLOBAL
+                         </div>
                       )}
                    </div>
 
-                   {/* Visual Post Tracking (Thumbnails) */}
+                   <div className="space-y-1">
+                      <div className="flex items-baseline gap-2">
+                         <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-tighter">Trigger:</span>
+                         <span className="text-lg font-bold text-foreground tracking-tight group-hover:text-emerald-700 transition-colors">
+                           {t.keyword}
+                         </span>
+                      </div>
+                      <p className="text-xs font-semibold text-zinc-500 italic line-clamp-1 opacity-70">
+                         "{t.response}"
+                      </p>
+                   </div>
+                </div>
+
+                {/* RIGHT: MEDIA & ACTIONS */}
+                <div className="relative z-10 flex items-center gap-4 shrink-0">
                    {activeMedia.length > 0 && (
-                      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
-                         {activeMedia.map(m => (
-                            <div key={m.id} className="w-8 h-8 rounded-md overflow-hidden border border-border shadow-sm flex-shrink-0">
-                               <img src={m.media_url} className="w-full h-full object-cover" alt="Post thumbnail" title={m.caption} />
-                            </div>
-                         ))}
+                      <div className="relative">
+                        <div className="w-20 h-26 rounded-xl overflow-hidden border border-border/50 shadow-sm ring-4 ring-zinc-50 group-hover:ring-emerald-50 transition-all">
+                           <img src={activeMedia[0].media_url} className="w-full h-full object-cover" alt="Post" />
+                        </div>
+                        {activeMedia.length > 1 && (
+                           <div className="absolute -bottom-1 -right-1 bg-foreground text-background text-[8px] font-bold px-1.5 py-0.5 rounded-full border border-border shadow-sm">
+                              +{activeMedia.length - 1}
+                           </div>
+                        )}
                       </div>
                    )}
 
-                   <div className="text-[11px] font-semibold text-foreground/70 italic line-clamp-1 opacity-60 tracking-normal">
-                     "{t.response}"
-                  </div>
+                   <div className="h-10 w-[1px] bg-border/20 mx-1 hidden sm:block" />
 
-                  <div className="flex items-center justify-end gap-2">
-                     {t.metadata?.button_text && (
-                        <div className="px-3 py-1 bg-white border border-border rounded-full text-[9px] font-semibold text-zinc-muted mr-auto tracking-normal">
-                          {t.metadata.button_text}
-                        </div>
-                     )}
-                     <button onClick={() => onEdit(t)} 
-                      className="p-1.5 text-zinc-muted/20 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg group-hover:opacity-100 opacity-0 transition-all"
-                     >
-                      <Pencil size={16} />
-                     </button>
-                     <button onClick={() => onDelete(t.id)} 
-                      className="p-1.5 text-zinc-muted/20 hover:text-red-500 hover:bg-red-50 rounded-lg group-hover:opacity-100 opacity-0 transition-all"
-                     >
-                      <Trash2 size={16} />
-                     </button>
-                  </div>
+                   <div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                      <button onClick={() => onEdit(t)} 
+                        className="p-2 text-zinc-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                      >
+                        <Pencil size={15} />
+                      </button>
+                      <button onClick={() => onDelete(t.id)} 
+                        className="p-2 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                   </div>
                 </div>
               </div>
             );

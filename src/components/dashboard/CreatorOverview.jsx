@@ -30,11 +30,11 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
   };
 
   const metricCards = [
-    { label: "Total DMs received", value: totalDms, icon: MessageSquare, color: "text-foreground" },
-    { label: "Auto replies sent", value: autoReplies, icon: Zap, color: "text-sage" },
-    { label: "Engagement rate", value: engagementRate, icon: Heart, color: "text-pink-500", trend: "+2.4%" },
-    { label: "Audience growth", value: `+${followerGrowth}`, icon: TrendingUp, color: "text-emerald-500" },
-    { label: "Story reply count", value: storyReplies, icon: Camera, color: "text-purple-500" },
+    { label: "Messages received", value: totalDms, icon: MessageSquare, color: "text-foreground" },
+    { label: "Replies sent", value: autoReplies, icon: Zap, color: "text-sage" },
+    { label: "Interaction rate", value: engagementRate, icon: Heart, color: "text-pink-500", trend: "+2.4%" },
+    { label: "New followers", value: `+${followerGrowth}`, icon: TrendingUp, color: "text-emerald-500" },
+    { label: "Story replies", value: storyReplies, icon: Camera, color: "text-purple-500" },
   ];
 
   return (
@@ -43,13 +43,13 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
       {/* Top Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-semibold tracking-tight text-foreground">Dashboard</h1>
-          <p className="text-zinc-muted text-sm font-light">Welcome, let's dive into your personalized setup guide</p>
+          <h1 className="text-4xl font-semibold tracking-tight text-foreground">Overview</h1>
+          <p className="text-zinc-muted text-sm font-light">Welcome, here are your latest stats</p>
         </div>
         
         <button className="flex items-center justify-center gap-2 px-5 py-4 bg-foreground text-background rounded-xl font-medium text-sm shadow-xl shadow-foreground/5 hover:scale-105 active:scale-95 transition-all">
           <Plus size={16} />
-          <span>New Automation</span>
+          <span>New Reply</span>
         </button>
       </div>
 
@@ -58,7 +58,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
         
         {/* Card Header */}
         <div className="p-6 pb-3 border-b border-border/40 bg-zinc-50/30">
-           <h2 className="text-xl font-semibold text-foreground">Performance over time</h2>
+           <h2 className="text-xl font-semibold text-foreground">Growth & Stats</h2>
            <p className="text-[11px] text-zinc-muted font-light">{currentDate}</p>
         </div>
 
@@ -103,7 +103,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
               <div className="p-1.5 bg-foreground/5 rounded-lg text-foreground">
                 <Activity size={18} />
               </div>
-              <h3 className="font-semibold text-lg text-foreground">Live Pulse</h3>
+              <h3 className="font-semibold text-lg text-foreground">Recent Activity</h3>
             </div>
             <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 text-emerald-600 rounded-full text-[10px] font-bold">
               <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
@@ -124,9 +124,9 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
                     <div className="space-y-0.5">
                       <span className="text-sm font-semibold text-foreground block leading-none">@{log.sender_name || "unknown"}</span>
                       <span className="text-[11px] text-zinc-muted">
-                        {log.type === "COMMENT" ? "Commented" : (log.type === "STORY_REPLY" ? "Story Reply" : "DM")} 
+                        {log.type === "COMMENT" ? "Commented" : (log.type === "STORY_REPLY" ? "Story Reply" : "Message")} 
                         <span className="opacity-30 mx-1">→</span> 
-                        <span className="text-foreground/80 font-medium">Auto Replied</span>
+                        <span className="text-foreground/80 font-medium">Replied</span>
                       </span>
                     </div>
                   </div>
@@ -143,7 +143,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
             <div className="p-1.5 bg-foreground/5 rounded-lg text-foreground">
               <BarChart3 size={18} />
             </div>
-            <h3 className="font-semibold text-lg text-foreground">Top Triggers</h3>
+            <h3 className="font-semibold text-lg text-foreground">Popular Words</h3>
           </div>
 
           <div className="space-y-8 flex-1 overflow-y-auto no-scrollbar pr-1">

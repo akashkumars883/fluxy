@@ -10,6 +10,16 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 /**
+ * String Interpolation Helper
+ */
+const interpolate = (text, name, brand) => {
+  if (!text) return "";
+  return text
+    .replace(/{name}/g, name)
+    .replace(/{brand}/g, brand || "us");
+};
+
+/**
  * Main Engine Orchestrator
  */
 export async function processAutomation(senderId, text, type, recipientId, commentId = null, mediaId = null, messageId = null, payload = null) {
@@ -87,18 +97,25 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       
       // A. Intro CARD with Delay (3-5s)
       await delay(Math.floor(Math.random() * 2000) + 3000);
+      
+      const templates = automation.metadata?.templates || {};
+      const introTitle = interpolate(
+        templates.intro_title || "Hey {name}! Thanks for the comment. Tap below and i'll send you the access in just a moment",
+        userName,
+        automation.brand_name
+      );
+
       const introCardPayload = {
         attachment: {
           type: "template",
           payload: {
             template_type: "generic",
             elements: [{
-              title: "Aapka Link Ready Hai! 🚀",
-              subtitle: `Namaste ${userName}! Please niche diye gaye button par click karke access karein.`,
+              title: introTitle,
               buttons: [
                 {
                   type: "postback",
-                  title: "Send me the access 🔗",
+                  title: "Send me the access",
                   payload: match.id 
                 }
               ]
@@ -128,12 +145,19 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       if (followData.success && !followData.isFollowing) {
         // Not Following -> Show Gate Card (Delayed 2s)
         await delay(2000);
+        
+        const templates = automation.metadata?.templates || {};
+        const gateTitle = interpolate(templates.follow_gate_title || "One final step to unlock! 🎁", userName, automation.brand_name);
+        const gateSubtitle = interpolate(templates.follow_gate_subtitle || "Please follow @{brand} to get your link immediately.", userName, automation.brand_name);
+
         await MetaService.sendFollowGateCard(
           senderId, 
           automation.brand_name || "us", 
           pageAccessToken, 
           automation.ig_business_id,
-          `VERIFY_FOLLOW:${match.id}` 
+          `VERIFY_FOLLOW:${match.id}`,
+          gateTitle,
+          "" // Remove subtitle as requested
         );
         return { success: true, status: "gated" };
       }
@@ -162,8 +186,8 @@ export async function processAutomation(senderId, text, type, recipientId, comme
 
       await MetaService.sendGenericCard(
         senderId,
-        automation.brand_name || match.keyword?.toUpperCase() || "EXCLUSIVE ACCESS 🎁",
-        textWithoutUrl || "Tap below to get started.",
+        textWithoutUrl || "Exclusive Access! 🎁", // User message as TITLE (Bold)
+        "", // User requested NO brand name/extra text here
         buttonLabel,
         link,
         pageAccessToken,

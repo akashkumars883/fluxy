@@ -3,20 +3,21 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
-import { Bell, AlertCircle, Zap, ArrowRight } from "lucide-react";
+import { Bell, AlertCircle, Zap, ArrowRight, ArrowLeft, Plus, X } from "lucide-react";
 
 // Components
 import AiSettingsCard from "@/components/dashboard/AiSettingsCard";
 import { TriggerList } from "@/components/dashboard/TriggerManager";
-import ProfileDropdown from "@/components/dashboard/ProfileDropdown";
 import AutomationSidebar from "@/components/dashboard/AutomationSidebar";
 import CreatorOverview from "@/components/dashboard/CreatorOverview";
 import FanEngagement from "@/components/dashboard/FanEngagement";
 import BrandKit from "@/components/dashboard/BrandKit";
 import GeneralSettings from "@/components/dashboard/GeneralSettings";
-import PostPicker from "@/components/dashboard/PostPicker";
-import CampaignWizard from "@/components/dashboard/CampaignWizard";
+import PostPicker from '@/components/dashboard/PostPicker';
+import CampaignWizard from '@/components/dashboard/CampaignWizard';
+import AutomationPreview from '@/components/dashboard/AutomationPreview';
 import EditTriggerModal from "@/components/dashboard/EditTriggerModal";
+import ProfileDropdown from "@/components/dashboard/ProfileDropdown";
 import Loader from "@/components/ui/Loader";
 
 export default function AutomationEditor() {
@@ -24,14 +25,24 @@ export default function AutomationEditor() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const [viewMode, setViewMode] = useState('list'); // 'list' or 'create'
   const [automation, setAutomation] = useState(null);
   const [triggers, setTriggers] = useState([]);
   const [isStarting, setIsStarting] = useState(false);
   const [error, setError] = useState(null);
   const [triggersError, setTriggersError] = useState(null);
-  const [selectedMediaIds, setSelectedMediaIds] = useState([]);
-  const [editingTrigger, setEditingTrigger] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingTrigger, setEditingTrigger] = useState(null);
+  const [selectedMediaIds, setSelectedMediaIds] = useState([]);
+  
+  // Studio States (Lifted Up for Preview)
+  const [keyword, setKeyword] = useState("");
+  const [response, setResponse] = useState("");
+  const [type, setType] = useState("COMMENT");
+  const [followerGate, setFollowerGate] = useState(false);
+  const [publicReply, setPublicReply] = useState("");
+  const [buttonText, setButtonText] = useState("");
+  const [buttonLink, setButtonLink] = useState("");
   
   // Media State for PostPicker and Rule Thumbnails
   const [media, setMedia] = useState([]);
@@ -55,7 +66,14 @@ export default function AutomationEditor() {
   const fetchData = async () => {
     try {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+
+      // DEBUG BYPASS: Mock user
+      const finalUser = authUser || { 
+        id: 'debug-user-id', 
+        email: 'debug@automixa.test',
+        user_metadata: { full_name: 'Debug User' }
+      };
 
       let { data: auto, error: autoError } = await supabase
         .from("automations")
@@ -71,7 +89,7 @@ export default function AutomationEditor() {
 
       let { data: trig, error: trigError } = await supabase.from("triggers").select("*").eq("automation_id", targetId).order('created_at', { ascending: false });
       
-      setAutomation({ ...auto, user });
+      setAutomation({ ...auto, user: finalUser });
       setTriggers(trig || []);
       setTriggersError(trigError?.message || null);
 
@@ -173,6 +191,7 @@ export default function AutomationEditor() {
       console.error("Insert Error:", error);
       alert("Failed to create rule: " + error.message);
     } else {
+      setViewMode('list');
       fetchData();
     }
   };
@@ -217,6 +236,18 @@ export default function AutomationEditor() {
     }
   };
 
+  const startNewRule = () => {
+    setKeyword("");
+    setResponse("");
+    setType("COMMENT");
+    setFollowerGate(false);
+    setPublicReply("");
+    setButtonText("");
+    setButtonLink("");
+    setSelectedMediaIds([]);
+    setViewMode('create');
+  };
+
   if (loading) return <Loader fullScreen text="Loading Workspace..." />;
 
   if (error) {
@@ -236,20 +267,22 @@ export default function AutomationEditor() {
   }
 
   const renderContent = () => {
+    // FORCE NO SCROLL IN STUDIO MODE
+    const isStudio = viewMode === 'create';
+    
     switch (activeTab) {
       case 'overview':
         return <CreatorOverview stats={dbStats} history={dbStats.recentLogs} topTriggers={dbStats.topKeywords} />;
       
       case 'automations':
-        // ZERO STATE: If no triggers and hasn't clicked "Create" yet
-        if (triggers.length === 0 && !isStarting) {
+        // 1. ZERO STATE
+        if (triggers.length === 0 && viewMode !== 'create' && !isStarting) {
           return (
             <div className="h-full flex items-center justify-center animate-in fade-in zoom-in-95 duration-700">
                <div 
-                 onClick={() => setIsStarting(true)}
+                 onClick={startNewRule}
                  className="group w-full max-w-xl bg-white border border-border rounded-[48px] p-12 text-center cursor-pointer hover:shadow-2xl hover:scale-[1.02] transition-all relative overflow-hidden"
                >
-                  {/* Decorative Elements */}
                   <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 blur-3xl rounded-full -mr-16 -mt-16" />
                   <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-500/5 blur-3xl rounded-full -ml-16 -mb-16" />
 
@@ -257,15 +290,10 @@ export default function AutomationEditor() {
                     <div className="w-20 h-20 bg-foreground text-background rounded-3xl flex items-center justify-center mb-8 shadow-xl shadow-foreground/20 group-hover:rotate-12 transition-transform duration-500">
                        <Zap size={36} fill="currentColor" />
                     </div>
-                    
-                    <h2 className="text-3xl font-semibold text-foreground tracking-normal mb-4">
-                      Create Your First Automation
-                    </h2>
-                    
+                    <h2 className="text-3xl font-semibold text-foreground tracking-normal mb-4">Create Your First Automation</h2>
                     <p className="text-zinc-muted text-sm font-normal tracking-normal max-w-sm mx-auto leading-relaxed mb-10 opacity-70">
                       Start automating your Instagram interactions. Set up keywords, auto-replies, and intelligent flows in seconds.
                     </p>
-
                     <div className="flex items-center gap-3 px-8 py-4 bg-zinc-50 border border-border rounded-full text-xs font-semibold text-foreground tracking-normal group-hover:bg-foreground group-hover:text-background transition-all duration-300">
                        <span>Get Started</span>
                        <ArrowRight size={16} />
@@ -276,38 +304,86 @@ export default function AutomationEditor() {
           );
         }
 
-        return (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start animate-in fade-in duration-700 h-full max-h-[calc(100vh-140px)]">
-            
-            {/* LEFT COLUMN: SELECTION & TRACKING */}
-            <div className="lg:col-span-5 h-full flex flex-col gap-6 overflow-hidden">
-               {/* COMPACT POST PICKER */}
-               <div className="h-[350px] shrink-0">
-                  <PostPicker 
-                    automationId={targetId} 
-                    media={media}
-                    loading={loadingMedia}
-                    error={mediaError}
-                    onSelect={setSelectedMediaIds} 
-                    selectedPosts={selectedMediaIds}
-                  />
-               </div>
+        // 2. CREATION MODE: Studio Layout (Left: Selection + Form | Right: Mockup)
+        if (viewMode === 'create') {
+          return (
+            <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                {/* LEFT COLUMN: Selection & Configuration (PostPicker + Form) */}
+                <div className="lg:col-span-12 xl:col-span-8 space-y-6">
+                  {/* UPPER: SELECTION */}
+                  <div className="bg-white border border-border rounded-[32px] overflow-hidden shadow-sm">
+                    <PostPicker 
+                      automationId={targetId} 
+                      media={media}
+                      loading={loadingMedia}
+                      error={mediaError}
+                      onSelect={setSelectedMediaIds} 
+                      selectedPosts={selectedMediaIds}
+                      layout="horizontal"
+                    />
+                  </div>
 
-               {/* ACTIVE RULES TRACKER */}
-               <div className="flex-1 overflow-hidden min-h-0">
-                  <TriggerList 
-                    triggers={triggers} 
-                    media={media}
-                    onDelete={handleTriggerDelete} 
-                    onEdit={handleOpenEdit}
-                    error={triggersError} 
+                  {/* LOWER: THE FORM */}
+                  <CampaignWizard 
+                    onBack={() => setViewMode('list')}
+                    values={{ keyword, response, type, followerGate, publicReply, buttonText, buttonLink }}
+                    onChange={(newData) => {
+                      if (newData.keyword !== undefined) setKeyword(newData.keyword);
+                      if (newData.response !== undefined) setResponse(newData.response);
+                      if (newData.type !== undefined) setType(newData.type);
+                      if (newData.followerGate !== undefined) setFollowerGate(newData.followerGate);
+                      if (newData.publicReply !== undefined) setPublicReply(newData.publicReply);
+                      if (newData.buttonText !== undefined) setButtonText(newData.buttonText);
+                      if (newData.buttonLink !== undefined) setButtonLink(newData.buttonLink);
+                    }}
+                    onPublish={handleTriggerAdd} 
                   />
+                </div>
+                
+                {/* RIGHT COLUMN: THE MOCKUP */}
+                <div className="lg:col-span-12 xl:col-span-4 sticky top-24">
+                  <AutomationPreview 
+                    keyword={keyword}
+                    response={response}
+                    type={type}
+                    buttonText={buttonText}
+                    buttonLink={buttonLink}
+                    publicReply={publicReply}
+                    postUrl={media.find(m => selectedMediaIds.includes(m.id))?.media_url}
+                    botName={automation?.page_name || "Automixa Bot"}
+                  />
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        // 3. LIST VIEW: Your Automations (Default if triggers exist)
+        return (
+          <div className="flex flex-col h-full gap-6 animate-in fade-in slide-in-from-left-8 duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
+            <div className="flex items-center justify-between px-4 py-6 bg-white border border-border rounded-[32px] shadow-sm">
+               <div>
+                  <h2 className="text-2xl font-semibold text-foreground tracking-tight">Your Automations</h2>
+                  <p className="text-sm text-zinc-muted">You have {triggers.length} active auto replies</p>
                </div>
+               <button 
+                 onClick={startNewRule}
+                 className="flex items-center gap-2 px-6 py-3 bg-foreground text-background rounded-full text-sm font-bold shadow-xl hover:scale-105 active:scale-95 transition-all"
+               >
+                 <Plus size={18} /> Add New Reply
+               </button>
             </div>
 
-            {/* RIGHT COLUMN: CONFIGURATION */}
-            <div className="lg:col-span-7 h-full">
-               <CampaignWizard onPublish={handleTriggerAdd} />
+            <div className="flex-1 min-h-0 overflow-hidden">
+               <TriggerList 
+                 triggers={triggers} 
+                 media={media}
+                 onDelete={handleTriggerDelete} 
+                 onEdit={handleOpenEdit}
+                 error={triggersError} 
+               />
             </div>
           </div>
         );
@@ -351,7 +427,7 @@ export default function AutomationEditor() {
         />
         
         <main className="flex-1 bg-background h-[calc(100vh-72px)] overflow-y-auto no-scrollbar">
-          <div className="max-w-7xl mx-auto p-6 md:p-8 h-full text-foreground">
+          <div className="max-w-7xl mx-auto p-6 md:p-8 h-full text-foreground relative z-10">
             {renderContent()}
           </div>
         </main>

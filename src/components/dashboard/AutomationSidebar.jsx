@@ -1,12 +1,13 @@
 "use client";
 
-import { Zap, Settings, ArrowLeft, Heart, Palette, LayoutDashboard, Users, Briefcase } from "lucide-react";
+import { useState } from "react";
+import { Zap, Settings, ArrowLeft, Heart, Palette, LayoutDashboard, Menu, X } from "lucide-react";
 import Link from "next/link";
 
 export default function AutomationSidebar({ accountId, persona = null, activeTab, onTabChange }) {
     const isCreator = persona === 'content_creator';
+    const [isExpanded, setIsExpanded] = useState(false);
 
-    // Sidebar items with unique IDs instead of paths
     const businessItems = [
         { id: 'overview', name: "Overview", icon: LayoutDashboard },
         { id: 'automations', name: "Automations", icon: Zap },
@@ -24,41 +25,63 @@ export default function AutomationSidebar({ accountId, persona = null, activeTab
     const menuItems = isCreator ? creatorItems : businessItems;
 
     return (
-        <aside className="w-64 border-r border-border h-[calc(100vh-72px)] sticky top-[72px] bg-background hidden md:flex flex-col p-6 shadow-sm">
-            <div className="space-y-1 flex flex-col mb-8 px-2">
-                <span className="text-[11px] font-semibold text-zinc-muted/60 leading-relaxed">
-                    {isCreator ? 'Content Creator' : 'Business Owner'} Hub
-                </span>
+        <aside className={`${isExpanded ? 'w-64 p-6' : 'w-[82px] p-4 px-3'} border-r border-border h-[calc(100vh-72px)] sticky top-[72px] bg-background hidden md:flex flex-col shadow-sm transition-all duration-300 ease-in-out z-40 overflow-hidden`}>
+            
+            {/* TOGGLE ICON AT THE TOP */}
+            <div className="flex items-center justify-start mb-8 overflow-hidden pl-1">
+                <button 
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="p-2 hover:bg-zinc-100 rounded-xl transition-all text-zinc-400 hover:text-foreground"
+                  title={isExpanded ? "Collapse Sidebar" : "Expand Sidebar"}
+                >
+                    {isExpanded ? <X size={20} /> : <Menu size={20} />}
+                </button>
+                {isExpanded && (
+                  <span className="ml-3 text-[11px] font-bold text-zinc-muted/60 leading-relaxed whitespace-nowrap animate-in fade-in slide-in-from-left-2 duration-300">
+                    {isCreator ? 'CREATOR' : 'BUSINESS'} HUB
+                  </span>
+                )}
             </div>
 
-            <div className="space-y-2 flex-1">
+            <div className="space-y-2 flex-1 pt-2">
                 {menuItems.map((item) => {
-                    // Yahan active state handle ho rahi hai
                     const isActive = activeTab === item.id;
 
                     return (
                         <button
                             key={item.id}
-                            onClick={() => onTabChange(item.id)} // Tab switch karne ke liye
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold tracking-normal transition-all duration-200 group ${isActive
+                            onClick={() => onTabChange(item.id)}
+                            className={`w-full flex items-center transition-all duration-300 group ${isExpanded ? 'gap-4 px-4 py-3' : 'gap-0 px-4 py-3'} rounded-2xl text-sm font-semibold tracking-normal ${isActive
                                 ? "bg-foreground text-background shadow-lg shadow-foreground/5"
                                 : "text-zinc-muted hover:text-foreground hover:bg-foreground/5"
                                 }`}
                         >
-                            <item.icon size={18} className={`${isActive ? "text-background" : "text-zinc-muted group-hover:text-foreground"}`} />
-                            {item.name}
+                            <div className="flex-shrink-0 w-5 flex justify-center">
+                                <item.icon size={18} className={`${isActive ? "text-background" : "text-zinc-muted group-hover:text-foreground"}`} />
+                            </div>
+                            {isExpanded && (
+                              <span className="whitespace-nowrap overflow-hidden transition-all duration-300 opacity-100 max-w-full animate-in fade-in slide-in-from-left-2">
+                                  {item.name}
+                              </span>
+                            )}
                         </button>
                     );
                 })}
             </div>
 
-            <div className="pt-6 border-t border-border">
+            <div className="pt-6 border-t border-border overflow-hidden">
                 <Link
                     href="/dashboard"
-                    className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-zinc-muted hover:text-foreground hover:bg-foreground/5 tracking-normal transition-all"
+                    className={`flex items-center transition-all duration-300 ${isExpanded ? 'gap-4 px-4 py-3' : 'gap-0 px-4 py-3'} rounded-2xl text-sm font-semibold text-zinc-muted hover:text-foreground hover:bg-foreground/5 tracking-normal`}
                 >
-                    <ArrowLeft size={18} />
-                    Back to Accounts
+                    <div className="flex-shrink-0 w-5 flex justify-center">
+                        <ArrowLeft size={18} />
+                    </div>
+                    {isExpanded && (
+                      <span className="whitespace-nowrap overflow-hidden transition-all duration-300 opacity-100 max-w-full animate-in fade-in slide-in-from-left-2">
+                          Back to Accounts
+                      </span>
+                    )}
                 </Link>
             </div>
         </aside>

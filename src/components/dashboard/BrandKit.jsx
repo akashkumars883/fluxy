@@ -8,6 +8,11 @@ export default function BrandKit({ automation, onUpdate }) {
   const [formData, setFormData] = useState({
     brand_name: automation?.brand_name || "",
     tone: automation?.metadata?.tone || "Friendly",
+    templates: automation?.metadata?.templates || {
+      intro_title: "Hey {name}! Thanks for the comment. Tap below and i'll send you the access in just a moment",
+      follow_gate_title: "One final step to unlock! 🎁",
+      follow_gate_subtitle: "Please follow @{brand} to get your link immediately."
+    }
   });
 
   const tones = ["Friendly", "Professional", "Witty", "Aggressive", "Luxury", "Helpful"];
@@ -16,7 +21,11 @@ export default function BrandKit({ automation, onUpdate }) {
     setLoading(true);
     await onUpdate({
       brand_name: formData.brand_name,
-      metadata: { ...automation?.metadata, tone: formData.tone }
+      metadata: { 
+        ...automation?.metadata, 
+        tone: formData.tone,
+        templates: formData.templates
+      }
     });
     setLoading(false);
   };
@@ -84,6 +93,56 @@ export default function BrandKit({ automation, onUpdate }) {
               </button>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* Message Templates Card */}
+      <div className="bg-white border border-border rounded-[32px] p-8 shadow-sm">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center">
+            <MessageSquare size={20} />
+          </div>
+          <div>
+            <h3 className="font-bold text-lg text-foreground">Automation Templates</h3>
+            <p className="text-[10px] text-zinc-muted font-bold uppercase tracking-wider">Customize what your fans see in DMs</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Phase 1: Intro */}
+          <div className="space-y-3">
+             <label className="text-[11px] font-bold text-zinc-muted uppercase tracking-wider ml-1">Intro Card Title (Phase 1)</label>
+             <textarea 
+               value={formData.templates?.intro_title || ""}
+               onChange={(e) => setFormData({ 
+                 ...formData, 
+                 templates: { ...formData.templates, intro_title: e.target.value } 
+               })}
+               className="w-full h-24 px-5 py-4 bg-zinc-50 border-2 border-border/60 rounded-2xl outline-none focus:border-foreground focus:bg-white font-semibold text-sm transition-all text-foreground resize-none"
+               placeholder="Hey {name}! Thanks for the comment..."
+             />
+          </div>
+
+          {/* Phase 2: Follow Gate */}
+          <div className="space-y-3">
+             <label className="text-[11px] font-bold text-zinc-muted uppercase tracking-wider ml-1">Follow Gate Title (Phase 2)</label>
+             <input 
+               type="text"
+               value={formData.templates?.follow_gate_title || ""}
+               onChange={(e) => setFormData({ 
+                 ...formData, 
+                 templates: { ...formData.templates, follow_gate_title: e.target.value } 
+               })}
+               className="w-full px-5 py-4 bg-zinc-50 border-2 border-border/60 rounded-2xl outline-none focus:border-foreground focus:bg-white font-semibold text-sm transition-all text-foreground"
+               placeholder="One final step to unlock! 🎁"
+             />
+          </div>
+        </div>
+
+        <div className="mt-6 p-4 bg-indigo-50/50 rounded-2xl border border-indigo-100">
+           <p className="text-[11px] text-indigo-600 font-bold leading-relaxed">
+             💡 Pro Tip: Use <code className="bg-indigo-100 px-1 rounded">{'{name}'}</code> to address the fan by name, and <code className="bg-indigo-100 px-1 rounded">{'{brand}'}</code> for your brand name.
+           </p>
         </div>
       </div>
 

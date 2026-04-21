@@ -48,12 +48,12 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-8 md:p-16 lg:p-24">
       {/* GLASS BACKDROP */}
       <div 
-        className="absolute inset-0 bg-background/60 backdrop-blur-2xl animate-in fade-in duration-300"
+        className="absolute inset-0 bg-background/60 backdrop-blur-xl animate-in fade-in duration-700 ease-in-out"
         onClick={onClose}
       />
 
       {/* MODAL CARD */}
-      <div className="relative w-full max-w-5xl max-h-full bg-white border border-border rounded-[40px] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-5 duration-500">
+      <div className="relative w-full max-w-5xl max-h-full bg-white border border-border rounded-[48px] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
         
         {/* HEADER */}
         <div className="p-8 border-b border-border/40 bg-zinc-50/50 flex items-center justify-between">

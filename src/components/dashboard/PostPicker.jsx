@@ -9,7 +9,7 @@ import Loader from "@/components/ui/Loader";
  * POST PICKER COMPONENT
  * Fetches and displays Instagram media for selection.
  */
-export default function PostPicker({ automationId, media, loading, error: fetchError, onSelect, selectedPosts }) {
+export default function PostPicker({ automationId, media, loading, error: fetchError, onSelect, selectedPosts, layout = "grid" }) {
   const [selection, setSelection] = useState(selectedPosts || []);
 
   const togglePost = (postId) => {
@@ -24,43 +24,47 @@ export default function PostPicker({ automationId, media, loading, error: fetchE
     onSelect(selection);
   }, [selection]);
 
+  const isHorizontal = layout === "horizontal";
+
   if (loading) return (
     <div className="h-64 flex flex-col items-center justify-center bg-white border border-border rounded-[32px]">
-      <Loader text="Fetching your posts..." />
+      <Loader text="Getting your posts..." />
     </div>
   );
 
   if (fetchError) return (
     <div className="h-64 flex flex-col items-center justify-center bg-white border border-border rounded-[32px] p-8 text-center">
       <AlertCircle size={32} className="text-red-500 mb-4" />
-      <p className="text-sm font-bold text-foreground">Failed to load posts</p>
+      <p className="text-sm font-bold text-foreground">Couldn't load posts</p>
       <p className="text-xs text-zinc-muted mt-1">{fetchError}</p>
     </div>
   );
 
   return (
-    <section className="bg-white border border-border rounded-[32px] shadow-sm flex flex-col h-full overflow-hidden">
-      <div className="p-6 border-b border-border/40 bg-zinc-50/50 flex items-center justify-between shrink-0">
+    <section className={`bg-white border border-border rounded-[32px] shadow-sm flex flex-col overflow-hidden transition-all duration-500 ${isHorizontal ? 'h-auto max-h-[220px]' : 'h-full'}`}>
+      <div className={`p-6 border-b border-border/40 bg-zinc-50/50 flex items-center justify-between shrink-0 ${isHorizontal ? 'py-2 px-6' : ''}`}>
         <div>
-           <h2 className="font-semibold text-lg text-foreground tracking-normal">Select Content</h2>
-           <p className="text-[11px] text-zinc-muted font-normal opacity-60">Pick what to automate</p>
+           <h2 className={`font-semibold text-foreground tracking-normal ${isHorizontal ? 'text-sm' : 'text-lg'}`}>Pick your Posts</h2>
+           {!isHorizontal && <p className="text-[11px] text-zinc-muted font-normal opacity-60">Choose where to auto reply</p>}
         </div>
-        <div className="px-3 py-1 bg-foreground/5 border border-border rounded-full text-[9px] font-semibold text-zinc-muted tracking-normal">
-           Selection Required
-        </div>
+        {!isHorizontal && (
+          <div className="px-3 py-1 bg-foreground/5 border border-border rounded-full text-[9px] font-semibold text-zinc-muted tracking-normal">
+             Selection Needed
+          </div>
+        )}
       </div>
 
-      <div className="flex-1 overflow-x-auto p-2 md:p-6 no-scrollbar h-[550px]">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-3">
+      <div className={`flex-1 no-scrollbar ${isHorizontal ? 'overflow-x-auto overflow-y-hidden p-4' : 'overflow-y-auto p-2 md:p-6 h-[560px]'}`}>
+        <div className={`gap-3 ${isHorizontal ? 'flex flex-nowrap' : 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3'}`}>
           {media.map((post) => {
             const isSelected = selection.includes(post.id);
             return (
               <div 
                 key={post.id} 
                 onClick={() => togglePost(post.id)}
-                className={`relative aspect-40/50 rounded-xl overflow-hidden cursor-pointer transition-all duration-300 group ${
+                className={`relative rounded-xl overflow-hidden cursor-pointer transition-all duration-300 group shrink-0 ${
                   isSelected ? 'ring-4 ring-foreground ring-offset-2' : 'hover:scale-[1.02]'
-                }`}
+                } ${isHorizontal ? 'w-24 h-32' : 'aspect-40/50'}`}
               >
                 <img 
                   src={post.media_url} 
@@ -83,14 +87,16 @@ export default function PostPicker({ automationId, media, loading, error: fetchE
         </div>
       </div>
 
-      <div className="p-4 bg-zinc-50 border-t border-border/40 flex items-center justify-between">
-          <span className="text-[10px] font-semibold text-zinc-muted tracking-normal">Selection: <span className="text-foreground">{selection.length} Posts</span></span>
-          {selection.length > 0 ? (
-            <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded tracking-normal">Targeted rules ready ✨</span>
-          ) : (
-            <span className="text-[10px] font-semibold text-amber-600 italic tracking-normal">Select at least 1 post to continue</span>
-          )}
-      </div>
+      {!isHorizontal && (
+        <div className="p-4 bg-zinc-50 border-t border-border/40 flex items-center justify-between">
+            <span className="text-[10px] font-semibold text-zinc-muted tracking-normal">Selection: <span className="text-foreground">{selection.length} Posts</span></span>
+            {selection.length > 0 ? (
+              <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded tracking-normal">Targeted rules ready ✨</span>
+            ) : (
+              <span className="text-[10px] font-semibold text-amber-600 italic tracking-normal">Select at least 1 post to continue</span>
+            )}
+        </div>
+      )}
     </section>
   );
 }
