@@ -20,16 +20,14 @@ export default function Dashboard() {
       const supabase = createClient();
       const { data: { user: authUser } } = await supabase.auth.getUser();
       
-      // DEBUG BYPASS: Use mock user if not logged in
-      const finalUser = authUser || { 
-        id: 'debug-user-id', 
-        user_metadata: { full_name: 'Debug User' },
-        email: 'debug@automixa.test'
-      };
+      if (!authUser) {
+        router.push("/login");
+        return;
+      }
       
-      setUser(finalUser);
+      setUser(authUser);
 
-      if (finalUser) {
+      if (authUser) {
         let query = supabase.from("automations").select("*");
         
         // Only filter by user_id if we actually have a real authenticated user

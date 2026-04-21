@@ -68,12 +68,10 @@ export default function AutomationEditor() {
       const supabase = createClient();
       const { data: { user: authUser } } = await supabase.auth.getUser();
 
-      // DEBUG BYPASS: Mock user
-      const finalUser = authUser || { 
-        id: 'debug-user-id', 
-        email: 'debug@automixa.test',
-        user_metadata: { full_name: 'Debug User' }
-      };
+      if (!authUser) {
+        router.push("/login");
+        return;
+      }
 
       let { data: auto, error: autoError } = await supabase
         .from("automations")
@@ -89,7 +87,7 @@ export default function AutomationEditor() {
 
       let { data: trig, error: trigError } = await supabase.from("triggers").select("*").eq("automation_id", targetId).order('created_at', { ascending: false });
       
-      setAutomation({ ...auto, user: finalUser });
+      setAutomation({ ...auto, user: authUser });
       setTriggers(trig || []);
       setTriggersError(trigError?.message || null);
 
