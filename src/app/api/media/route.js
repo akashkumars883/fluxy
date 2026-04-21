@@ -39,7 +39,10 @@ export async function GET(req) {
       .maybeSingle();
 
     if (!auto || autoError) {
-      return NextResponse.json({ error: "Automation not found" }, { status: 404 });
+      return NextResponse.json({ 
+        error: "Automation not found", 
+        details: autoError?.message || `No record found for ID: ${automationId}. Ensure this ID exists in your active Supabase database.`
+      }, { status: 404 });
     }
 
     // 3. Decrypt the token

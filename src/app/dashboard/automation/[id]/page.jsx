@@ -64,7 +64,7 @@ export default function AutomationEditor() {
         .maybeSingle();
       
       if (!auto || autoError) {
-        setError("Account not found or access denied.");
+        setError(`Automation Record Not Found (Searched ID: ${targetId}). Please re-connect your account from the dashboard.`);
         setLoading(false);
         return;
       }
@@ -83,7 +83,7 @@ export default function AutomationEditor() {
         const data = await res.json();
         
         if (data.error || data.diagnostic) {
-          setMediaError(data.diagnostic || data.error);
+          setMediaError(data.details || data.diagnostic || data.error);
         }
         
         setMedia(data.media || []);
