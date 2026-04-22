@@ -23,7 +23,8 @@ export async function GET(request) {
     'instagram_manage_comments',
     'instagram_manage_messages',
     'pages_show_list',
-    'pages_read_engagement'
+    'pages_read_engagement',
+    'pages_manage_metadata'
   ].join(',');
 
   // Pass role in state to retrieve it in the callback

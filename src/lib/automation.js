@@ -36,6 +36,21 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     return { success: false, reason: "anti_loop" };
   }
 
+  // --- HUMAN HANDOVER & OPT-OUT (Compliance) ---
+  const humanKeywords = ["human", "help", "agent", "stop", "unsubscribe", "person", "सहायता", "मदद"];
+  const lowerIncomingText = (text || "").toLowerCase().trim();
+  if (humanKeywords.some(key => lowerIncomingText.includes(key))) {
+    console.log(`👤 Human Handover requested by ${senderId}. Pausing bot.`);
+    await supabaseAdmin.from("automation_history").insert({
+      automation_id: recipientId, // Best effort fallback if no row found yet
+      sender_id: senderId,
+      type: "HELP_REQUESTED",
+      status: "HANDOVER",
+      metadata: { text: text }
+    }).catch(() => {});
+    return { success: false, reason: "human_handover" };
+  }
+
   try {
     let automationRows;
     let authError;
@@ -179,7 +194,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
               payload: {
                 template_type: "generic",
                 elements: [{
-                  title: textWithoutUrl || "Exclusive Access! 🎁",
+                  title: (textWithoutUrl || "Exclusive Access! 🎁").substring(0, 80),
                   image_url: scrapedImage,
                   buttons: [{
                     type: "web_url",
@@ -268,7 +283,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
 
       await MetaService.sendGenericCard(
         senderId,
-        textWithoutUrl || "Exclusive Access! 🎁", // User message as TITLE (Bold)
+        (textWithoutUrl || "Exclusive Access! 🎁").substring(0, 80), // Strictly truncated to 80 chars
         "", // User requested NO brand name/extra text here
         buttonLabel,
         link,

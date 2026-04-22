@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Zap, Settings, ArrowLeft, Heart, Palette, LayoutDashboard, Menu, X } from "lucide-react";
+import { Zap, Settings, ArrowLeft, Heart, Palette, LayoutDashboard, Menu, X, LifeBuoy } from "lucide-react";
 import Link from "next/link";
 
 export default function AutomationSidebar({ accountId, persona = null, activeTab, onTabChange }) {
@@ -67,6 +67,22 @@ export default function AutomationSidebar({ accountId, persona = null, activeTab
                         </button>
                     );
                 })}
+            </div>
+
+            <div className="mb-2">
+                <button
+                    onClick={() => onTabChange('settings')} // Fallback or dedicated support tab
+                    className={`w-full flex items-center transition-all duration-300 ${isExpanded ? 'gap-4 px-4 py-3' : 'gap-0 px-4 py-3'} rounded-2xl text-sm font-semibold text-zinc-muted hover:text-foreground hover:bg-foreground/5 tracking-normal`}
+                >
+                    <div className="flex-shrink-0 w-5 flex justify-center">
+                        <LifeBuoy size={18} />
+                    </div>
+                    {isExpanded && (
+                        <span className="whitespace-nowrap overflow-hidden transition-all duration-300 opacity-100 max-w-full animate-in fade-in slide-in-from-left-2">
+                            Support & Compliance
+                        </span>
+                    )}
+                </button>
             </div>
 
             <div className="pt-6 border-t border-border overflow-hidden">
