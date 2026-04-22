@@ -41,7 +41,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     let authError;
 
     // 1. Authenticate the Automation Account
-    ({ data: automationRows, error: authError } = await supabase
+    ({ data: automationRows, error: authError } = await supabaseAdmin
       .from("automations")
       .select("*")
       .or(`page_id.eq.${recipientId},ig_business_id.eq.${recipientId}`)
@@ -60,7 +60,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     const userName = profileResult.success ? profileResult.data.name : "there";
 
     // 2. Resolve Triggers for this automation
-    let { data: triggers } = await supabase
+    let { data: triggers } = await supabaseAdmin
       .from("triggers")
       .select("*")
       .eq("automation_id", automation.id);

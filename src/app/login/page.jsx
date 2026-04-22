@@ -15,6 +15,7 @@ export default function LoginPage() {
       provider: providerName,
       options: {
         redirectTo: `${window.location.origin}/api/auth/callback`,
+        skipBrowserRedirect: false,
       },
     });
 
