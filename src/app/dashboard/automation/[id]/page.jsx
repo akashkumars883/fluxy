@@ -286,7 +286,7 @@ export default function AutomationEditor() {
     
     switch (activeTab) {
       case 'overview':
-        return <CreatorOverview stats={dbStats} history={dbStats.recentLogs} topTriggers={dbStats.topKeywords} />;
+        return <CreatorOverview stats={dbStats} history={dbStats.recentLogs} topTriggers={dbStats.topKeywords} automationId={targetId} />;
       
       case 'automations':
         // 1. ZERO STATE

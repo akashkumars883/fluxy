@@ -1,15 +1,23 @@
 "use client";
-
+import { useState } from "react";
 import { MessageSquare, Zap, TrendingUp, Camera, Heart, Plus, Activity, BarChart3 } from "lucide-react";
 
-export default function CreatorOverview({ stats = {}, history = [], topTriggers = [] }) {
-  const {
-    totalDms = 0,
-    autoReplies = 0,
-    engagementRate = "0%",
-    followerGrowth = 0,
-    storyReplies = 0
-  } = stats;
+export default function CreatorOverview({ stats = {}, history = [], topTriggers = [], automationId }) {
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const handleMetaSync = async () => {
+    try {
+      const res = await fetch(`/api/media/sync?automationId=${automationId}`);
+      const data = await res.json();
+      if (data.success) {
+        alert("Meta Review Sync Successful! Refresh Meta Dashboard in a few minutes.");
+      } else {
+        alert("Sync partly failed: " + (data.error || "Unknown error"));
+      }
+    } catch (err) {
+      alert("Network error during Meta sync.");
+    }
+  };
 
   const currentDate = new Date().toLocaleDateString('en-US', {
     month: 'long',
@@ -47,10 +55,20 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
           <p className="text-zinc-muted text-sm font-light">Welcome, here are your latest stats</p>
         </div>
         
-        <button className="flex items-center justify-center gap-2 px-5 py-4 bg-foreground text-background rounded-xl font-medium text-sm shadow-xl shadow-foreground/5 hover:scale-105 active:scale-95 transition-all">
-          <Plus size={16} />
-          <span>New Reply</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={handleMetaSync}
+            className="flex items-center justify-center gap-2 px-5 py-4 bg-zinc-50 border border-border text-foreground rounded-xl font-medium text-sm hover:bg-zinc-100 transition-all"
+          >
+            <BarChart3 size={16} />
+            <span>Sync with Meta</span>
+          </button>
+          
+          <button className="flex items-center justify-center gap-2 px-5 py-4 bg-foreground text-background rounded-xl font-medium text-sm shadow-xl shadow-foreground/5 hover:scale-105 active:scale-95 transition-all">
+            <Plus size={16} />
+            <span>New Reply</span>
+          </button>
+        </div>
       </div>
 
       {/* Unified Multi-Metric Card */}
