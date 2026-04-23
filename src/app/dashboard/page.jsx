@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
 import { Bell, Plus, Camera } from "lucide-react";
+import { motion } from "framer-motion";
 import AccountCard from "@/components/dashboard/AccountCard";
 import ProfileDropdown from "@/components/dashboard/ProfileDropdown";
 import IdentitySelection from "@/components/dashboard/IdentitySelection";
@@ -62,7 +63,11 @@ export default function Dashboard() {
   if (loading) return <Loader fullScreen text="Loading Dashboard..." />;
 
   return (
-    <section className="min-h-screen bg-background font-sans flex flex-col relative overflow-x-hidden text-foreground">
+    <motion.section 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="min-h-screen bg-background font-sans flex flex-col relative overflow-x-hidden text-foreground"
+    >
       
       {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border px-4 sm:px-6 py-4 flex items-center justify-between">
@@ -82,7 +87,12 @@ export default function Dashboard() {
         </div>
       </nav>
 
-      <main className="flex-1 max-w-5xl mx-auto w-full p-4 sm:p-8 md:p-16 flex flex-col">
+      <motion.main 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.5, ease: "easeOut" }}
+        className="flex-1 max-w-5xl mx-auto w-full p-4 sm:p-8 md:p-16 flex flex-col"
+      >
         
         {isConnecting ? (
           <Loader text="Redirecting to Instagram..." fullScreen />
@@ -136,7 +146,7 @@ export default function Dashboard() {
           </>
         )}
 
-      </main>
-    </section>
+      </motion.main>
+    </motion.section>
   );
 }

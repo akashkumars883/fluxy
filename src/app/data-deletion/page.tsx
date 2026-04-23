@@ -9,7 +9,7 @@ export default function DataDeletion() {
       lastUpdated="April 21, 2026"
     >
       <div className="space-y-12">
-        <section className="p-8 bg-white border border-border rounded-[40px] shadow-sm">
+        <section className="p-8 bg-background border border-border rounded-[40px] shadow-sm">
           <div className="w-12 h-12 bg-indigo-500/10 text-indigo-600 rounded-2xl flex items-center justify-center mb-6">
              <ShieldCheck size={24} />
           </div>

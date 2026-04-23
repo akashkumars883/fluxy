@@ -5,13 +5,13 @@ import { ArrowRight, Rocket } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative pt-30 pb-20 md:pt-40 md:pb-40 px-6 overflow-hidden">
+    <section className="relative pt-24 pb-20 md:pt-40 md:pb-40 px-6 overflow-hidden">
       {/* Subtle Background Art */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-gradient-to-b from-indigo-500/10 via-transparent to-transparent blur-[120px] rounded-full -mt-[300px]" />
       
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="max-w-4xl">
-          <h1 className="text-5xl md:text-8xl font-semibold text-foreground leading-[1.1] tracking-normal mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          <h1 className="text-4xl sm:text-5xl md:text-8xl font-semibold text-foreground leading-[1.1] tracking-normal mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
             Automate your <br />
             <span className="text-zinc-400">Instagram world.</span>
           </h1>
@@ -30,7 +30,7 @@ export default function Hero() {
             </Link>
             <Link 
               href="#features" 
-              className="w-full sm:w-auto px-10 py-5 bg-white border border-border text-foreground text-base font-semibold rounded-full hover:bg-zinc-50 transition-all text-center tracking-normal"
+              className="w-full sm:w-auto px-10 py-5 bg-transparent border border-border text-foreground text-base font-semibold rounded-full hover:bg-zinc-50 transition-all text-center tracking-normal"
             >
               View Features
             </Link>

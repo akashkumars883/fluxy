@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
 import { Bell, AlertCircle, Zap, ArrowRight, ArrowLeft, Plus, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Components
 import AiSettingsCard from "@/components/dashboard/AiSettingsCard";
@@ -18,6 +19,7 @@ import CampaignWizard from '@/components/dashboard/CampaignWizard';
 import AutomationPreview from '@/components/dashboard/AutomationPreview';
 import EditTriggerModal from "@/components/dashboard/EditTriggerModal";
 import ProfileDropdown from "@/components/dashboard/ProfileDropdown";
+import HelpRequests from "@/components/dashboard/HelpRequests";
 import Loader from "@/components/ui/Loader";
 
 export default function AutomationEditor() {
@@ -406,6 +408,9 @@ export default function AutomationEditor() {
       case 'brand-kit':
         return <BrandKit automation={automation} onUpdate={handleUpdateAutomation} />;
 
+      case 'help-requests':
+        return <HelpRequests automationId={targetId} />;
+
       case 'settings':
         return <GeneralSettings automation={automation} onUpdate={handleUpdateAutomation} onDelete={handleDeleteAutomation} />;
 
@@ -440,7 +445,18 @@ export default function AutomationEditor() {
         
         <main className="flex-1 bg-background h-[calc(100vh-72px)] overflow-y-auto no-scrollbar">
           <div className="max-w-7xl mx-auto p-6 md:p-8 h-full text-foreground relative z-10">
-            {renderContent()}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab + viewMode} // Re-animate on tab OR view change
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                className="h-full"
+              >
+                {renderContent()}
+              </motion.div>
+            </AnimatePresence>
           </div>
         </main>
       </div>

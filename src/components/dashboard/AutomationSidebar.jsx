@@ -11,6 +11,7 @@ export default function AutomationSidebar({ accountId, persona = null, activeTab
     const businessItems = [
         { id: 'overview', name: "Overview", icon: LayoutDashboard },
         { id: 'automations', name: "Automations", icon: Zap },
+        { id: 'help-requests', name: "Help Requests", icon: LifeBuoy },
         { id: 'settings', name: "Settings", icon: Settings },
     ];
 
@@ -19,6 +20,7 @@ export default function AutomationSidebar({ accountId, persona = null, activeTab
         { id: 'automations', name: "Automations", icon: Zap },
         { id: 'fan-engagement', name: "Fan Engagement", icon: Heart },
         { id: 'brand-kit', name: "Brand Kit", icon: Palette },
+        { id: 'help-requests', name: "Help Requests", icon: LifeBuoy },
         { id: 'settings', name: "Settings", icon: Settings },
     ];
 
@@ -70,8 +72,8 @@ export default function AutomationSidebar({ accountId, persona = null, activeTab
             </div>
 
             <div className="mb-2">
-                <button
-                    onClick={() => onTabChange('settings')} // Fallback or dedicated support tab
+                <Link
+                    href="/dashboard/support"
                     className={`w-full flex items-center transition-all duration-300 ${isExpanded ? 'gap-4 px-4 py-3' : 'gap-0 px-4 py-3'} rounded-2xl text-sm font-semibold text-zinc-muted hover:text-foreground hover:bg-foreground/5 tracking-normal`}
                 >
                     <div className="flex-shrink-0 w-5 flex justify-center">
@@ -82,7 +84,7 @@ export default function AutomationSidebar({ accountId, persona = null, activeTab
                             Support & Compliance
                         </span>
                     )}
-                </button>
+                </Link>
             </div>
 
             <div className="pt-6 border-t border-border overflow-hidden">
