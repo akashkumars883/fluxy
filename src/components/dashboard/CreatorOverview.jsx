@@ -19,6 +19,14 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
     }
   };
 
+  const {
+    totalDms = 0,
+    autoReplies = 0,
+    engagementRate = "0%",
+    followerGrowth = 0,
+    storyReplies = 0
+  } = stats;
+
   const currentDate = new Date().toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
