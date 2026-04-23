@@ -52,10 +52,14 @@ export default function Footer() {
 
           {/* Links: Contact */}
           <div className="space-y-6">
-             <h4 className="text-[14px] font-bold text-zinc-400">Identity</h4>
+             <h4 className="text-[14px] font-bold text-zinc-400">Contact</h4>
              <div className="flex flex-col gap-4 text-sm font-medium text-zinc-500">
-                <span className="hover:text-foreground transition-all cursor-pointer">Twitter / X</span>
-                <span className="hover:text-foreground transition-all cursor-pointer">Instagram</span>
+                <a href="mailto:info@automixa.in" className="hover:text-foreground transition-all">info@automixa.in</a>
+                <a href="tel:+916201231875" className="hover:text-foreground transition-all">+91 6201231875</a>
+                <div className="flex gap-4 pt-2">
+                  <span className="hover:text-foreground transition-all cursor-pointer">X</span>
+                  <span className="hover:text-foreground transition-all cursor-pointer">Instagram</span>
+                </div>
              </div>
           </div>
 

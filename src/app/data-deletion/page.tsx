@@ -48,7 +48,7 @@ export default function DataDeletion() {
                  <div className="space-y-2">
                     <h3 className="font-semibold text-foreground tracking-normal">Manual Request</h3>
                     <p className="text-zinc-500 font-normal leading-relaxed tracking-normal">
-                      Alternatively, you can email us at **support@automixa.ai** with the subject "Data Deletion Request" and your Instagram Username. We will process your request within 24-48 hours.
+                      Alternatively, you can email us at **info@automixa.in** with the subject "Data Deletion Request" and your Instagram Username. We will process your request within 24-48 hours.
                     </p>
                  </div>
               </div>

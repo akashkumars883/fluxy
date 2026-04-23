@@ -53,7 +53,7 @@ export default function PrivacyPolicy() {
 
       <section className="space-y-4">
          <h2 className="text-xl font-semibold text-foreground tracking-normal">6. Contact Us</h2>
-         <p>If you have any questions about this Privacy Policy, please contact us at support@automixa.ai.</p>
+         <p>If you have any questions about this Privacy Policy, please contact us at info@automixa.in or call us at +91 6201231875.</p>
       </section>
     </LegalLayout>
   );
