@@ -33,7 +33,8 @@ export default function PublicNavigation() {
       }`}
     >
       <div className="max-w-8xl mx-auto px-6 md:px-10 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 group">
+        <Link href="/" className="flex items-center gap-3 group">
+          <img src="/logo.png" alt="Automixa Logo" className="w-8 h-8 object-contain" />
           <span className="text-xl font-semibold tracking-normal text-foreground">automixa</span>
         </Link>
         

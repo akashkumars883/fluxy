@@ -18,7 +18,8 @@ export default function Footer() {
         
         {/* Brand Section (LEFT) */}
         <div className="space-y-8 max-w-sm">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="Automixa Logo" className="w-8 h-8 object-contain" />
             <span className="text-2xl font-semibold tracking-tighter text-foreground">automixa</span>
           </div>
           <p className="text-zinc-500 text-base font-medium leading-relaxed tracking-normal">

@@ -64,8 +64,9 @@ export default function LoginPage() {
 
         {/* Content */}
         <div className="relative z-20">
-           <Link href="/" className="text-3xl font-semibold text-white tracking-tighter">
-              automixa
+           <Link href="/" className="flex items-center gap-3 text-3xl font-semibold text-white tracking-tighter">
+              <img src="/logo.png" alt="Automixa Logo" className="w-10 h-10 object-contain brightness-0 invert" />
+              <span>automixa</span>
            </Link>
         </div>
 
@@ -106,8 +107,9 @@ export default function LoginPage() {
         <div className="w-full max-w-[440px]">
           
           <div className="lg:hidden mb-12">
-             <Link href="/" className="text-2xl font-semibold text-foreground tracking-tighter">
-                automixa
+             <Link href="/" className="flex items-center gap-3 text-2xl font-semibold text-foreground tracking-tighter">
+                <img src="/logo.png" alt="Automixa Logo" className="w-8 h-8 object-contain" />
+                <span>automixa</span>
              </Link>
           </div>
 
