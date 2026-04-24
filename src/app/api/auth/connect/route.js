@@ -17,9 +17,8 @@ export async function GET(request) {
   const appId = process.env.INSTAGRAM_APP_ID;
   const redirectUri = `${new URL(request.url).origin}/api/auth/callback/facebook`;
 
-  // 2. Facebook Login for Business requires a Configuration ID
-  // Create this in: App Dashboard > Facebook Login for Business > Configurations
-  const configId = process.env.NEXT_PUBLIC_FB_CONFIG_ID || "";
+  // 2. Facebook Login for Business Configuration ID
+  const configId = "1899618614025224";
   
   // Pass role in state to retrieve it in the callback
   const state = JSON.stringify({ persona: role });
