@@ -21,6 +21,7 @@ export async function GET(request) {
   const scopes = [
     'instagram_basic',
     'instagram_manage_comments',
+    'instagram_manage_insights',
     'instagram_manage_messages',
     'pages_show_list',
     'pages_read_engagement',

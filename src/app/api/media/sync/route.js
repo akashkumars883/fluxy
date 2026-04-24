@@ -38,30 +38,61 @@ export async function GET(req) {
 
     console.log(`🚀 Executing Meta Review Sync for ${instagramId}...`);
 
-    // 1. Call Insights (Triggers: instagram_business_manage_insights)
-    const insightsUrl = `https://graph.facebook.com/v21.0/${instagramId}/insights?metric=impressions,reach&period=day&access_token=${decryptedToken}`;
-    const insightsRes = await fetch(insightsUrl);
-    const insightsData = await insightsRes.json();
-    console.log("✅ Insights Call Response:", insightsData.error ? "FAILED" : "SUCCESS");
+    const diagnostics = {
+        scope_insights: "PENDING",
+        scope_comments: "PENDING",
+        media_found: 0,
+        comment_replied: "SKIPPED (No comments found)"
+    };
 
-    // 2. Call Comments (Triggers: instagram_business_manage_comments)
-    // First we need at least one media entry
-    const mediaResult = await MetaService.getMediaList(instagramId, decryptedToken);
-    if (mediaResult.success && mediaResult.data.length > 0) {
-      const mediaId = mediaResult.data[0].id;
-      const commentsUrl = `https://graph.facebook.com/v21.0/${mediaId}/comments?access_token=${decryptedToken}`;
-      const commentsRes = await fetch(commentsUrl);
-      const commentsData = await commentsRes.json();
-      console.log("✅ Comments Call Response:", commentsData.error ? "FAILED" : "SUCCESS");
+    // 1. Call Account Insights (Triggers: instagram_business_manage_insights)
+    try {
+        const insightsUrl = `https://graph.facebook.com/v21.0/${instagramId}/insights?metric=impressions,reach&period=day&access_token=${decryptedToken}`;
+        const insightsRes = await fetch(insightsUrl);
+        const insightsData = await insightsRes.json();
+        diagnostics.scope_insights = insightsData.error ? `FAILED: ${insightsData.error.message}` : "SUCCESS";
+    } catch (e) {
+        diagnostics.scope_insights = `ERROR: ${e.message}`;
+    }
+
+    // 2. Call Comments & Media Insights (Triggers: instagram_business_manage_comments + insights)
+    try {
+        const mediaResult = await MetaService.getMediaList(instagramId, decryptedToken);
+        if (mediaResult.success && mediaResult.data.length > 0) {
+            diagnostics.media_found = mediaResult.data.length;
+            const mediaId = mediaResult.data[0].id;
+
+            // Media specific insights (extra verification for insights permission)
+            const mediaInsightsUrl = `https://graph.facebook.com/v21.0/${mediaId}/insights?metric=engagement,impressions,reach&access_token=${decryptedToken}`;
+            await fetch(mediaInsightsUrl);
+
+            // Fetch comments
+            const commentsUrl = `https://graph.facebook.com/v21.0/${mediaId}/comments?access_token=${decryptedToken}`;
+            const commentsRes = await fetch(commentsUrl);
+            const commentsData = await commentsRes.json();
+            
+            if (commentsData.data && commentsData.data.length > 0) {
+                const commentId = commentsData.data[0].id;
+                // Attempt a "Write" action to satisfy "Manage Comments"
+                const replyResult = await MetaService.sendCommentReply(commentId, "Test reply for Meta App Review verification. ✅", decryptedToken);
+                diagnostics.scope_comments = replyResult.success ? "SUCCESS (Replied to comment)" : `FAILED: ${replyResult.error}`;
+                diagnostics.comment_replied = replyResult.success ? "YES" : "NO";
+            } else {
+                diagnostics.scope_comments = "SUCCESS (Fetched empty list)";
+                diagnostics.comment_replied = "SKIPPED (No comments found to reply to)";
+            }
+        } else {
+            diagnostics.media_found = 0;
+            diagnostics.scope_comments = "SKIPPED (No media found)";
+        }
+    } catch (e) {
+        diagnostics.scope_comments = `ERROR: ${e.message}`;
     }
 
     return NextResponse.json({ 
         success: true, 
-        message: "Meta API calls triggered successfully. Refresh your Meta Dashboard in a few minutes.",
-        diagnostics: {
-            insights: insightsData.error ? insightsData.error.message : "OK",
-            media_found: mediaResult.data?.length || 0
-        }
+        message: "Meta API test calls executed. Check diagnostics below.",
+        diagnostics
     });
 
   } catch (error) {
