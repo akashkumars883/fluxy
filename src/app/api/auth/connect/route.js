@@ -18,19 +18,19 @@ export async function GET(request) {
   const redirectUri = `${new URL(request.url).origin}/api/auth/callback/facebook`;
 
   // 2. Facebook Login for Business requires a Configuration ID
-  // You can create this in: App Dashboard > Facebook Login for Business > Configurations
+  // Create this in: App Dashboard > Facebook Login for Business > Configurations
   const configId = process.env.NEXT_PUBLIC_FB_CONFIG_ID || "";
   
   // Pass role in state to retrieve it in the callback
   const state = JSON.stringify({ persona: role });
   
-  // Use config_id instead of raw scope strings for v21.0 business permissions
+  // v21.0 requires config_id for the business granular permissions shown in dashboard
   let fbAuthUrl = `https://www.facebook.com/v21.0/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${encodeURIComponent(state)}&response_type=code`;
   
   if (configId) {
     fbAuthUrl += `&config_id=${configId}`;
   } else {
-    // Fallback to traditional scopes if no configId is provided (unlikely to work for granular review permissions)
+    // Fallback to standard scopes if configId is missing
     const scopes = [
         'instagram_basic',
         'instagram_manage_comments',
