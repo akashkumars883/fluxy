@@ -47,7 +47,7 @@ export async function GET(req) {
 
     // 1. Call Account Insights (Triggers: instagram_business_manage_insights)
     try {
-        const insightsUrl = `https://graph.facebook.com/v21.0/${instagramId}/insights?metric=impressions,reach&period=day&access_token=${decryptedToken}`;
+        const insightsUrl = `https://graph.facebook.com/v21.0/${instagramId}/insights?metric=reach,follower_count&period=day&access_token=${decryptedToken}`;
         const insightsRes = await fetch(insightsUrl);
         const insightsData = await insightsRes.json();
         diagnostics.scope_insights = insightsData.error ? `FAILED: ${insightsData.error.message}` : "SUCCESS";
