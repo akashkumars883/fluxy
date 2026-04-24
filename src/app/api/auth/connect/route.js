@@ -20,8 +20,8 @@ export async function GET(request) {
   // 2. Scopes needed for Instagram Automation
   const scopes = [
     'instagram_basic',
-    'instagram_business_manage_comments',
-    'instagram_business_manage_insights',
+    'instagram_manage_comments',
+    'instagram_manage_insights',
     'instagram_manage_messages',
     'pages_show_list',
     'pages_read_engagement',
