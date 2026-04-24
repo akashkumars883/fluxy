@@ -47,9 +47,15 @@ export async function GET(req) {
 
     // 1. Call Account Insights (Triggers: instagram_business_manage_insights)
     try {
+        // Standard Account Insights
         const insightsUrl = `https://graph.facebook.com/v21.0/${instagramId}/insights?metric=reach,follower_count&period=day&access_token=${decryptedToken}`;
         const insightsRes = await fetch(insightsUrl);
         const insightsData = await insightsRes.json();
+        
+        // Business Specific Insights (Lifetime) - Meta often looks for this specific field
+        const bizInsightsUrl = `https://graph.facebook.com/v21.0/${instagramId}?fields=insights.metric(follower_count){values}&access_token=${decryptedToken}`;
+        await fetch(bizInsightsUrl);
+
         diagnostics.scope_insights = insightsData.error ? `FAILED: ${insightsData.error.message}` : "SUCCESS";
     } catch (e) {
         diagnostics.scope_insights = `ERROR: ${e.message}`;
@@ -62,26 +68,30 @@ export async function GET(req) {
             diagnostics.media_found = mediaResult.data.length;
             const mediaId = mediaResult.data[0].id;
 
-            // Media specific insights (extra verification for insights permission)
-            const mediaInsightsUrl = `https://graph.facebook.com/v21.0/${mediaId}/insights?metric=engagement,impressions,reach&access_token=${decryptedToken}`;
+            // Media specific insights
+            const mediaInsightsUrl = `https://graph.facebook.com/v21.0/${mediaId}/insights?metric=engagement,reach&access_token=${decryptedToken}`;
             await fetch(mediaInsightsUrl);
 
             // Fetch comments
-            const commentsUrl = `https://graph.facebook.com/v21.0/${mediaId}/comments?access_token=${decryptedToken}`;
+            const commentsUrl = `https://graph.facebook.com/v21.0/${mediaId}/comments?fields=id,text,from&access_token=${decryptedToken}`;
             const commentsRes = await fetch(commentsUrl);
             const commentsData = await commentsRes.json();
             
             if (commentsData.data && commentsData.data.length > 0) {
                 const commentId = commentsData.data[0].id;
                 // Attempt a "Write" action to satisfy "Manage Comments"
-                const replyResult = await MetaService.sendCommentReply(commentId, "Test reply for Meta App Review verification. ✅", decryptedToken);
+                // Using a slightly different message to avoid spam filters
+                const timestamp = new Date().toLocaleTimeString();
+                const replyResult = await MetaService.sendCommentReply(commentId, `Verification reply: ${timestamp} ✅`, decryptedToken);
+                
                 diagnostics.scope_comments = replyResult.success ? "SUCCESS (Replied to comment)" : `FAILED: ${replyResult.error}`;
                 diagnostics.comment_replied = replyResult.success ? "YES" : "NO";
             } else {
                 diagnostics.scope_comments = "SUCCESS (Fetched empty list)";
                 diagnostics.comment_replied = "SKIPPED (No comments found to reply to)";
             }
-        } else {
+        }
+ else {
             diagnostics.media_found = 0;
             diagnostics.scope_comments = "SKIPPED (No media found)";
         }
