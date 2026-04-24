@@ -6,16 +6,30 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
   const [isSyncing, setIsSyncing] = useState(false);
 
   const handleMetaSync = async () => {
+    if (isSyncing) return;
+    setIsSyncing(true);
     try {
       const res = await fetch(`/api/media/sync?automationId=${automationId}`);
       const data = await res.json();
-      if (data.success) {
-        alert("Meta Review Sync Successful! Refresh Meta Dashboard in a few minutes.");
+      
+      if (data.success && data.diagnostics) {
+        const { scope_insights, scope_comments, media_found, comment_replied } = data.diagnostics;
+        alert(
+          `🚀 Meta Sync Report:\n\n` +
+          `• Insights Status: ${scope_insights}\n` +
+          `• Comments Status: ${scope_comments}\n` +
+          `• Media Found: ${media_found}\n` +
+          `• Test Reply Sent: ${comment_replied}\n\n` +
+          `Status: ${scope_insights === "SUCCESS" && scope_comments.includes("SUCCESS") ? "✅ READY FOR REVIEW" : "⚠️ NEEDS ATTENTION"}`
+        );
       } else {
         alert("Sync partly failed: " + (data.error || "Unknown error"));
       }
     } catch (err) {
-      alert("Network error during Meta sync.");
+      alert("Network error during Meta sync. Check console for details.");
+      console.error(err);
+    } finally {
+      setIsSyncing(false);
     }
   };
 
@@ -66,10 +80,11 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
         <div className="flex items-center gap-3">
           <button 
             onClick={handleMetaSync}
-            className="flex items-center justify-center gap-2 px-5 py-4 bg-zinc-50 border border-border text-foreground rounded-xl font-medium text-sm hover:bg-zinc-100 transition-all"
+            disabled={isSyncing}
+            className={`flex items-center justify-center gap-2 px-5 py-4 bg-zinc-50 border border-border text-foreground rounded-xl font-medium text-sm transition-all ${isSyncing ? 'opacity-50 cursor-not-allowed' : 'hover:bg-zinc-100'}`}
           >
-            <BarChart3 size={16} />
-            <span>Sync with Meta</span>
+            <BarChart3 size={16} className={isSyncing ? 'animate-spin' : ''} />
+            <span>{isSyncing ? 'Syncing...' : 'Sync with Meta'}</span>
           </button>
           
           <button className="flex items-center justify-center gap-2 px-5 py-4 bg-foreground text-background rounded-xl font-medium text-sm shadow-xl shadow-foreground/5 hover:scale-105 active:scale-95 transition-all">
