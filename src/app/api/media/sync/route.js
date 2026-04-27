@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
+
 import { createAdminClient } from "@/lib/supabase";
 import { MetaService } from "@/lib/meta";
 import { decryptToken } from "@/lib/security";
 
 /**
  * GET /api/media/sync?automationId=...
- * This endpoint is SPECIFICALLY created to trigger test calls for Meta App Review.
- * It manually hits the Insights and Comments endpoints to satisfy the "1 of 1 API call" requirement.
+ * Trigger "real" Meta Graph calls for App Review (insights + comments).
  */
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
@@ -17,94 +17,151 @@ export async function GET(req) {
     return NextResponse.json({ error: "Missing automationId" }, { status: 400 });
   }
 
+  const diagnostics = {
+    required_permissions: {
+      insights: "instagram_manage_insights",
+      comments: "instagram_manage_comments",
+    },
+    token_scopes: null,
+    token_granular_scopes: null,
+    scope_insights: "PENDING",
+    scope_comments: "PENDING",
+    media_found: 0,
+    comment_replied: "SKIPPED",
+    errors: [],
+  };
+
   try {
     const supabase = createAdminClient();
-    const { data: auto, error: autoError } = await supabase
+    const { data: automation, error: automationError } = await supabase
       .from("automations")
-      .select("ig_business_id, access_token")
+      .select("page_id, ig_business_id, access_token")
       .eq("id", automationId)
       .maybeSingle();
 
-    if (!auto || autoError) {
+    if (!automation || automationError) {
       return NextResponse.json({ error: "Automation not found" }, { status: 404 });
     }
 
-    const decryptedToken = decryptToken(auto.access_token);
-    const instagramId = auto.ig_business_id;
+    const decryptedToken = decryptToken(automation.access_token);
+    if (!decryptedToken) {
+      return NextResponse.json(
+        { error: "Missing access_token for this automation" },
+        { status: 400 }
+      );
+    }
+    let instagramId = automation.ig_business_id;
+
+    // Auto-repair: fetch IG business id from the Page if missing
+    if (!instagramId && automation.page_id) {
+      const idResult = await MetaService.getInstagramBusinessIdFromPage(
+        automation.page_id,
+        decryptedToken
+      );
+      if (idResult.success && idResult.instagramBusinessId) {
+        instagramId = idResult.instagramBusinessId;
+        await supabase
+          .from("automations")
+          .update({ ig_business_id: instagramId })
+          .eq("id", automationId);
+      }
+    }
 
     if (!instagramId) {
-      return NextResponse.json({ error: "No Instagram account linked" }, { status: 400 });
+      return NextResponse.json(
+        { error: "No Instagram account linked (missing ig_business_id)" },
+        { status: 400 }
+      );
     }
 
-    console.log(`🚀 Executing Meta Review Sync for ${instagramId}...`);
+    // Helpful review diagnostics: what permissions does this token actually have?
+    const debug = await MetaService.debugToken(decryptedToken);
+    if (debug.success) {
+      diagnostics.token_scopes = debug.data?.scopes || null;
+      diagnostics.token_granular_scopes = debug.data?.granular_scopes || null;
+    } else {
+      diagnostics.errors.push(`debug_token: ${debug.error}`);
+    }
 
-    const diagnostics = {
-        scope_insights: "PENDING",
-        scope_comments: "PENDING",
-        media_found: 0,
-        comment_replied: "SKIPPED (No comments found)"
-    };
+    console.log(`Meta review sync: ig_business_id=${instagramId}`);
 
-    // 1. Call Account Insights (Triggers: instagram_business_manage_insights)
+    // 1) Account insights (instagram_manage_insights)
     try {
-        // Standard Account Insights
-        const insightsUrl = `https://graph.facebook.com/v21.0/${instagramId}/insights?metric=reach,follower_count&period=day&access_token=${decryptedToken}`;
-        const insightsRes = await fetch(insightsUrl);
-        const insightsData = await insightsRes.json();
-        
-        // Business Specific Insights (Lifetime) - Meta often looks for this specific field
-        const bizInsightsUrl = `https://graph.facebook.com/v21.0/${instagramId}?fields=insights.metric(follower_count){values}&access_token=${decryptedToken}`;
-        await fetch(bizInsightsUrl);
+      const insightsUrl =
+        `https://graph.facebook.com/v21.0/${instagramId}/insights` +
+        `?metric=reach,follower_count&period=day&access_token=${decryptedToken}`;
 
-        diagnostics.scope_insights = insightsData.error ? `FAILED: ${insightsData.error.message}` : "SUCCESS";
+      const res = await fetch(insightsUrl);
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        diagnostics.scope_insights = `FAILED: ${data?.error?.message || `HTTP ${res.status}`}`;
+      } else {
+        diagnostics.scope_insights = "SUCCESS";
+      }
     } catch (e) {
-        diagnostics.scope_insights = `ERROR: ${e.message}`;
+      diagnostics.scope_insights = `ERROR: ${e.message}`;
     }
 
-    // 2. Call Comments & Media Insights (Triggers: instagram_business_manage_comments + insights)
+    // 2) Comments + Media insights (instagram_manage_comments + instagram_manage_insights)
     try {
-        const mediaResult = await MetaService.getMediaList(instagramId, decryptedToken);
-        if (mediaResult.success && mediaResult.data.length > 0) {
-            diagnostics.media_found = mediaResult.data.length;
-            const mediaId = mediaResult.data[0].id;
+      const mediaResult = await MetaService.getMediaList(instagramId, decryptedToken, {
+        limit: 5,
+      });
 
-            // Media specific insights
-            const mediaInsightsUrl = `https://graph.facebook.com/v21.0/${mediaId}/insights?metric=engagement,reach&access_token=${decryptedToken}`;
-            await fetch(mediaInsightsUrl);
+      if (!mediaResult.success) {
+        diagnostics.scope_comments = `FAILED: ${mediaResult.error}`;
+        diagnostics.errors.push(`getMediaList: ${mediaResult.error}`);
+      } else if (!mediaResult.data || mediaResult.data.length === 0) {
+        diagnostics.media_found = 0;
+        diagnostics.scope_comments = "SKIPPED: No media found";
+      } else {
+        diagnostics.media_found = mediaResult.data.length;
+        const mediaId = mediaResult.data[0].id;
 
-            // Fetch comments
-            const commentsUrl = `https://graph.facebook.com/v21.0/${mediaId}/comments?fields=id,text,from&access_token=${decryptedToken}`;
-            const commentsRes = await fetch(commentsUrl);
-            const commentsData = await commentsRes.json();
-            
-            if (commentsData.data && commentsData.data.length > 0) {
-                const commentId = commentsData.data[0].id;
-                // Attempt a "Write" action to satisfy "Manage Comments"
-                // Using a slightly different message to avoid spam filters
-                const timestamp = new Date().toLocaleTimeString();
-                const replyResult = await MetaService.sendCommentReply(commentId, `Verification reply: ${timestamp} ✅`, decryptedToken);
-                
-                diagnostics.scope_comments = replyResult.success ? "SUCCESS (Replied to comment)" : `FAILED: ${replyResult.error}`;
-                diagnostics.comment_replied = replyResult.success ? "YES" : "NO";
-            } else {
-                diagnostics.scope_comments = "SUCCESS (Fetched empty list)";
-                diagnostics.comment_replied = "SKIPPED (No comments found to reply to)";
-            }
+        // Optional: a media insights call to strengthen the review story
+        const mediaInsightsUrl =
+          `https://graph.facebook.com/v21.0/${mediaId}/insights` +
+          `?metric=impressions,reach,engagement&access_token=${decryptedToken}`;
+        await fetch(mediaInsightsUrl).catch(() => null);
+
+        // Fetch comments
+        const commentsUrl =
+          `https://graph.facebook.com/v21.0/${mediaId}/comments` +
+          `?fields=id,text,from&limit=5&access_token=${decryptedToken}`;
+        const commentsRes = await fetch(commentsUrl);
+        const commentsData = await commentsRes.json().catch(() => null);
+
+        if (!commentsRes.ok) {
+          diagnostics.scope_comments = `FAILED: ${
+            commentsData?.error?.message || `HTTP ${commentsRes.status}`
+          }`;
+        } else if (commentsData?.data?.length > 0) {
+          const commentId = commentsData.data[0].id;
+          const timestamp = new Date().toISOString();
+          const reply = await MetaService.sendCommentReply(
+            commentId,
+            `Verification reply: ${timestamp}`,
+            decryptedToken
+          );
+
+          diagnostics.scope_comments = reply.success
+            ? "SUCCESS: Replied to comment"
+            : `FAILED: ${reply.error || "Reply failed"}`;
+          diagnostics.comment_replied = reply.success ? "YES" : "NO";
+        } else {
+          diagnostics.scope_comments = "SUCCESS: Fetched empty comment list";
+          diagnostics.comment_replied = "SKIPPED: No comments to reply";
         }
- else {
-            diagnostics.media_found = 0;
-            diagnostics.scope_comments = "SKIPPED (No media found)";
-        }
+      }
     } catch (e) {
-        diagnostics.scope_comments = `ERROR: ${e.message}`;
+      diagnostics.scope_comments = `ERROR: ${e.message}`;
     }
 
-    return NextResponse.json({ 
-        success: true, 
-        message: "Meta API test calls executed. Check diagnostics below.",
-        diagnostics
+    return NextResponse.json({
+      success: true,
+      message: "Meta API review calls executed. See diagnostics.",
+      diagnostics,
     });
-
   } catch (error) {
     console.error("Sync Error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });

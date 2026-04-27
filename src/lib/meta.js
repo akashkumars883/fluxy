@@ -1,5 +1,26 @@
-const GRAPH_API_VERSION = 'v21.0'; 
+const GRAPH_API_VERSION = "v21.0";
 const BASE_URL = `https://graph.facebook.com/${GRAPH_API_VERSION}`;
+const DEFAULT_TIMEOUT_MS = 15000;
+
+function getAppAccessToken() {
+  const appId = process.env.INSTAGRAM_APP_ID;
+  const appSecret = process.env.INSTAGRAM_APP_SECRET;
+  if (!appId || !appSecret) return null;
+  return `${appId}|${appSecret}`;
+}
+
+async function fetchJson(url, init = {}, { timeoutMs = DEFAULT_TIMEOUT_MS } = {}) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, { ...init, signal: controller.signal });
+    const data = await response.json().catch(() => null);
+    return { response, data };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
 
 /**
  * Meta API Helper Functions
@@ -57,8 +78,9 @@ export const MetaService = {
   getInstagramAccounts: async (userAccessToken) => {
     try {
       // Step A: Get pages managed by user
-      const response = await fetch(`${BASE_URL}/me/accounts?fields=name,access_token,instagram_business_account&access_token=${userAccessToken}`);
-      const data = await response.json();
+      const { response, data } = await fetchJson(
+        `${BASE_URL}/me/accounts?fields=name,access_token,instagram_business_account&access_token=${userAccessToken}`
+      );
       
       if (!response.ok) throw new Error(data.error?.message || "Failed to fetch pages");
 
@@ -75,6 +97,53 @@ export const MetaService = {
       return { success: true, accounts: igAccounts };
     } catch (error) {
       console.error("Meta API - getInstagramAccounts Error:", error.message);
+      return { success: false, error: error.message };
+    }
+  },
+
+  /**
+   * Fetch IG business account id for a given Page using its Page access token.
+   * Useful when only the Page access token is stored (no long-lived user token).
+   */
+  getInstagramBusinessIdFromPage: async (pageId, pageAccessToken) => {
+    try {
+      if (!pageId) throw new Error("Missing pageId");
+      if (!pageAccessToken) throw new Error("Missing pageAccessToken");
+
+      const { response, data } = await fetchJson(
+        `${BASE_URL}/${pageId}?fields=instagram_business_account&access_token=${pageAccessToken}`
+      );
+
+      if (!response.ok) throw new Error(data?.error?.message || "Failed to fetch page fields");
+
+      const instagramBusinessId = data?.instagram_business_account?.id || null;
+      return { success: true, instagramBusinessId };
+    } catch (error) {
+      console.error("Meta API - getInstagramBusinessIdFromPage Error:", error.message);
+      return { success: false, instagramBusinessId: null, error: error.message };
+    }
+  },
+
+  /**
+   * Debug a token (shows granted scopes / granular scopes).
+   * This requires INSTAGRAM_APP_ID + INSTAGRAM_APP_SECRET server-side.
+   */
+  debugToken: async (inputToken) => {
+    try {
+      const appToken = getAppAccessToken();
+      if (!appToken) throw new Error("Missing INSTAGRAM_APP_ID / INSTAGRAM_APP_SECRET");
+      if (!inputToken) throw new Error("Missing inputToken");
+
+      const params = new URLSearchParams({
+        input_token: inputToken,
+        access_token: appToken,
+      });
+
+      const { response, data } = await fetchJson(`${BASE_URL}/debug_token?${params.toString()}`);
+      if (!response.ok) throw new Error(data?.error?.message || "debug_token failed");
+
+      return { success: true, data: data?.data || data };
+    } catch (error) {
       return { success: false, error: error.message };
     }
   },
@@ -256,7 +325,7 @@ export const MetaService = {
         throw new Error(data.error?.message || "Failed to send Follow-Gate card");
       }
       return { success: true };
-    } catch (error) {
+    } catch {
       return { success: false };
     }
   },
@@ -302,12 +371,14 @@ export const MetaService = {
     }
   },
 
-  getMediaList: async (instagramId, accessToken) => {
+  getMediaList: async (instagramId, accessToken, { limit } = {}) => {
     try {
       // Enhanced fields for Reels, Videos and Carousels
       const fields = "id,media_url,permalink,caption,timestamp,media_type,thumbnail_url,children{media_url,media_type}";
-      const response = await fetch(`${BASE_URL}/${instagramId}/media?fields=${fields}&access_token=${accessToken}`);
-      const data = await response.json();
+      const limitParam = Number.isFinite(limit) ? `&limit=${limit}` : "";
+      const { response, data } = await fetchJson(
+        `${BASE_URL}/${instagramId}/media?fields=${fields}${limitParam}&access_token=${accessToken}`
+      );
       
       if (!response.ok) {
         console.error("❌ Meta API getMediaList Error:", data.error?.message);
