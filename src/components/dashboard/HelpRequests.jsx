@@ -81,7 +81,7 @@ export default function HelpRequests({ automationId }) {
                             
                             <div className="mt-6 p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
                                 <p className="text-sm text-foreground leading-relaxed italic">
-                                    "{req.metadata?.text || "No message content captured."}"
+                                    &quot;{req.metadata?.text || "No message content captured."}&quot;
                                 </p>
                             </div>
                         </div>

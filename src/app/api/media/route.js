@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 
-import { createAdminClient } from "@/lib/supabase";
+import { createAdminClient, createClient } from "@/lib/supabase";
 import { MetaService } from "@/lib/meta";
 import { decryptToken } from "@/lib/security";
 
@@ -17,55 +17,24 @@ export async function GET(req) {
     return NextResponse.json({ error: "Missing automationId" }, { status: 400 });
   }
 
-  // Smart mock for a demo automation id
-  if (automationId === "ffffffff-ffff-ffff-ffff-ffffffffffff") {
-    const demoMedia = [
-      {
-        id: "demo_1",
-        media_url:
-          "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop",
-        caption: "Launching our new Minimalist Hub! #productivity",
-        permalink: "#",
-      },
-      {
-        id: "demo_2",
-        media_url:
-          "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1000&auto=format&fit=crop",
-        caption: "Code, coffee, repeat.",
-        permalink: "#",
-      },
-      {
-        id: "demo_3",
-        media_url:
-          "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000&auto=format&fit=crop",
-        caption: "Analytics that actually make sense.",
-        permalink: "#",
-      },
-      {
-        id: "demo_4",
-        media_url:
-          "https://images.unsplash.com/photo-1551288049-bbbda536639a?q=80&w=1000&auto=format&fit=crop",
-        caption: "Growth mode: ON.",
-        permalink: "#",
-      },
-      {
-        id: "demo_5",
-        media_url:
-          "https://images.unsplash.com/photo-1553481187-be93c21490a9?q=80&w=1000&auto=format&fit=crop",
-        caption: "The setup of your dreams.",
-        permalink: "#",
-      },
-    ];
-    return NextResponse.json({ media: demoMedia });
-  }
-
   try {
-    const supabase = createAdminClient();
+    const supabase = createClient();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
-    const { data: automation, error: automationError } = await supabase
+    if (authError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const supabaseAdmin = createAdminClient();
+
+    const { data: automation, error: automationError } = await supabaseAdmin
       .from("automations")
       .select("page_id, ig_business_id, access_token")
       .eq("id", automationId)
+      .eq("user_id", user.id)
       .maybeSingle();
 
     if (!automation || automationError) {
@@ -101,7 +70,7 @@ export async function GET(req) {
 
       if (idResult.success && idResult.instagramBusinessId) {
         instagramId = idResult.instagramBusinessId;
-        await supabase
+        await supabaseAdmin
           .from("automations")
           .update({ ig_business_id: instagramId })
           .eq("id", automationId);

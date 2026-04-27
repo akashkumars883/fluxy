@@ -36,8 +36,8 @@ export default function HowItWorks() {
               </h2>
            </div>
            <p className="text-zinc-500 text-lg max-w-sm font-normal tracking-normal pb-2">
-             We've simplified the complex world of automation into three effortless steps.
-           </p>
+              We&apos;ve simplified the complex world of automation into three effortless steps.
+            </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">

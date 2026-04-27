@@ -9,7 +9,7 @@ export default function PrivacyPolicy() {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold text-foreground tracking-normal">1. Introduction</h2>
         <p>
-          Automixa ("we," "our," or "us") respects your privacy. This Privacy Policy explains how we collect, use, and share information about you when you use our Instagram automation platform. By using our service, you agree to the collection and use of information in accordance with this policy.
+          Automixa (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) respects your privacy. This Privacy Policy explains how we collect, use, and share information about you when you use our Instagram automation platform. By using our service, you agree to the collection and use of information in accordance with this policy.
         </p>
       </section>
 

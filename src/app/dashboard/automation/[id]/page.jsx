@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
-import { Bell, AlertCircle, Zap, ArrowRight, ArrowLeft, Plus, X } from "lucide-react";
+import { Bell, AlertCircle, Zap, ArrowRight, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Components
-import AiSettingsCard from "@/components/dashboard/AiSettingsCard";
 import { TriggerList } from "@/components/dashboard/TriggerManager";
 import AutomationSidebar from "@/components/dashboard/AutomationSidebar";
 import CreatorOverview from "@/components/dashboard/CreatorOverview";
@@ -30,7 +29,6 @@ export default function AutomationEditor() {
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'create'
   const [automation, setAutomation] = useState(null);
   const [triggers, setTriggers] = useState([]);
-  const [isStarting, setIsStarting] = useState(false);
   const [error, setError] = useState(null);
   const [triggersError, setTriggersError] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -62,10 +60,9 @@ export default function AutomationEditor() {
     topKeywords: []
   });
 
-  // SMART RESOLUTION for legacy/UUID mapping
-  const targetId = id === "test-id-123" ? "ffffffff-ffff-ffff-ffff-ffffffffffff" : id;
+  const targetId = id;
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const supabase = createClient();
       const { data: { user: authUser } } = await supabase.auth.getUser();
@@ -158,13 +155,18 @@ export default function AutomationEditor() {
       setError("An unexpected error occurred.");
       setLoading(false);
     }
-  };
+  }, [router, targetId]);
 
   useEffect(() => {
-    fetchData();
+    const initial = setTimeout(() => {
+      fetchData();
+    }, 0);
     const interval = setInterval(fetchData, 30000); // Live sync every 30s
-    return () => clearInterval(interval);
-  }, [targetId]);
+    return () => {
+      clearTimeout(initial);
+      clearInterval(interval);
+    };
+  }, [fetchData]);
 
   const handleUpdateAutomation = async (payload, refresh = true) => {
     const supabase = createClient();
@@ -281,16 +283,13 @@ export default function AutomationEditor() {
   }
 
   const renderContent = () => {
-    // FORCE NO SCROLL IN STUDIO MODE
-    const isStudio = viewMode === 'create';
-    
     switch (activeTab) {
       case 'overview':
         return <CreatorOverview stats={dbStats} history={dbStats.recentLogs} topTriggers={dbStats.topKeywords} automationId={targetId} />;
       
       case 'automations':
         // 1. ZERO STATE
-        if (triggers.length === 0 && viewMode !== 'create' && !isStarting) {
+        if (triggers.length === 0 && viewMode !== 'create') {
           return (
             <div className="h-full flex items-center justify-center animate-in fade-in zoom-in-95 duration-700">
                <div 

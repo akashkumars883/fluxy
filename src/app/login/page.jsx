@@ -116,7 +116,7 @@ export default function LoginPage() {
           <div className="mb-12">
             <h2 className="text-3xl font-semibold text-foreground mb-4 tracking-normal">Welcome back</h2>
             <p className="text-zinc-500 font-semibold tracking-normal leading-relaxed">
-              Login to continue to your dashboard. New here? We'll create an account for you automatically.
+              Login to continue to your dashboard. New here? We&apos;ll create an account for you automatically.
             </p>
           </div>
 

@@ -1,8 +1,8 @@
-/* src/components/dashboard/EditTriggerModal.jsx */
+﻿/* src/components/dashboard/EditTriggerModal.jsx */
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Send, MousePointer2, ShieldCheck, Globe, Save } from "lucide-react";
+import { X, MousePointer2, ShieldCheck, Globe, Save } from "lucide-react";
 
 export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
   const [keyword, setKeyword] = useState("");
@@ -15,13 +15,16 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
 
   useEffect(() => {
     if (trigger && isOpen) {
-      setKeyword(trigger.keyword || "");
-      setResponse(trigger.response || "");
-      setType(trigger.type || "DM");
-      setFollowerGate(trigger.metadata?.follower_gate || false);
-      setPublicReply(trigger.variants?.public?.[0] || "");
-      setButtonText(trigger.metadata?.button_text || "");
-      setButtonLink(trigger.metadata?.button_link || "");
+      const t = setTimeout(() => {
+        setKeyword(trigger.keyword || "");
+        setResponse(trigger.response || "");
+        setType(trigger.type || "DM");
+        setFollowerGate(trigger.metadata?.follower_gate || false);
+        setPublicReply(trigger.variants?.public?.[0] || "");
+        setButtonText(trigger.metadata?.button_text || "");
+        setButtonLink(trigger.metadata?.button_link || "");
+      }, 0);
+      return () => clearTimeout(t);
     }
   }, [trigger, isOpen]);
 
@@ -34,7 +37,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
       type,
       metadata: {
         follower_gate: followerGate,
-        button_text: buttonLink ? (buttonText || "Get Access 🔗") : null,
+        button_text: buttonLink ? (buttonText || "Get Access") : null,
         button_link: buttonLink
       },
       variants: {
@@ -135,7 +138,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
                         type="text" 
                         value={publicReply}
                         onChange={(e) => setPublicReply(e.target.value)}
-                        placeholder="e.g. Sent you a DM! 🚀"
+                        placeholder="e.g. Sent you a DM! ðŸš€"
                         className="w-full bg-white border border-blue-100 rounded-2xl px-5 py-4 outline-none text-sm font-semibold text-blue-700 shadow-sm tracking-normal"
                       />
                     </div>
@@ -188,7 +191,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
                             value={buttonText}
                             onChange={(e) => setButtonText(e.target.value)}
                             disabled={!buttonLink}
-                            placeholder="e.g. Visit Website 🌐"
+                            placeholder="e.g. Visit Website ðŸŒ"
                             className="w-full bg-white border border-border/60 rounded-xl px-4 py-2.5 outline-none text-sm font-semibold focus:border-foreground transition-all shadow-sm disabled:opacity-50"
                           />
                        </div>
@@ -219,3 +222,4 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
     </div>
   );
 }
+

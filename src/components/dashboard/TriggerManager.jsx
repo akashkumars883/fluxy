@@ -1,7 +1,7 @@
 "use client";
 
 import { MessageSquare, Plus, Trash2, ArrowRight, Zap, Camera, ShieldCheck, Globe, Send, MousePointer2, AlertCircle, Pencil, Link, LayoutGrid } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 /**
  * TRIGGER INPUT COMPONENT
@@ -14,13 +14,11 @@ export function TriggerInput({ onAdd }) {
   const [followerGate, setFollowerGate] = useState(false);
   const [publicReply, setPublicReply] = useState("");
   const [buttonText, setButtonText] = useState("");
-  const [hasLink, setHasLink] = useState(false);
-
-  useEffect(() => {
-    // More permissive regex to catch common link patterns without requiring http://
-    const urlRegex = /((https?:\/\/)|(www\.))[^\s]+|([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?)/gi;
-    setHasLink(urlRegex.test(response));
-  }, [response]);
+  // More permissive regex to catch common link patterns without requiring http://
+  const hasLink =
+    /((https?:\/\/)|(www\.))[^\s]+|([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?)/i.test(
+      response
+    );
 
   const handleSubmit = () => {
     if (!keyword || !response) return;
@@ -209,11 +207,11 @@ export function TriggerList({ triggers, media, onDelete, onEdit, error = null })
                            {t.keyword}
                          </span>
                       </div>
-                      <p className="text-xs font-semibold text-zinc-500 italic line-clamp-1 opacity-70">
-                         "{t.response}"
-                      </p>
-                   </div>
-                </div>
+                       <p className="text-xs font-semibold text-zinc-500 italic line-clamp-1 opacity-70">
+                          &quot;{t.response}&quot;
+                       </p>
+                    </div>
+                 </div>
 
                 {/* RIGHT: MEDIA & ACTIONS */}
                 <div className="relative z-10 flex items-center gap-4 shrink-0">

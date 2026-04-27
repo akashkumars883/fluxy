@@ -179,7 +179,7 @@ export default function SupportPage() {
           {/* Empty State Footer */}
           <div className="p-8 bg-zinc-50/50 text-center border-t border-border">
             <p className="text-zinc-muted text-xs font-medium">
-              Don't see what you're looking for? <span className="text-foreground underline cursor-pointer">Visit Documentation</span>
+              Don&apos;t see what you&apos;re looking for? <span className="text-foreground underline cursor-pointer">Visit Documentation</span>
             </p>
           </div>
         </div>

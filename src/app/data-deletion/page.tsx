@@ -15,7 +15,7 @@ export default function DataDeletion() {
           </div>
           <h2 className="text-xl font-semibold text-foreground mb-4 tracking-normal">Our Commitment to Your Privacy</h2>
           <p className="text-zinc-600 font-normal leading-relaxed tracking-normal">
-            At Automixa, we take your data privacy seriously. According to Meta's Platform Terms and GDPR regulations, you have the right to request the deletion of your data that we have processed from the Instagram Graph API.
+            At Automixa, we take your data privacy seriously. According to Meta&apos;s Platform Terms and GDPR regulations, you have the right to request the deletion of your data that we have processed from the Instagram Graph API.
           </p>
         </section>
 
@@ -28,7 +28,7 @@ export default function DataDeletion() {
                  <div className="space-y-2">
                     <h3 className="font-semibold text-foreground tracking-normal">Disconnect via Instagram</h3>
                     <p className="text-zinc-500 font-normal leading-relaxed tracking-normal">
-                      Go to your Instagram Settings {">"} Apps and Websites. Find **Automixa** and click 'Remove'. This will immediately invalidate our access to your account.
+                      Go to your Instagram Settings {">"} Apps and Websites. Find **Automixa** and click &apos;Remove&apos;. This will immediately invalidate our access to your account.
                     </p>
                  </div>
               </div>
@@ -48,7 +48,7 @@ export default function DataDeletion() {
                  <div className="space-y-2">
                     <h3 className="font-semibold text-foreground tracking-normal">Manual Request</h3>
                     <p className="text-zinc-500 font-normal leading-relaxed tracking-normal">
-                      Alternatively, you can email us at **info@automixa.in** with the subject "Data Deletion Request" and your Instagram Username. We will process your request within 24-48 hours.
+                      Alternatively, you can email us at **info@automixa.in** with the subject &quot;Data Deletion Request&quot; and your Instagram Username. We will process your request within 24-48 hours.
                     </p>
                  </div>
               </div>

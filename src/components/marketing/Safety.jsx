@@ -12,8 +12,8 @@ export default function Safety() {
              </div>
              <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight mb-8 tracking-normal">Official Instagram Graph API Integration.</h2>
              <p className="text-white/60 text-lg font-normal tracking-normal mb-10 leading-relaxed">
-               Automixa is built on top of Meta's official APIs. We follow every safety protocol to ensure your account remains safe and compliant while you scale your reach.
-             </p>
+                Automixa is built on top of Meta&apos;s official APIs. We follow every safety protocol to ensure your account remains safe and compliant while you scale your reach.
+              </p>
              <div className="flex items-center gap-6">
                 <div className="flex flex-col">
                    <span className="text-2xl font-semibold tracking-normal">100%</span>

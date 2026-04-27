@@ -173,10 +173,10 @@ export default function BrandKit({ automation, onUpdate }) {
 
         <div className="p-6 bg-zinc-50 rounded-[24px] border border-dashed border-border/60">
            <p className="text-sm text-zinc-muted italic">
-             "Our AI uses the brand name **{formData.brand_name || '...'}** and adapts a **{formData.tone}** tone when generating personalized responses for your fans. This ensures every DM feels like it's coming directly from you."
+             &quot;Our AI uses the brand name {formData.brand_name || "..."} and adapts a {formData.tone} tone when generating personalized responses for your fans. This ensures every DM feels like it&apos;s coming directly from you.&quot;
            </p>
-        </div>
-      </div>
+         </div>
+       </div>
     </div>
   );
 }

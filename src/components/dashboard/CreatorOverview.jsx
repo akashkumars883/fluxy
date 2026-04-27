@@ -5,6 +5,7 @@ import { MessageSquare, Zap, TrendingUp, Camera, Heart, Plus, Activity, BarChart
 export default function CreatorOverview({ stats = {}, history = [], topTriggers = [], automationId }) {
   const [isSyncing, setIsSyncing] = useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleMetaSync = async () => {
     if (isSyncing) return;
     setIsSyncing(true);
@@ -78,15 +79,6 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
         </div>
         
         <div className="flex items-center gap-3">
-          <button 
-            onClick={handleMetaSync}
-            disabled={isSyncing}
-            className={`flex items-center justify-center gap-2 px-5 py-4 bg-zinc-50 border border-border text-foreground rounded-xl font-medium text-sm transition-all ${isSyncing ? 'opacity-50 cursor-not-allowed' : 'hover:bg-zinc-100'}`}
-          >
-            <BarChart3 size={16} className={isSyncing ? 'animate-spin' : ''} />
-            <span>{isSyncing ? 'Syncing...' : 'Sync with Meta'}</span>
-          </button>
-          
           <button className="flex items-center justify-center gap-2 px-5 py-4 bg-foreground text-background rounded-xl font-medium text-sm shadow-xl shadow-foreground/5 hover:scale-105 active:scale-95 transition-all">
             <Plus size={16} />
             <span>New Reply</span>
@@ -105,7 +97,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
 
         {/* Divided Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-5 divide-y lg:divide-y-0 lg:divide-x divide-border">
-          {metricCards.map((card, index) => (
+          {metricCards.map((card) => (
             <div 
               key={card.label} 
               className="p-8 group transition-all hover:bg-zinc-50/50"

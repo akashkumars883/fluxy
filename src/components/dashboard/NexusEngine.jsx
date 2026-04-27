@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Zap, Send, MessageSquare, Camera, MousePointer2, ShieldCheck, Rocket, ChevronRight, Hash, Sparkles } from "lucide-react";
 
 /**
@@ -14,13 +14,7 @@ export default function NexusEngine({ onPublish }) {
   const [type, setType] = useState("DM");
   const [followerGate, setFollowerGate] = useState(false);
   const [buttonText, setButtonText] = useState("");
-  const [hasLink, setHasLink] = useState(false);
-
-  // Auto-detect link for button logic
-  useEffect(() => {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    setHasLink(urlRegex.test(response));
-  }, [response]);
+  const hasLink = /(https?:\/\/[^\s]+)/i.test(response);
 
   const handlePublish = () => {
     if (!keyword || !response) return;

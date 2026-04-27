@@ -1,7 +1,7 @@
 /* src/components/dashboard/AutomationPreview.jsx */
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Send, MoreHorizontal, Camera, Heart, MessageCircle, Bookmark, MoreVertical, Layout, MessageSquare } from "lucide-react";
 
 /**
@@ -24,7 +24,10 @@ export default function AutomationPreview({
   // Automatically switch to 'post' if a media URL is provided for the first time
   useEffect(() => {
     if (postUrl) {
-      setView("post");
+      const t = setTimeout(() => {
+        setView("post");
+      }, 0);
+      return () => clearTimeout(t);
     }
   }, [postUrl]);
 

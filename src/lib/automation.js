@@ -1,12 +1,10 @@
 /* src/lib/automation.js - THE ULTIMATE ORCHESTRATOR */
 
-import { createClient, createAdminClient } from "./supabase.js";
+import { createAdminClient } from "./supabase.js";
 import { MetaService } from "./meta.js";
 import { decryptToken } from "./security.js";
-import { matchIntent, generatePersonalizedResponse } from "./ai.js";
 import { getLinkPreview } from "./scraper.js";
 
-const supabase = createClient();
 const supabaseAdmin = createAdminClient();
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -46,7 +44,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       sender_id: senderId,
       type: "HELP_REQUESTED",
       status: "HANDOVER",
-      metadata: { text: text }
+      metadata: { text: text, message_id: messageId }
     }).catch(() => {});
     return { success: false, reason: "human_handover" };
   }
@@ -245,8 +243,6 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         
         const templates = automation.metadata?.templates || {};
         const gateTitle = interpolate(templates.follow_gate_title || "One final step to unlock! 🎁", userName, automation.brand_name);
-        const gateSubtitle = interpolate(templates.follow_gate_subtitle || "Please follow @{brand} to get your link immediately.", userName, automation.brand_name);
-
         await MetaService.sendFollowGateCard(
           senderId, 
           automation.brand_name || "us", 

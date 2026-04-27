@@ -35,7 +35,7 @@ export default function PostPicker({ automationId, media, loading, error: fetchE
   if (fetchError) return (
     <div className="h-64 flex flex-col items-center justify-center bg-white border border-border rounded-[32px] p-8 text-center">
       <AlertCircle size={32} className="text-red-500 mb-4" />
-      <p className="text-sm font-bold text-foreground">Couldn't load posts</p>
+      <p className="text-sm font-bold text-foreground">Couldn&apos;t load posts</p>
       <p className="text-xs text-zinc-muted mt-1">{fetchError}</p>
     </div>
   );

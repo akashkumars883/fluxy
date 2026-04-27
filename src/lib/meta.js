@@ -1,4 +1,4 @@
-const GRAPH_API_VERSION = "v21.0";
+﻿const GRAPH_API_VERSION = "v21.0";
 const BASE_URL = `https://graph.facebook.com/${GRAPH_API_VERSION}`;
 const DEFAULT_TIMEOUT_MS = 15000;
 
@@ -167,7 +167,7 @@ export const MetaService = {
 
   sendDM: async (recipientId, text, accessToken) => {
     if (!text || text.trim() === "") {
-      console.warn("⚠️ Meta API - sendDM: Attempted to send empty text. Skipping.");
+      console.warn("âš ï¸ Meta API - sendDM: Attempted to send empty text. Skipping.");
       return { success: false, error: "Empty text" };
     }
     try {
@@ -181,7 +181,7 @@ export const MetaService = {
       });
       const data = await response.json();
       if (!response.ok) {
-        console.error(`❌ Meta API sendDM Error [${response.status}]:`, data.error?.message || "Unknown error");
+        console.error(`Meta API sendDM Error [${response.status}]:`, data.error?.message || "Unknown error");
         throw new Error(data.error?.message || "Failed to send DM");
       }
       return { success: true, data };
@@ -207,7 +207,7 @@ export const MetaService = {
       });
       const data = await response.json();
       if (!response.ok) {
-         console.error("❌ Meta API PrivateReply Error:", data.error?.message);
+         console.error("Meta API PrivateReply Error:", data.error?.message);
          throw new Error(data.error?.message || "Failed to send private reply");
       }
       return { success: true, data };
@@ -238,7 +238,7 @@ export const MetaService = {
       const data = await response.json();
       
       if (!response.ok) {
-        console.error("❌ Meta API - checkFollowStatus API Error:", data.error?.message);
+        console.error("Meta API - checkFollowStatus API Error:", data.error?.message);
         throw new Error(data.error?.message || "Failed to check follow status");
       }
 
@@ -290,9 +290,16 @@ export const MetaService = {
 
   sendFollowGateCard: async (recipientId, brandName, accessToken, profileIdentifier = null, customPayload = "VERIFY_FOLLOW_CLICKED", customTitle = null, customSubtitle = null) => {
     try {
-      // Logic: If profileIdentifier is numerical, try to make it a generic link (risky), 
-      // but if it's a string (handle), it's a perfect profile link.
-      const followLink = profileIdentifier ? `https://www.instagram.com/${profileIdentifier}/` : `https://www.instagram.com/`;
+      // Prefer handle links; fall back to the generic Instagram home if we only have a numeric id.
+      let followLink = "https://www.instagram.com/";
+      if (profileIdentifier) {
+        const normalized = String(profileIdentifier).trim().replace(/^@/, "");
+        const isNumericOnly = /^[0-9]+$/.test(normalized);
+        const looksLikeHandle = /^[A-Za-z0-9._]+$/.test(normalized);
+        if (!isNumericOnly && looksLikeHandle) {
+          followLink = `https://www.instagram.com/${normalized}/`;
+        }
+      }
       const payload = {
         recipient: { id: recipientId },
         message: {
@@ -301,10 +308,10 @@ export const MetaService = {
             payload: {
               template_type: "generic",
               elements: [{
-                title: customTitle || `One final step to unlock! 🎁`,
+                title: customTitle || "One final step to unlock!",
                 subtitle: customSubtitle !== null && customSubtitle !== undefined ? customSubtitle : `Please follow @${brandName || 'us'} to get your link immediately.`,
                 buttons: [
-                  { type: "web_url", url: followLink, title: "Visit Profile 👤" },
+                  { type: "web_url", url: followLink, title: "Visit Profile" },
                   { type: "postback", title: "I am following", payload: customPayload }
                 ]
               }]
@@ -321,7 +328,7 @@ export const MetaService = {
 
       const data = await response.json();
       if (!response.ok) {
-        console.error(`❌ Meta API FollowGate Error [${response.status}]:`, data.error?.message);
+        console.error(`Meta API FollowGate Error [${response.status}]:`, data.error?.message);
         throw new Error(data.error?.message || "Failed to send Follow-Gate card");
       }
       return { success: true };
@@ -340,7 +347,7 @@ export const MetaService = {
             payload: {
               template_type: "generic",
               elements: [{
-                title: title || "Exclusive Access! 🎁",
+                title: title || "Exclusive Access!",
                 subtitle: subtitle,
                 image_url: imageUrl,
                 buttons: [
@@ -381,7 +388,7 @@ export const MetaService = {
       );
       
       if (!response.ok) {
-        console.error("❌ Meta API getMediaList Error:", data.error?.message);
+        console.error("Meta API getMediaList Error:", data.error?.message);
         throw new Error(data.error?.message || "Failed to fetch media list");
       }
       
@@ -409,3 +416,5 @@ export const getMediaContext = MetaService.getMediaContext;
 export const sendReaction = MetaService.sendReaction;
 export const sendGenericCard = MetaService.sendGenericCard;
 export const getMediaList = MetaService.getMediaList;
+
+
