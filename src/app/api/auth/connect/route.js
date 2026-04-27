@@ -27,30 +27,31 @@ export async function GET(request) {
   const state = JSON.stringify({ persona: role });
   
   const scopes = [
-    // Instagram Graph API (required for media/comments/insights automation)
     "instagram_basic",
     "instagram_manage_comments",
     "instagram_manage_insights",
     "instagram_manage_messages",
-
-    // Pages (required to fetch page + IG business account + engagement)
     "pages_show_list",
     "pages_read_engagement",
     "pages_manage_metadata",
   ].join(",");
 
-  // Business Login uses config_id for granular permissions, but we still pass scope explicitly
-  // so missing/old configurations don't silently drop required permissions.
+  // If Business Login config is present, let Meta drive granular permissions from the configuration.
+  // Passing `scope=` alongside `config_id` can lead to tokens missing the business-granular permissions
+  // that the App Review "API calls required" panel is tracking.
   let fbAuthUrl =
     `https://www.facebook.com/v21.0/dialog/oauth?client_id=${appId}` +
     `&redirect_uri=${encodeURIComponent(redirectUri)}` +
     `&state=${encodeURIComponent(state)}` +
     `&response_type=code` +
-    `&scope=${encodeURIComponent(scopes)}` +
     `&auth_type=rerequest` +
     `&return_scopes=true`;
 
-  if (configId) fbAuthUrl += `&config_id=${configId}`;
+  if (configId) {
+    fbAuthUrl += `&config_id=${configId}`;
+  } else {
+    fbAuthUrl += `&scope=${encodeURIComponent(scopes)}`;
+  }
 
   return NextResponse.redirect(fbAuthUrl);
 }
