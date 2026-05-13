@@ -29,6 +29,7 @@ export async function GET(request) {
   }
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin;
   const redirectUri = `${baseUrl}/api/auth/callback/facebook`;
+  console.log("[CONNECT] redirect_uri being sent to Instagram:", redirectUri);
   
   // Pass role in state to retrieve it in the callback
   const state = JSON.stringify({ persona: role, provider: "instagram" });
