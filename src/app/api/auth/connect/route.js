@@ -27,7 +27,8 @@ export async function GET(request) {
   if (!appId) {
     return NextResponse.json({ error: "Missing INSTAGRAM_APP_ID" }, { status: 500 });
   }
-  const redirectUri = `${new URL(request.url).origin}/api/auth/callback/facebook`;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin;
+  const redirectUri = `${baseUrl}/api/auth/callback/facebook`;
   
   // Pass role in state to retrieve it in the callback
   const state = JSON.stringify({ persona: role, provider: "instagram" });

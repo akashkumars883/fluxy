@@ -34,7 +34,8 @@ export async function GET(request) {
   }
 
   try {
-    const redirectUri = `${origin}/api/auth/callback/facebook`;
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || origin;
+    const redirectUri = `${baseUrl}/api/auth/callback/facebook`;
 
     // 2. Exchange Instagram Login for Business code for a short-lived token
     const tokenResult = await MetaService.exchangeInstagramCodeForToken(code, redirectUri);
