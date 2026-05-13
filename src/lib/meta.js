@@ -50,9 +50,6 @@ export const MetaService = {
       });
 
       if (!response.ok) {
-        console.error("[META] Token Exchange Failed. Status:", response.status);
-        console.error("[META] Full Instagram Response:", JSON.stringify(data));
-        console.error("[META] Request Body Sent:", body.toString());
         throw new Error(data?.error_message || data?.error?.message || "Instagram code exchange failed");
       }
 

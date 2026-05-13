@@ -38,8 +38,6 @@ export async function GET(request) {
     const redirectUri = isLocal
       ? `${origin}/api/auth/callback/facebook`
       : "https://www.automixa.in/api/auth/callback/facebook";
-    console.log("[CALLBACK] redirect_uri:", JSON.stringify(redirectUri));
-    console.log("[CALLBACK] code received:", code?.substring(0, 20) + "...");
 
     // 2. Exchange Instagram Login for Business code for a short-lived token
     const tokenResult = await MetaService.exchangeInstagramCodeForToken(code, redirectUri);

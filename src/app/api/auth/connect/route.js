@@ -31,7 +31,6 @@ export async function GET(request) {
   const redirectUri = isLocal 
     ? `${origin}/api/auth/callback/facebook`
     : "https://www.automixa.in/api/auth/callback/facebook";
-  console.log("[CONNECT] redirect_uri:", JSON.stringify(redirectUri));
   
   // Pass role in state to retrieve it in the callback
   const state = JSON.stringify({ persona: role, provider: "instagram" });
