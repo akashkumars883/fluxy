@@ -1,4 +1,4 @@
-﻿const GRAPH_API_VERSION = "v21.0";
+const GRAPH_API_VERSION = "v21.0";
 const BASE_URL = `https://graph.facebook.com/${GRAPH_API_VERSION}`;
 const INSTAGRAM_AUTH_URL = "https://api.instagram.com/oauth/access_token";
 const INSTAGRAM_GRAPH_BASE_URL = `https://graph.instagram.com/${GRAPH_API_VERSION}`;
@@ -50,6 +50,9 @@ export const MetaService = {
       });
 
       if (!response.ok) {
+        console.error("[META] Token Exchange Failed. Status:", response.status);
+        console.error("[META] Full Instagram Response:", JSON.stringify(data));
+        console.error("[META] Request Body Sent:", body.toString());
         throw new Error(data?.error_message || data?.error?.message || "Instagram code exchange failed");
       }
 
