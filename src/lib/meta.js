@@ -5,8 +5,8 @@ const INSTAGRAM_GRAPH_BASE_URL = `https://graph.instagram.com/${GRAPH_API_VERSIO
 const DEFAULT_TIMEOUT_MS = 15000;
 
 function getAppAccessToken() {
-  const appId = process.env.INSTAGRAM_APP_ID;
-  const appSecret = process.env.INSTAGRAM_APP_SECRET;
+  const appId = process.env.INSTAGRAM_APP_ID?.trim();
+  const appSecret = process.env.INSTAGRAM_APP_SECRET?.trim();
   if (!appId || !appSecret) return null;
   return `${appId}|${appSecret}`;
 }
@@ -36,8 +36,8 @@ export const MetaService = {
   exchangeInstagramCodeForToken: async (code, redirectUri) => {
     try {
       const body = new URLSearchParams({
-        client_id: process.env.INSTAGRAM_APP_ID,
-        client_secret: process.env.INSTAGRAM_APP_SECRET,
+        client_id: process.env.INSTAGRAM_APP_ID?.trim(),
+        client_secret: process.env.INSTAGRAM_APP_SECRET?.trim(),
         grant_type: "authorization_code",
         redirect_uri: redirectUri,
         code,
@@ -75,7 +75,7 @@ export const MetaService = {
     try {
       const params = new URLSearchParams({
         grant_type: "ig_exchange_token",
-        client_secret: process.env.INSTAGRAM_APP_SECRET,
+        client_secret: process.env.INSTAGRAM_APP_SECRET?.trim(),
         access_token: shortToken,
       });
 
@@ -125,8 +125,8 @@ export const MetaService = {
   exchangeCodeForToken: async (code, redirectUri) => {
     try {
       const params = new URLSearchParams({
-        client_id: process.env.INSTAGRAM_APP_ID,
-        client_secret: process.env.INSTAGRAM_APP_SECRET,
+        client_id: process.env.INSTAGRAM_APP_ID?.trim(),
+        client_secret: process.env.INSTAGRAM_APP_SECRET?.trim(),
         redirect_uri: redirectUri,
         code: code,
       });
@@ -148,8 +148,8 @@ export const MetaService = {
     try {
       const params = new URLSearchParams({
         grant_type: 'fb_exchange_token',
-        client_id: process.env.INSTAGRAM_APP_ID,
-        client_secret: process.env.INSTAGRAM_APP_SECRET,
+        client_id: process.env.INSTAGRAM_APP_ID?.trim(),
+        client_secret: process.env.INSTAGRAM_APP_SECRET?.trim(),
         fb_exchange_token: shortToken,
       });
 
