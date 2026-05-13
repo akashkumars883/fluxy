@@ -1,5 +1,7 @@
 ﻿const GRAPH_API_VERSION = "v21.0";
 const BASE_URL = `https://graph.facebook.com/${GRAPH_API_VERSION}`;
+const INSTAGRAM_AUTH_URL = "https://api.instagram.com/oauth/access_token";
+const INSTAGRAM_GRAPH_BASE_URL = `https://graph.instagram.com/${GRAPH_API_VERSION}`;
 const DEFAULT_TIMEOUT_MS = 15000;
 
 function getAppAccessToken() {
@@ -27,6 +29,92 @@ async function fetchJson(url, init = {}, { timeoutMs = DEFAULT_TIMEOUT_MS } = {}
  */
 export const MetaService = {
   // --- OAUTH FLOW HELPERS ---
+
+  /**
+   * Exchange Instagram Login for Business code for a short-lived Instagram token.
+   */
+  exchangeInstagramCodeForToken: async (code, redirectUri) => {
+    try {
+      const body = new URLSearchParams({
+        client_id: process.env.INSTAGRAM_APP_ID,
+        client_secret: process.env.INSTAGRAM_APP_SECRET,
+        grant_type: "authorization_code",
+        redirect_uri: redirectUri,
+        code,
+      });
+
+      const { response, data } = await fetchJson(INSTAGRAM_AUTH_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body,
+      });
+
+      if (!response.ok) {
+        throw new Error(data?.error_message || data?.error?.message || "Instagram code exchange failed");
+      }
+
+      return {
+        success: true,
+        accessToken: data.access_token,
+        userId: data.user_id,
+        permissions: data.permissions || [],
+      };
+    } catch (error) {
+      console.error("Instagram OAuth - exchangeCodeForToken Error:", error.message);
+      return { success: false, error: error.message };
+    }
+  },
+
+  /**
+   * Convert short-lived Instagram token to a long-lived token.
+   */
+  getLongLivedInstagramToken: async (shortToken) => {
+    try {
+      const params = new URLSearchParams({
+        grant_type: "ig_exchange_token",
+        client_secret: process.env.INSTAGRAM_APP_SECRET,
+        access_token: shortToken,
+      });
+
+      const { response, data } = await fetchJson(
+        `https://graph.instagram.com/access_token?${params.toString()}`
+      );
+
+      if (!response.ok) {
+        throw new Error(data?.error?.message || "Instagram long-lived token exchange failed");
+      }
+
+      return {
+        success: true,
+        accessToken: data.access_token,
+        expiresIn: data.expires_in,
+      };
+    } catch (error) {
+      console.error("Instagram OAuth - getLongLivedToken Error:", error.message);
+      return { success: false, error: error.message };
+    }
+  },
+
+  /**
+   * Fetch the connected Instagram Business/Creator profile.
+   */
+  getInstagramProfile: async (accessToken) => {
+    try {
+      const fields = "id,user_id,username,name,account_type,profile_picture_url";
+      const { response, data } = await fetchJson(
+        `${INSTAGRAM_GRAPH_BASE_URL}/me?fields=${fields}&access_token=${accessToken}`
+      );
+
+      if (!response.ok) {
+        throw new Error(data?.error?.message || "Failed to fetch Instagram profile");
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      console.error("Instagram API - getInstagramProfile Error:", error.message);
+      return { success: false, error: error.message };
+    }
+  },
 
   /**
    * 1. Exchange short-lived User Code for User Token
@@ -167,7 +255,7 @@ export const MetaService = {
 
   sendDM: async (recipientId, text, accessToken) => {
     if (!text || text.trim() === "") {
-      console.warn("âš ï¸ Meta API - sendDM: Attempted to send empty text. Skipping.");
+      console.warn("Meta API - sendDM: attempted to send empty text. Skipping.");
       return { success: false, error: "Empty text" };
     }
     try {
@@ -383,9 +471,15 @@ export const MetaService = {
       // Enhanced fields for Reels, Videos and Carousels
       const fields = "id,media_url,permalink,caption,timestamp,media_type,thumbnail_url,children{media_url,media_type}";
       const limitParam = Number.isFinite(limit) ? `&limit=${limit}` : "";
-      const { response, data } = await fetchJson(
-        `${BASE_URL}/${instagramId}/media?fields=${fields}${limitParam}&access_token=${accessToken}`
+      let { response, data } = await fetchJson(
+        `${INSTAGRAM_GRAPH_BASE_URL}/${instagramId}/media?fields=${fields}${limitParam}&access_token=${accessToken}`
       );
+
+      if (!response.ok) {
+        ({ response, data } = await fetchJson(
+          `${BASE_URL}/${instagramId}/media?fields=${fields}${limitParam}&access_token=${accessToken}`
+        ));
+      }
       
       if (!response.ok) {
         console.error("Meta API getMediaList Error:", data.error?.message);

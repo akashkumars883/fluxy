@@ -1,6 +1,6 @@
 "use client";
 
-import { Outfit } from "next/font/google";
+import { Outfit,Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { usePathname } from "next/navigation";
 import PublicNavigation from "@/components/navigation/PublicNavigation";
@@ -10,6 +10,12 @@ const outfit = Outfit({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-outfit",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-space-grotesk",
 });
 
 export default function RootLayout({
@@ -23,7 +29,7 @@ export default function RootLayout({
   const hideGlobalElements = pathname?.startsWith('/dashboard') || pathname?.startsWith('/login');
 
   return (
-    <html lang="en" className={`h-full antialiased ${outfit.className}`}>
+    <html lang="en" className={`h-full antialiased ${outfit.variable} ${spaceGrotesk.variable} ${outfit.className}`}>
       <body className="min-h-full flex flex-col bg-[#FBFBFD]">
         {!hideGlobalElements && <PublicNavigation />}
         {children}

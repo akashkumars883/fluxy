@@ -1,7 +1,9 @@
-import { CheckCircle2, ArrowUpRight, Camera, UserCircle, Building2 } from "lucide-react";
+import { ArrowUpRight, Camera, UserCircle, Building2 } from "lucide-react";
 
 export default function AccountCard({ account }) {
   const isContentCreator = account.persona === 'content_creator';
+  const instagramId = account.ig_business_id || account.page_id;
+  const username = account.metadata?.username || account.page_name;
 
   return (
     <a 
@@ -29,14 +31,19 @@ export default function AccountCard({ account }) {
         </div>
         
         <h3 className="text-xl font-bold text-foreground mb-4 group-hover:opacity-80 transition-opacity duration-300">
-          {account.page_name || 'Business Account'}
+          @{username || 'Business Account'}
         </h3>
         
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-full text-[10px] font-bold border border-emerald-500/20">
             <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
             Active
           </div>
+          {instagramId && (
+            <div className="px-3 py-1 bg-white text-zinc-muted rounded-full text-[10px] font-bold border border-border">
+              ID: {instagramId}
+            </div>
+          )}
         </div>
       </div>
     </a>

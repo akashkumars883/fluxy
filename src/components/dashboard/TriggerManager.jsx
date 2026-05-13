@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageSquare, Plus, Trash2, ArrowRight, Zap, Camera, ShieldCheck, Globe, Send, MousePointer2, AlertCircle, Pencil, Link, LayoutGrid } from "lucide-react";
+import { MessageSquare, Plus, Trash2, Zap, Camera, ShieldCheck, Globe, Send, MousePointer2, Pencil } from "lucide-react";
 import { useState } from "react";
 
 /**
@@ -77,7 +77,7 @@ export function TriggerInput({ onAdd }) {
                 <label className="text-[11px] font-semibold text-zinc-muted ml-1 tracking-normal">
                   Then send DM Message 
                   <span className="ml-2 text-[9px] text-emerald-600 px-1.5 py-0.5 rounded font-semibold tracking-normal">
-                    Add a link inside to activate button 🔗
+                    Add a link inside to activate button
                   </span>
                 </label>
                 <textarea placeholder="e.g. Thanks for your interest! Here is the link: fluxy.ai" value={response} onChange={(e) => setResponse(e.target.value)}
@@ -90,10 +90,10 @@ export function TriggerInput({ onAdd }) {
                    <div className="flex items-center gap-2 mb-3">
                       <MousePointer2 size={14} className={hasLink ? 'text-emerald-600' : ''} />
                       <span className={`text-[10px] font-semibold tracking-normal ${hasLink ? 'text-emerald-700' : ''}`}>
-                        {hasLink ? 'Button is Active! 🎉' : 'Button Name'}
+                        {hasLink ? 'Button is Active' : 'Button Name'}
                       </span>
                    </div>
-                   <input type="text" placeholder={hasLink ? "e.g. Claim Offer 🛍️" : "Add a link above to enable button"} value={buttonText} onChange={(e) => setButtonText(e.target.value)}
+                   <input type="text" placeholder={hasLink ? "e.g. Claim Offer" : "Add a link above to enable button"} value={buttonText} onChange={(e) => setButtonText(e.target.value)}
                     disabled={!hasLink}
                     className="w-full bg-transparent border-b border-border/60 py-1 outline-none text-xs font-semibold tracking-normal focus:border-foreground"
                    />
@@ -107,7 +107,7 @@ export function TriggerInput({ onAdd }) {
                            Public Comment Reply
                          </span>
                       </div>
-                      <input type="text" placeholder="e.g. Sent you a DM! 🚀" value={publicReply} onChange={(e) => setPublicReply(e.target.value)}
+                      <input type="text" placeholder="e.g. Sent you a DM!" value={publicReply} onChange={(e) => setPublicReply(e.target.value)}
                        className="w-full bg-transparent border-b border-blue-200 py-1 outline-none text-xs font-medium text-blue-700"
                       />
                    </div>
@@ -164,6 +164,11 @@ export function TriggerList({ triggers, media, onDelete, onEdit, error = null })
       </div>
 
       <div className="flex-1 overflow-y-auto no-scrollbar p-6 space-y-4 bg-zinc-50/10">
+        {error && (
+          <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold text-red-600">
+            {error}
+          </div>
+        )}
         {!triggers || triggers.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-zinc-muted/30 text-center px-10">
              <p className="text-xs font-bold text-zinc-400 tracking-normal mb-1 uppercase">No rules active yet</p>

@@ -1,8 +1,8 @@
 /* src/components/dashboard/CampaignWizard.jsx */
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { MessageSquare, Send, MousePointer2, ShieldCheck, Globe, ArrowRight, ArrowLeft, Zap, Rocket } from "lucide-react";
+import { useState } from "react";
+import { MousePointer2, ShieldCheck, Globe, ArrowRight, ArrowLeft, Rocket } from "lucide-react";
 
 /**
  * CAMPAIGN WIZARD COMPONENT
@@ -48,7 +48,7 @@ export default function CampaignWizard({ onPublish, onChange, onBack, values }) 
       type,
       follower_gate: followerGate,
       public_reply: type === "COMMENT" ? publicReply : null,
-      button_text: buttonLink ? (buttonText || "Get Access 🔗") : null,
+      button_text: buttonLink ? (buttonText || "Get Access") : null,
       button_link: buttonLink
     });
   };
@@ -216,13 +216,13 @@ export default function CampaignWizard({ onPublish, onChange, onBack, values }) 
                                <Globe size={24} />
                             </div>
                              <div>
-                                <p className="text-sm font-bold text-foreground tracking-normal">Comment Reply 🌐</p>
+                                <p className="text-sm font-bold text-foreground tracking-normal">Comment Reply</p>
                                 <p className="text-[10px] text-zinc-muted font-normal tracking-normal">Automatically reply to their comment publicly</p>
                              </div>
                          </div>
                           <input 
                             type="text" 
-                            placeholder="e.g. Check your message! 🚀"
+                            placeholder="e.g. Check your message!"
                            value={publicReply}
                            onChange={(e) => setPublicReply(e.target.value)}
                            className="w-full bg-white/80 border border-blue-200 rounded-xl px-4 py-3 outline-none text-sm font-semibold text-blue-700 tracking-normal"
@@ -259,7 +259,7 @@ export default function CampaignWizard({ onPublish, onChange, onBack, values }) 
            </button>
          ) : (
            <div className="flex items-center gap-2 text-emerald-600 font-semibold text-[10px] tracking-normal animate-pulse">
-             All steps complete ✨
+             All steps complete
            </div>
          )}
       </div>

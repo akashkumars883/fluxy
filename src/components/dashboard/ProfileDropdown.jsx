@@ -39,7 +39,7 @@ export default function ProfileDropdown({ user }) {
         <div className="absolute right-0 mt-3 w-60 bg-white border border-zinc-200 rounded-2xl shadow-2xl py-2 z-50 animate-in fade-in zoom-in duration-200 origin-top-right">
           <div className="px-4 py-3 border-b border-zinc-100">
             <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Active Session</p>
-            <p className="text-sm font-bold text-foreground truncate">{user.email}</p>
+            <p className="text-sm font-bold text-foreground truncate">{user?.email}</p>
           </div>
           <div className="p-1">
             <button 
