@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Zap, Settings, ArrowLeft, Heart, Palette, LayoutDashboard, Menu, X, LifeBuoy } from "lucide-react";
 import Link from "next/link";
 
-export default function AutomationSidebar({ accountId, persona = null, activeTab, onTabChange }) {
+export default function AutomationSidebar({ accountId, persona = null, activeTab, onTabChange, onBack }) {
     const isCreator = persona === 'content_creator';
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -88,19 +88,35 @@ export default function AutomationSidebar({ accountId, persona = null, activeTab
             </div>
 
             <div className="pt-6 border-t border-border overflow-hidden">
-                <Link
-                    href="/dashboard"
-                    className={`flex items-center transition-all duration-300 ${isExpanded ? 'gap-4 px-4 py-3' : 'gap-0 px-4 py-3'} rounded-2xl text-sm font-semibold text-zinc-muted hover:text-foreground hover:bg-foreground/5 tracking-normal`}
-                >
-                    <div className="flex-shrink-0 w-5 flex justify-center">
-                        <ArrowLeft size={18} />
-                    </div>
-                    {isExpanded && (
-                      <span className="whitespace-nowrap overflow-hidden transition-all duration-300 opacity-100 max-w-full animate-in fade-in slide-in-from-left-2">
-                          Back to Accounts
-                      </span>
-                    )}
-                </Link>
+                {onBack ? (
+                    <button
+                        onClick={onBack}
+                        className={`w-full flex items-center transition-all duration-300 ${isExpanded ? 'gap-4 px-4 py-3' : 'gap-0 px-4 py-3'} rounded-2xl text-sm font-semibold text-zinc-muted hover:text-foreground hover:bg-foreground/5 tracking-normal`}
+                    >
+                        <div className="flex-shrink-0 w-5 flex justify-center">
+                            <ArrowLeft size={18} />
+                        </div>
+                        {isExpanded && (
+                          <span className="whitespace-nowrap overflow-hidden transition-all duration-300 opacity-100 max-w-full animate-in fade-in slide-in-from-left-2">
+                              Back to Accounts
+                          </span>
+                        )}
+                    </button>
+                ) : (
+                    <Link
+                        href="/dashboard"
+                        className={`flex items-center transition-all duration-300 ${isExpanded ? 'gap-4 px-4 py-3' : 'gap-0 px-4 py-3'} rounded-2xl text-sm font-semibold text-zinc-muted hover:text-foreground hover:bg-foreground/5 tracking-normal`}
+                    >
+                        <div className="flex-shrink-0 w-5 flex justify-center">
+                            <ArrowLeft size={18} />
+                        </div>
+                        {isExpanded && (
+                          <span className="whitespace-nowrap overflow-hidden transition-all duration-300 opacity-100 max-w-full animate-in fade-in slide-in-from-left-2">
+                              Back to Accounts
+                          </span>
+                        )}
+                    </Link>
+                )}
             </div>
         </aside>
     );

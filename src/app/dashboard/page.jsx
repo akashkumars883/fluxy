@@ -21,6 +21,7 @@ import {
 import AccountCard from "@/components/dashboard/AccountCard";
 import ProfileDropdown from "@/components/dashboard/ProfileDropdown";
 import OnboardingModal from "@/components/dashboard/OnboardingModal";
+import WorkspaceView from "@/components/dashboard/WorkspaceView";
 import Loader from "@/components/ui/Loader";
 
 function getInitialOnboardingState() {
@@ -61,6 +62,7 @@ export default function Dashboard() {
   const [onboardingStep, setOnboardingStep] = useState(initialOnboardingState.onboardingStep);
   const [connectedAccount] = useState(initialOnboardingState.connectedAccount);
   const [activeTab, setActiveTab] = useState("home");
+  const [selectedAccount, setSelectedAccount] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -161,8 +163,15 @@ export default function Dashboard() {
       </nav>
 
       {/* Main Container */}
-      <div className="flex flex-1 relative">
+      <div className="flex flex-1 relative overflow-hidden">
         
+        {selectedAccount ? (
+          <WorkspaceView 
+            accountId={selectedAccount.id}
+            onBack={() => setSelectedAccount(null)}
+          />
+        ) : (
+          <>
         {/* Left Sidebar */}
         <aside className="w-64 bg-white border-r border-zinc-200/80 p-6 hidden md:flex flex-col gap-8 select-none">
           <div className="space-y-1">
@@ -331,7 +340,7 @@ export default function Dashboard() {
               {/* Account Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {accounts.map((acc) => (
-                  <AccountCard key={acc.id} account={acc} />
+                  <AccountCard key={acc.id} account={acc} onSelect={setSelectedAccount} />
                 ))}
 
                 {/* Add Another Account Card */}
@@ -352,6 +361,8 @@ export default function Dashboard() {
           )}
 
         </main>
+        </>
+        )}
       </div>
     </div>
   );
