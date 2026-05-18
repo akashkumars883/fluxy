@@ -715,6 +715,13 @@ export default function Dashboard() {
         currentPlan={currentPlan}
         realtimeStats={realtimeStats}
       />
+      <OnboardingModal
+        isOpen={showOnboarding}
+        onClose={() => setShowOnboarding(false)}
+        initialStep={onboardingStep}
+        connectedAccount={connectedAccount}
+        user={user}
+      />
     </div>
   );
 }
