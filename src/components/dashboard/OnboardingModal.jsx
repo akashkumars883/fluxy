@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Building2, UserCircle, Target, MessageCircle, Zap, ArrowRight, Camera, CheckCircle2, Loader2 } from "lucide-react";
+import { createClient } from "@/lib/supabase";
 
 // Custom premium CSS-based confetti using Framer Motion
 const Confetti = () => {
@@ -46,31 +47,58 @@ const Confetti = () => {
   );
 };
 
-export default function OnboardingModal({ isOpen, onClose, initialStep = 1, connectedAccount = null }) {
+export default function OnboardingModal({ isOpen, onClose, initialStep = 1, connectedAccount = null, user = null }) {
   const [step, setStep] = useState(initialStep);
-  const [role, setRole] = useState(null);
+  const [role, setRole] = useState(user?.user_metadata?.role || null);
   const [isConnecting, setIsConnecting] = useState(false);
 
   if (!isOpen) return null;
 
-  const nextStep = () => setStep(prev => prev + 1);
+  const nextStep = async () => {
+    // If transitioning from step 2 to step 3, we save onboarding as completed in DB
+    if (step === 2) {
+      try {
+        const supabase = createClient();
+        await supabase.auth.updateUser({
+          data: { onboarding_completed: true, role: role }
+        });
+      } catch (e) {
+        console.error("Failed to update user onboarding metadata:", e);
+      }
+    }
+    setStep(prev => prev + 1);
+  };
+
+  const handleSkipOrClose = async () => {
+    try {
+      const supabase = createClient();
+      await supabase.auth.updateUser({
+        data: { onboarding_completed: true }
+      });
+    } catch (e) {
+      console.error(e);
+    }
+    onClose();
+  };
 
   const handleConnectClick = () => {
     setIsConnecting(true);
+    // Determine the active role: priority to user's database role, fallback to current state, fallback to 'business'
+    const activeRole = user?.user_metadata?.role || role || 'business';
     // Real redirect to Instagram Login for Business authorization endpoint
     setTimeout(() => {
-      window.location.href = `/api/auth/connect?role=${role || 'business'}`;
-    }, 800);
+      window.location.href = `/api/auth/connect?role=${activeRole}`;
+    }, 300);
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
       {/* Backdrop */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-background/60 backdrop-blur-md"
+        className="fixed inset-0 bg-zinc-950/40 backdrop-blur-xl"
       />
 
       {/* Modal Content */}
@@ -78,7 +106,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="relative w-full max-w-2xl bg-white border border-border rounded-[40px] shadow-2xl overflow-hidden"
+        className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white border border-border rounded-[40px] shadow-2xl overflow-hidden"
       >
         {/* Confetti shows up ONLY in Step 4 (Celebration) */}
         {step === 4 && <Confetti />}
@@ -123,7 +151,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                     <div className="w-14 h-14 bg-white border border-border text-foreground rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-sage group-hover:text-white group-hover:border-sage transition-all shadow-sm">
                       <Building2 size={28} />
                     </div>
-                    <h3 className="text-xl font-bold text-foreground mb-2">Business Owner</h3>
+                    <h3 className="text-xl font-semibold text-foreground mb-2">Business Owner</h3>
                     <p className="text-sm text-zinc-muted font-medium">I want to automate sales, leads, and customer support.</p>
                   </button>
 
@@ -134,7 +162,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                     <div className="w-14 h-14 bg-white border border-border text-foreground rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-sage group-hover:text-white group-hover:border-sage transition-all shadow-sm">
                       <UserCircle size={28} />
                     </div>
-                    <h3 className="text-xl font-bold text-foreground mb-2">Content Creator</h3>
+                    <h3 className="text-xl font-semibold text-foreground mb-2">Content Creator</h3>
                     <p className="text-sm text-zinc-muted font-medium">I want to manage fan engagement and DMs automatically.</p>
                   </button>
                 </div>
@@ -169,7 +197,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                         <item.icon size={24} />
                       </div>
                       <div>
-                        <h4 className="text-foreground font-bold text-lg leading-tight mb-1">{item.title}</h4>
+                        <h4 className="text-foreground font-semibold text-lg leading-tight mb-1">{item.title}</h4>
                         <p className="text-sm text-zinc-muted font-medium">{item.desc}</p>
                       </div>
                       <ArrowRight size={20} className="ml-auto text-zinc-muted/30 group-hover:text-sage group-hover:translate-x-1 transition-all" />
@@ -191,7 +219,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                   <div className="flex flex-col items-center justify-center space-y-6 py-8">
                     <Loader2 size={64} className="text-sage animate-spin" />
                     <div className="space-y-1">
-                      <h3 className="text-2xl font-bold text-foreground">Opening Instagram...</h3>
+                      <h3 className="text-2xl font-semibold text-foreground">Opening Instagram...</h3>
                       <p className="text-zinc-muted text-sm font-medium">Please do not close this window</p>
                     </div>
                   </div>
@@ -211,7 +239,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                     <div className="pt-6 flex flex-col items-center gap-4">
                       <button 
                         onClick={handleConnectClick}
-                        className="inline-flex items-center justify-center gap-3 bg-sage text-white px-8 py-4 rounded-full font-bold text-lg hover:scale-105 transition-all shadow-lg hover:shadow-sage/40"
+                        className="px-12 py-4 bg-[#6366F1] text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-[#5255e0] transition-all flex items-center justify-center gap-3 hover:scale-[1.02]"
                       >
                         Connect Instagram <ArrowRight size={20} />
                       </button>
@@ -219,7 +247,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                     </div>
                     
                     <div className="pt-2">
-                      <button onClick={onClose} className="text-sm text-zinc-muted hover:text-foreground transition-colors underline underline-offset-4 font-medium">
+                      <button onClick={handleSkipOrClose} className="text-sm text-zinc-muted hover:text-foreground transition-colors underline underline-offset-4 font-medium">
                         Skip for now, explore dashboard
                       </button>
                     </div>
@@ -251,7 +279,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                     Instagram Connected
                   </h2>
                   <p className="text-zinc-muted font-medium text-lg max-w-md mx-auto">
-                    Account <strong className="text-foreground">@{connectedAccount?.username || "instagram"}</strong> has been successfully linked to Automixa.
+                    Account <strong className="font-semibold text-foreground">@{connectedAccount?.username || "instagram"}</strong> has been successfully linked to Automixa.
                     {connectedAccount?.igBusinessId && (
                       <span className="block text-xs text-zinc-muted mt-2">Connected ID: {connectedAccount.igBusinessId}</span>
                     )}
@@ -261,7 +289,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                 <div className="pt-4">
                   <button 
                     onClick={onClose}
-                    className="inline-flex items-center justify-center gap-3 bg-sage text-white px-10 py-4 rounded-full font-bold text-lg hover:scale-105 transition-all shadow-xl hover:shadow-sage/40"
+                    className="px-12 py-4 bg-[#6366F1] text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-[#5255e0] transition-all flex items-center justify-center gap-3 hover:scale-[1.02]"
                   >
                     Go to Workspace <ArrowRight size={20} />
                   </button>

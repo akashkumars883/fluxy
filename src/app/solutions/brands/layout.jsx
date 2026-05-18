@@ -8,6 +8,9 @@ export const metadata = {
     siteName: "Automixa",
     type: "website",
   },
+  alternates: {
+    canonical: "https://automixa.in/solutions/brands",
+  }
 };
 
 export default function BrandsLayout({ children }) {

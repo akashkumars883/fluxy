@@ -2,7 +2,8 @@
 
 import { createClient } from "@/lib/supabase";
 import { useState } from "react";
-import { ShieldCheck, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import PageTransition from "@/components/ui/PageTransition";
@@ -26,6 +27,7 @@ const GoogleIcon = () => (
 );
 
 export default function LoginPage() {
+  const router = useRouter();
   const [loadingProvider, setLoadingProvider] = useState(null);
 
   const handleLogin = async (providerName) => {
@@ -133,7 +135,7 @@ export default function LoginPage() {
                  <button 
                    onClick={() => handleLogin('facebook')}
                    disabled={loadingProvider !== null}
-                   className="group w-full relative flex items-center justify-between bg-gradient-to-r from-[#1877F2] to-[#1565D8] text-white rounded-[24px] px-8 py-5 text-base font-bold transition-all hover:scale-[1.01] active:scale-[0.99] shadow-xl hover:shadow-[#1877F2]/15 border border-[#1877F2] cursor-pointer"
+                   className="group w-full relative flex items-center justify-between bg-gradient-to-r from-[#1877F2] to-[#1565D8] text-white rounded-xl px-8 py-5 text-base font-bold transition-all hover:scale-[1.01] active:scale-[0.99] shadow-xl hover:shadow-[#1877F2]/15 border border-[#1877F2] cursor-pointer"
                  >
                    <div className="flex items-center gap-5">
                      <FacebookIcon />
@@ -148,7 +150,7 @@ export default function LoginPage() {
                  <button 
                    onClick={() => handleLogin('google')}
                    disabled={loadingProvider !== null}
-                   className="group w-full relative flex items-center justify-between bg-white border border-zinc-200 hover:bg-zinc-50/80 hover:border-zinc-300 text-zinc-700 rounded-[24px] px-8 py-5 text-base font-bold transition-all hover:scale-[1.01] active:scale-[0.99] shadow-sm hover:shadow-lg hover:shadow-zinc-100 cursor-pointer"
+                   className="group w-full relative flex items-center justify-between bg-white border border-zinc-200 hover:bg-zinc-50/80 hover:border-zinc-300 text-zinc-700 rounded-xl px-8 py-5 text-base font-bold transition-all hover:scale-[1.01] active:scale-[0.99] shadow-sm hover:shadow-lg hover:shadow-zinc-100 cursor-pointer"
                  >
                    <div className="flex items-center gap-5">
                      <GoogleIcon />

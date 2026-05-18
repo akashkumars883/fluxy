@@ -17,7 +17,7 @@ export default function GeneralSettings({ automation, onUpdate, onDelete }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Connection Status */}
-        <div className="bg-white border border-border rounded-[32px] p-8 shadow-sm space-y-8">
+        <div className="bg-white border border-border rounded-xl p-8 shadow-sm space-y-8">
            <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center">
                 <ShieldCheck size={20} />
@@ -25,22 +25,21 @@ export default function GeneralSettings({ automation, onUpdate, onDelete }) {
               <h3 className="font-bold text-lg text-foreground">Automation Status</h3>
            </div>
 
-           <div className="flex items-center justify-between p-6 bg-zinc-50 rounded-2xl border border-border/40">
-              <div className="space-y-1">
-                <span className="text-sm font-bold text-foreground">Global Activation</span>
-                <p className="text-[10px] text-zinc-muted font-bold">Turn off all triggers at once</p>
-              </div>
-              <button 
-                onClick={() => onUpdate({ is_active: !automation?.is_active })}
-                className={`w-14 h-7 rounded-full transition-all flex items-center px-1.5 ${automation?.is_active ? 'bg-emerald-500 justify-end' : 'bg-zinc-300 justify-start'}`}
-              >
-                <div className="w-4 h-4 bg-white rounded-full shadow-sm"></div>
-              </button>
-           </div>
+            <div className="flex items-center justify-between p-6 bg-zinc-50 rounded-xl border border-border/40">
+               <div className="space-y-1">
+                 <span className="text-sm font-bold text-foreground">Status Details</span>
+                 <p className="text-[10px] text-zinc-muted font-bold">Account is currently {automation?.is_active ? 'Online' : 'Paused'}</p>
+               </div>
+               <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase border ${
+                 automation?.is_active ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-zinc-100 text-zinc-400 border-zinc-200'
+               }`}>
+                 {automation?.is_active ? 'Connected' : 'Offline'}
+               </div>
+            </div>
         </div>
 
         {/* Security / Handover */}
-        <div className="bg-white border border-border rounded-[32px] p-8 shadow-sm space-y-8">
+        <div className="bg-white border border-border rounded-xl p-8 shadow-sm space-y-8">
            <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
                 <Shield size={20} />
@@ -62,7 +61,7 @@ export default function GeneralSettings({ automation, onUpdate, onDelete }) {
       </div>
 
       {/* Danger Zone */}
-      <div className="bg-red-50/30 border border-red-100 rounded-[32px] p-8 mt-12">
+      <div className="bg-red-50/30 border border-red-100 rounded-xl p-8 mt-12">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 bg-red-100 text-red-600 rounded-xl flex items-center justify-center">
             <AlertTriangle size={20} />
@@ -74,7 +73,7 @@ export default function GeneralSettings({ automation, onUpdate, onDelete }) {
         </div>
 
         {!confirmDelete ? (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 p-6 bg-white border border-red-100 rounded-2xl">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 p-6 bg-white border border-red-100 rounded-xl">
             <div className="space-y-1">
               <span className="text-sm font-bold text-foreground">Disconnect Account</span>
               <p className="text-[11px] text-zinc-muted font-medium">This will stop all automations and delete your rules.</p>
@@ -87,7 +86,7 @@ export default function GeneralSettings({ automation, onUpdate, onDelete }) {
             </button>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center text-center p-8 bg-white border-2 border-red-200 rounded-2xl animate-in zoom-in-95">
+          <div className="flex flex-col items-center justify-center text-center p-8 bg-white border-2 border-red-200 rounded-xl animate-in zoom-in-95">
              <h4 className="text-xl font-black text-red-800 mb-2">Are you absolutely sure?</h4>
              <p className="text-sm text-red-700/60 mb-8 font-medium">All keywords, responses, and metrics will be permanently deleted.</p>
              <div className="flex gap-4 w-full justify-center">

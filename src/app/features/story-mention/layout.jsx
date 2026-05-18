@@ -8,6 +8,9 @@ export const metadata = {
     siteName: "Automixa",
     type: "website",
   },
+  alternates: {
+    canonical: "https://automixa.in/features/story-mention",
+  }
 };
 
 export default function StoryMentionLayout({ children }) {

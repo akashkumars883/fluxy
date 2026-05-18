@@ -5,8 +5,9 @@ import { Mail, ShieldCheck, ChevronDown, ArrowRight, Ticket, HelpCircle } from "
 import { motion, AnimatePresence } from "framer-motion";
 import PageTransition from "@/components/ui/PageTransition";
 
+import FAQ from "@/components/marketing/FAQ";
+
 export default function ContactPage() {
-  const [activeFaq, setActiveFaq] = useState(null);
   const [copied, setCopied] = useState(false);
 
   const copyEmail = () => {
@@ -150,77 +151,14 @@ export default function ContactPage() {
              <div className="text-center sm:text-left space-y-1 relative z-10">
                 <h4 className="text-sm sm:text-base font-bold text-zinc-800">Official Meta API Architecture</h4>
                 <p className="text-xs text-zinc-500 leading-relaxed font-normal max-w-2xl">
-                  Automixa communicates exclusively through secure developer tunnels vetted by Meta. We never request your Instagram password, nor do we store any credential databases. Your business page remains completely safe.
+                   Automixa communicates exclusively through secure developer tunnels vetted by Meta. We never request your Instagram password, nor do we store any credential databases. Your business page remains completely safe.
                 </p>
              </div>
           </motion.div>
 
-          {/* Interactive pre-sales FAQ Block */}
-          <div className="border-t border-zinc-200/60 pt-16 max-w-4xl mx-auto">
-             <div className="space-y-3 mb-10 text-center sm:text-left">
-                <h2 className="text-2xl sm:text-3xl font-semibold text-zinc-800 tracking-tight leading-tight">
-                  Frequently Asked Questions
-                </h2>
-                <p className="text-zinc-500 text-xs sm:text-sm font-medium">Quick answers to common inquiries before you reach out.</p>
-             </div>
-
-             <div className="space-y-4">
-                {faqItems.map((item, idx) => {
-                  const isOpen = activeFaq === idx;
-                  return (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, y: 15 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.6, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                      className={`group/faq bg-white/40 backdrop-blur-xl border rounded-[24px] overflow-hidden transition-all duration-500 shadow-sm ${
-                        isOpen 
-                          ? "border-indigo-200/80 bg-white/60 shadow-md shadow-zinc-100/50" 
-                          : "border-white/60 hover:border-white/90 hover:bg-white/50"
-                      }`}
-                    >
-                       <button
-                         onClick={() => setActiveFaq(isOpen ? null : idx)}
-                         className="w-full flex items-center justify-between p-6 sm:p-8 text-left focus:outline-none group/btn relative z-10 cursor-pointer"
-                       >
-                         <div className="flex items-center gap-4 pr-6">
-                           <HelpCircle size={18} className={`shrink-0 transition-colors duration-300 ${isOpen ? "text-[#6366F1]" : "text-zinc-400 group-hover/faq:text-zinc-500"}`} />
-                           <span className="text-sm sm:text-base font-bold text-zinc-800 tracking-tight transition-colors duration-300">
-                             {item.q}
-                           </span>
-                         </div>
-
-                         {/* Dynamic Circle Rotating Chevron */}
-                         <div className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all duration-500 shrink-0 ${
-                           isOpen 
-                             ? 'bg-[#6366F1] border-[#6366F1] text-white rotate-180 shadow-md shadow-indigo-500/20' 
-                             : 'bg-white border-zinc-200/80 text-zinc-500 group-hover/btn:border-zinc-300'
-                         }`}>
-                           <ChevronDown size={14} className="transition-transform duration-500" />
-                         </div>
-                       </button>
-
-                       <AnimatePresence initial={false}>
-                         {isOpen && (
-                           <motion.div
-                             initial={{ height: 0, opacity: 0 }}
-                             animate={{ height: "auto", opacity: 1 }}
-                             exit={{ height: 0, opacity: 0 }}
-                             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                           >
-                             <div className="px-6 sm:px-8 pb-8 pt-1 text-zinc-500 text-xs sm:text-sm leading-relaxed font-normal border-t border-zinc-100/50">
-                               <p className="max-w-2xl">
-                                 {item.a}
-                               </p>
-                             </div>
-                           </motion.div>
-                         )}
-                       </AnimatePresence>
-                    </motion.div>
-                  );
-                })}
-             </div>
+          {/* Shared FAQ Block */}
+          <div className="max-w-4xl mx-auto">
+             <FAQ customFaqs={faqItems} />
           </div>
 
         </div>

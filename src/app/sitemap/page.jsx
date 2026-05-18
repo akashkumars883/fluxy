@@ -5,6 +5,9 @@ import CTA from "@/components/marketing/CTA";
 export const metadata = {
   title: "HTML Sitemap | Automixa",
   description: "Navigate through all the pages on the Automixa website. Find features, solutions, resources, and legal pages easily.",
+  alternates: {
+    canonical: "https://automixa.in/sitemap",
+  }
 };
 
 export default function SitemapPage() {

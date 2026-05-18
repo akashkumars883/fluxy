@@ -1,5 +1,13 @@
 import LegalLayout from "@/components/marketing/LegalLayout";
 
+export const metadata = {
+  title: "Privacy Policy | Automixa",
+  description: "Read our privacy policy to understand how Automixa secures and handles your account data and tokens.",
+  alternates: {
+    canonical: "https://automixa.in/privacy",
+  }
+};
+
 export default function PrivacyPolicy() {
   return (
     <LegalLayout 

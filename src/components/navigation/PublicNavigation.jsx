@@ -2,15 +2,15 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { 
-  ArrowRight, Zap, MessageSquare, Target, Users, ShoppingBag, ChevronDown 
+import {
+  ArrowRight, Zap, MessageSquare, Target, Users, ShoppingBag, ChevronDown
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function PublicNavigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
+
   // Track active accordion in mobile drawer
   const [mobileDropdown, setMobileDropdown] = useState(null);
 
@@ -74,31 +74,30 @@ export default function PublicNavigation() {
 
   return (
     <>
-      <nav 
-        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 border-b ${
-          isScrolled || isMenuOpen
-            ? "bg-white/40 backdrop-blur-2xl border-zinc-200/40 py-4 shadow-sm shadow-zinc-100/50" 
+      <nav
+        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 border-b ${isScrolled || isMenuOpen
+            ? "bg-white/40 backdrop-blur-2xl border-zinc-200/40 py-4"
             : "bg-transparent border-transparent py-6"
-        }`}
+          }`}
       >
         <div className="max-w-8xl mx-auto px-6 md:px-10 flex items-center justify-between">
-          
+
           {/* Left Side: Logo */}
           <Link href="/" className="flex items-center gap-3 group">
             <img src="/logo.png" alt="Automixa Logo" className="w-8 h-8 object-contain" />
             <span className="text-xl font-semibold tracking-normal text-foreground">automixa</span>
           </Link>
-          
+
           {/* Center: Desktop Navigation Links with Hover Megamenus */}
           <div className="hidden lg:flex items-center gap-8 relative">
-            
+
             {/* Features Hover Dropdown */}
             <div className="relative group/menu py-2">
               <button className="flex items-center gap-1.5 text-sm font-semibold text-zinc-600 hover:text-zinc-950 transition-colors cursor-pointer">
                 Features
                 <ChevronDown size={14} className="group-hover/menu:rotate-180 transition-transform duration-300 text-zinc-400" />
               </button>
-              
+
               {/* Dropdown panel container */}
               <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-[400px] opacity-0 pointer-events-none group-hover/menu:opacity-100 group-hover/menu:pointer-events-auto transition-all duration-300 transform translate-y-2 group-hover/menu:translate-y-0 z-50">
                 <div className="bg-white/95 backdrop-blur-3xl border border-zinc-200/40 rounded-[28px] p-5 shadow-2xl shadow-zinc-200/60 flex flex-col gap-1.5">
@@ -106,8 +105,8 @@ export default function PublicNavigation() {
                   {featuresDropdown.map((item, idx) => {
                     const Icon = item.icon;
                     return (
-                      <Link 
-                        key={idx} 
+                      <Link
+                        key={idx}
                         href={item.href}
                         className="flex items-start gap-4 p-3 rounded-2xl hover:bg-zinc-50 transition-all group/item"
                       >
@@ -135,7 +134,7 @@ export default function PublicNavigation() {
                 Solutions
                 <ChevronDown size={14} className="group-hover/menu:rotate-180 transition-transform duration-300 text-zinc-400" />
               </button>
-              
+
               {/* Dropdown panel container */}
               <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-[400px] opacity-0 pointer-events-none group-hover/menu:opacity-100 group-hover/menu:pointer-events-auto transition-all duration-300 transform translate-y-2 group-hover/menu:translate-y-0 z-50">
                 <div className="bg-white/95 backdrop-blur-3xl border border-zinc-200/40 rounded-[28px] p-5 shadow-2xl shadow-zinc-200/60 flex flex-col gap-1.5">
@@ -143,8 +142,8 @@ export default function PublicNavigation() {
                   {solutionsDropdown.map((item, idx) => {
                     const Icon = item.icon;
                     return (
-                      <Link 
-                        key={idx} 
+                      <Link
+                        key={idx}
                         href={item.href}
                         className="flex items-start gap-4 p-3 rounded-2xl hover:bg-zinc-50 transition-all group/item"
                       >
@@ -182,20 +181,20 @@ export default function PublicNavigation() {
             </Link>
 
           </div>
-          
+
           {/* Right Group: Action Button + Menu Toggle */}
           <div className="flex items-center gap-3">
             {/* CTA Button: Visible on Tablet/Desktop, Hidden on Mobile */}
-            <Link 
-              href="/login" 
-              className="hidden sm:flex bg-foreground text-background text-sm font-normal px-6 py-3 rounded-full hover:scale-[1.05] active:scale-[0.98] transition-all shadow-xl shadow-foreground/10 tracking-normal items-center gap-2 group"
+            <Link
+              href="/login"
+              className="hidden sm:flex bg-foreground text-background text-sm font-normal px-6 py-3 rounded-full hover:scale-[1.05] active:scale-[0.98] transition-all tracking-normal items-center gap-2 group"
             >
               Get Started
               <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-rotate-45" />
             </Link>
 
             {/* Custom Interactive Morphing Hamburger Button (Mobile Only) */}
-            <button 
+            <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="p-3 text-foreground hover:bg-[#09090B]/5 rounded-full transition-all flex items-center justify-center cursor-pointer relative z-50 group lg:hidden"
             >
@@ -265,9 +264,9 @@ export default function PublicNavigation() {
                               style={{ fontFamily: 'var(--font-space-grotesk), sans-serif' }}
                             >
                               {item.name}
-                              <ChevronDown 
-                                size={22} 
-                                className={`text-zinc-400 transition-transform duration-300 ${isExpanded ? "rotate-180 text-indigo-600" : ""}`} 
+                              <ChevronDown
+                                size={22}
+                                className={`text-zinc-400 transition-transform duration-300 ${isExpanded ? "rotate-180 text-indigo-600" : ""}`}
                               />
                             </button>
 
@@ -309,8 +308,8 @@ export default function PublicNavigation() {
                           </>
                         ) : (
                           /* Direct link */
-                          <Link 
-                            href={item.href} 
+                          <Link
+                            href={item.href}
                             onClick={() => {
                               setIsMenuOpen(false);
                               setMobileDropdown(null);
@@ -328,8 +327,8 @@ export default function PublicNavigation() {
 
                 {/* Mobile-Only CTA Button inside Drawer */}
                 <div className="flex flex-col gap-4 pt-6 sm:hidden border-t border-border mt-2">
-                  <Link 
-                    href="/login" 
+                  <Link
+                    href="/login"
                     onClick={() => {
                       setIsMenuOpen(false);
                       setMobileDropdown(null);
@@ -343,7 +342,7 @@ export default function PublicNavigation() {
               </div>
 
               {/* Drawer Footer info */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}

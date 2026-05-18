@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f3f3f3;       /* Pure Snow Light */
+  --background: #ffffff;       /* Pure White */
   --foreground: #09090B;       /* Jet Black Obsidian */
   --indigo-accent: #6366F1;    /* Premium Indigo Violet */
   --instagram-pink: #EC4899;   /* Electric Pink for secondary highlights */

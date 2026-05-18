@@ -8,6 +8,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import PageTransition from "@/components/ui/PageTransition";
+import FAQ from "@/components/marketing/FAQ";
 import { createClient } from "@/lib/supabase";
 
 // Available categories
@@ -603,6 +604,26 @@ export default function BlogPage() {
                     </p>
                   </div>
                 </motion.div>
+
+                {/* Blog Reader FAQs */}
+                <div className="mb-20">
+                  <FAQ 
+                    customFaqs={[
+                      {
+                        q: "How often do you publish new articles?",
+                        a: "We publish deep-dive automation strategies and product updates every Tuesday. Join our newsletter to get them directly in your inbox."
+                      },
+                      {
+                        q: "Are the automation templates mentioned in blogs free?",
+                        a: "Yes! All workflow templates and DM funnels discussed in our articles can be implemented for free using the Automixa dashboard."
+                      },
+                      {
+                        q: "Can I contribute an article to the Automixa Playbook?",
+                        a: "We love hearing from growth hackers and creators. If you have a unique Instagram automation strategy, reach out to us at info@automixa.in."
+                      }
+                    ]} 
+                  />
+                </div>
               </motion.div>
             ) : (
               // ----------------------------------------------------

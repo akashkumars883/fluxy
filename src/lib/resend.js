@@ -1,0 +1,315 @@
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Helper function exported to allow dynamic real-time rendering in preview route
+export function getInvoiceHtml({ name, planName, amount, invoiceId }) {
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+          body, table, td, div, p, a, span {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+          }
+          h1, h2 {
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+          }
+        </style>
+      </head>
+      <body style="margin: 0; padding: 0; background-color: #fafafa;">
+        <!-- Hidden Preheader (Inbox Snippet Summary) -->
+        <div style="display: none; max-height: 0px; overflow: hidden; font-size: 0px; line-height: 0px; opacity: 0; mso-hide: all; color: #fafafa;">
+          Your payment of ${amount} was successful. Here is your transaction invoice receipt from Automixa.
+        </div>
+        <div style="font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px 20px; color: #18181b; max-width: 580px; margin: 0 auto; background: #fafafa; border-radius: 24px; border: 1px solid #e4e4e7; margin-top: 20px; margin-bottom: 20px;">
+      
+      <!-- Header -->
+      <div style="text-align: center; margin-bottom: 32px;">
+        <h1 style="color: #09090b; font-size: 36px; font-weight: 600; margin: 0; letter-spacing: -2px; line-height: 1;">Automixa</h1>
+        <p style="color: #71717a; font-size: 11px; font-weight: 500; margin: 8px 0 0 0; text-transform: lowercase; letter-spacing: -0.2px;">conversations that convert, automatically</p>
+      </div>
+
+      <!-- Main Content Card -->
+      <div style="background: #ffffff; padding: 36px; border-radius: 20px; border: 1px solid #e4e4e7; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.02), 0 4px 6px -4px rgba(0, 0, 0, 0.02);">
+        
+        <div style="text-align: center; margin-bottom: 24px;">
+          <span style="background: #f4f4f5; border: 1px solid #e4e4e7; color: #3f3f46; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 6px 12px; border-radius: 9999px;">
+            Payment Successful
+          </span>
+        </div>
+
+        <h2 style="font-size: 22px; font-weight: 800; color: #09090b; margin-top: 0; margin-bottom: 12px; text-align: center; letter-spacing: -0.5px;">Thank you for your purchase!</h2>
+        
+        <p style="font-size: 14px; line-height: 1.6; color: #52525b; margin: 0 0 24px 0; text-align: center;">
+          Hi ${name || 'Customer'}, your subscription to <strong>${planName || 'Plan'}</strong> is now fully active. Your billing transaction details are listed below:
+        </p>
+
+        <!-- Invoice Box -->
+        <div style="background: #fafafa; border: 1px solid #e4e4e7; border-radius: 14px; padding: 20px; margin-bottom: 24px;">
+          <div style="margin-bottom: 12px; border-bottom: 1px solid #f4f4f5; padding-bottom: 8px; display: flex; justify-content: space-between;">
+            <span style="font-size: 12px; color: #71717a;">Invoice ID:</span>
+            <span style="font-size: 12px; font-weight: 700; color: #09090b;">${invoiceId || 'INV-000000'}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="font-size: 12px; color: #71717a;">Amount Paid:</span>
+            <span style="font-size: 12px; font-weight: 700; color: #09090b;">${amount || 'INR 0'}</span>
+          </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div style="text-align: center; margin-bottom: 12px;">
+          <a href="https://automixa.in/dashboard" style="background: #6366F1; color: #ffffff; padding: 14px 36px; border-radius: 14px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-block; border: 1px solid #6366F1; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);">
+            Go to Dashboard
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Footer Branding & Socials -->
+      <div style="text-align: center; margin-top: 36px; border-top: 1px solid #e4e4e7; padding-top: 24px;">
+        
+        <!-- Social Links -->
+        <div style="margin-bottom: 16px;">
+          <a href="https://instagram.com/automixa.in" target="_blank" style="margin: 0 8px; text-decoration: none; color: #71717a; font-size: 12px; font-weight: 600;">Instagram</a>
+          <span style="color: #d4d4d8;">•</span>
+          <a href="https://x.com/automixa_in" target="_blank" style="margin: 0 8px; text-decoration: none; color: #71717a; font-size: 12px; font-weight: 600;">Twitter</a>
+          <span style="color: #d4d4d8;">•</span>
+          <a href="https://automixa.in" target="_blank" style="margin: 0 8px; text-decoration: none; color: #71717a; font-size: 12px; font-weight: 600;">Website</a>
+        </div>
+        
+        <!-- Legal & Copyright -->
+        <p style="font-size: 11px; color: #a1a1aa; margin: 0 0 6px 0; line-height: 1.6;">
+          © 2026 Automixa | Akash Enterprises. All rights reserved.
+        </p>
+        <p style="font-size: 10px; color: #a1a1aa; margin: 0; line-height: 1.6;">
+          Delivered securely by Automixa. For support, contact <a href="mailto:info@automixa.in" style="color: #6366F1; text-decoration: none; font-weight: 500;">info@automixa.in</a>
+        </p>
+
+      </div>
+      </div>
+      </body>
+    </html>
+  `;
+}
+
+export const sendInvoiceEmail = async ({ email, name, planName, amount, invoiceId }) => {
+  try {
+    const data = await resend.emails.send({
+      from: 'automixa <billing@automixa.in>',
+      to: [email],
+      subject: `Your Invoice from automixa - ${invoiceId}`,
+      html: getInvoiceHtml({ name, planName, amount, invoiceId }),
+    });
+    return data;
+  } catch (error) {
+    console.error("Failed to send email:", error);
+    return null;
+  }
+};
+
+export function getInviteHtml(invitedByEmail, workspaceName, email) {
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+          body, table, td, div, p, a, span {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+          }
+          h1, h2 {
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+          }
+        </style>
+      </head>
+      <body style="margin: 0; padding: 0; background-color: #fafafa;">
+        <!-- Hidden Preheader (Inbox Snippet Summary) -->
+        <div style="display: none; max-height: 0px; overflow: hidden; font-size: 0px; line-height: 0px; opacity: 0; mso-hide: all; color: #fafafa;">
+          Collaborate on smart Instagram automation workflows together on Automixa.
+        </div>
+        <div style="font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px 20px; color: #18181b; max-width: 580px; margin: 0 auto; background: #fafafa; border-radius: 24px; border: 1px solid #e4e4e7; margin-top: 20px; margin-bottom: 20px;">
+      
+      <!-- Header -->
+      <div style="text-align: center; margin-bottom: 32px;">
+        <h1 style="color: #09090b; font-size: 36px; font-weight: 600; margin: 0; letter-spacing: -2px; line-height: 1;">Automixa</h1>
+        <p style="color: #71717a; font-size: 11px; font-weight: 500; margin: 8px 0 0 0; text-transform: lowercase; letter-spacing: -0.2px;">conversations that convert, automatically</p>
+      </div>
+
+      <!-- Main Content Card -->
+      <div style="background: #ffffff; padding: 36px; border-radius: 20px; border: 1px solid #e4e4e7; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.02), 0 4px 6px -4px rgba(0, 0, 0, 0.02);">
+        
+        <div style="text-align: center; margin-bottom: 24px;">
+          <span style="background: #f4f4f5; border: 1px solid #e4e4e7; color: #3f3f46; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 6px 12px; border-radius: 9999px;">
+            Workspace Invitation
+          </span>
+        </div>
+
+        <h2 style="font-size: 22px; font-weight: 800; color: #09090b; margin-top: 0; margin-bottom: 12px; text-align: center; letter-spacing: -0.5px;">You've been invited!</h2>
+        
+        <p style="font-size: 14px; line-height: 1.6; color: #52525b; margin: 0 0 20px 0; text-align: center;">
+          <strong>${invitedByEmail}</strong> has invited you to join and collaborate on their workspace <strong>"${workspaceName}"</strong> on automixa.
+        </p>
+
+        <!-- Feature Badges Section -->
+        <div style="background: #fafafa; border: 1px solid #f4f4f5; border-radius: 12px; padding: 16px; margin-bottom: 28px; text-align: center;">
+          <div style="display: inline-block; margin: 0 8px; font-size: 11px; font-weight: 700; color: #71717a;">⚡ Studio</div>
+          <div style="display: inline-block; margin: 0 8px; font-size: 11px; font-weight: 700; color: #71717a;">💬 Sandbox</div>
+          <div style="display: inline-block; margin: 0 8px; font-size: 11px; font-weight: 700; color: #71717a;">📊 Analytics</div>
+        </div>
+
+        <!-- Call to Action -->
+        <div style="text-align: center; margin-bottom: 28px;">
+          <a href="https://automixa.in/dashboard" style="background: #6366F1; color: #ffffff; padding: 14px 36px; border-radius: 14px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-block; transition: all 0.2s ease; border: 1px solid #6366F1; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);">
+            Accept Invite & Go to Dashboard
+          </a>
+        </div>
+
+        <!-- Bottom Disclaimer -->
+        <p style="font-size: 11px; color: #a1a1aa; text-align: center; margin: 0; line-height: 1.5; padding: 0 10px;">
+          If you don't have an automixa account yet, simply sign up using <strong>${email}</strong>. The workspace will be automatically linked to your account upon registration.
+        </p>
+
+      </div>
+
+      <!-- Footer Branding & Socials -->
+      <div style="text-align: center; margin-top: 36px; border-top: 1px solid #e4e4e7; padding-top: 24px;">
+        
+        <!-- Social Links -->
+        <div style="margin-bottom: 16px;">
+          <a href="https://instagram.com/automixa.in" target="_blank" style="margin: 0 8px; text-decoration: none; color: #71717a; font-size: 12px; font-weight: 600;">Instagram</a>
+          <span style="color: #d4d4d8;">•</span>
+          <a href="https://x.com/automixa_in" target="_blank" style="margin: 0 8px; text-decoration: none; color: #71717a; font-size: 12px; font-weight: 600;">Twitter</a>
+          <span style="color: #d4d4d8;">•</span>
+          <a href="https://automixa.in" target="_blank" style="margin: 0 8px; text-decoration: none; color: #71717a; font-size: 12px; font-weight: 600;">Website</a>
+        </div>
+        
+        <!-- Legal & Copyright -->
+        <p style="font-size: 11px; color: #a1a1aa; margin: 0 0 6px 0; line-height: 1.6;">
+          © 2026 Automixa | Akash Enterprises. All rights reserved.
+        </p>
+        <p style="font-size: 10px; color: #a1a1aa; margin: 0; line-height: 1.6;">
+          Delivered securely by Automixa. For support, contact <a href="mailto:info@automixa.in" style="color: #6366F1; text-decoration: none; font-weight: 500;">info@automixa.in</a>
+        </p>
+
+      </div>
+      </div>
+      </body>
+    </html>
+  `;
+}
+
+export const sendInviteEmail = async ({ email, workspaceName, invitedByEmail }) => {
+  try {
+    const data = await resend.emails.send({
+      from: 'automixa <invite@automixa.in>',
+      to: [email],
+      subject: `Invitation to collaborate on "${workspaceName}" on automixa`,
+      html: getInviteHtml(invitedByEmail || 'Someone', workspaceName || 'a Workspace', email || 'collaborator@email.com'),
+    });
+    return data;
+  } catch (error) {
+    console.error("Failed to send invite email:", error);
+    return null;
+  }
+};
+
+export function getLimitExceededHtml({ name, planName, limitAmount }) {
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+          body, table, td, div, p, a, span {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+          }
+          h1, h2 {
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+          }
+        </style>
+      </head>
+      <body style="margin: 0; padding: 0; background-color: #fafafa;">
+        <div style="font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px 20px; color: #18181b; max-width: 580px; margin: 0 auto; background: #fafafa; border-radius: 24px; border: 1px solid #e4e4e7; margin-top: 20px; margin-bottom: 20px;">
+          
+          <!-- Header -->
+          <div style="text-align: center; margin-bottom: 32px;">
+            <h1 style="color: #09090b; font-size: 36px; font-weight: 600; margin: 0; letter-spacing: -2px; line-height: 1;">Automixa</h1>
+            <p style="color: #71717a; font-size: 11px; font-weight: 500; margin: 8px 0 0 0; text-transform: lowercase; letter-spacing: -0.2px;">conversations that convert, automatically</p>
+          </div>
+
+          <!-- Main Content Card -->
+          <div style="background: #ffffff; padding: 36px; border-radius: 20px; border: 1px solid #e4e4e7; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.02), 0 4px 6px -4px rgba(0, 0, 0, 0.02);">
+            
+            <div style="text-align: center; margin-bottom: 24px;">
+              <span style="background: #fef2f2; border: 1px solid #fee2e2; color: #ef4444; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 6px 12px; border-radius: 9999px;">
+                Plan Quota Exceeded
+              </span>
+            </div>
+
+            <h2 style="font-size: 22px; font-weight: 800; color: #09090b; margin-top: 0; margin-bottom: 12px; text-align: center; letter-spacing: -0.5px;">Your Auto-Replies are Paused! ⚠️</h2>
+            
+            <p style="font-size: 14px; line-height: 1.6; color: #52525b; margin: 0 0 24px 0; text-align: center;">
+              Hi ${name || 'User'}, your active workspace has reached the maximum allowed monthly limit of <strong>${(limitAmount || 1000).toLocaleString()} replies</strong> for the <strong>${planName || 'Free'} Plan</strong>.
+            </p>
+
+            <div style="background: #fafafa; border: 1px solid #e4e4e7; border-radius: 14px; padding: 20px; margin-bottom: 24px; text-align: center;">
+              <p style="font-size: 12px; color: #71717a; margin: 0 0 6px 0;">Monthly Limit Consumed</p>
+              <h3 style="font-size: 28px; font-weight: 800; color: #ef4444; margin: 0;">100%</h3>
+              <p style="font-size: 11px; color: #71717a; margin: 6px 0 0 0;">All automatic DMs & Comment Replies are currently on hold.</p>
+            </div>
+
+            <!-- Call to Action -->
+            <div style="text-align: center; margin-bottom: 12px;">
+              <a href="https://automixa.in/dashboard" style="background: #6366F1; color: #ffffff; padding: 14px 36px; border-radius: 14px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-block; border: 1px solid #6366F1; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);">
+                Upgrade Plan & Resume Replies
+              </a>
+            </div>
+
+          </div>
+
+          <!-- Footer Branding & Socials -->
+          <div style="text-align: center; margin-top: 36px; border-top: 1px solid #e4e4e7; padding-top: 24px;">
+            
+            <!-- Social Links -->
+            <div style="margin-bottom: 16px;">
+              <a href="https://instagram.com/automixa.in" target="_blank" style="margin: 0 8px; text-decoration: none; color: #71717a; font-size: 12px; font-weight: 600;">Instagram</a>
+              <span style="color: #d4d4d8;">•</span>
+              <a href="https://x.com/automixa_in" target="_blank" style="margin: 0 8px; text-decoration: none; color: #71717a; font-size: 12px; font-weight: 600;">Twitter</a>
+              <span style="color: #d4d4d8;">•</span>
+              <a href="https://automixa.in" target="_blank" style="margin: 0 8px; text-decoration: none; color: #71717a; font-size: 12px; font-weight: 600;">Website</a>
+            </div>
+            
+            <!-- Legal & Copyright -->
+            <p style="font-size: 11px; color: #a1a1aa; margin: 0 0 6px 0; line-height: 1.6;">
+              © 2026 Automixa | Akash Enterprises. All rights reserved.
+            </p>
+            <p style="font-size: 10px; color: #a1a1aa; margin: 0; line-height: 1.6;">
+              Delivered securely by Automixa. For support, contact <a href="mailto:info@automixa.in" style="color: #6366F1; text-decoration: none; font-weight: 500;">info@automixa.in</a>
+            </p>
+
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+}
+
+export const sendLimitExceededEmail = async ({ email, name, planName, limitAmount }) => {
+  try {
+    const data = await resend.emails.send({
+      from: 'automixa <billing@automixa.in>',
+      to: [email],
+      subject: `[ACTION REQUIRED] Plan limit exceeded on automixa - Auto-Replies Paused`,
+      html: getLimitExceededHtml({ name, planName, limitAmount }),
+    });
+    return data;
+  } catch (error) {
+    console.error("Failed to send limit email:", error);
+    return null;
+  }
+};

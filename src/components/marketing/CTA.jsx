@@ -6,9 +6,9 @@ import Link from "next/link";
 
 export default function CTA() {
   return (
-    <section id="cta" className="w-full bg-transparent py-10 md:py-12 px-4 sm:px-6 md:px-8 relative overflow-hidden flex justify-center">
-      <div className="w-full max-w-8xl mx-auto relative z-10">
-        
+    <section id="cta" className="w-full bg-transparent py-24 px-4 sm:px-6 md:px-8 relative overflow-hidden flex justify-center">
+      <div className="w-full max-w-7xl mx-auto px-6 sm:px-10 md:px-16 relative z-10">
+
         {/* Massive Black Glass CTA Wrapper Card (Matches Hero.jsx dimensions and horizontal card layout exactly) */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -50,8 +50,8 @@ export default function CTA() {
 
           {/* Right Side: Shining White Liquid CTA Button */}
           <div className="relative z-10 shrink-0">
-            <Link 
-              href="/login" 
+            <Link
+              href="/login"
               className="inline-flex items-center gap-3 px-8 py-4 bg-white text-zinc-950 font-bold text-xs sm:text-sm rounded-full hover:scale-[1.03] active:scale-[0.98] hover:bg-zinc-50 transition-all shadow-xl shadow-black/30 tracking-normal group/btn"
             >
               Start Automating Free

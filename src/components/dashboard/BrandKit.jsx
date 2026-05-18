@@ -33,7 +33,7 @@ export default function BrandKit({ automation, onUpdate }) {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 w-full max-w-[1400px] mx-auto pb-12">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold tracking-tight text-foreground">Brand Kit</h1>
@@ -42,9 +42,9 @@ export default function BrandKit({ automation, onUpdate }) {
         <button 
           onClick={handleSave}
           disabled={loading}
-          className="flex items-center gap-2 px-6 py-3 bg-foreground text-background rounded-2xl font-bold hover:scale-105 active:scale-95 transition-all shadow-xl disabled:opacity-50"
+          className="flex items-center gap-2 px-6 py-3 bg-zinc-950 text-white rounded-2xl font-bold hover:scale-105 active:scale-95 transition-all shadow-xl disabled:opacity-50"
         >
-          {loading ? <div className="w-4 h-4 border-2 border-background/30 border-t-background rounded-full animate-spin" /> : <Save size={18} />}
+          {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Save size={18} />}
           <span>Save Kit</span>
         </button>
       </div>
@@ -53,7 +53,7 @@ export default function BrandKit({ automation, onUpdate }) {
         {/* Identity Card */}
         <div className="bg-white border border-border rounded-[32px] p-8 shadow-sm space-y-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-sage text-foreground rounded-xl flex items-center justify-center shadow-lg shadow-sage/10">
+            <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-100/10">
               <Palette size={20} />
             </div>
             <h3 className="font-bold text-lg text-foreground">Visual Identity</h3>
@@ -77,7 +77,7 @@ export default function BrandKit({ automation, onUpdate }) {
               value={formData.ig_handle}
               onChange={(e) => setFormData({ ...formData, ig_handle: e.target.value.replace('@', '') })}
               className="w-full px-5 py-4 bg-zinc-50 border-2 border-border/60 rounded-2xl outline-none focus:border-foreground focus:bg-white font-bold text-sm transition-all text-foreground"
-              placeholder="e.g. redtitch.official"
+              placeholder="e.g. redstitch.official"
             />
           </div>
         </div>
@@ -85,7 +85,7 @@ export default function BrandKit({ automation, onUpdate }) {
         {/* Voice Card */}
         <div className="bg-white border border-border rounded-[32px] p-8 shadow-sm space-y-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-foreground text-background rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-zinc-950 text-white rounded-xl flex items-center justify-center">
               <Sparkles size={20} />
             </div>
             <h3 className="font-bold text-lg text-foreground">Tone of Voice</h3>
@@ -98,8 +98,8 @@ export default function BrandKit({ automation, onUpdate }) {
                 onClick={() => setFormData({ ...formData, tone: t })}
                 className={`px-4 py-3 rounded-2xl text-[11px] font-bold transition-all border-2 ${
                   formData.tone === t 
-                    ? "bg-foreground text-background border-foreground shadow-lg" 
-                    : "bg-background text-zinc-muted border-border/60 hover:border-foreground/20"
+                    ? "bg-zinc-950 text-white border-zinc-950 shadow-lg" 
+                    : "bg-white text-zinc-muted border-border/60 hover:border-zinc-950/20"
                 }`}
               >
                 {t}
@@ -176,7 +176,7 @@ export default function BrandKit({ automation, onUpdate }) {
              &quot;Our AI uses the brand name {formData.brand_name || "..."} and adapts a {formData.tone} tone when generating personalized responses for your fans. This ensures every DM feels like it&apos;s coming directly from you.&quot;
            </p>
          </div>
-       </div>
+      </div>
     </div>
   );
 }

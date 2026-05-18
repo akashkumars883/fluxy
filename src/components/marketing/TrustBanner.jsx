@@ -6,7 +6,7 @@ import { Zap, Heart, CreditCard } from "lucide-react";
 export default function TrustBanner() {
   return (
     <section className="w-full bg-transparent relative overflow-hidden py-4 sm:py-6 lg:py-4">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 relative z-10">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-16 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}

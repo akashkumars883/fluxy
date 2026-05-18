@@ -8,6 +8,9 @@ export const metadata = {
     siteName: "Automixa",
     type: "website",
   },
+  alternates: {
+    canonical: "https://automixa.in/features/dm-auto-reply",
+  }
 };
 
 export default function DMAutoReplyLayout({ children }) {

@@ -1,8 +1,8 @@
-﻿/* src/components/dashboard/EditTriggerModal.jsx */
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, MousePointer2, ShieldCheck, Globe, Save } from "lucide-react";
+import { X, MousePointer2, ShieldCheck, Globe, Save, Sparkles, Wand2, Rocket, ArrowRight, ArrowLeft } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
   const [keyword, setKeyword] = useState("");
@@ -12,6 +12,8 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
   const [publicReply, setPublicReply] = useState("");
   const [buttonText, setButtonText] = useState("");
   const [buttonLink, setButtonLink] = useState("");
+  const [campaignName, setCampaignName] = useState("");
+  const [step, setStep] = useState(1);
 
   useEffect(() => {
     if (trigger && isOpen) {
@@ -23,6 +25,8 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
         setPublicReply(trigger.variants?.public?.[0] || "");
         setButtonText(trigger.metadata?.button_text || "");
         setButtonLink(trigger.metadata?.button_link || "");
+        setCampaignName(trigger.metadata?.campaign_name || "");
+        setStep(1);
       }, 0);
       return () => clearTimeout(t);
     }
@@ -38,7 +42,8 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
       metadata: {
         follower_gate: followerGate,
         button_text: buttonLink ? (buttonText || "Get Access") : null,
-        button_link: buttonLink
+        button_link: buttonLink,
+        campaign_name: campaignName || null
       },
       variants: {
         dm: [response],
@@ -48,178 +53,180 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-8 md:p-16 lg:p-24">
-      {/* GLASS BACKDROP */}
-      <div 
-        className="absolute inset-0 bg-background/60 backdrop-blur-xl animate-in fade-in duration-700 ease-in-out"
-        onClick={onClose}
-      />
-
-      {/* MODAL CARD */}
-      <div className="relative w-full max-w-5xl max-h-full bg-white border border-border rounded-[48px] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
-        
-        {/* HEADER */}
-        <div className="p-8 border-b border-border/40 bg-zinc-50/50 flex items-center justify-between">
-           <div>
-              <h2 className="text-2xl font-semibold text-foreground tracking-normal">Edit Automation</h2>
-              <p className="text-[10px] text-zinc-muted font-normal tracking-normal opacity-40 mt-1">Refine your flow rules</p>
-           </div>
-           <button 
-             onClick={onClose}
-             className="p-3 bg-white border border-border rounded-2xl text-zinc-muted hover:text-foreground hover:bg-zinc-50 transition-all"
-           >
-             <X size={20} />
-           </button>
-        </div>
-
-        {/* SCROLLABLE BODY */}
-        <div className="flex-1 overflow-y-auto p-8 lg:p-10 max-h-[85vh] no-scrollbar">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            
-            {/* LEFT COLUMN: TRIGGER & CONFIG */}
-            <div className="space-y-10">
-              {/* TRIGGER TYPE & KEYWORD */}
-              <div className="space-y-6">
-                <div className="flex items-center gap-3">
-                  {['DM', 'COMMENT', 'STORY_REPLY'].map((t) => (
-                    <button 
-                      key={t}
-                      onClick={() => setType(t)}
-                      className={`flex-1 py-3 rounded-2xl text-[9px] font-semibold tracking-normal border transition-all ${
-                        type === t ? 'bg-foreground text-background border-foreground shadow-xl' : 'bg-zinc-50 text-zinc-muted border-border hover:bg-white'
-                      }`}
-                    >
-                      {t.replace('_', ' ')}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="space-y-2 p-6 bg-zinc-50 rounded-[32px] border border-border/40">
-                  <label className="text-[10px] font-semibold text-zinc-muted tracking-normal ml-1 opacity-50">The Trigger Keyword</label>
-                  <input 
-                    type="text"
-                    value={keyword}
-                    onChange={(e) => setKeyword(e.target.value.toUpperCase())}
-                    className="w-full text-4xl font-semibold text-foreground placeholder:text-zinc-200 outline-none border-b-4 border-transparent focus:border-foreground py-2 tracking-normal transition-all bg-transparent"
-                  />
-                </div>
-              </div>
-
-              {/* ADVANCED GATES */}
-              <div className="space-y-4">
-                  <label className="text-[10px] font-semibold text-zinc-muted tracking-normal ml-1 opacity-50">Safety & Rules</label>
-                  <div className={`p-6 rounded-[32px] border-2 flex items-center justify-between transition-all ${followerGate ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-zinc-50 border-border/40'}`}>
-                    <div className="flex items-center gap-4">
-                        <div className={`p-2.5 rounded-xl ${followerGate ? 'bg-emerald-500 text-white' : 'bg-zinc-100 text-zinc-300'}`}>
-                          <ShieldCheck size={20} />
-                        </div>
-                        <div>
-                          <p className="text-[11px] font-semibold text-foreground tracking-normal">Follower Gate</p>
-                          <p className="text-[9px] text-zinc-muted font-normal tracking-normal opacity-50">Required to follow</p>
-                        </div>
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-zinc-950/40 backdrop-blur-xl" 
+          />
+          
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            className="relative w-full max-w-xl bg-white border border-zinc-200/60 rounded-[40px] shadow-2xl flex flex-col overflow-hidden"
+          >
+            {/* Header */}
+            <div className="px-8 py-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/30">
+               <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-xl bg-[#6366F1] text-white flex items-center justify-center shadow-lg shadow-[#6366F1]/20">
+                      <Rocket size={16} />
                     </div>
-                    <button 
-                      onClick={() => setFollowerGate(!followerGate)}
-                      className={`w-12 h-6 rounded-full relative transition-all ${followerGate ? 'bg-emerald-500' : 'bg-zinc-200'}`}
-                    >
-                        <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-all ${followerGate ? 'right-0.5' : 'left-0.5 shadow-sm'}`} />
-                    </button>
+                    <span className="text-[10px] font-semibold text-[#6366F1]">Step {step} of 2</span>
                   </div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-zinc-950 tracking-tighter mt-2">
+                    {step === 1 ? "Configure Trigger" : "Design Response"}
+                  </h2>
+               </div>
+               <button 
+                 onClick={onClose}
+                 className="p-3 bg-white border border-zinc-100 rounded-2xl text-zinc-400 hover:text-zinc-900 transition-all shadow-sm"
+               >
+                 <X size={20} />
+               </button>
+            </div>
 
-                  {type === "COMMENT" && (
-                    <div className="p-8 rounded-[32px] border-2 bg-blue-500/5 border-blue-500/10 space-y-4 animate-in zoom-in-95 duration-300">
-                      <div className="flex items-center gap-3">
-                          <div className="p-2 bg-blue-500 text-white rounded-lg">
-                            <Globe size={16} />
-                          </div>
-                          <span className="text-[11px] font-semibold text-foreground tracking-normal">Public Reply</span>
+            <div className="p-8 space-y-8">
+              <AnimatePresence mode="wait">
+                {step === 1 ? (
+                  <motion.div 
+                    key="step1"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    className="space-y-6"
+                  >
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-semibold text-zinc-400 ml-1">Trigger Type</label>
+                      <div className="grid grid-cols-3 gap-3">
+                        {[
+                          { id: 'DM', label: 'Direct DM' },
+                          { id: 'COMMENT', label: 'Comment' },
+                          { id: 'STORY', label: 'Story Tag' }
+                        ].map((t) => (
+                          <button
+                            key={t.id}
+                            onClick={() => setType(t.id)}
+                            className={`px-4 py-3 rounded-2xl text-[10px] font-semibold tracking-tight transition-all border ${
+                              type === t.id ? 'bg-zinc-950 text-white border-zinc-950 shadow-lg' : 'bg-zinc-50 text-zinc-500 border-zinc-100 hover:border-zinc-200'
+                            }`}
+                          >
+                            {t.label}
+                          </button>
+                        ))}
                       </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-semibold text-zinc-400 ml-1">Target Keyword</label>
                       <input 
                         type="text" 
-                        value={publicReply}
-                        onChange={(e) => setPublicReply(e.target.value)}
-                        placeholder="e.g. Sent you a DM! ðŸš€"
-                        className="w-full bg-white border border-blue-100 rounded-2xl px-5 py-4 outline-none text-sm font-semibold text-blue-700 shadow-sm tracking-normal"
+                        value={keyword}
+                        onChange={(e) => setKeyword(e.target.value.toUpperCase())}
+                        placeholder="e.g. READY"
+                        className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl p-4 text-lg font-bold text-zinc-950 outline-none focus:border-[#6366F1] focus:bg-white transition-all shadow-sm"
                       />
                     </div>
-                  )}
-              </div>
-            </div>
 
-            {/* RIGHT COLUMN: RESPONSE & CTA */}
-            <div className="space-y-6">
-              {/* RESPONSE AREA */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <label className="text-[10px] font-semibold text-zinc-muted tracking-normal ml-1 opacity-50">The Response Message (Text Only)</label>
-                </div>
-                <textarea 
-                  value={response}
-                  onChange={(e) => setResponse(e.target.value)}
-                  className="w-full h-[200px] bg-zinc-50 border-2 border-border/40 rounded-[32px] p-8 text-base font-semibold text-foreground outline-none focus:border-foreground focus:bg-white tracking-normal transition-all resize-none shadow-sm"
-                  placeholder="What should Automixa say?"
-                />
-
-                {/* BUTTON OPTION */}
-                <div className={`p-8 rounded-[32px] border-2 transition-all bg-foreground/5 border-foreground/10 ring-8 ring-emerald-500/5`}>
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className={`p-2.5 rounded-xl bg-emerald-500 text-white`}>
-                          <MousePointer2 size={18} />
+                    <div className="flex items-center justify-between p-4 bg-zinc-50 rounded-3xl border border-zinc-100">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-2xl bg-white border border-zinc-100 flex items-center justify-center text-zinc-400 shadow-sm">
+                          <ShieldCheck size={18} />
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-zinc-950">Follower Gate</p>
+                          <p className="text-[10px] text-zinc-500 font-normal lowercase">only trigger for followers</p>
+                        </div>
                       </div>
-                      <div className="flex flex-col">
-                        <span className="text-[10px] font-semibold text-foreground">Premium Fulfillment Card</span>
-                        <span className="text-[8px] text-zinc-muted font-normal opacity-60">Separate Link and Button</span>
-                      </div>
+                      <button 
+                        onClick={() => setFollowerGate(!followerGate)}
+                        className={`w-12 h-6 rounded-full transition-all relative ${followerGate ? 'bg-[#6366F1]' : 'bg-zinc-200'}`}
+                      >
+                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${followerGate ? 'left-7' : 'left-1'}`} />
+                      </button>
                     </div>
-                    
-                    <div className="space-y-4">
-                       <div className="space-y-1">
-                          <label className="text-[9px] font-semibold text-zinc-muted opacity-40 ml-1">Destination URL</label>
-                          <input 
-                            type="text"
-                            value={buttonLink}
-                            onChange={(e) => setButtonLink(e.target.value)}
-                            placeholder="https://example.com"
-                            className="w-full bg-white border border-border/60 rounded-xl px-4 py-2.5 outline-none text-sm font-semibold focus:border-foreground transition-all shadow-sm"
-                          />
-                       </div>
+                  </motion.div>
+                ) : (
+                  <motion.div 
+                    key="step2"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    className="space-y-6"
+                  >
+                    {type === 'COMMENT' && (
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-semibold text-zinc-400 ml-1">Public Reply</label>
+                        <input 
+                          type="text" 
+                          value={publicReply}
+                          onChange={(e) => setPublicReply(e.target.value)}
+                          placeholder="Check your DMs! 🚀"
+                          className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl p-4 text-sm font-normal text-zinc-500 outline-none focus:border-[#6366F1] focus:bg-white transition-all shadow-sm"
+                        />
+                      </div>
+                    )}
 
-                       <div className="space-y-1">
-                          <label className="text-[9px] font-semibold text-zinc-muted opacity-40 ml-1">Button Label</label>
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-semibold text-zinc-400 ml-1">DM Response Message</label>
+                      <textarea 
+                        rows={4}
+                        value={response}
+                        onChange={(e) => setResponse(e.target.value)}
+                        placeholder="Type your message here..."
+                        className="w-full bg-zinc-50 border border-zinc-100 rounded-3xl p-5 text-sm font-normal text-zinc-500 outline-none focus:border-[#6366F1] focus:bg-white transition-all shadow-sm no-scrollbar resize-none"
+                      />
+                    </div>
+
+                    <div className="space-y-4 pt-2">
+                       <label className="text-[10px] font-semibold text-zinc-400 ml-1">Call to Action (Optional)</label>
+                       <div className="grid grid-cols-2 gap-3">
                           <input 
-                            type="text"
+                            type="text" 
+                            placeholder="Button Text"
                             value={buttonText}
                             onChange={(e) => setButtonText(e.target.value)}
-                            disabled={!buttonLink}
-                            placeholder="e.g. Visit Website ðŸŒ"
-                            className="w-full bg-white border border-border/60 rounded-xl px-4 py-2.5 outline-none text-sm font-semibold focus:border-foreground transition-all shadow-sm disabled:opacity-50"
+                            className="bg-zinc-50 border border-zinc-100 rounded-2xl p-4 text-[10px] font-semibold outline-none focus:bg-white transition-all"
+                          />
+                          <input 
+                            type="text" 
+                            placeholder="Link URL"
+                            value={buttonLink}
+                            onChange={(e) => setButtonLink(e.target.value)}
+                            className="bg-zinc-50 border border-zinc-100 rounded-2xl p-4 text-[10px] font-semibold outline-none focus:bg-white transition-all lowercase"
                           />
                        </div>
                     </div>
-                </div>
-              </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-          </div>
-        </div>
 
-        {/* FOOTER */}
-        <div className="p-8 border-t border-border/40 bg-white flex items-center gap-4">
-           <button 
-             onClick={onClose}
-             className="px-8 py-5 rounded-[24px] text-xs font-semibold text-zinc-muted hover:text-foreground tracking-normal transition-all"
-           >
-             Cancel
-           </button>
-           <button 
-             onClick={handleSave}
-             className="flex-1 px-8 py-5 bg-foreground text-background rounded-[24px] text-xs font-semibold tracking-normal shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
-           >
-             <Save size={18} />
-             Save Changes
-           </button>
+            {/* Footer */}
+            <div className="px-8 py-6 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between">
+              <button 
+                onClick={() => step === 1 ? onClose() : setStep(1)}
+                className="px-6 py-3 text-[10px] font-semibold text-zinc-400 hover:text-zinc-600 transition-all"
+              >
+                {step === 1 ? "Cancel" : "Back"}
+              </button>
+              
+              <button 
+                onClick={() => step === 1 ? setStep(2) : handleSave()}
+                className="px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-[#6366F1] transition-all flex items-center gap-2"
+              >
+                {step === 1 ? "Continue" : "Save Automation"}
+                {step === 1 ? <ArrowRight size={14} /> : <Save size={14} />}
+              </button>
+            </div>
+          </motion.div>
         </div>
-      </div>
-    </div>
+      )}
+    </AnimatePresence>
   );
 }
-

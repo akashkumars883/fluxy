@@ -2,7 +2,7 @@ import { Brain, Sparkles } from "lucide-react";
 
 export default function AiSettingsCard({ automation, onUpdate }) {
   return (
-    <section className="bg-white border border-border rounded-[28px] p-6 shadow-sm group">
+    <section className="bg-white border border-border rounded-xl p-6 shadow-sm group">
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 bg-foreground text-background rounded-xl flex items-center justify-center shadow-lg shadow-foreground/5">
           <Brain size={20} />
@@ -15,7 +15,7 @@ export default function AiSettingsCard({ automation, onUpdate }) {
       
       <div className="space-y-5">
          {/* Toggle Container */}
-         <div className="flex items-center justify-between p-4 bg-foreground/5 rounded-2xl border border-border/40">
+         <div className="flex items-center justify-between p-4 bg-foreground/5 rounded-xl border border-border/40">
             <div className="space-y-0.5">
               <span className="font-bold text-sm block text-foreground">Smart Reply Mode</span>
               <span className="text-[11px] text-zinc-muted font-bold tracking-tight">AI generated responses</span>

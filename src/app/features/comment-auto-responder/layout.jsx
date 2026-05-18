@@ -8,6 +8,9 @@ export const metadata = {
     siteName: "Automixa",
     type: "website",
   },
+  alternates: {
+    canonical: "https://automixa.in/features/comment-auto-responder",
+  }
 };
 
 export default function CommentAutoResponderLayout({ children }) {

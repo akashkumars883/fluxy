@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { 
-  MessageSquare, Zap, Target, Users, TrendingUp, ShieldCheck, Heart, Lock, Blocks 
+import {
+  MessageSquare, Zap, Target, Users, TrendingUp, ShieldCheck, Heart, Lock as LucideLock, Blocks
 } from "lucide-react";
 
 export default function SocialProof() {
@@ -44,15 +44,15 @@ export default function SocialProof() {
   return (
     <section className="py-10 md:py-12 bg-transparent relative overflow-hidden">
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 relative z-10">
-        
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-16 relative z-10">
+
         {/* Header Title */}
-        <div className="text-center mb-8 max-w-2xl mx-auto">
-          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#6366F1] mb-3">
+        <div className="text-center mb-16 max-w-2xl mx-auto">
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#6366F1] mb-4">
             Real Numbers. Real Growth.
           </p>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground tracking-tight font-display">
-            Grow your Instagram followers & sales
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground tracking-tight leading-[1.1]">
+            Grow your <span className="text-sage font-normal">Instagram</span> followers & sales
           </h2>
         </div>
 
@@ -70,7 +70,7 @@ export default function SocialProof() {
                 className="group relative bg-white/40 backdrop-blur-xl border border-white/60 hover:border-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-zinc-100/40 hover:shadow-2xl hover:shadow-zinc-200/40 hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center"
               >
                 {/* Subtle soft glowing aura on hover */}
-                <div 
+                <div
                   className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none blur-2xl"
                   style={{ background: `radial-gradient(circle at center, ${stat.glowColor} 0%, transparent 70%)` }}
                 />

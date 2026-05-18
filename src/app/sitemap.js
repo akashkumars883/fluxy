@@ -27,6 +27,24 @@ export default function sitemap() {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/compare/manychat`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/compare/chatfuel`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/compare/instachamp`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
       url: `${baseUrl}/solutions/creators`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
@@ -51,10 +69,10 @@ export default function sitemap() {
       priority: 0.5,
     },
     {
-      url: `${baseUrl}/login`,
+      url: `${baseUrl}/partners`,
       lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.4,
+      changeFrequency: 'monthly',
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/privacy`,

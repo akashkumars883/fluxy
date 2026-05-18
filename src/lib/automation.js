@@ -4,6 +4,9 @@ import { createAdminClient } from "./supabase.js";
 import { MetaService } from "./meta.js";
 import { decryptToken } from "./security.js";
 import { getLinkPreview } from "./scraper.js";
+import { matchIntent, generatePersonalizedResponse } from "./ai.js";
+import { sendLimitExceededEmail } from "./resend.js";
+import { SmartGuard } from "./smartguard.js";
 
 const supabaseAdmin = createAdminClient();
 
@@ -68,9 +71,87 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     const automation = automationRows[0];
     if (!automation.is_active) return { success: false };
 
+    // --- PLAN QUOTA LIMITS ENFORCEMENT & WARNING EMAIL ALERTS ---
+    try {
+      const { count: consumedCount } = await supabaseAdmin
+        .from("automation_history")
+        .select("*", { count: "exact", head: true })
+        .eq("automation_id", automation.id)
+        .eq("status", "SUCCESS");
+
+      const { data: subData } = await supabaseAdmin
+        .from("subscriptions")
+        .select("plan")
+        .eq("user_id", automation.user_id)
+        .eq("status", "active")
+        .limit(1);
+
+      const userPlan = subData?.[0]?.plan || "free";
+      const planLimits = {
+        free: 1000,
+        creator_pro: 100000,
+        agency_scale: 1000000
+      };
+      const maxReplies = planLimits[userPlan] || 1000;
+
+      if ((consumedCount || 0) >= maxReplies) {
+        console.log(`🚫 [PLAN LIMIT EXCEEDED] Quota limit of ${maxReplies} hit for user ID: ${automation.user_id}. Auto-reply blocked.`);
+        
+        // Log limit breach event in DB history
+        await supabaseAdmin.from("automation_history").insert({
+          automation_id: automation.id,
+          sender_id: senderId,
+          sender_name: "Limit Check",
+          type: type,
+          keyword: "PLAN_LIMIT_CHECK",
+          status: "LIMIT_EXCEEDED",
+          metadata: { error: "Plan quota limit hit. Please upgrade.", plan: userPlan, consumed: consumedCount, limit: maxReplies }
+        }).catch((e) => console.error("❌ Failed logging limit breach:", e.message));
+
+        // Fetch user profile email to notify them
+        try {
+          const { data: userData } = await supabaseAdmin.auth.admin.getUserById(automation.user_id);
+          if (userData?.user?.email) {
+            const userEmail = userData.user.email;
+            const userDisplayName = userData.user.user_metadata?.full_name || userData.user.user_metadata?.name || "Automixa Customer";
+            
+            await sendLimitExceededEmail({
+              email: userEmail,
+              name: userDisplayName,
+              planName: userPlan === "free" ? "Free" : userPlan === "creator_pro" ? "Creator Pro" : "Agency Scale",
+              limitAmount: maxReplies
+            });
+            console.log(`✉️ [LIMIT EMAIL SENT] Quota limit email sent successfully to: ${userEmail}`);
+          }
+        } catch (emailErr) {
+          console.error("❌ Failed sending limit exceeded alert email:", emailErr.message);
+        }
+
+        return { success: false, reason: "limit_exceeded" };
+      }
+    } catch (limitCheckErr) {
+      console.error("⚠️ [LIMIT CHECK FAILED] Skipping limits guard to avoid user block:", limitCheckErr.message);
+    }
+
     const pageAccessToken = decryptToken(automation.access_token);
     const profileResult = await MetaService.getUserProfile(senderId, pageAccessToken);
     const userName = profileResult.success ? profileResult.data.name : "there";
+
+    // --- SMARTGUARD: ANTI-SPAM CIRCUIT BREAKER ---
+    const isSpam = await SmartGuard.checkSpamAttack(senderId, automation.id);
+    if (isSpam) {
+      console.warn(`🛡️ [SmartGuard] Blocked abusive spamming by sender: ${senderId}`);
+      await supabaseAdmin.from("automation_history").insert({
+        automation_id: automation.id,
+        sender_id: senderId,
+        sender_name: userName,
+        type: type,
+        keyword: text ? text.substring(0, 100) : "SPAM_ABUSE",
+        status: "BLOCKED",
+        metadata: { error: "SmartGuard isolated abusive repetitive triggers." }
+      }).catch(() => {});
+      return { success: false, reason: "smartguard_spam_blocked" };
+    }
 
     // 2. Resolve Triggers for this automation
     let { data: triggers } = await supabaseAdmin
@@ -89,7 +170,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       match = triggers.find(t => t.id === targetId);
     }
 
-    // --- KEYWORD-BASED RESOLUTION (Incoming Text/Comments) ---
+    // --- KEYWORD-BASED & AI INTENT RESOLUTION (Incoming Text/Comments) ---
     if (!match) {
       const lowerText = (text || "").toLowerCase().trim();
       const eventTriggers = triggers.filter(t => t.type === type || (!t.type && type === "DM"));
@@ -100,8 +181,46 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         if (targeted.length > 0) activePool = targeted;
       }
 
+      // 1. Try exact keyword matching first
       match = activePool.find(t => lowerText.includes((t.keyword || "").toLowerCase()));
 
+      // 2. Fallback to Advanced AI Semantic Intent Recognition
+      if (!match && text) {
+        console.log(`🤖 [AI INTENT] Keyword mismatch for "${text}". Launching Advanced AI Intent Analysis...`);
+        try {
+          // Fetch last 3 history logs for contextual memory
+          let userMemory = "";
+          const { data: historyLogs } = await supabaseAdmin
+            .from("automation_history")
+            .select("keyword, type, status")
+            .eq("automation_id", automation.id)
+            .eq("sender_id", senderId)
+            .order("created_at", { ascending: false })
+            .limit(3);
+
+          if (historyLogs?.length) {
+            userMemory = historyLogs
+              .map(log => `${log.type} trigger "${log.keyword}" status: ${log.status}`)
+              .join(", ");
+          }
+
+          const brandContext = `Brand: ${automation.brand_name || "Automixa"}. Context: ${automation.metadata?.business_description || "Instagram automation & marketing"}`;
+          const aiResult = await matchIntent(text, activePool, brandContext, userMemory);
+
+          if (aiResult?.triggerId) {
+            match = activePool.find(t => t.id === aiResult.triggerId);
+            if (match) {
+              console.log(`🎯 [AI INTENT SUCCESS] Semantically matched "${text}" to Trigger: "${match.keyword}"`);
+              match._detectedMood = aiResult.mood;
+              match._userMemory = userMemory;
+            }
+          }
+        } catch (aiErr) {
+          console.error("❌ [AI INTENT ERROR] Semantic matching failed:", aiErr.message);
+        }
+      }
+
+      // 3. Fallback to default wildcard trigger
       if (!match) {
         match = triggers.find(t => t.keyword === "*" || t.keyword === "DEFAULT");
       }
@@ -141,7 +260,9 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         followFound = followData.success && followData.isFollowing;
       }
 
-      await delay(Math.floor(Math.random() * 2000) + 3000); // 3-5s delay
+      // --- SMARTGUARD: ADAPTIVE SURGE THROTTLING ---
+      const adaptiveDelayPhase1 = await SmartGuard.getAdaptiveDelay(automation.id);
+      await delay(adaptiveDelayPhase1);
 
       if (needsFollow && !followFound) {
         // CASE A: NEW FAN / NOT FOLLOWING -> Show Intro Card
@@ -175,7 +296,29 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         console.log(`⚡ Sending Product Link DIRECTLY to existing fan ${userName}`);
         
         const dmVariants = Array.isArray(match.variants?.dm) ? match.variants.dm : [match.response || "Here is your access!"];
-        let finalDm = (getRandom(dmVariants) || "Here is your access!").replace("{{name}}", userName).replace("{name}", userName);
+        const rawDm = (getRandom(dmVariants) || "Here is your access!").replace("{{name}}", userName).replace("{name}", userName);
+        // --- SMARTGUARD: DYNAMIC SPINTAX REPHRASING ---
+        let finalDm = SmartGuard.applySpintax(rawDm, userName);
+
+        // 🧠 AI Voice Mirroring & Persona Customization
+        if (text && (match.metadata?.ai_driven || automation.metadata?.ai_driven || match._detectedMood)) {
+          console.log(`🧠 [AI VOICE MIRRORING] Personalizing Private Reply for ${userName}...`);
+          try {
+            const aiResponse = await generatePersonalizedResponse(
+              text, 
+              finalDm, 
+              userName, 
+              match._detectedMood || "BASIC", 
+              match._userMemory || ""
+            );
+            if (aiResponse) {
+              finalDm = aiResponse;
+              console.log(`✅ [AI VOICE SUCCESS] Personalized DM: "${finalDm}"`);
+            }
+          } catch (aiVoiceErr) {
+            console.error("❌ [AI VOICE ERROR] Fallback to standard Private Reply:", aiVoiceErr.message);
+          }
+        }
 
         const urlRegex = /(https?:\/\/[^\s]+)/g;
         const scrapedUrls = (finalDm || "").match(urlRegex);
@@ -259,10 +402,34 @@ export async function processAutomation(senderId, text, type, recipientId, comme
 
     // --- PHASE 4: FINAL FULFILLMENT (Automated Product Card) ---
     console.log(`🏁 Phase 4: Delivering Final Product Card to ${userName}`);
-    await delay(Math.floor(Math.random() * 1000) + 2000); // 2-3s delay
+    // --- SMARTGUARD: ADAPTIVE SURGE THROTTLING ---
+    const adaptiveDelayPhase4 = await SmartGuard.getAdaptiveDelay(automation.id);
+    await delay(adaptiveDelayPhase4);
 
     const dmVariants = Array.isArray(match.variants?.dm) ? match.variants.dm : [match.response || "Here is your access!"];
-    let finalDm = (getRandom(dmVariants) || "Here is your access!").replace("{{name}}", userName).replace("{name}", userName);
+    const rawDm = (getRandom(dmVariants) || "Here is your access!").replace("{{name}}", userName).replace("{name}", userName);
+    // --- SMARTGUARD: DYNAMIC SPINTAX REPHRASING ---
+    let finalDm = SmartGuard.applySpintax(rawDm, userName);
+
+    // 🧠 AI Voice Mirroring & Persona Customization
+    if (text && (match.metadata?.ai_driven || automation.metadata?.ai_driven || match._detectedMood)) {
+      console.log(`🧠 [AI VOICE MIRRORING] Personalizing Final DM for ${userName}...`);
+      try {
+        const aiResponse = await generatePersonalizedResponse(
+          text, 
+          finalDm, 
+          userName, 
+          match._detectedMood || "BASIC", 
+          match._userMemory || ""
+        );
+        if (aiResponse) {
+          finalDm = aiResponse;
+          console.log(`✅ [AI VOICE SUCCESS] Personalized DM: "${finalDm}"`);
+        }
+      } catch (aiVoiceErr) {
+        console.error("❌ [AI VOICE ERROR] Fallback to standard DM:", aiVoiceErr.message);
+      }
+    }
 
     // Prioritize explicit button_link from metadata, fallback to regex scraping
     const urlRegex = /(https?:\/\/[^\s]+)/g;

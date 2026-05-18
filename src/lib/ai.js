@@ -7,9 +7,19 @@ const groq = new Groq({
 });
 
 function keywordMatch(message, triggers) {
-    const lowerMsg = message.toLowerCase();
+    const lowerMsg = message.toLowerCase().trim();
+    
+    // Positive/Appreciative emoji set
+    const positiveEmojis = ["🔥", "❤️", "🙌", "👏", "😍", "👍", "💯", "🚀", "🌟", "👌"];
+    const isAppreciativeEmoji = positiveEmojis.some(emoji => lowerMsg.includes(emoji));
+
     for (const t of triggers) {
-        if (lowerMsg.includes(t.keyword.toLowerCase())) {
+        const kw = t.keyword.toLowerCase().trim();
+        if (lowerMsg.includes(kw)) {
+            return t.id;
+        }
+        // Zero-latency Emoji Mapping: Map general appreciation emojis to nice/great triggers
+        if (isAppreciativeEmoji && (kw === "nice" || kw === "great" || kw === "awesome" || kw === "love" || kw === "cool")) {
             return t.id;
         }
     }
@@ -37,6 +47,7 @@ async function llmMatch(userMessage, triggers, postContext = "", userMemory = ""
     2. Assess USER_MESSAGE: Buying intent/Objections? (YES/NO)
     3. MOOD: SALES if both are YES. Else BASIC.
     4. MATCHING: Match to trigger ID. Use USER_HISTORY to clarify if the user says "Same", "That one", etc.
+    5. EMOJI RULE: If USER_MESSAGE is a positive emoji (e.g. 🔥, ❤️, 🙌, 😍, 👏, 👍, 💯, 🚀) and any trigger keyword is "nice", "great", "awesome", "cool", "love", etc., you MUST match this positive emoji to that appreciative trigger ID with high confidence (>0.85).
 
     Return JSON strictly:
     { "triggerId": "id or null", "confidence": 0-1, "mood": "BASIC" | "SALES" }

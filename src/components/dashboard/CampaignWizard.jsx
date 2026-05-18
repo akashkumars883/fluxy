@@ -1,268 +1,588 @@
-/* src/components/dashboard/CampaignWizard.jsx */
 "use client";
 
+import {
+  MessageSquare,
+  Send,
+  Sparkles,
+  Rocket,
+  ArrowRight,
+  ArrowLeft,
+  Check,
+  Users,
+  ShieldCheck,
+  Globe,
+  Zap,
+  MousePointer2,
+  RefreshCcw,
+  Plus,
+  Bot,
+  Target,
+  Brain,
+  Lock as LucideLock,
+  Trash2,
+  X,
+  Heart,
+  Camera,
+  Layout
+} from "lucide-react";
 import { useState } from "react";
-import { MousePointer2, ShieldCheck, Globe, ArrowRight, ArrowLeft, Rocket } from "lucide-react";
+import AutomationPreview from "./AutomationPreview";
+import { motion, AnimatePresence } from "framer-motion";
 
-/**
- * CAMPAIGN WIZARD COMPONENT
- * A horizontal-scrolling, linear configuration flow for automation.
- */
-export default function CampaignWizard({ onPublish, onChange, onBack, values }) {
-  const [step, setStep] = useState(0);
-
-  // Destructure values from props (Controlled Component pattern)
-  const { 
-    keyword, 
-    response, 
-    type, 
-    followerGate, 
-    publicReply, 
-    buttonText, 
-    buttonLink 
+export default function CampaignWizard({ step = 1, onStepChange, onPublish, onChange, onBack, values, media = [], stories = [], selectedPosts = [], onSelectPosts, currentPlan = "free" }) {
+  const {
+    keyword = "",
+    response = "",
+    type = "COMMENT",
+    followerGate = false,
+    publicReply = "",
+    buttonText = "",
+    buttonLink = "",
+    campaignStrategy = "comment_dm",
+    campaignName = "",
+    syncStory = false,
+    faqEnabled = false,
+    faqs = [],
+    leadCaptureEnabled = false,
+    aiGoal = "",
+    aiPersona = "friendly",
+    aiUseEmojis = true
   } = values;
 
-  // Local setters that notify parent
-  const setKeyword = (val) => onChange({ keyword: val });
-  const setResponse = (val) => onChange({ response: val });
-  const setType = (val) => onChange({ type: val });
-  const setFollowerGate = (val) => onChange({ followerGate: val });
-  const setPublicReply = (val) => onChange({ publicReply: val });
-  const setButtonText = (val) => onChange({ buttonText: val });
-  const setButtonLink = (val) => onChange({ buttonLink: val });
-
-  const steps = [
-    { id: 'keyword', title: 'Start Word', label: 'What word starts it?' },
-    { id: 'response', title: 'Auto Message', label: 'What message should they get?' },
-    { id: 'toggles', title: 'Finishing Up', label: 'Final settings' }
-  ];
-
-  const canGoNext = () => {
-    if (step === 0) return keyword.length > 0;
-    if (step === 1) return response.length > 0;
-    return true;
+  const handleStepChange = (newStep) => {
+    if (onStepChange) onStepChange(newStep);
   };
 
-  const handlePublish = () => {
-    onPublish(keyword, response, {
-      type,
-      follower_gate: followerGate,
-      public_reply: type === "COMMENT" ? publicReply : null,
-      button_text: buttonLink ? (buttonText || "Get Access") : null,
-      button_link: buttonLink
-    });
+  const renderStepHeader = () => {
+    return (
+      <div className="flex items-center gap-4 mb-6 pb-6 border-b border-zinc-100 select-none">
+        <button
+          type="button"
+          onClick={() => step > 1 ? handleStepChange(step - 1) : onBack()}
+          className="p-2.5 bg-zinc-50 border border-zinc-150 hover:bg-zinc-100 rounded-xl text-zinc-500 hover:text-zinc-950 transition-all shadow-sm shrink-0"
+        >
+          <ArrowLeft size={16} />
+        </button>
+        {campaignStrategy === "comment_dm" && (
+          <div className="flex-1 flex gap-2">
+            {[1, 2, 3].map((s) => (
+              <div
+                key={s}
+                className={`flex-1 h-1.5 rounded-full transition-all duration-700 ${s <= step ? 'bg-[#6366F1] shadow-[0_0_10px_rgba(99,102,241,0.4)]' : 'bg-zinc-100'}`}
+              />
+            ))}
+          </div>
+        )}
+        {campaignStrategy === "story_automator" && (
+          <div className="flex-1 flex gap-2">
+            {[1, 2].map((s) => (
+              <div
+                key={s}
+                className={`flex-1 h-1.5 rounded-full transition-all duration-700 ${s <= step ? 'bg-[#6366F1] shadow-[0_0_10px_rgba(99,102,241,0.4)]' : 'bg-zinc-100'}`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // Helper to render the appropriate flow based on strategy
+  const renderFlow = () => {
+    switch (campaignStrategy) {
+      case "faq_assistant":
+        return renderFAQFlow();
+      case "sales_closer":
+        return renderSalesFlow();
+      case "story_automator":
+        return renderStoryFlow();
+      default:
+        return renderCommentDMFlow();
+    }
+  };
+
+  // --- FLOW 1: COMMENT & DM AUTOMATOR ---
+  const renderCommentDMFlow = () => {
+    return (
+      <div className="space-y-6">
+        {step === 1 && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <div className="bg-white border border-zinc-200/60 rounded-xl p-8 shadow-xl shadow-zinc-200/20">
+              {renderStepHeader()}
+              <div className="text-left mb-8 px-2">
+                <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">1. Select Target Posts</h3>
+                <p className="text-[10px] font-semibold text-zinc-400 mt-1 uppercase tracking-wider">Which posts should trigger this automation?</p>
+              </div>
+              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-[300px] overflow-y-auto p-1 no-scrollbar">
+                <button onClick={() => onSelectPosts([])} className={`aspect-square rounded-xl border-2 transition-all flex flex-col items-center justify-center gap-1 ${selectedPosts.length === 0 ? 'border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]' : 'border-zinc-100 bg-white text-zinc-400'}`}>
+                  <Globe size={16} />
+                  <span className="text-[7px] font-bold uppercase">All Posts</span>
+                </button>
+                {media.map((item) => (
+                  <button key={item.id} onClick={() => onSelectPosts(selectedPosts.includes(item.id) ? selectedPosts.filter(id => id !== item.id) : [...selectedPosts, item.id])} className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all ${selectedPosts.includes(item.id) ? 'border-[#6366F1]' : 'border-white'}`}>
+                    <img src={item.media_url} alt="post" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+              <div className="mt-8 flex justify-end">
+                <button onClick={() => handleStepChange(2)} className="px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-[#6366F1] transition-all flex items-center gap-2">
+                  Next: Setup Trigger <ArrowRight size={16} />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {step === 2 && (
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+            <div className="bg-white border border-zinc-200/60 rounded-xl p-8 shadow-xl shadow-zinc-200/20 space-y-8">
+              {renderStepHeader()}
+              <div className="text-left px-2">
+                <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">2. Setup Trigger</h3>
+                <p className="text-[10px] font-semibold text-zinc-400 mt-1 uppercase tracking-wider">What keyword should activate the bot?</p>
+              </div>
+              <div className="space-y-6">
+                <input
+                  type="text"
+                  value={keyword}
+                  onChange={(e) => onChange({ keyword: e.target.value })}
+                  placeholder="Enter trigger keyword (e.g. hello)"
+                  className="w-full bg-white/60 border-2 border-zinc-100 rounded-xl px-8 py-4 outline-none text-lg font-semibold text-zinc-950 focus:border-[#6366F1] shadow-sm text-left"
+                />
+              </div>
+              <div className="flex justify-end items-center pt-4">
+                <button onClick={() => handleStepChange(3)} disabled={!keyword} className="px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-[#6366F1] transition-all flex items-center gap-2 disabled:opacity-50">
+                  Next: Design Responses <ArrowRight size={16} />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {step === 3 && (
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+            <div className="bg-white border border-zinc-200/60 rounded-xl p-8 shadow-xl shadow-zinc-200/20 space-y-8">
+              {renderStepHeader()}
+              <div className="text-left px-2">
+                <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">3. Design Responses</h3>
+                <p className="text-[10px] font-semibold text-zinc-400 mt-1 uppercase tracking-wider">First the DM, then the Comment Reply</p>
+              </div>
+              <div className="space-y-6">
+                <div className="space-y-3">
+                  <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Action 1: Private DM</label>
+                  <textarea value={response} onChange={(e) => onChange({ response: e.target.value })} rows={3} placeholder="Hey! Here is your link..." className="w-full bg-white/60 border border-zinc-100 rounded-xl p-5 text-sm outline-none focus:border-[#6366F1] resize-none" />
+                  <div className="grid grid-cols-2 gap-3">
+                    <input type="text" placeholder="Button Text" value={buttonText} onChange={(e) => onChange({ buttonText: e.target.value })} className="bg-white/60 border border-zinc-100 rounded-xl px-4 py-3 text-[10px] font-bold outline-none" />
+                    <input type="text" placeholder="Link URL" value={buttonLink} onChange={(e) => onChange({ buttonLink: e.target.value })} className="bg-white/60 border border-zinc-100 rounded-xl px-4 py-3 text-[10px] font-bold outline-none" />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Action 2: Public Comment Reply</label>
+                  <input type="text" value={publicReply} onChange={(e) => onChange({ publicReply: e.target.value })} placeholder="Check your DMs! 🚀" className="w-full bg-white/60 border border-zinc-100 rounded-xl px-6 py-4 text-sm outline-none focus:border-[#6366F1]" />
+                </div>
+                <div className="pt-2">
+                  <div className="flex items-center justify-between p-4 bg-zinc-50/50 rounded-xl border border-zinc-100/80 group">
+                    <div className="flex flex-col text-left">
+                      <span className="text-xs font-bold text-zinc-800">Only for Followers (Follower Gate)</span>
+                      <span className="text-[10px] font-medium text-zinc-400 mt-0.5">Check if user follows your page before sending the DM.</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => onChange({ followerGate: !followerGate })}
+                      className={`w-12 h-6 rounded-full relative transition-all duration-300 ${followerGate ? 'bg-[#6366F1] shadow-[0_0_12px_rgba(99,102,241,0.4)]' : 'bg-zinc-200'} cursor-pointer shrink-0`}
+                    >
+                      <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${followerGate ? 'left-7' : 'left-1'}`} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-end items-center pt-4">
+                <button onClick={() => onPublish(keyword, response, { public_reply: publicReply, follower_gate: followerGate, sync_story: false, button_text: buttonText, button_link: buttonLink })} className="px-12 py-4 bg-[#6366F1] text-white rounded-xl text-[12px] font-bold shadow-2xl transition-all flex items-center gap-2 hover:scale-[1.02]">
+                  Launch Automation <Rocket size={18} />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </div>
+    );
+  };
+
+  // --- FLOW 2: AI FAQ ASSISTANT ---
+  const renderFAQFlow = () => {
+    return (
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 relative">
+        <div className={`bg-white border border-zinc-200/60 rounded-xl p-8 shadow-xl shadow-zinc-200/20 space-y-8`}>
+          {renderStepHeader()}
+          <div className="text-start">
+            <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">Train Your AI Assistant</h3>
+            <p className="text-[12px] font-normal text-zinc-500 mt-1">Add common questions and their answers</p>
+          </div>
+
+          <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 no-scrollbar">
+            {faqs.map((faq, idx) => (
+              <div key={idx} className="group relative p-5 bg-white/60 border border-zinc-200 rounded-xl space-y-3">
+                <button
+                  onClick={() => {
+                    const newFaqs = faqs.filter((_, i) => i !== idx);
+                    onChange({ faqs: newFaqs });
+                  }}
+                  className="absolute top-4 right-4 p-2 text-zinc-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                >
+                  <Trash2 size={14} />
+                </button>
+                <input
+                  type="text"
+                  value={faq.q}
+                  onChange={(e) => {
+                    const newFaqs = [...faqs];
+                    newFaqs[idx].q = e.target.value;
+                    onChange({ faqs: newFaqs });
+                  }}
+                  placeholder="Question (e.g. Shipping time?)"
+                  className="w-full bg-transparent border-none text-sm font-semibold text-zinc-950 pr-10 focus:ring-0 focus:outline-none"
+                />
+                <textarea
+                  value={faq.a}
+                  onChange={(e) => {
+                    const newFaqs = [...faqs];
+                    newFaqs[idx].a = e.target.value;
+                    onChange({ faqs: newFaqs });
+                  }}
+                  rows={2}
+                  placeholder="Answer..."
+                  className="w-full bg-transparent border-none text-[12px] text-zinc-500 focus:ring-0 focus:outline-none resize-none"
+                />
+              </div>
+            ))}
+            <button onClick={() => onChange({ faqs: [...faqs, { q: "", a: "" }] })} className="w-full py-4 border-2 border-dashed border-zinc-200 rounded-xl text-[12px] font-semibold text-zinc-400 hover:border-[#6366F1] hover:text-[#6366F1] transition-all flex items-center justify-center gap-2">
+              <Plus size={14} /> Add New FAQ
+            </button>
+          </div>
+
+          <div className="space-y-4 border-t border-zinc-100 pt-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="text-md font-bold text-zinc-950">AI Tone & Persona</h4>
+                <p className="text-[12px] text-zinc-500">How should your AI talk to users?</p>
+              </div>
+
+              <div className="flex items-center gap-3 p-2 px-3">
+                <span className="text-[12px] font-semibold text-zinc-500">Use Emojis</span>
+                <button
+                  onClick={() => onChange({ aiUseEmojis: !aiUseEmojis })}
+                  className={`w-10 h-5 rounded-full transition-all relative ${aiUseEmojis ? 'bg-[#6366F1]' : 'bg-zinc-200'}`}
+                >
+                  <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${aiUseEmojis ? 'left-6' : 'left-1'}`} />
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { id: 'professional', label: 'Professional', icon: ShieldCheck, desc: 'Formal & Polished' },
+                { id: 'friendly', label: 'Friendly', icon: Heart, desc: 'Warm & Helpful' },
+                { id: 'funny', label: 'Funny', icon: Zap, desc: 'Witty & Playful' },
+                { id: 'concise', label: 'Concise', icon: Target, desc: 'Short & Direct' }
+              ].map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => onChange({ aiPersona: p.id })}
+                  className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-start ${aiPersona === p.id ? 'border-[#6366F1] bg-[#6366F1]/5' : 'border-zinc-50 bg-zinc-50 hover:border-zinc-100 hover:bg-white'}`}
+                >
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${aiPersona === p.id ? 'bg-[#6366F1] text-white shadow-lg shadow-[#6366F1]/20' : 'bg-white text-zinc-400 border border-zinc-100'}`}>
+                    <p.icon size={18} />
+                  </div>
+                  <div>
+                    <div className="text-[11px] font-bold text-zinc-950 leading-none mb-1">{p.label}</div>
+                    <div className="text-[9px] text-zinc-500 font-medium">{p.desc}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-4 pt-4">
+            <button onClick={() => onPublish("AI_FAQ", "AUTOMATED", { faqs, faq_enabled: true })} className="px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-[#6366F1] transition-all">
+              Launch AI Assistant
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    );
+  };
+
+  // --- FLOW 4: STORY AUTOMATOR ---
+  const renderStoryFlow = () => {
+    return (
+      <div className="space-y-6">
+        {step === 1 && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 relative">
+            <div className={`bg-white border border-zinc-200/60 rounded-xl p-8 shadow-xl shadow-zinc-200/20 space-y-8`}>
+              {renderStepHeader()}
+              <div className="text-start">
+                <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">1. Select Source</h3>
+                <p className="text-[12px] font-normal text-zinc-500 mt-1 uppercase tracking-wider">Which stories should trigger this automation?</p>
+              </div>
+
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between ml-1">
+                    <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Select Target Stories</label>
+                    <button
+                      onClick={() => onChange({ selectedStories: [] })}
+                      className={`text-[10px] font-bold px-2 py-1 rounded-lg transition-all ${!values.selectedStories || values.selectedStories.length === 0 ? 'bg-[#6366F1] text-white' : 'bg-zinc-100 text-zinc-500'}`}
+                    >
+                      All Stories
+                    </button>
+                  </div>
+
+                  <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar px-1">
+                    {stories.map((story) => {
+                      const isSelected = values.selectedStories?.includes(story.id);
+                      return (
+                        <button
+                          key={story.id}
+                          onClick={() => {
+                            const current = values.selectedStories || [];
+                            const next = isSelected ? current.filter(id => id !== story.id) : [...current, story.id];
+                            onChange({ selectedStories: next });
+                          }}
+                          className={`relative flex-shrink-0 w-24 aspect-[9/16] rounded-xl overflow-hidden border-2 transition-all ${isSelected ? 'border-[#6366F1] scale-95 shadow-lg' : 'border-zinc-100 opacity-60 hover:opacity-100'}`}
+                        >
+                          <img src={story.media_url} alt="story" className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-2">
+                            <span className="text-[8px] font-bold text-white">{story.timestamp}</span>
+                          </div>
+                          {isSelected && (
+                            <div className="absolute top-2 right-2 w-5 h-5 bg-[#6366F1] rounded-full flex items-center justify-center shadow-lg">
+                              <Check size={12} className="text-white" />
+                            </div>
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-100">
+                  {[
+                    { id: 'MENTION', label: 'Story Mentions', icon: Users, desc: 'When tagged in story' },
+                    { id: 'REPLY', label: 'Story Replies', icon: MessageSquare, desc: 'When someone replies' }
+                  ].map((type) => (
+                    <button
+                      key={type.id}
+                      onClick={() => onChange({ storyTriggerType: type.id })}
+                      className={`flex flex-col gap-3 p-6 rounded-xl border-2 transition-all text-start ${values.storyTriggerType === type.id ? 'border-[#6366F1] bg-[#6366F1]/5' : 'border-zinc-50 bg-zinc-50 hover:border-zinc-100'}`}
+                    >
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${values.storyTriggerType === type.id ? 'bg-[#6366F1] text-white shadow-lg' : 'bg-white text-zinc-400'}`}>
+                        <type.icon size={24} />
+                      </div>
+                      <div>
+                        <div className="text-[12px] font-bold text-zinc-950 leading-none mb-1">{type.label}</div>
+                        <div className="text-[10px] text-zinc-500 font-medium">{type.desc}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex justify-end pt-4">
+                <button onClick={() => handleStepChange(2)} className="px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-[#6366F1] transition-all flex items-center gap-2">
+                  Next: Design Response <ArrowRight size={16} />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {step === 2 && (
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+            <div className={`bg-white border border-zinc-200/60 rounded-xl p-8 shadow-xl shadow-zinc-200/20 space-y-8`}>
+              {renderStepHeader()}
+              <div className="text-start">
+                <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">2. Design Response</h3>
+                <p className="text-[12px] font-normal text-zinc-500 mt-1 uppercase tracking-wider">Set your trigger conditions and DM reply</p>
+              </div>
+
+              <div className="space-y-6">
+                <div className="space-y-3">
+                  <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Trigger Condition</label>
+                  <div className="flex gap-2">
+                    {['Any Reply', 'Specific Keyword'].map((cond) => (
+                      <button
+                        key={cond}
+                        onClick={() => onChange({ storyCondition: cond === 'Any Reply' ? 'ANY' : 'KEYWORD' })}
+                        className={`flex-1 py-3 rounded-xl text-[10px] font-bold border-2 transition-all ${values.storyCondition === (cond === 'Any Reply' ? 'ANY' : 'KEYWORD') ? 'border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]' : 'border-zinc-50 bg-white text-zinc-400'}`}
+                      >
+                        {cond}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {values.storyCondition === 'KEYWORD' && (
+                  <div className="space-y-3 animate-in fade-in slide-in-from-top-2">
+                    <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Target Keyword</label>
+                    <input
+                      type="text"
+                      value={values.keyword}
+                      onChange={(e) => onChange({ keyword: e.target.value })}
+                      placeholder="e.g. VIP, DEALS, YES"
+                      className="w-full bg-zinc-50 border border-zinc-100 rounded-xl p-4 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1]"
+                    />
+                  </div>
+                )}
+
+                <div className="space-y-3">
+                  <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Automated DM Response</label>
+                  <textarea
+                    value={values.response}
+                    onChange={(e) => onChange({ response: e.target.value })}
+                    placeholder="What should be sent in DM?"
+                    className="w-full bg-zinc-50 border border-zinc-100 rounded-xl p-6 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:bg-white transition-all resize-none"
+                    rows={3}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 pt-2">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Button Text</label>
+                    <input
+                      type="text"
+                      value={values.buttonText}
+                      onChange={(e) => onChange({ buttonText: e.target.value })}
+                      placeholder="e.g. Shop Now"
+                      className="w-full bg-zinc-50 border border-zinc-100 rounded-xl p-4 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1]"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Button Link (URL)</label>
+                    <input
+                      type="text"
+                      value={values.buttonLink}
+                      onChange={(e) => onChange({ buttonLink: e.target.value })}
+                      placeholder="https://..."
+                      className="w-full bg-zinc-50 border border-zinc-100 rounded-xl p-4 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end items-center pt-4">
+                <button onClick={() => onPublish("STORY_AUTOMATOR", "STORY_FLOW", { ...values })} className="px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-orange-600 transition-all flex items-center gap-2">
+                  Activate Story Automator <Rocket size={16} />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </div>
+    );
+  };
+
+  // --- FLOW 3: AI SALES CLOSER ---
+  const renderSalesFlow = () => {
+    return (
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 relative">
+        <div className={`bg-white border border-zinc-200/60 rounded-xl p-8 shadow-xl shadow-zinc-200/20 space-y-8`}>
+          {renderStepHeader()}
+          <div className="text-start">
+            <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">AI Sales Agent</h3>
+            <p className="text-[12px] font-normal text-zinc-500 mt-1">Configure your 24/7 sales representative</p>
+          </div>
+
+          <div className="space-y-6">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between ml-1">
+                <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Primary Sales Goal</label>
+                <span className="text-[10px] font-bold text-[#6366F1] bg-[#6366F1]/5 px-2 py-0.5 rounded-lg">High Conversion</span>
+              </div>
+              <textarea
+                value={aiGoal}
+                onChange={(e) => onChange({ aiGoal: e.target.value })}
+                placeholder="e.g. Get users to book a demo call"
+                className="w-full bg-zinc-50 border border-zinc-100 rounded-xl p-6 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:bg-white shadow-sm transition-all resize-none"
+                rows={2}
+              />
+            </div>
+
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Product Knowledge (AI Context)</label>
+              <textarea
+                value={values.aiKnowledge || ""}
+                onChange={(e) => onChange({ aiKnowledge: e.target.value })}
+                placeholder="Tell the AI about your product, pricing, and benefits..."
+                className="w-full bg-zinc-50 border border-zinc-100 rounded-xl p-6 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:bg-white shadow-sm transition-all resize-none"
+                rows={3}
+              />
+            </div>
+
+            <div className="space-y-4 border-t border-zinc-100 pt-8">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-md font-bold text-zinc-950">Closing Strategy</h4>
+                  <p className="text-[12px] text-zinc-500">How should the AI handle negotiations?</p>
+                </div>
+
+                <div className="flex items-center gap-3 p-2 px-3">
+                  <span className="text-[12px] font-semibold text-zinc-500">Use Emojis</span>
+                  <button
+                    onClick={() => onChange({ aiUseEmojis: !aiUseEmojis })}
+                    className={`w-10 h-5 rounded-full transition-all relative ${aiUseEmojis ? 'bg-[#6366F1]' : 'bg-zinc-200'}`}
+                  >
+                    <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${aiUseEmojis ? 'left-6' : 'left-1'}`} />
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { id: 'professional', label: 'Professional', icon: ShieldCheck, desc: 'B2B & Enterprise' },
+                  { id: 'friendly', label: 'Friendly', icon: Heart, desc: 'Warm & Relatable' },
+                  { id: 'funny', label: 'Bold', icon: Zap, desc: 'Direct & Persuasive' },
+                  { id: 'concise', label: 'Precise', icon: Target, desc: 'Fact-driven & Short' }
+                ].map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => onChange({ aiPersona: p.id })}
+                    className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-start ${aiPersona === p.id ? 'border-[#6366F1] bg-[#6366F1]/5' : 'border-zinc-50 bg-zinc-50 hover:border-zinc-100 hover:bg-white'}`}
+                  >
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${aiPersona === p.id ? 'bg-[#6366F1] text-white shadow-lg shadow-[#6366F1]/20' : 'bg-white text-zinc-400 border border-zinc-100'}`}>
+                      <p.icon size={18} />
+                    </div>
+                    <div>
+                      <div className="text-[11px] font-bold text-zinc-950 leading-none mb-1">{p.label}</div>
+                      <div className="text-[9px] text-zinc-500 font-medium">{p.desc}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="p-6 bg-emerald-50/50 border border-emerald-100 rounded-xl flex items-center gap-4">
+            <div className="w-12 h-12 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-lg shrink-0">
+              <Brain size={24} />
+            </div>
+            <p className="text-[10px] text-emerald-900 font-medium leading-relaxed">
+              AI uses <span className="font-bold">Natural Language Intent Discovery</span> to nudge users towards your sales goal without sounding like a bot.
+            </p>
+          </div>
+
+          <div className="flex justify-end gap-4 pt-4">
+            <button onClick={() => onPublish("SALES_CLOSER", "AI_DRIVEN", { ai_goal: aiGoal, ai_persona: aiPersona, ai_use_emojis: aiUseEmojis, sales_closer_enabled: true })} className="px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-emerald-600 transition-all flex items-center gap-2">
+              Activate Sales Agent <Rocket size={16} />
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    );
   };
 
   return (
-    <section className="bg-white border border-border rounded-[32px] shadow-sm flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
-      {/* HEADER WITH STEP TRACKER */}
-      <div className="p-4 border-b border-border/40 bg-zinc-50/50">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-4">
-             {onBack && (
-                <button 
-                  onClick={onBack}
-                  className="p-2 hover:bg-zinc-100 rounded-xl transition-all text-zinc-400 hover:text-foreground"
-                  title="Back"
-                >
-                  <ArrowLeft size={18} />
-                </button>
-             )}
-              <div>
-                <h2 className="text-2xl font-semibold text-foreground tracking-normal leading-tight">Auto Reply Setup</h2>
-                <p className="text-[10px] text-zinc-muted font-normal opacity-50 tracking-normal">Set up your automatic message</p>
-              </div>
-          </div>
-          
-          <button 
-            onClick={handlePublish}
-            disabled={!keyword || !response}
-            className={`px-6 py-2.5 rounded-xl text-xs font-semibold tracking-normal flex items-center gap-2 transition-all ${
-              !keyword || !response 
-                ? "bg-zinc-100 text-zinc-300 border border-zinc-200 cursor-not-allowed" 
-                : "bg-foreground text-background shadow-lg hover:scale-105 active:scale-95"
-            }`}
-          >
-            <Rocket size={16} />
-            <span>Save & Launch</span>
-          </button>
-        </div>
-
-        <div className="flex items-center gap-4">
-           {steps.map((s, idx) => (
-             <div key={s.id} className="flex items-center gap-4 flex-1">
-                <div className="flex flex-col gap-2 flex-1">
-                   <div className={`h-1.5 rounded-full transition-all duration-500 ${idx <= step ? 'bg-foreground' : 'bg-zinc-200'}`} />
-                   <span className={`text-[11px] font-semibold tracking-normal ${idx === step ? 'text-foreground' : 'text-zinc-muted opacity-40'}`}>
-                     {s.title}
-                   </span>
-                </div>
-                {idx < steps.length - 1 && <ArrowRight size={12} className="text-zinc-200 mt-4" />}
-             </div>
-           ))}
-        </div>
-      </div>
-
-      {/* HORIZONTAL CONTENT AREA */}
-      <div className="flex-1 overflow-hidden relative">
-        <div className="flex transition-transform duration-700 h-[30vh]" style={{ transform: `translateX(-${step * 100}%)` }}>
-          
-          {/* STEP 1: KEYWORD */}
-          <div className="min-w-full p-8 md:p-8 flex flex-col max-w-xl mx-auto overflow-y-auto no-scrollbar">
-             <div className="space-y-8">
-                 <div className="space-y-4">
-                    <h3 className="text-3xl font-semibold text-foreground tracking-tight">Pick a Start Word</h3>
-                    <p className="text-sm text-zinc-muted font-medium">Choose the word that starts the auto reply.</p>
-                 </div>
-
-                <div className="space-y-6">
-                   <div className="flex gap-2">
-                      {['COMMENT', 'STORY_REPLY'].map((t) => (
-                       <button key={t} onClick={() => setType(t)}
-                         className={`px-5 py-2.5 rounded-xl text-[11px] font-bold tracking-normal transition-all border ${
-                           type === t ? "bg-foreground text-background border-foreground shadow-md" : "bg-zinc-50 text-zinc-muted border-border hover:bg-white"
-                         }`}
-                       >
-                         {t.replace('_', ' ')}
-                       </button>
-                     ))}
-                   </div>
-                   <input 
-                     type="text" 
-                     placeholder="e.g. LINK, DEALS"
-                     value={keyword}
-                     onChange={(e) => setKeyword(e.target.value.toUpperCase())}
-                     className="w-full text-4xl font-semibold text-foreground placeholder:text-zinc-200 outline-none border-b-2 focus:border-foreground py-2 tracking-normal transition-all"
-                   />
-                </div>
-             </div>
-          </div>
-
-          {/* STEP 2: RESPONSE */}
-          <div className="min-w-full p-8 md:p-12 flex flex-col max-w-xl mx-auto overflow-y-auto no-scrollbar">
-             <div className="space-y-8">
-                 <div className="space-y-4">
-                    <h3 className="text-3xl font-semibold text-foreground tracking-tight">Write your Message</h3>
-                    <p className="text-sm text-zinc-muted font-medium">What should we send them?</p>
-                 </div>
-
-                <div className="space-y-6">
-                    <div className="space-y-2">
-                       <label className="text-[11px] font-bold text-zinc-muted opacity-50 ml-1 uppercase">Message for them</label>
-                       <textarea 
-                         placeholder="Write the message here (without the link)..."
-                         value={response}
-                         onChange={(e) => setResponse(e.target.value)}
-                         className="w-full h-32 text-base font-semibold text-foreground placeholder:text-zinc-200 outline-none border-2 focus:border-foreground bg-zinc-50/50 p-6 rounded-[28px] tracking-normal transition-all resize-none shadow-sm"
-                       />
-                    </div>
-                                      <div className={`p-6 rounded-[32px] border-2 transition-all bg-foreground/5 border-foreground/10`}>
-                        <div className="flex items-center gap-2 mb-4">
-                          <MousePointer2 size={16} className="text-emerald-600" />
-                          <span className="text-[11px] font-bold text-foreground tracking-normal uppercase">Website Button & Link</span>
-                        </div>
-                       
-                       <div className="grid grid-cols-2 gap-4">
-                          <input 
-                            type="text" 
-                            placeholder="Button Text"
-                            value={buttonText}
-                            onChange={(e) => setButtonText(e.target.value)}
-                            className="w-full bg-white border border-border p-4 rounded-xl text-sm font-semibold outline-none focus:border-foreground shadow-sm"
-                          />
-                          <input 
-                            type="text" 
-                            placeholder="https://..."
-                            value={buttonLink}
-                            onChange={(e) => setButtonLink(e.target.value)}
-                            className="w-full bg-white border border-border p-4 rounded-xl text-sm font-semibold outline-none focus:border-foreground shadow-sm"
-                          />
-                       </div>
-                    </div>
-                </div>
-             </div>
-          </div>
-
-          {/* STEP 3: ADVANCED */}
-          <div className="min-w-full p-8 md:p-12 flex flex-col max-w-xl mx-auto overflow-y-auto no-scrollbar">
-             <div className="space-y-8">
-                 <div className="space-y-4">
-                    <h3 className="text-3xl font-semibold text-foreground tracking-tight">Finishing Up</h3>
-                    <p className="text-sm text-zinc-muted font-medium">Extra security and comment replies.</p>
-                 </div>
-
-                <div className="space-y-4">
-                   <div className={`p-6 rounded-[28px] border-2 transition-all flex items-center justify-between ${followerGate ? 'bg-emerald-50/50 border-emerald-500/30' : 'bg-zinc-50 border-border/40'}`}>
-                      <div className="flex items-center gap-4">
-                         <div className={`p-3 rounded-2xl ${followerGate ? 'bg-emerald-500 text-white' : 'bg-zinc-100 text-zinc-400'}`}>
-                            <ShieldCheck size={20} />
-                         </div>
-                          <div>
-                             <p className="text-[12px] font-bold text-foreground tracking-normal uppercase">For Followers Only</p>
-                             <p className="text-[10px] text-zinc-muted font-normal tracking-normal">Only people who follow you get a reply</p>
-                          </div>
-                      </div>
-                      <button onClick={() => setFollowerGate(!followerGate)}
-                        className={`w-12 h-7 rounded-full relative transition-all ${followerGate ? 'bg-emerald-500' : 'bg-zinc-300'}`}
-                      >
-                         <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-sm transition-all ${followerGate ? 'right-1' : 'left-1'}`} />
-                      </button>
-                   </div>
-
-                   {type === "COMMENT" && (
-                      <div className="p-6 rounded-[28px] border-2 bg-blue-50/50 border-blue-500/20 animate-in zoom-in-95 duration-500">
-                         <div className="flex items-center gap-4 mb-4">
-                            <div className="p-3 bg-blue-500 text-white rounded-2xl">
-                               <Globe size={24} />
-                            </div>
-                             <div>
-                                <p className="text-sm font-bold text-foreground tracking-normal">Comment Reply</p>
-                                <p className="text-[10px] text-zinc-muted font-normal tracking-normal">Automatically reply to their comment publicly</p>
-                             </div>
-                         </div>
-                          <input 
-                            type="text" 
-                            placeholder="e.g. Check your message!"
-                           value={publicReply}
-                           onChange={(e) => setPublicReply(e.target.value)}
-                           className="w-full bg-white/80 border border-blue-200 rounded-xl px-4 py-3 outline-none text-sm font-semibold text-blue-700 tracking-normal"
-                         />
-                      </div>
-                   )}
-                </div>
-             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* FOOTER CONTROLS */}
-      <div className="p-6 border-t border-border/40 bg-zinc-50/30 flex items-center justify-between">
-         <button 
-           onClick={() => setStep(Math.max(0, step - 1))}
-           disabled={step === 0}
-           className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-bold tracking-normal transition-all ${
-             step === 0 ? "opacity-0 invisible" : "text-zinc-muted hover:text-foreground hover:bg-zinc-50"
-           }`}
-         >
-           <ArrowLeft size={16} /> Back
-         </button>
-
-         {step < steps.length - 1 ? (
-           <button 
-             onClick={() => setStep(step + 1)}
-             disabled={!canGoNext()}
-             className={`flex items-center gap-2 px-10 py-4 bg-foreground text-background rounded-full text-xs font-bold tracking-normal transition-all shadow-lg hover:translate-x-1 ${
-               !canGoNext() ? "opacity-30 cursor-not-allowed" : "hover:scale-105 active:scale-95"
-             }`}
-           >
-             Continue <ArrowRight size={16} />
-           </button>
-         ) : (
-           <div className="flex items-center gap-2 text-emerald-600 font-semibold text-[10px] tracking-normal animate-pulse">
-             All steps complete
-           </div>
-         )}
-      </div>
-    </section>
+    <AnimatePresence mode="wait">
+      {renderFlow()}
+    </AnimatePresence>
   );
 }

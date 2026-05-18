@@ -1,5 +1,13 @@
 import LegalLayout from "@/components/marketing/LegalLayout";
 
+export const metadata = {
+  title: "Terms of Service | Automixa",
+  description: "Read our terms of service to learn about usage guidelines, Meta API compliance, and license terms.",
+  alternates: {
+    canonical: "https://automixa.in/terms",
+  }
+};
+
 export default function TermsOfService() {
   return (
     <LegalLayout 
