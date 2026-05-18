@@ -326,6 +326,14 @@ export function DashboardProvider({ children }) {
       const localMembers = JSON.parse(localStorage.getItem("automixa_workspace_members") || "[]");
       const filteredLocal = localMembers.filter(m => m.workspace_id === selectedWorkspace.id);
       
+      // If the workspace ID is a virtual string (like "personal") and not a valid UUID, do NOT query the database
+      const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!UUID_REGEX.test(selectedWorkspace.id)) {
+        setWorkspaceMembers([]);
+        setWorkspaceMembersLoading(false);
+        return;
+      }
+
       const supabase = createClient();
       try {
         const { data, error } = await supabase
@@ -381,6 +389,12 @@ export function DashboardProvider({ children }) {
     }).catch(err => console.warn("Failed to trigger server-side invite email:", err));
 
     // 3. DB Persistence
+    const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!UUID_REGEX.test(workspaceId)) {
+      console.warn("Bypassing DB persistence for virtual workspace invite");
+      return { data: newMember };
+    }
+
     const supabase = createClient();
     try {
       const { data, error } = await supabase.from("workspace_members").insert({
@@ -570,7 +584,11 @@ export function DashboardProvider({ children }) {
 
       const supabase = createClient();
       try {
-        await supabase.from("automations").update({ workspace_id: workspaceId }).eq("id", accountId);
+        const dbWorkspaceId = workspaceId === "personal" ? null : workspaceId;
+        const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (dbWorkspaceId === null || UUID_REGEX.test(dbWorkspaceId)) {
+          await supabase.from("automations").update({ workspace_id: dbWorkspaceId }).eq("id", accountId);
+        }
       } catch (e) {
         console.warn("DB Account Workspace link failed:", e);
       }
