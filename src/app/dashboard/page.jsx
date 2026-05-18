@@ -197,11 +197,15 @@ export default function Dashboard() {
             setRealtimeTriggers(triggersWithCounts);
           }
 
-          if (selectedAccount.ig_business_id && selectedAccount.ig_access_token) {
-             const { MetaService } = await import("@/lib/meta");
-             const mediaRes = await MetaService.getMediaList(selectedAccount.ig_business_id, selectedAccount.ig_access_token, { limit: 20 });
-             if (mediaRes.success) {
-               setInstagramMedia(mediaRes.data);
+          if (selectedAccount.id) {
+             try {
+               const res = await fetch(`/api/media?automationId=${selectedAccount.id}`);
+               const mediaRes = await res.json();
+               if (mediaRes && mediaRes.media) {
+                 setInstagramMedia(mediaRes.media);
+               }
+             } catch (err) {
+               console.warn("Dashboard: Media fetch failed ->", err.message);
              }
           }
         } catch (e) {
