@@ -72,6 +72,16 @@ export async function GET(request) {
     }
     const username = profile.username || `instagram_${instagramId}`;
     const accountType = profile.account_type || "BUSINESS";
+
+    // 4b. Subscribe the Instagram account to the webhook app
+    console.log(`Subscribing Instagram Business ID: ${instagramId} to Webhooks...`);
+    const subscriptionResult = await MetaService.subscribeAccount(instagramToken);
+    if (!subscriptionResult.success) {
+      console.warn(`⚠️ Webhook Subscription Warning for ${username}:`, subscriptionResult.error);
+    } else {
+      console.log(`✅ Webhook Subscription Successful for ${username} (${instagramId})`);
+    }
+
     const encryptedToken = encryptToken(instagramToken);
 
     const { data: savedAutomation, error: upsertError } = await supabase

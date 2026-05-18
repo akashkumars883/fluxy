@@ -496,6 +496,33 @@ export const MetaService = {
     } catch (error) {
       return { success: false, error: error.message };
     }
+  },
+
+  /**
+   * Subscribe the Instagram account to the webhook app.
+   */
+  subscribeAccount: async (accessToken) => {
+    try {
+      const { response, data } = await fetchJson(
+        `${INSTAGRAM_GRAPH_BASE_URL}/me/subscribed_apps`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            access_token: accessToken
+          })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(data?.error?.message || "Failed to subscribe account to webhooks");
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      console.error("Meta API - subscribeAccount Error:", error.message);
+      return { success: false, error: error.message };
+    }
   }
 };
 
@@ -510,5 +537,6 @@ export const getMediaContext = MetaService.getMediaContext;
 export const sendReaction = MetaService.sendReaction;
 export const sendGenericCard = MetaService.sendGenericCard;
 export const getMediaList = MetaService.getMediaList;
+export const subscribeAccount = MetaService.subscribeAccount;
 
 
