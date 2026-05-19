@@ -3,7 +3,7 @@ import TrustBanner from "@/components/marketing/TrustBanner";
 import SocialProof from "@/components/marketing/SocialProof";
 import HowItWorks from "@/components/marketing/HowItWorks";
 import Features from "@/components/marketing/Features";
-import Safety from "@/components/marketing/Safety";
+import SafetyBanner from "@/components/marketing/SafetyBanner";
 import Pricing from "@/components/marketing/Pricing";
 import FAQ from "@/components/marketing/FAQ";
 import Testimonials from "@/components/marketing/Testimonials";
@@ -56,7 +56,7 @@ export default async function Home({ searchParams }: PageProps) {
         <SocialProof />
         <HowItWorks />
         <Features />
-        <Safety />
+        <SafetyBanner />
         <Pricing />
         <FAQ />
         <Testimonials />

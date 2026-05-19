@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Heart, Shield } from "lucide-react";
 
 export default function Footer() {
   const productLinks = [
@@ -80,23 +81,19 @@ export default function Footer() {
                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2C6.5 2 2 6.5 2 12c0 4.2 2.6 7.8 6.4 9.3-.1-1-.2-2.4 0-3.4l1.3-5.3s-.3-.6-.3-1.6c0-1.5.9-2.6 2-2.6 1 0 1.5.7 1.5 1.6 0 1-.6 2.5-.9 3.9-.3 1.1.6 2 1.6 2 2 0 3.5-2.1 3.5-5.1 0-2.6-1.9-4.5-4.6-4.5-3.2 0-5 2.4-5 4.8 0 1 .4 2.1.8 2.6.1.1.1.2 0 .3l-.3 1.1c0 .1-.1.2-.2.1-1.3-.6-2.1-2.4-2.1-3.9 0-3.2 2.3-6.1 6.7-6.1 3.5 0 6.3 2.5 6.3 5.8 0 3.5-2.2 6.3-5.3 6.3-1 0-2-.5-2.4-1.2l-.6 2.4c-.2.9-.8 2-1.2 2.7 1.1.3 2.2.5 3.4.5 5.5 0 10-4.5 10-10S17.5 2 12 2Z"/></svg>
               </a>
             </div>
-            
-            {/* BacklinkLog Trust Badge */}
-            <div className="pt-2 opacity-70 hover:opacity-100 transition-opacity">
-              <a 
-                href="https://backlinklog.com/listing/automixa.in?utm_source=backlinklog&utm_medium=badge" 
-                target="_blank" 
-                rel="noopener noreferrer"
-              >
-                <img 
-                  src="https://backlinklog.com/badge/automixa.in.svg" 
-                  alt="Listed on BacklinkLog" 
-                  width="130" 
-                  height="32" 
-                  className="h-8 w-auto object-contain"
-                />
-              </a>
+
+            {/* Minimal Text Indicators (Made with Love, Powered by Automixa) */}
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 pt-4 text-xs font-semibold text-zinc-500">
+              <span className="flex items-center gap-1">
+                Made with <Heart size={12} className="text-red-500 fill-red-500 animate-pulse" /> in India
+              </span>
+              <span className="text-zinc-300 select-none">•</span>
+              <Link href="/shield" className="flex items-center gap-1.5 hover:text-zinc-800 transition-colors duration-300">
+                <Shield size={12} className="text-indigo-500 fill-indigo-500/10" />
+                Powered by automixa shield
+              </Link>
             </div>
+
           </div>
         </div>
 
@@ -177,11 +174,66 @@ export default function Footer() {
 
       </div>
 
-      {/* --- FOOTER BOTTOM: COPYRIGHT & DIRECT LEGAL LINKS (Replaced Made with Love) --- */}
-      <div className="max-w-8xl mx-auto mt-12 md:mt-16 pt-6 border-t border-zinc-200/30 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 relative z-10 text-xs sm:text-sm font-normal text-zinc-400">
-         <p>
-           © 2026 automixa | Akash Enterprises. All rights reserved.
-         </p>
+      {/* --- FOOTER BOTTOM: COPYRIGHT, BADGES & DIRECT LEGAL LINKS (Replaced Made with Love) --- */}
+      <div className="max-w-8xl mx-auto mt-12 md:mt-16 pt-6 border-t border-zinc-200/30 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10 text-xs sm:text-sm font-normal text-zinc-400">
+         <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+           <p>
+             © 2026 automixa | Akash Enterprises. All rights reserved.
+           </p>
+           <span className="text-zinc-200/50 hidden sm:inline">|</span>
+           
+           {/* Trust Badges */}
+           <div className="flex flex-wrap items-center gap-4">
+             {/* BacklinkLog Trust Badge */}
+             <div className="opacity-70 hover:opacity-100 transition-opacity shrink-0">
+               <a 
+                 href="https://backlinklog.com/listing/automixa.in?utm_source=backlinklog&utm_medium=badge" 
+                 target="_blank" 
+                 rel="noopener noreferrer"
+               >
+                 <img 
+                   src="https://backlinklog.com/badge/automixa.in.svg" 
+                   alt="Listed on BacklinkLog" 
+                   width="110" 
+                   height="26" 
+                   className="h-6.5 w-auto object-contain"
+                 />
+               </a>
+             </div>
+
+             {/* Product Hunt Featured Badge */}
+             <div className="opacity-80 hover:opacity-100 transition-opacity shrink-0">
+               <a 
+                 href="https://www.producthunt.com/products/automixa-ai-instagram-automation?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-automixa-ai-instagram-automation" 
+                 target="_blank" 
+                 rel="noopener noreferrer"
+               >
+                 <img 
+                   src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1140210&theme=light&t=1779188678299" 
+                   alt="Automixa AI Instagram Automation - Product Hunt" 
+                   width="120" 
+                   height="26" 
+                   className="h-6.5 w-auto object-contain"
+                 />
+               </a>
+             </div>
+
+             {/* Trustpilot Reviews Badge */}
+             <div className="opacity-80 hover:opacity-100 transition-opacity shrink-0">
+               <a 
+                 href="https://www.trustpilot.com/review/automixa.in" 
+                 target="_blank" 
+                 rel="noopener noreferrer"
+                 className="inline-flex items-center gap-1.5 text-zinc-500 hover:text-zinc-900 text-[10px] font-bold"
+               >
+                 <svg className="w-3.5 h-3.5 text-[#00b67a] fill-[#00b67a]" fill="currentColor" viewBox="0 0 24 24">
+                   <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                 </svg>
+                 <span>Trustpilot</span>
+               </a>
+             </div>
+           </div>
+         </div>
          
          {/* Direct Horizontal Links (Privacy Policy, Terms, Sitemap) */}
          <div className="flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-1.5 text-xs font-normal text-zinc-400">
