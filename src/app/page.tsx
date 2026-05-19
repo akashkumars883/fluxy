@@ -27,6 +27,7 @@ export const metadata = {
 };
 
 import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase";
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -38,6 +39,12 @@ export default async function Home({ searchParams }: PageProps) {
 
   if (code && typeof code === "string") {
     redirect(`/api/auth/callback?code=${code}`);
+  }
+
+  const supabase = createClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    redirect("/dashboard");
   }
 
   return (

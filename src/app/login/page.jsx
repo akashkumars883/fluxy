@@ -1,7 +1,6 @@
 "use client";
-
 import { createClient } from "@/lib/supabase";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
@@ -29,6 +28,27 @@ const GoogleIcon = () => (
 export default function LoginPage() {
   const router = useRouter();
   const [loadingProvider, setLoadingProvider] = useState(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        router.replace("/dashboard");
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        router.replace("/dashboard");
+      }
+    });
+
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    };
+  }, [router]);
 
   const handleLogin = async (providerName) => {
     setLoadingProvider(providerName);
