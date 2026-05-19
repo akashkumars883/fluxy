@@ -300,6 +300,10 @@ export default function Dashboard() {
         follower_gate: options.follower_gate || false,
         button_text: options.button_text || "",
         button_link: options.button_link || ""
+      },
+      variants: {
+        dm: [response.trim()],
+        public: options.public_reply ? [options.public_reply.trim()] : []
       }
     };
 

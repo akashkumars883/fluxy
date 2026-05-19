@@ -307,7 +307,9 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         // CASE B: OLD FAN / ALREADY FOLLOWING -> Send Product Link Directly as Private Reply
         console.log(`⚡ Sending Product Link DIRECTLY to existing fan ${userName}`);
         
-        const dmVariants = Array.isArray(match.variants?.dm) ? match.variants.dm : [match.response || "Here is your access!"];
+        const dmVariants = (Array.isArray(match.variants?.dm) && match.variants.dm.length > 0) 
+          ? match.variants.dm 
+          : [match.response || "Here is your access!"];
         const rawDm = (getRandom(dmVariants) || "Here is your access!").replace("{{name}}", userName).replace("{name}", userName);
         // --- SMARTGUARD: DYNAMIC SPINTAX REPHRASING ---
         let finalDm = SmartGuard.applySpintax(rawDm, userName);
@@ -387,7 +389,8 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       // B. Public Comment Reply with Delay (7-10s)
       await delay(Math.floor(Math.random() * 3000) + 7000);
       const publicOptions = match.variants?.public || [];
-      const chosenPublic = publicOptions.length > 0 ? getRandom(publicOptions) : "Check your DM for the link! 🚀";
+      const rawPublic = publicOptions.length > 0 ? getRandom(publicOptions) : "Check your DM for the link! 🚀";
+      const chosenPublic = SmartGuard.applyCommentSpintax(rawPublic);
       await MetaService.sendCommentReply(commentId, chosenPublic, pageAccessToken);
 
       return { success: true, phase: 1 };
@@ -432,7 +435,9 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     const adaptiveDelayPhase4 = await SmartGuard.getAdaptiveDelay(automation.id);
     await delay(adaptiveDelayPhase4);
 
-    const dmVariants = Array.isArray(match.variants?.dm) ? match.variants.dm : [match.response || "Here is your access!"];
+    const dmVariants = (Array.isArray(match.variants?.dm) && match.variants.dm.length > 0) 
+      ? match.variants.dm 
+      : [match.response || "Here is your access!"];
     const rawDm = (getRandom(dmVariants) || "Here is your access!").replace("{{name}}", userName).replace("{name}", userName);
     // --- SMARTGUARD: DYNAMIC SPINTAX REPHRASING ---
     let finalDm = SmartGuard.applySpintax(rawDm, userName);

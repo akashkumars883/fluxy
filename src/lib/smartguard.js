@@ -115,5 +115,38 @@ export const SmartGuard = {
     }
     
     return `${randomGreet}${formattedName}! ${cleanText}`;
+  },
+
+  /**
+   * 4. Dynamic Comment Spintax Variant Rephraser
+   * Randomizes comment prefixes and suffixes to bypass duplicate comment detection.
+   */
+  applyCommentSpintax(baseText) {
+    if (!baseText) return "Check your DM for the link! 🚀";
+    
+    // Remove extra trailing/leading spaces and capitalize first letter
+    let cleanText = baseText.trim();
+    if (cleanText.length > 0) {
+      cleanText = cleanText.charAt(0).toUpperCase() + cleanText.slice(1);
+    }
+    
+    // Check if user already wrote "dm", "inbox", "message" or "reply" to avoid sounding repetitive
+    const hasDmWord = cleanText.toLowerCase().includes("dm") || 
+                      cleanText.toLowerCase().includes("inbox") || 
+                      cleanText.toLowerCase().includes("message") ||
+                      cleanText.toLowerCase().includes("reply");
+    
+    const variations = [
+      (t) => `${t} 🚀`,
+      (t) => `Sent! ${t} 📬`,
+      (t) => `Done! ${t} ✨`,
+      (t) => hasDmWord ? `Done! ${t} 📲` : `Check your inbox! ${t}`,
+      (t) => hasDmWord ? `${t} ✨` : `${t} Check your DM!`,
+      (t) => `Check it out! ${t} 📲`,
+      (t) => `${t} :)`
+    ];
+
+    const randomFn = variations[Math.floor(Math.random() * variations.length)];
+    return randomFn(cleanText);
   }
 };
