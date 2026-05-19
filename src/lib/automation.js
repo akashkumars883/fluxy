@@ -185,12 +185,20 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     // --- KEYWORD-BASED & AI INTENT RESOLUTION (Incoming Text/Comments) ---
     if (!match) {
       const lowerText = (text || "").toLowerCase().trim();
-      const eventTriggers = triggers.filter(t => t.type === type || (!t.type && type === "DM"));
+      const eventTriggers = triggers.filter(t => {
+        if (type && type.startsWith("STORY")) {
+          return t.type === "STORY" || t.type === "STORY_REPLY" || t.type === "STORY_MENTION";
+        }
+        return t.type === type || (!t.type && type === "DM");
+      });
 
       let activePool = eventTriggers;
       if (mediaId && type === "COMMENT") {
-        const targeted = eventTriggers.filter(t => t.target_media_ids?.includes(mediaId));
-        if (targeted.length > 0) activePool = targeted;
+        activePool = eventTriggers.filter(t => 
+          !t.target_media_ids || 
+          t.target_media_ids.length === 0 || 
+          t.target_media_ids.includes(mediaId)
+        );
       }
 
       // 1. Try exact keyword matching first

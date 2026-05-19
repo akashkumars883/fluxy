@@ -631,7 +631,7 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
                 </div>
                 <div className="px-4 py-1.5 rounded-xl bg-zinc-950 text-white font-semibold text-[9px] shadow-lg flex items-center gap-2">
                   <Zap size={10} className="text-[#6366F1]" />
-                  {t.type === "STORY_REPLY" ? "Story Social" : "Comment Auto"}
+                  {t.type === "COMMENT" ? "Comment Auto" : t.type === "DM" ? "Inbox DM Auto" : "Story Social"}
                 </div>
                 {t.metadata?.campaign_name && (
                   <div className="px-3 py-1 bg-white/60 border border-zinc-100 rounded-xl text-[10px] font-bold text-zinc-900 tracking-tight">

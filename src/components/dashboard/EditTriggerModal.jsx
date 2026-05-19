@@ -105,9 +105,9 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
                       <label className="text-[10px] font-semibold text-zinc-400 ml-1">Trigger Type</label>
                       <div className="grid grid-cols-3 gap-3">
                         {[
-                          { id: 'DM', label: 'Direct DM' },
-                          { id: 'COMMENT', label: 'Comment' },
-                          { id: 'STORY', label: 'Story Tag' }
+                          { id: 'COMMENT', label: 'Comment on Post / Reel' },
+                          { id: 'DM', label: 'Inbox DM (Direct Message)' },
+                          { id: 'STORY', label: 'Story Tag / Mention' }
                         ].map((t) => (
                           <button
                             key={t.id}
