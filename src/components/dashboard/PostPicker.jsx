@@ -67,7 +67,7 @@ export default function PostPicker({ automationId, media, loading, error: fetchE
                 } ${isHorizontal ? 'w-24 h-32' : 'aspect-40/50'}`}
               >
                 <img 
-                  src={post.media_url} 
+                  src={(post.media_type === "VIDEO" || post.media_product_type === "REELS") ? (post.thumbnail_url || post.media_url) : post.media_url} 
                   alt={post.caption || "Instagram Post"} 
                   className={`w-full h-full object-cover transition-all duration-500 ${isSelected ? 'brightness-50' : 'group-hover:brightness-90'}`}
                 />

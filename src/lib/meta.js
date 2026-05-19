@@ -477,7 +477,7 @@ export const MetaService = {
   getMediaList: async (instagramId, accessToken, { limit } = {}) => {
     try {
       // Enhanced fields for Reels, Videos and Carousels
-      const fields = "id,media_url,permalink,caption,timestamp,media_type,thumbnail_url,children{media_url,media_type}";
+      const fields = "id,media_url,permalink,caption,timestamp,media_type,thumbnail_url,media_product_type,children{media_url,media_type}";
       const limitParam = Number.isFinite(limit) ? `&limit=${limit}` : "";
       let { response, data } = await fetchJson(
         `${INSTAGRAM_GRAPH_BASE_URL}/${instagramId}/media?fields=${fields}${limitParam}&access_token=${accessToken}`

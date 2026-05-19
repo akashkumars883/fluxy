@@ -205,7 +205,8 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
   const [aiPrompt, setAiPrompt] = useState("");
   const [activePreset, setActivePreset] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const activePost = media.find(m => selectedPosts.includes(m.id))?.media_url || media[0]?.media_url;
+  const activePostItem = media.find(m => selectedPosts.includes(m.id)) || media[0];
+  const activePost = activePostItem ? ((activePostItem.media_type === "VIDEO" || activePostItem.media_product_type === "REELS") ? (activePostItem.thumbnail_url || activePostItem.media_url) : activePostItem.media_url) : null;
 
   const handleWizardChange = (newVals) => {
     setWizardValues(prev => ({ ...prev, ...newVals }));

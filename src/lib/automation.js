@@ -325,36 +325,50 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         const link = match.metadata?.button_link || (scrapedUrls && scrapedUrls[0]);
         const buttonLabel = match.metadata?.button_text || "Get Access 🔗";
 
+        let sentOk = false;
         if (link) {
-          const textWithoutUrl = match.metadata?.button_link ? finalDm : finalDm.replace(link, "").trim();
-          const scrapedImage = await getLinkPreview(link);
+          try {
+            new URL(link); // Validate URL structure
+            const textWithoutUrl = match.metadata?.button_link ? finalDm : finalDm.replace(link, "").trim();
+            const scrapedImage = await getLinkPreview(link);
 
-          const productCardPayload = {
-            attachment: {
-              type: "template",
-              payload: {
-                template_type: "generic",
-                elements: [{
-                  title: (textWithoutUrl || "Exclusive Access! 🎁").substring(0, 80),
-                  image_url: scrapedImage,
-                  buttons: [{
-                    type: "web_url",
-                    url: link,
-                    title: buttonLabel
+            const productCardPayload = {
+              attachment: {
+                type: "template",
+                payload: {
+                  template_type: "generic",
+                  elements: [{
+                    title: (textWithoutUrl || "Exclusive Access! 🎁").substring(0, 80),
+                    image_url: scrapedImage,
+                    buttons: [{
+                      type: "web_url",
+                      url: link,
+                      title: buttonLabel
+                    }]
                   }]
-                }]
+                }
               }
+            };
+            const sendRes = await MetaService.sendPrivateReply(commentId, productCardPayload, pageAccessToken);
+            if (sendRes.success) {
+              sentOk = true;
+              // Update Log to SUCCESS immediately
+              await supabaseAdmin.from("automation_history")
+                .update({ status: "SUCCESS", metadata: { funnel_complete: true } })
+                .eq("id", logData.id);
+            } else {
+              console.warn("⚠️ Generic card send failed, falling back to text reply:", sendRes.error);
             }
-          };
-          await MetaService.sendPrivateReply(commentId, productCardPayload, pageAccessToken);
-          
-          // Update Log to SUCCESS immediately
-          await supabaseAdmin.from("automation_history")
-            .update({ status: "SUCCESS", metadata: { funnel_complete: true } })
-            .eq("id", logData.id);
+          } catch (urlErr) {
+            console.warn("⚠️ Invalid URL provided, falling back to text reply:", urlErr.message);
+          }
+        }
 
-        } else {
+        if (!sentOk) {
           await MetaService.sendPrivateReply(commentId, { text: finalDm }, pageAccessToken);
+          await supabaseAdmin.from("automation_history")
+            .update({ status: "SUCCESS", metadata: { funnel_complete: true, fallback_text: true } })
+            .eq("id", logData.id);
         }
       }
 
@@ -437,23 +451,36 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     const link = match.metadata?.button_link || (scrapedUrls && scrapedUrls[0]);
     const buttonLabel = match.metadata?.button_text || "Get Access 🔗";
 
+    let finalSentOk = false;
     if (link) {
-      const textWithoutUrl = match.metadata?.button_link ? finalDm : finalDm.replace(link, "").trim();
+      try {
+        new URL(link); // Validate URL structure
+        const textWithoutUrl = match.metadata?.button_link ? finalDm : finalDm.replace(link, "").trim();
 
-      // AUTO-SCRAPER logic for the card image
-      console.log(`🔍 Scraping preview image for: ${link}`);
-      const scrapedImage = await getLinkPreview(link);
+        // AUTO-SCRAPER logic for the card image
+        console.log(`🔍 Scraping preview image for: ${link}`);
+        const scrapedImage = await getLinkPreview(link);
 
-      await MetaService.sendGenericCard(
-        senderId,
-        (textWithoutUrl || "Exclusive Access! 🎁").substring(0, 80), // Strictly truncated to 80 chars
-        "", // User requested NO brand name/extra text here
-        buttonLabel,
-        link,
-        pageAccessToken,
-        scrapedImage
-      );
-    } else {
+        const cardRes = await MetaService.sendGenericCard(
+          senderId,
+          (textWithoutUrl || "Exclusive Access! 🎁").substring(0, 80), // Strictly truncated to 80 chars
+          "", // User requested NO brand name/extra text here
+          buttonLabel,
+          link,
+          pageAccessToken,
+          scrapedImage
+        );
+        if (cardRes.success) {
+          finalSentOk = true;
+        } else {
+          console.warn("⚠️ sendGenericCard failed, falling back to DM text:", cardRes.error);
+        }
+      } catch (urlErr) {
+        console.warn("⚠️ Invalid URL for sendGenericCard, falling back to DM text:", urlErr.message);
+      }
+    }
+
+    if (!finalSentOk) {
       await MetaService.sendDM(senderId, finalDm, pageAccessToken);
     }
 

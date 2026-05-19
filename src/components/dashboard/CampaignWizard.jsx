@@ -118,11 +118,16 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
                   <Globe size={16} />
                   <span className="text-[7px] font-bold uppercase">All Posts</span>
                 </button>
-                {media.map((item) => (
-                  <button key={item.id} onClick={() => onSelectPosts(selectedPosts.includes(item.id) ? selectedPosts.filter(id => id !== item.id) : [...selectedPosts, item.id])} className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all ${selectedPosts.includes(item.id) ? 'border-[#6366F1]' : 'border-white'}`}>
-                    <img src={item.media_url} alt="post" className="w-full h-full object-cover" />
-                  </button>
-                ))}
+                {media.map((item) => {
+                  const displayUrl = (item.media_type === "VIDEO" || item.media_product_type === "REELS")
+                    ? (item.thumbnail_url || item.media_url)
+                    : item.media_url;
+                  return (
+                    <button key={item.id} onClick={() => onSelectPosts(selectedPosts.includes(item.id) ? selectedPosts.filter(id => id !== item.id) : [...selectedPosts, item.id])} className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all ${selectedPosts.includes(item.id) ? 'border-[#6366F1]' : 'border-white'}`}>
+                      <img src={displayUrl} alt="post" className="w-full h-full object-cover" />
+                    </button>
+                  );
+                })}
               </div>
               <div className="mt-8 flex justify-end">
                 <button onClick={() => handleStepChange(2)} className="px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-[#6366F1] transition-all flex items-center gap-2">
