@@ -338,8 +338,8 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
           </div>
         </div>
 
-        <div className="bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-xl p-8 shadow-xl shadow-zinc-100/40 hover:shadow-2xl hover:shadow-zinc-200/40 flex flex-col relative transition-all duration-500">
-          <div className="flex items-center justify-between mb-8 border-b border-zinc-200/50 pb-6">
+        <div className="bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-xl p-8 shadow-xl shadow-zinc-100/40 hover:shadow-2xl hover:shadow-zinc-200/40 flex flex-col relative transition-all duration-500 h-[380px]">
+          <div className="flex items-center justify-between mb-8 border-b border-zinc-200/50 pb-6 shrink-0">
             <div className="space-y-2">
               <span className="text-[10px] font-semibold text-[#6366F1]">Live Feed</span>
               <h3 className="font-bold text-2xl sm:text-3xl text-zinc-950 tracking-tighter leading-none flex items-center gap-3">
