@@ -25,12 +25,12 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
-  console.log("📥 [Incoming Webhook] Received POST request at /api/webhook");
+  // console.log("📥 [Incoming Webhook] Received POST request at /api/webhook");
 
   let rawBody = "";
   try {
     rawBody = await req.text();
-    console.log("📥 [Incoming Webhook] Payload:", rawBody);
+    // console.log("📥 [Incoming Webhook] Payload:", rawBody);
   } catch (err) {
     console.error("❌ [Incoming Webhook] Failed to read body:", err.message);
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
