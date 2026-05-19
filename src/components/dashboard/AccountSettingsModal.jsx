@@ -41,7 +41,7 @@ export default function AccountSettingsModal({ isOpen, onClose, user }) {
                 </div>
                 <div>
                   <h3 className="text-xl sm:text-2xl font-bold text-zinc-950 tracking-tighter">Account Settings</h3>
-                  <p className="text-xs text-zinc-500 font-normal mt-0.5">Manage your personal profile and identity.</p>
+                  <p className="text-sm text-zinc-500 font-normal mt-0.5">Manage your personal profile and identity.</p>
                 </div>
               </div>
               <button onClick={onClose} className="p-2 hover:bg-zinc-200/50 rounded-xl transition-all">
@@ -68,10 +68,10 @@ export default function AccountSettingsModal({ isOpen, onClose, user }) {
                 <div className="text-center sm:text-left flex-1 min-w-0">
                   <h4 className="text-2xl font-semibold text-zinc-900 truncate tracking-tight">{fullName}</h4>
                   <div className="flex items-center justify-center sm:justify-start gap-2 mt-1.5">
-                    <span className="px-2.5 py-0.5 bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold uppercase tracking-wider rounded-xl border border-[#6366F1]/20">
+                    <span className="px-2.5 py-0.5 bg-[#6366F1]/10 text-[#6366F1] text-xs font-bold uppercase tracking-wider rounded-xl border border-[#6366F1]/20">
                       {provider} Verified
                     </span>
-                    <span className="text-xs text-zinc-400 font-medium">• Joined {joinedDate}</span>
+                    <span className="text-sm text-zinc-400 font-medium">• Joined {joinedDate}</span>
                   </div>
                 </div>
               </div>
@@ -83,8 +83,8 @@ export default function AccountSettingsModal({ isOpen, onClose, user }) {
                     <Mail size={16} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Email Address</p>
-                    <p className="text-sm font-semibold text-zinc-800 truncate mt-0.5">{user?.email}</p>
+                    <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Email Address</p>
+                    <p className="text-base font-semibold text-zinc-800 truncate mt-0.5">{user?.email}</p>
                   </div>
                 </div>
 
@@ -93,8 +93,8 @@ export default function AccountSettingsModal({ isOpen, onClose, user }) {
                     <Shield size={16} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Login Provider</p>
-                    <p className="text-sm font-semibold text-zinc-800 truncate mt-0.5 capitalize">{provider}</p>
+                    <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Login Provider</p>
+                    <p className="text-base font-semibold text-zinc-800 truncate mt-0.5 capitalize">{provider}</p>
                   </div>
                 </div>
               </div>
@@ -105,8 +105,8 @@ export default function AccountSettingsModal({ isOpen, onClose, user }) {
                   <Calendar size={20} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-zinc-900 leading-tight">Security Checkup</h4>
-                  <p className="text-xs text-zinc-600 font-normal mt-1 leading-relaxed">
+                  <h4 className="text-base font-semibold text-zinc-900 leading-tight">Security Checkup</h4>
+                  <p className="text-sm text-zinc-600 font-normal mt-1 leading-relaxed">
                     Your account is currently linked via {provider}. To change your primary email, please update your {provider} profile settings.
                   </p>
                 </div>
