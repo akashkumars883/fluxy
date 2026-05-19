@@ -623,74 +623,82 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
         {triggers.map((t) => (
           <div 
             key={t.id} 
-            className="bg-white border border-zinc-200/60 hover:border-[#6366F1]/40 rounded-xl p-6 sm:p-7 shadow-xl shadow-zinc-200/30 hover:shadow-2xl hover:shadow-[#6366F1]/10 hover:-translate-y-1 transition-all duration-500 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 group relative overflow-hidden"
+            className={`bg-white border-y border-x sm:border-x border-zinc-200/70 hover:border-[#6366F1]/40 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-4 group relative overflow-hidden border-l-4 ${
+              isMasterActive ? 'border-l-emerald-500' : 'border-l-zinc-300'
+            }`}
           >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#6366F1]/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-24 h-24 bg-[#6366F1]/5 rounded-full -mr-12 -mt-12 group-hover:scale-125 transition-transform duration-500 pointer-events-none" />
             
-            <div className="space-y-5 flex-1 relative z-10">
-              <div className="flex items-center gap-3 flex-wrap">
-                <div className={`px-4 py-1.5 rounded-xl font-semibold text-[9px] border shadow-sm flex items-center gap-2 transition-all duration-300 ${
-                  isMasterActive 
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
-                    : 'bg-zinc-50 text-zinc-400 border-zinc-100'
-                }`}>
-                  <div className={`w-1.5 h-1.5 rounded-full ${isMasterActive ? 'bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-zinc-300'}`} />
-                  {isMasterActive ? 'Active' : 'Paused'}
-                </div>
-                <div className="px-4 py-1.5 rounded-xl bg-zinc-950 text-white font-semibold text-[9px] shadow-lg flex items-center gap-2">
-                  <Zap size={10} className="text-[#6366F1]" />
-                  {t.type === "COMMENT" ? "Comment Auto" : t.type === "DM" ? "Inbox DM Auto" : "Story Social"}
-                </div>
+            <div className="space-y-3 flex-1 min-w-0 relative z-10">
+              {/* Top Row: Keyword and Badges */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[10px] text-zinc-400 font-extrabold uppercase tracking-widest shrink-0">Keyword:</span>
+                <span className="bg-[#6366F1]/5 hover:bg-[#6366F1]/10 text-[#6366F1] font-mono text-xs font-bold px-2 py-0.5 rounded-md border border-[#6366F1]/15 transition-all select-all">
+                  {t.keyword}
+                </span>
+                <span className="px-2 py-0.5 bg-zinc-900 text-white rounded-md text-[9px] font-bold shadow-xs uppercase tracking-wider shrink-0">
+                  {t.type === "COMMENT" ? "Comment" : t.type === "DM" ? "DM" : "Story"}
+                </span>
                 {t.metadata?.campaign_name && (
-                  <div className="px-3 py-1 bg-white/60 border border-zinc-100 rounded-xl text-[10px] font-bold text-zinc-900 tracking-tight">
+                  <span className="px-2 py-0.5 bg-zinc-50 border border-zinc-200 rounded-md text-[9px] font-bold text-zinc-500 max-w-[150px] truncate shrink-0">
                     📁 {t.metadata.campaign_name}
-                  </div>
+                  </span>
                 )}
               </div>
 
-              <div>
-                <h4 className="text-xl sm:text-2xl font-bold text-zinc-950 tracking-tighter group-hover:text-[#6366F1] transition-colors leading-none">
-                  Trigger Word: <span className="text-[#6366F1] select-all">&apos;{t.keyword}&apos;</span>
-                </h4>
-                <div className="mt-3 p-4 bg-white/50 border border-zinc-100 rounded-xl group-hover:bg-white group-hover:border-[#6366F1]/20 transition-all">
-                  <p className="text-xs sm:text-sm font-normal text-zinc-500 line-clamp-2 leading-relaxed">
-                    &ldquo;{t.response}&rdquo;
-                  </p>
+              {/* Response Text Preview */}
+              <div className="text-xs text-zinc-600 bg-zinc-50/50 hover:bg-zinc-50 border border-zinc-100 rounded-xl p-2.5 max-w-2xl transition-all">
+                <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest block mb-0.5">Response:</span>
+                <p className="line-clamp-1 italic font-medium leading-relaxed">&ldquo;{t.response}&rdquo;</p>
+              </div>
+
+              {/* Public reply & Buttons */}
+              {(t.variants?.public?.[0] || t.metadata?.button_link) && (
+                <div className="flex items-center gap-2.5 flex-wrap text-[10px]">
+                  {t.variants?.public?.[0] && (
+                    <div className="flex items-center gap-1.5 text-zinc-500 bg-white px-2 py-1 rounded-md border border-zinc-100">
+                      <Globe size={11} className="text-[#6366F1]" />
+                      <span className="font-medium truncate max-w-[200px]">Public: "{t.variants.public[0]}"</span>
+                    </div>
+                  )}
+
+                  {t.metadata?.button_link && (
+                    <div className="flex items-center gap-1.5 text-zinc-500 bg-white px-2 py-1 rounded-md border border-zinc-100">
+                      <MousePointer2 size={11} className="text-[#6366F1]" />
+                      <span className="font-medium">Button: {t.metadata.button_text || "Link"}</span>
+                    </div>
+                  )}
                 </div>
-              </div>
-
-              <div className="flex items-center gap-3 flex-wrap">
-                {t.variants?.public?.[0] && (
-                  <div className="flex items-center gap-2 text-[9px] font-semibold text-zinc-400 bg-zinc-50/50 px-3 py-2 rounded-xl border border-zinc-100 group-hover:bg-white transition-all">
-                    <Globe size={12} className="text-[#6366F1]" />
-                    <span>Public Reply: {t.variants.public[0]}</span>
-                  </div>
-                )}
-
-                {t.metadata?.button_link && (
-                  <div className="flex items-center gap-2 text-[9px] font-semibold text-zinc-400 bg-zinc-50/50 px-3 py-2 rounded-xl border border-zinc-100 group-hover:bg-white transition-all">
-                    <MousePointer2 size={12} className="text-[#6366F1]" />
-                    <span>Button: {t.metadata.button_text || "Link"}</span>
-                  </div>
-                )}
-              </div>
+              )}
             </div>
 
-            <div className="flex items-center gap-2 self-end sm:self-center shrink-0 relative z-10">
-              <button 
-                onClick={() => onEdit(t)} 
-                className="w-12 h-12 bg-white border border-zinc-100 hover:border-[#6366F1]/50 rounded-xl text-zinc-400 hover:text-[#6366F1] hover:shadow-xl hover:shadow-[#6366F1]/5 transition-all flex items-center justify-center group/edit shadow-sm"
-                title="Edit Rule"
-              >
-                <Edit2 size={20} />
-              </button>
-              <button 
-                onClick={() => onDelete(t.id)} 
-                className="w-12 h-12 bg-rose-50 border border-rose-100 rounded-xl text-rose-400 hover:bg-rose-500 hover:text-white hover:shadow-xl hover:shadow-rose-500/20 transition-all flex items-center justify-center shadow-sm"
-                title="Delete Rule"
-              >
-                <Trash2 size={20} />
-              </button>
+            {/* Status & Actions Column */}
+            <div className="flex items-center justify-between md:justify-end gap-3.5 self-stretch md:self-center shrink-0 border-t border-zinc-100 md:border-t-0 pt-3 md:pt-0 relative z-10">
+              <div className={`px-2.5 py-1 rounded-full font-bold text-[9px] border shadow-xs flex items-center gap-1.5 transition-all duration-300 ${
+                isMasterActive 
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
+                  : 'bg-zinc-50 text-zinc-400 border-zinc-100'
+              }`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${isMasterActive ? 'bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-zinc-300'}`} />
+                {isMasterActive ? 'Active' : 'Paused'}
+              </div>
+              <div className="hidden md:block h-6 w-[1px] bg-zinc-200" />
+              <div className="flex items-center gap-1.5">
+                <button 
+                  onClick={() => onEdit(t)} 
+                  className="w-9 h-9 bg-white border border-zinc-200 hover:border-[#6366F1]/50 rounded-lg text-zinc-500 hover:text-[#6366F1] hover:shadow-md hover:shadow-[#6366F1]/5 transition-all flex items-center justify-center shadow-xs"
+                  title="Edit Rule"
+                >
+                  <Edit2 size={14} />
+                </button>
+                <button 
+                  onClick={() => onDelete(t.id)} 
+                  className="w-9 h-9 bg-rose-50 border border-rose-100 hover:bg-rose-500 hover:text-white hover:border-transparent rounded-lg text-rose-500 hover:shadow-md hover:shadow-rose-500/10 transition-all flex items-center justify-center shadow-xs"
+                  title="Delete Rule"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
             </div>
           </div>
         ))}
