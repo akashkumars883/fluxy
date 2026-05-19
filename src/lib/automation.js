@@ -350,39 +350,33 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         let sentOk = false;
         if (link) {
           try {
-            new URL(link); // Validate URL structure
             const textWithoutUrl = match.metadata?.button_link ? finalDm : finalDm.replace(link, "").trim();
-            const scrapedImage = await getLinkPreview(link);
 
-            const productCardPayload = {
+            const openingPayload = {
               attachment: {
                 type: "template",
                 payload: {
-                  template_type: "generic",
-                  elements: [{
-                    title: (textWithoutUrl || "Exclusive Access! 🎁").substring(0, 80),
-                    image_url: scrapedImage,
-                    buttons: [{
-                      type: "web_url",
-                      url: link,
-                      title: buttonLabel
-                    }]
+                  template_type: "button",
+                  text: (textWithoutUrl || "Tap below to get instant access!").substring(0, 640),
+                  buttons: [{
+                    type: "postback",
+                    title: (buttonLabel || "Send Me Access").substring(0, 20),
+                    payload: match.id
                   }]
                 }
               }
             };
-            const sendRes = await MetaService.sendPrivateReply(commentId, productCardPayload, pageAccessToken);
+            const sendRes = await MetaService.sendPrivateReply(commentId, openingPayload, pageAccessToken);
             if (sendRes.success) {
               sentOk = true;
-              // Update Log to SUCCESS immediately
               await supabaseAdmin.from("automation_history")
-                .update({ status: "SUCCESS", metadata: { funnel_complete: true } })
+                .update({ status: "SUCCESS", metadata: { funnel_complete: false, sent_optin: true } })
                 .eq("id", logData.id);
             } else {
-              console.warn("⚠️ Generic card send failed, falling back to text reply:", sendRes.error);
+              console.warn("⚠️ Opt-in button template send failed, falling back to text reply:", sendRes.error);
             }
-          } catch (urlErr) {
-            console.warn("⚠️ Invalid URL provided, falling back to text reply:", urlErr.message);
+          } catch (optinErr) {
+            console.warn("⚠️ Opt-in builder failed, falling back to text reply:", optinErr.message);
           }
         }
 
