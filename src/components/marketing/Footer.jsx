@@ -80,6 +80,23 @@ export default function Footer() {
                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2C6.5 2 2 6.5 2 12c0 4.2 2.6 7.8 6.4 9.3-.1-1-.2-2.4 0-3.4l1.3-5.3s-.3-.6-.3-1.6c0-1.5.9-2.6 2-2.6 1 0 1.5.7 1.5 1.6 0 1-.6 2.5-.9 3.9-.3 1.1.6 2 1.6 2 2 0 3.5-2.1 3.5-5.1 0-2.6-1.9-4.5-4.6-4.5-3.2 0-5 2.4-5 4.8 0 1 .4 2.1.8 2.6.1.1.1.2 0 .3l-.3 1.1c0 .1-.1.2-.2.1-1.3-.6-2.1-2.4-2.1-3.9 0-3.2 2.3-6.1 6.7-6.1 3.5 0 6.3 2.5 6.3 5.8 0 3.5-2.2 6.3-5.3 6.3-1 0-2-.5-2.4-1.2l-.6 2.4c-.2.9-.8 2-1.2 2.7 1.1.3 2.2.5 3.4.5 5.5 0 10-4.5 10-10S17.5 2 12 2Z"/></svg>
               </a>
             </div>
+            
+            {/* BacklinkLog Trust Badge */}
+            <div className="pt-2 opacity-70 hover:opacity-100 transition-opacity">
+              <a 
+                href="https://backlinklog.com/listing/automixa.in?utm_source=backlinklog&utm_medium=badge" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                <img 
+                  src="https://backlinklog.com/badge/automixa.in.svg" 
+                  alt="Listed on BacklinkLog" 
+                  width="130" 
+                  height="32" 
+                  className="h-8 w-auto object-contain"
+                />
+              </a>
+            </div>
           </div>
         </div>
 
