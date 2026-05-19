@@ -496,16 +496,45 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       await MetaService.sendDM(senderId, finalDm, pageAccessToken);
     }
 
-    // Update Log to SUCCESS
-    await supabaseAdmin.from("automation_history")
-      .update({ 
-        status: "SUCCESS", 
-        metadata: { funnel_complete: true, scraped: true } 
-      })
-      .eq("automation_id", automation.id)
-      .eq("sender_id", senderId)
-      .order('created_at', { ascending: false })
-      .limit(1);
+    // Update Log to SUCCESS or insert a new one if it wasn't pre-created
+    if (type === "COMMENT" && commentId) {
+      await supabaseAdmin.from("automation_history")
+        .update({ 
+          status: "SUCCESS", 
+          metadata: { funnel_complete: true, scraped: true } 
+        })
+        .eq("automation_id", automation.id)
+        .eq("sender_id", senderId)
+        .order('created_at', { ascending: false })
+        .limit(1);
+    } else {
+      // Check if there is an existing 'INTERACTED' log for this sender to update
+      const { data: existingLogs } = await supabaseAdmin.from("automation_history")
+        .select("id, status")
+        .eq("automation_id", automation.id)
+        .eq("sender_id", senderId)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (existingLogs && existingLogs.length > 0 && existingLogs[0].status === "INTERACTED") {
+        await supabaseAdmin.from("automation_history")
+          .update({ 
+            status: "SUCCESS", 
+            metadata: { funnel_complete: true, scraped: true } 
+          })
+          .eq("id", existingLogs[0].id);
+      } else {
+        await supabaseAdmin.from("automation_history").insert({
+          automation_id: automation.id,
+          sender_id: senderId,
+          sender_name: userName || "there",
+          type: type || "DM",
+          keyword: match.keyword,
+          status: "SUCCESS",
+          metadata: { funnel_complete: true, scraped: true }
+        });
+      }
+    }
 
     return { success: true };
 

@@ -183,7 +183,7 @@ export default function Dashboard() {
       async function fetchAccountData() {
         try {
           const results = await Promise.allSettled([
-            supabase.from("automation_history").select("*", { count: 'exact', head: true }).eq("automation_id", selectedAccount.id).eq("type", "DM"),
+            supabase.from("automation_history").select("*", { count: 'exact', head: true }).eq("automation_id", selectedAccount.id).eq("status", "SUCCESS"),
             supabase.from("automation_history").select("*", { count: 'exact', head: true }).eq("automation_id", selectedAccount.id).eq("type", "COMMENT"),
             supabase.from("automation_history").select("*", { count: 'exact', head: true }).eq("automation_id", selectedAccount.id),
             supabase.from("automation_history").select("*").eq("automation_id", selectedAccount.id).order("created_at", { ascending: false }).limit(100),
@@ -334,6 +334,30 @@ export default function Dashboard() {
       setTriggersList(prev => prev.filter(t => t.id !== id));
     } catch (err) {
       console.error("Error deleting trigger:", err);
+    }
+  };
+
+  const handleSaveTrigger = async (id, updatedFields) => {
+    const supabase = createClient();
+    try {
+      const { data, error } = await supabase
+        .from("triggers")
+        .update(updatedFields)
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setTriggersList(prev => prev.map(t => t.id === id ? data : t));
+        setIsEditModalOpen(false);
+        // Refresh account data to sync counts and lists
+        window.dispatchEvent(new Event("refresh_dashboard_data"));
+      }
+    } catch (err) {
+      console.error("Error updating trigger:", err);
+      alert("Failed to update rule: " + err.message);
     }
   };
 
@@ -725,10 +749,7 @@ export default function Dashboard() {
           setEditingTrigger(null);
         }}
         trigger={editingTrigger}
-        onSave={(updated) => {
-          setTriggersList(prev => prev.map(t => t.id === updated.id ? updated : t));
-          setIsEditModalOpen(false);
-        }}
+        onSave={handleSaveTrigger}
         onDelete={handleDeleteTrigger}
       />
       
