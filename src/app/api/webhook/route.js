@@ -75,6 +75,9 @@ export async function POST(req) {
         }
 
         if (message) {
+          if (message.is_echo) {
+            continue;
+          }
           const text = message.text || "";
           const mid = message.mid;
           const quickReplyPayload = message.quick_reply?.payload;
