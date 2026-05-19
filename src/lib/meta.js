@@ -506,6 +506,18 @@ export const MetaService = {
     }
   },
 
+  getCommentSenderUsername: async (commentId, accessToken) => {
+    try {
+      const response = await fetch(`${getGraphBaseUrl(accessToken)}/${commentId}?fields=from&access_token=${accessToken}`);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error?.message || "Failed to fetch comment sender");
+      return { success: true, username: data.from?.username };
+    } catch (error) {
+      console.error("Meta API - getCommentSenderUsername Error:", error.message);
+      return { success: false, error: error.message };
+    }
+  },
+
   /**
    * Subscribe the Instagram account to the webhook app.
    */
@@ -546,5 +558,6 @@ export const sendReaction = MetaService.sendReaction;
 export const sendGenericCard = MetaService.sendGenericCard;
 export const getMediaList = MetaService.getMediaList;
 export const subscribeAccount = MetaService.subscribeAccount;
+export const getCommentSenderUsername = MetaService.getCommentSenderUsername;
 
 

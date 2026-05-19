@@ -238,22 +238,28 @@ export default function Dashboard() {
       .on('postgres_changes', { 
         event: '*', 
         schema: 'public', 
-        table: 'automation_history',
-        filter: `automation_id=eq.${selectedAccount.id}`
+        table: 'automation_history'
       }, (payload) => {
         console.log('Realtime History Update:', payload);
-        fetchAccountData(); // Refresh everything when history changes
+        const autoId = payload.new?.automation_id || payload.old?.automation_id;
+        if (autoId === selectedAccount.id) {
+          fetchAccountData(); // Refresh everything when history changes
+        }
       })
       .on('postgres_changes', { 
         event: '*', 
         schema: 'public', 
-        table: 'triggers',
-        filter: `automation_id=eq.${selectedAccount.id}`
+        table: 'triggers'
       }, (payload) => {
         console.log('Realtime Trigger Update:', payload);
-        fetchAccountData(); // Refresh when triggers change
+        const autoId = payload.new?.automation_id || payload.old?.automation_id;
+        if (autoId === selectedAccount.id) {
+          fetchAccountData(); // Refresh when triggers change
+        }
       })
-      .subscribe();
+      .subscribe((status) => {
+        console.log('Supabase Realtime subscription status:', status);
+      });
 
     return () => {
       supabase.removeChannel(historyChannel);

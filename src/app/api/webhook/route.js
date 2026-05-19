@@ -104,11 +104,12 @@ export async function POST(req) {
           const commentId = change.value?.id;
           const text = change.value?.text || "";
           const senderId = change.value?.from?.id;
+          const senderUsername = change.value?.from?.username;
           const recipientId = entry.id; 
           const mediaId = change.value?.media?.id;
 
           if (senderId && recipientId && commentId && mediaId) {
-            await processAutomation(senderId, text, "COMMENT", recipientId, commentId, mediaId);
+            await processAutomation(senderId, text, "COMMENT", recipientId, commentId, mediaId, null, null, senderUsername);
           }
         }
       }

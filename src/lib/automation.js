@@ -30,7 +30,7 @@ const interpolate = (text, name, brand) => {
 /**
  * Main Engine Orchestrator
  */
-export async function processAutomation(senderId, text, type, recipientId, commentId = null, mediaId = null, messageId = null, payload = null) {
+export async function processAutomation(senderId, text, type, recipientId, commentId = null, mediaId = null, messageId = null, payload = null, senderUsername = null) {
   // --- ANTI-LOOP & SELF-REPLY GUARD ---
   if (senderId === recipientId) {
     console.log(`🤖 Self-reply/Loop detected for ${senderId}. Skipping.`);
@@ -134,8 +134,20 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     }
 
     const pageAccessToken = decryptToken(automation.access_token);
-    const profileResult = await MetaService.getUserProfile(senderId, pageAccessToken);
-    const userName = profileResult.success ? profileResult.data.name : "there";
+    
+    let userName = senderUsername;
+    if (!userName && type === "COMMENT" && commentId) {
+      console.log(`🔍 Commenter username missing. Fetching username from comment ID ${commentId}...`);
+      const commentSenderRes = await MetaService.getCommentSenderUsername(commentId, pageAccessToken);
+      if (commentSenderRes.success && commentSenderRes.username) {
+        userName = commentSenderRes.username;
+      }
+    }
+
+    if (!userName) {
+      const profileResult = await MetaService.getUserProfile(senderId, pageAccessToken);
+      userName = profileResult.success ? (profileResult.data.username || profileResult.data.name) : "there";
+    }
 
     // --- SMARTGUARD: ANTI-SPAM CIRCUIT BREAKER ---
     const isSpam = await SmartGuard.checkSpamAttack(senderId, automation.id);
