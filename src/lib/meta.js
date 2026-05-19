@@ -4,6 +4,14 @@ const INSTAGRAM_AUTH_URL = "https://api.instagram.com/oauth/access_token";
 const INSTAGRAM_GRAPH_BASE_URL = `https://graph.instagram.com/${GRAPH_API_VERSION}`;
 const DEFAULT_TIMEOUT_MS = 15000;
 
+function getGraphBaseUrl(token) {
+  if (token && typeof token === "string" && token.startsWith("IGAA")) {
+    return INSTAGRAM_GRAPH_BASE_URL;
+  }
+  return BASE_URL;
+}
+
+
 function getAppAccessToken() {
   const appId = process.env.INSTAGRAM_APP_ID?.trim();
   const appSecret = process.env.INSTAGRAM_APP_SECRET?.trim();
@@ -240,7 +248,7 @@ export const MetaService = {
 
   getUserProfile: async (userId, accessToken) => {
     try {
-      const response = await fetch(`${BASE_URL}/${userId}?fields=name,profile_pic&access_token=${accessToken}`);
+      const response = await fetch(`${getGraphBaseUrl(accessToken)}/${userId}?fields=name,profile_pic&access_token=${accessToken}`);
       const data = await response.json();
       if (!response.ok) throw new Error(data.error?.message || "Failed to fetch user profile");
       return { success: true, data };
@@ -259,7 +267,7 @@ export const MetaService = {
       return { success: false, error: "Empty text" };
     }
     try {
-      const response = await fetch(`${BASE_URL}/me/messages?access_token=${accessToken}`, {
+      const response = await fetch(`${getGraphBaseUrl(accessToken)}/me/messages?access_token=${accessToken}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -285,7 +293,7 @@ export const MetaService = {
         ? { text: messagePayload } 
         : messagePayload;
 
-      const response = await fetch(`${BASE_URL}/me/messages?access_token=${accessToken}`, {
+      const response = await fetch(`${getGraphBaseUrl(accessToken)}/me/messages?access_token=${accessToken}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -306,7 +314,7 @@ export const MetaService = {
 
   sendCommentReply: async (commentId, text, accessToken) => {
     try {
-      const response = await fetch(`${BASE_URL}/${commentId}/replies?access_token=${accessToken}`, {
+      const response = await fetch(`${getGraphBaseUrl(accessToken)}/${commentId}/replies?access_token=${accessToken}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text }),
@@ -322,7 +330,7 @@ export const MetaService = {
 
   checkFollowStatus: async (userId, accessToken) => {
     try {
-      const response = await fetch(`${BASE_URL}/${userId}?fields=is_user_follow_business&access_token=${accessToken}`);
+      const response = await fetch(`${getGraphBaseUrl(accessToken)}/${userId}?fields=is_user_follow_business&access_token=${accessToken}`);
       const data = await response.json();
       
       if (!response.ok) {
@@ -344,7 +352,7 @@ export const MetaService = {
 
   sendReaction: async (recipientId, messageId, emoji, accessToken) => {
     try {
-      const response = await fetch(`${BASE_URL}/me/messages?access_token=${accessToken}`, {
+      const response = await fetch(`${getGraphBaseUrl(accessToken)}/me/messages?access_token=${accessToken}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -366,7 +374,7 @@ export const MetaService = {
 
   getMediaContext: async (mediaId, accessToken) => {
     try {
-      const response = await fetch(`${BASE_URL}/${mediaId}?fields=caption&access_token=${accessToken}`);
+      const response = await fetch(`${getGraphBaseUrl(accessToken)}/${mediaId}?fields=caption&access_token=${accessToken}`);
       const data = await response.json();
       if (!response.ok) throw new Error(data.error?.message || "Failed to fetch caption");
       return { success: true, caption: data.caption };
@@ -408,7 +416,7 @@ export const MetaService = {
         }
       };
 
-      const response = await fetch(`${BASE_URL}/me/messages?access_token=${accessToken}`, {
+      const response = await fetch(`${getGraphBaseUrl(accessToken)}/me/messages?access_token=${accessToken}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -451,7 +459,7 @@ export const MetaService = {
         }
       };
 
-      const response = await fetch(`${BASE_URL}/me/messages?access_token=${accessToken}`, {
+      const response = await fetch(`${getGraphBaseUrl(accessToken)}/me/messages?access_token=${accessToken}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Building2, UserCircle, Target, MessageCircle, Zap, ArrowRight, Camera, CheckCircle2, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase";
@@ -51,6 +51,13 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
   const [step, setStep] = useState(initialStep);
   const [role, setRole] = useState(user?.user_metadata?.role || null);
   const [isConnecting, setIsConnecting] = useState(false);
+
+  // Sync step state when initialStep changes or modal is opened
+  useEffect(() => {
+    if (isOpen) {
+      setStep(initialStep);
+    }
+  }, [isOpen, initialStep]);
 
   if (!isOpen) return null;
 

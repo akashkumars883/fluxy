@@ -89,7 +89,7 @@ export default function Dashboard() {
   const initialOnboardingState = getInitialOnboardingState();
   const [showOnboarding, setShowOnboarding] = useState(initialOnboardingState.showOnboarding);
   const [onboardingStep, setOnboardingStep] = useState(initialOnboardingState.onboardingStep);
-  const [connectedAccount] = useState(initialOnboardingState.connectedAccount);
+  const [connectedAccount, setConnectedAccount] = useState(initialOnboardingState.connectedAccount);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -149,11 +149,29 @@ export default function Dashboard() {
     };
   }, []);
 
+  // Sync initial onboarding state on URL parameter changes
+  useEffect(() => {
+    if (initialOnboardingState.connectedAccount) {
+      setConnectedAccount(initialOnboardingState.connectedAccount);
+    }
+    if (initialOnboardingState.showOnboarding) {
+      setShowOnboarding(true);
+      setOnboardingStep(initialOnboardingState.onboardingStep);
+    }
+  }, [initialOnboardingState.connectedAccount, initialOnboardingState.showOnboarding, initialOnboardingState.onboardingStep]);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    let shouldClean = false;
     if (params.get("upgrade")) {
       setIsSubscriptionOpen(true);
-      // Clean up the URL
+      shouldClean = true;
+    }
+    if (params.get("success") === "instagram_connected") {
+      shouldClean = true;
+    }
+    if (shouldClean) {
+      // Clean up the URL completely to prevent repeat alerts/modals on refresh
       window.history.replaceState({}, '', window.location.pathname);
     }
   }, []);

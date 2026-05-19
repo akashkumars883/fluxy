@@ -634,6 +634,30 @@ export function DashboardProvider({ children }) {
         setAllAccounts(prev => prev.map(acc => acc.id === selectedAccount.id ? previousAccount : acc));
         return { error: err };
       }
+    },
+
+    disconnectAccount: async (accountId) => {
+      if (!accountId) return { error: "No account selected" };
+      try {
+        console.log("DashboardContext: Disconnecting account", accountId);
+        const supabase = createClient();
+        const { error } = await supabase
+          .from("automations")
+          .delete()
+          .eq("id", accountId);
+
+        if (error) {
+          console.error("DashboardContext: Disconnect Error ->", error.message);
+          return { error };
+        }
+
+        // Update local list of accounts
+        setAllAccounts(prev => prev.filter(acc => acc.id !== accountId));
+        return { success: true };
+      } catch (err) {
+        console.error("DashboardContext: Unexpected Disconnect Error ->", err);
+        return { error: err };
+      }
     }
   };
 

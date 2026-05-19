@@ -11,7 +11,8 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
     workspaceMembersLoading,
     inviteMember,
     removeMember,
-    updateMemberRole
+    updateMemberRole,
+    disconnectAccount
   } = useDashboard();
 
   const usedQuota = realtimeStats?.totalDms + realtimeStats?.autoReplies || 0;
@@ -20,6 +21,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   const [emailAlerts, setEmailAlerts] = useState(true);
   const [weeklyReport, setWeeklyReport] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
+  const [isDisconnecting, setIsDisconnecting] = useState(false);
 
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState("viewer");
@@ -101,10 +103,30 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
           
           <div className="pt-4">
             <button 
-              onClick={() => alert("Disconnecting account... Please connect another account from the top right.")}
-              className="w-full py-2.5 bg-rose-50 hover:bg-rose-100 border border-rose-100 rounded-xl text-[10px] font-bold text-rose-600 shadow-xs transition-all flex items-center justify-center gap-1.5"
+              onClick={async () => {
+                if (!account) return;
+                const confirmDisconnect = confirm(`Are you sure you want to disconnect @${account.ig_username || account.page_name || 'this account'}? This will delete all its automation settings and history.`);
+                if (!confirmDisconnect) return;
+                
+                setIsDisconnecting(true);
+                try {
+                  const res = await disconnectAccount(account.id);
+                  if (res && res.error) {
+                    alert("Failed to disconnect: " + res.error);
+                  } else {
+                    alert("Account successfully disconnected!");
+                  }
+                } catch (e) {
+                  console.error(e);
+                  alert("An error occurred while disconnecting the account.");
+                } finally {
+                  setIsDisconnecting(false);
+                }
+              }}
+              disabled={isDisconnecting || !account}
+              className="w-full py-2.5 bg-rose-50 hover:bg-rose-100 border border-rose-100 rounded-xl text-[10px] font-bold text-rose-600 shadow-xs transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
             >
-              <LogOut size={12} /> <span>Disconnect Account</span>
+              <LogOut size={12} /> <span>{isDisconnecting ? "Disconnecting..." : "Disconnect Account"}</span>
             </button>
           </div>
         </div>
