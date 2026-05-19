@@ -21,11 +21,11 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
   useEffect(() => {
     try {
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      if (tz === "Asia/Kolkata" || tz === "Asia/Calcutta") {
-        setIsIndia(true);
-      } else {
-        setIsIndia(false);
-      }
+      const isInd = tz === "Asia/Kolkata" || tz === "Asia/Calcutta";
+      const timer = setTimeout(() => {
+        setIsIndia(isInd);
+      }, 0);
+      return () => clearTimeout(timer);
     } catch (e) {
       console.error("Location detection failed", e);
     }
@@ -180,20 +180,20 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative bg-white/95 backdrop-blur-3xl w-full max-w-5xl h-[680px] rounded-[40px] shadow-2xl border border-zinc-200/80 overflow-hidden flex z-10"
+            className="relative bg-white/95 backdrop-blur-3xl w-full max-w-5xl h-[92vh] sm:h-[680px] rounded-[28px] sm:rounded-[40px] shadow-2xl border border-zinc-200/80 overflow-hidden flex flex-col md:flex-row z-10"
           >
         
         {/* Left Sidebar - Navigation */}
-        <div className="w-64 bg-zinc-50/50 backdrop-blur-md border-r border-zinc-200/60 p-8 flex flex-col justify-between shrink-0">
-          <div className="space-y-8">
-            <div className="flex items-center gap-3">
+        <div className="w-full md:w-64 bg-zinc-50/50 backdrop-blur-md border-b md:border-b-0 md:border-r border-zinc-200/60 p-4 sm:p-6 md:p-8 flex flex-row md:flex-col justify-between items-center md:items-stretch gap-4 shrink-0">
+          <div className="flex flex-row md:flex-col items-center md:items-stretch gap-4 md:gap-8 w-full md:w-auto justify-between md:justify-start">
+            <div className="flex items-center gap-3 shrink-0">
               <div className="w-8 h-8 rounded-2xl bg-zinc-950 flex items-center justify-center text-white border border-zinc-800 shadow-lg">
                 <CreditCard size={14} className="text-[#6366F1]" />
               </div>
-              <span className="font-black text-zinc-950 tracking-tight text-[11px] uppercase">Billing Center</span>
+              <span className="font-black text-zinc-950 tracking-tight text-[11px] uppercase hidden sm:inline">Billing Center</span>
             </div>
 
-            <nav className="space-y-1.5">
+            <nav className="flex flex-row md:flex-col gap-1.5">
               {[
                 { id: 'plans', label: 'Plans & Pricing', icon: Zap },
                 { id: 'invoices', label: 'Invoice History', icon: BarChart3 },
@@ -201,20 +201,20 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all ${
+                  className={`flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
                     activeTab === tab.id 
                       ? "text-zinc-950 bg-white border border-zinc-200/60 shadow-sm" 
                       : "text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100/50"
                   }`}
                 >
-                  <tab.icon size={14} className={activeTab === tab.id ? "text-[#6366F1]" : "text-zinc-400"} />
+                  <tab.icon size={13} className={activeTab === tab.id ? "text-[#6366F1]" : "text-zinc-400"} />
                   <span>{tab.label}</span>
                 </button>
               ))}
             </nav>
           </div>
 
-          <div className="p-5 bg-white/60 backdrop-blur-xl border border-zinc-200/60 rounded-3xl shadow-sm space-y-3">
+          <div className="hidden md:block p-5 bg-white/60 backdrop-blur-xl border border-zinc-200/60 rounded-3xl shadow-sm space-y-3">
              <div className="flex justify-between items-center text-[10px] font-black text-zinc-400 uppercase tracking-widest">
                 <span>Usage Quota</span>
                 <span className="text-[#6366F1] font-black">{quotaPercent}%</span>
@@ -225,24 +225,24 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
              <p className="text-[10px] text-zinc-500 font-bold tracking-tight">{usedQuota.toLocaleString()} DMs sent this month</p>
           </div>
         </div>
-
+ 
         {/* Right Content Area */}
-        <div className="flex-1 flex flex-col min-w-0 bg-white/40">
+        <div className="flex-1 flex flex-col min-w-0 bg-white/40 min-h-0">
           {/* Header */}
-          <div className="px-10 py-7 flex items-center justify-between border-b border-zinc-200/50">
+          <div className="px-6 sm:px-10 py-5 sm:py-7 flex items-center justify-between border-b border-zinc-200/50 shrink-0">
              <div>
-                <h3 className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight leading-none">
+                <h3 className="text-xl sm:text-3xl font-black text-zinc-950 tracking-tight leading-none">
                    {activeTab === 'plans' ? "Available Plans" : "Invoice History"}
                 </h3>
-                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1.5">Manage your Automixa subscription and billing details</p>
+                <p className="text-[9px] sm:text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1.5">Manage your Automixa subscription and billing details</p>
              </div>
-             <button onClick={onClose} className="p-2.5 hover:bg-zinc-100 border border-zinc-200/60 rounded-xl transition-all shadow-sm">
+             <button onClick={onClose} className="p-2.5 hover:bg-zinc-100 border border-zinc-200/60 rounded-xl transition-all shadow-sm cursor-pointer">
                 <X size={16} className="text-zinc-500 hover:text-zinc-900" />
              </button>
           </div>
-
+ 
           {/* Tab Content */}
-          <div className="flex-1 overflow-y-auto no-scrollbar p-10">
+          <div className="flex-1 overflow-y-auto no-scrollbar p-6 sm:p-10">
              
              {/* Section: Plans */}
              {activeTab === 'plans' && (

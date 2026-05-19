@@ -31,10 +31,10 @@ export default function AccountSettingsModal({ isOpen, onClose, user }) {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative bg-white w-full max-w-xl rounded-xl shadow-2xl overflow-hidden"
+            className="relative bg-white w-full max-w-xl rounded-[24px] sm:rounded-xl shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
           >
             {/* Header */}
-            <div className="px-8 py-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
+            <div className="px-6 sm:px-8 py-5 sm:py-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50 shrink-0">
               <div className="flex items-center gap-2.5">
                 <div className="w-10 h-10 bg-[#6366F1]/10 text-[#6366F1] rounded-xl flex items-center justify-center shadow-sm">
                   <User size={20} />
@@ -44,12 +44,12 @@ export default function AccountSettingsModal({ isOpen, onClose, user }) {
                   <p className="text-sm text-zinc-500 font-normal mt-0.5">Manage your personal profile and identity.</p>
                 </div>
               </div>
-              <button onClick={onClose} className="p-2 hover:bg-zinc-200/50 rounded-xl transition-all">
+              <button onClick={onClose} className="p-2 hover:bg-zinc-200/50 rounded-xl transition-all cursor-pointer">
                 <X size={20} className="text-zinc-400" />
               </button>
             </div>
 
-            <div className="p-8 space-y-8">
+            <div className="p-6 sm:p-8 space-y-6 sm:space-y-8 overflow-y-auto flex-1 min-h-0 no-scrollbar">
               {/* Profile Section */}
               <div className="flex flex-col sm:flex-row items-center gap-6">
                 <div className="relative group">
@@ -114,15 +114,15 @@ export default function AccountSettingsModal({ isOpen, onClose, user }) {
             </div>
 
             {/* Action Button */}
-            <div className="px-8 py-6 bg-zinc-50 border-t border-zinc-100 flex justify-end gap-3">
+            <div className="px-8 py-5 sm:py-6 bg-zinc-50 border-t border-zinc-100 flex justify-end gap-3 shrink-0">
               <button 
                 onClick={onClose}
-                className="px-6 py-3 text-sm font-semibold text-zinc-600 hover:text-zinc-900 transition-all"
+                className="px-6 py-3 text-sm font-semibold text-zinc-600 hover:text-zinc-900 transition-all cursor-pointer"
               >
                 Close
               </button>
               <button 
-                className="px-8 py-3 bg-zinc-950 text-white rounded-xl font-semibold text-sm shadow-xl hover:bg-zinc-800 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="px-8 py-3 bg-zinc-950 text-white rounded-xl font-semibold text-sm shadow-xl hover:bg-zinc-800 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
               >
                 Update Profile
               </button>

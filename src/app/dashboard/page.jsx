@@ -451,6 +451,7 @@ export default function Dashboard() {
         onClose={() => setIsMobileSidebarOpen(false)} 
         navigationItems={navigationItems}
         onPricingClick={() => setIsSubscriptionOpen(true)}
+        onConnectClick={handleConnectClick}
         quotaPercent={quotaPercent}
         usedQuota={usedQuota}
         maxQuota={maxQuota}

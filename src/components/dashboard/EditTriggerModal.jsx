@@ -68,10 +68,10 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-xl bg-white border border-zinc-200/60 rounded-[40px] shadow-2xl flex flex-col overflow-hidden"
+            className="relative w-full max-w-xl bg-white border border-zinc-200/60 rounded-[28px] sm:rounded-[40px] shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
           >
             {/* Header */}
-            <div className="px-8 py-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/30">
+            <div className="px-6 sm:px-8 py-5 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/30 shrink-0">
                <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-xl bg-[#6366F1] text-white flex items-center justify-center shadow-lg shadow-[#6366F1]/20">
@@ -85,13 +85,13 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
                </div>
                <button 
                  onClick={onClose}
-                 className="p-3 bg-white border border-zinc-100 rounded-2xl text-zinc-400 hover:text-zinc-900 transition-all shadow-sm"
+                 className="p-3 bg-white border border-zinc-100 rounded-2xl text-zinc-400 hover:text-zinc-950 transition-all shadow-sm cursor-pointer"
                >
                  <X size={20} />
                </button>
             </div>
 
-            <div className="p-8 space-y-8">
+            <div className="p-6 sm:p-8 space-y-6 sm:space-y-8 overflow-y-auto flex-1 min-h-0 no-scrollbar">
               <AnimatePresence mode="wait">
                 {step === 1 ? (
                   <motion.div 
@@ -208,17 +208,17 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
             </div>
 
             {/* Footer */}
-            <div className="px-8 py-6 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between">
+            <div className="px-8 py-5 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between shrink-0">
               <button 
                 onClick={() => step === 1 ? onClose() : setStep(1)}
-                className="px-6 py-3 text-[10px] font-semibold text-zinc-400 hover:text-zinc-600 transition-all"
+                className="px-6 py-3 text-[10px] font-semibold text-zinc-400 hover:text-zinc-600 transition-all cursor-pointer"
               >
                 {step === 1 ? "Cancel" : "Back"}
               </button>
               
               <button 
                 onClick={() => step === 1 ? setStep(2) : handleSave()}
-                className="px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-[#6366F1] transition-all flex items-center gap-2"
+                className="px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-[#6366F1] transition-all flex items-center gap-2 cursor-pointer"
               >
                 {step === 1 ? "Continue" : "Save Automation"}
                 {step === 1 ? <ArrowRight size={14} /> : <Save size={14} />}

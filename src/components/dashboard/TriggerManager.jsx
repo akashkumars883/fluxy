@@ -81,22 +81,22 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-xl bg-white border border-zinc-200/60 rounded-xl shadow-2xl p-6 sm:p-10 flex flex-col gap-8"
+            className="relative w-full max-w-xl bg-white border border-zinc-200/60 rounded-[28px] shadow-2xl p-5 sm:p-8 flex flex-col max-h-[92vh] sm:max-h-[85vh] gap-6"
           >
-            <div className="flex items-center justify-between border-b border-zinc-100 pb-6 shrink-0">
+            <div className="flex items-center justify-between border-b border-zinc-100 pb-4 shrink-0">
               <div>
                 <h2 className="text-2xl sm:text-3xl font-medium text-zinc-950 tracking-tighter">Create New Campaign</h2>
                 <p className="text-xs font-semibold text-zinc-400 mt-1">Set up automated reply rules</p>
               </div>
               <button 
                 onClick={onClose} 
-                className="p-2.5 rounded-xl text-zinc-400 hover:text-zinc-900 transition-all"
+                className="p-2.5 rounded-xl text-zinc-400 hover:text-zinc-950 transition-all cursor-pointer"
               >
                 <X size={20} />
               </button>
             </div>
 
-            <div className="space-y-5">
+            <div className="overflow-y-auto py-1 pr-1 flex-1 space-y-5 min-h-0 no-scrollbar">
               <div className="space-y-3">
                 <label className="text-[12px] font-medium text-zinc-400 ml-1">Campaign Title</label>
                 <input 
@@ -104,13 +104,13 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                   placeholder="e.g. Summer Giveaway Campaign" 
                   value={campaignName} 
                   onChange={(e) => setCampaignName(e.target.value)} 
-                  className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-5 py-3 text-sm font-medium text-black placeholder:text-zinc-400 focus:border-[#6366F1] focus:bg-white outline-none transition-all"
+                  className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-5 py-3.5 text-sm font-medium text-black placeholder:text-zinc-400 focus:border-[#6366F1] focus:bg-white outline-none transition-all"
                 />
               </div>
 
               <div className="space-y-4">
                 <label className="text-[12px] font-bold text-zinc-400 ml-1">Select Your Goal</label>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   {strategies.map((t) => {
                     // TEMP UNLOCK: isLocked set to false for limited time promotion
                     const isLocked = false; 
@@ -125,10 +125,10 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                             setCampaignName(t.title);
                           }
                         }} 
-                        className={`group relative border-2 rounded-xl p-4 flex flex-col items-center text-center gap-3 transition-all duration-300 ${selectedTemplate === t.id ? 'border-[#6366F1] bg-[#6366F1]/5 shadow-xl shadow-[#6366F1]/5 cursor-pointer scale-[1.02]' : 'border-zinc-50 bg-zinc-50/50 hover:border-zinc-200 hover:bg-white cursor-pointer hover:-translate-y-1'}`}
+                        className={`group relative border-2 rounded-2xl p-4 flex flex-col items-center text-center gap-3 transition-all duration-300 ${selectedTemplate === t.id ? 'border-[#6366F1] bg-[#6366F1]/5 shadow-xl shadow-[#6366F1]/5 cursor-pointer scale-[1.02]' : 'border-zinc-50 bg-zinc-50/50 hover:border-zinc-200 hover:bg-white cursor-pointer hover:-translate-y-0.5'}`}
                       >
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-500 ${selectedTemplate === t.id ? 'bg-[#6366F1] text-white shadow-xl shadow-[#6366F1]/20 rotate-6' : `${t.bg} ${t.color}`}`}>
-                          <t.icon size={28} />
+                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-500 ${selectedTemplate === t.id ? 'bg-[#6366F1] text-white shadow-xl shadow-[#6366F1]/20 rotate-6' : `${t.bg} ${t.color}`}`}>
+                          <t.icon size={24} />
                         </div>
                         <div className="space-y-1">
                           <h4 className="text-sm font-bold text-zinc-950 tracking-tight">{t.title}</h4>
@@ -140,8 +140,8 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                           </div>
                         )}
                         {selectedTemplate === t.id && (
-                          <div className="absolute top-3 right-3 w-6 h-6 bg-[#6366F1] rounded-full flex items-center justify-center shadow-lg animate-in zoom-in-50 duration-300 border-2 border-white">
-                            <Check size={12} className="text-white" />
+                          <div className="absolute top-3 right-3 w-5 h-5 bg-[#6366F1] rounded-full flex items-center justify-center shadow-lg animate-in zoom-in-50 duration-300 border-2 border-white">
+                             <Check size={10} className="text-white" />
                           </div>
                         )}
                       </div>
@@ -151,12 +151,12 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
               </div>
             </div>
 
-            <div className="flex items-center gap-4 border-t border-zinc-100 pt-5">
-              <button onClick={onClose} className="px-6 py-3.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-600 transition-all">Cancel</button>
+            <div className="flex items-center gap-4 border-t border-zinc-100 pt-4 shrink-0">
+              <button onClick={onClose} className="px-6 py-3.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-600 transition-all cursor-pointer">Cancel</button>
                 <button 
                   onClick={handleCreate} 
                   disabled={!campaignName.trim()} 
-                  className="flex-1 px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-[#6366F1] transition-all flex items-center justify-center gap-3 disabled:opacity-50 hover:scale-[1.02]"
+                  className="flex-1 px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-[#6366F1] transition-all flex items-center justify-center gap-3 disabled:opacity-50 hover:scale-[1.02] cursor-pointer"
                 >
                   Continue to Editor <ArrowRight size={18} />
                 </button>
@@ -196,7 +196,10 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
   // Sync templateKey to campaignStrategy if it changes
   useEffect(() => {
     if (templateKey) {
-      setWizardValues(prev => ({ ...prev, campaignStrategy: templateKey }));
+      const timer = setTimeout(() => {
+        setWizardValues(prev => ({ ...prev, campaignStrategy: templateKey }));
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [templateKey]);
 
@@ -543,7 +546,7 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
                     </h4>
 
                     <p className="text-xs text-zinc-500 font-medium leading-relaxed bg-white border border-zinc-100 p-3 rounded-2xl group-hover:bg-white/60">
-                      "{faq.response}"
+                      &ldquo;{faq.response}&rdquo;
                     </p>
 
                     <div className="flex items-center justify-between border-t border-zinc-200/50 pt-2 text-[10px] font-bold text-zinc-400">
@@ -658,7 +661,7 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
                   {t.variants?.public?.[0] && (
                     <div className="flex items-center gap-1.5 text-zinc-500 bg-white px-2 py-1 rounded-md border border-zinc-100">
                       <Globe size={11} className="text-[#6366F1]" />
-                      <span className="font-medium truncate max-w-[200px]">Public: "{t.variants.public[0]}"</span>
+                      <span className="font-medium truncate max-w-[200px]">Public: &ldquo;{t.variants.public[0]}&rdquo;</span>
                     </div>
                   )}
 

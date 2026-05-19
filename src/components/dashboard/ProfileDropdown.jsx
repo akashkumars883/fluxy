@@ -55,7 +55,7 @@ export default function ProfileDropdown({ user, realtimeStats, setActiveTab, onA
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-3 w-96 bg-white border border-zinc-200 rounded-[28px] shadow-2xl py-2 z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+        <div className="absolute right-[-8px] xs:right-0 mt-3 w-[calc(100vw-2rem)] xs:w-[360px] sm:w-[380px] bg-white border border-zinc-200 rounded-[28px] shadow-2xl py-2 z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
           
           <div className="px-5 py-4 border-b border-zinc-200/50 flex items-center gap-3">
             {avatarUrl ? (
