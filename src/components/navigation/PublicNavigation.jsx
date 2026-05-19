@@ -10,17 +10,28 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function PublicNavigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   // Track active accordion in mobile drawer
   const [mobileDropdown, setMobileDropdown] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
+      setIsScrolled(currentScrollY > 20);
+
+      // Hide navbar when scrolling down, show when scrolling up
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+      setLastScrollY(currentScrollY);
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   const navLinks = [
     { name: 'Features', href: '#features' },
@@ -79,6 +90,9 @@ export default function PublicNavigation() {
             ? "bg-white/40 backdrop-blur-2xl border-zinc-200/40 py-4"
             : "bg-transparent border-transparent py-6"
           }`}
+        style={{
+          transform: isVisible || isMenuOpen ? "translateY(0)" : "translateY(-100%)"
+        }}
       >
         <div className="max-w-8xl mx-auto px-6 md:px-10 flex items-center justify-between">
 

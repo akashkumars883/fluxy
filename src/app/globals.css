@@ -92,10 +92,6 @@ h6{
 }
 
 /* --- Native Mobile App UX Enhancements --- */
-html, body {
-  overscroll-behavior-y: contain; /* Prevents browser pull-to-refresh bounce */
-  height: 100%;
-}
 
 * {
   -webkit-tap-highlight-color: transparent; /* Removes blue tap flash on iOS/Android */
