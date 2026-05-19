@@ -55,12 +55,16 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
     : (partnerProfile?.master_tracking_link || "");
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
     async function loadRealData() {
       if (typeof window !== "undefined") {
         const savedStatus = localStorage.getItem("partner_app_status");
         if (savedStatus) {
-          setAppStatus(savedStatus);
+          setTimeout(() => {
+            setAppStatus(savedStatus);
+          }, 0);
         }
       }
       try {
@@ -150,6 +154,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
       }
     }
     loadRealData();
+    return () => clearTimeout(timer);
   }, []);
 
   const handleApplyNow = async () => {
@@ -217,41 +222,52 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
 
   const handleGenerateCode = async (e) => {
     e.preventDefault();
-    if (!newCodeInput.trim()) return;
+    const cleanCode = newCodeInput.toUpperCase().trim();
+    if (!cleanCode) return;
     setGenerating(true);
     try {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from("promo_codes").insert({
-          partner_id: user.id,
-          code: newCodeInput.toUpperCase().trim(),
-          customer_discount_percent: newSplit === "15_15" ? 15 : 10,
-          partner_commission_percent: newSplit === "10_20" ? 20 : 15,
-          split_config: newSplit,
-          status: 'active'
-        });
+      if (!user) throw new Error("You must be logged in to generate promo codes.");
+
+      const customerDiscount = newSplit === "15_15" ? 15 : 10;
+      const partnerCommission = newSplit === "10_20" ? 20 : 15;
+
+      const { error } = await supabase.from("promo_codes").insert({
+        partner_id: user.id,
+        code: cleanCode,
+        customer_discount_percent: customerDiscount,
+        partner_commission_percent: partnerCommission,
+        split_config: newSplit,
+        status: 'active'
+      });
+
+      if (error) {
+        if (error.code === "23505") {
+          throw new Error("This promo code already exists. Please choose a unique name.");
+        }
+        throw error;
       }
+
+      setPromoCodes(prev => [
+        { 
+          code: cleanCode, 
+          discount: `${customerDiscount}% off`,
+          split: newSplit === "10_20" ? "10% Customer / 20% Commission" : newSplit === "15_15" ? "15% Customer / 15% Commission" : "10% Customer / 15% Commission",
+          active: true,
+          clicks: 0,
+          sales: 0
+        },
+        ...prev
+      ]);
+      setNewCodeInput("");
+      setGenSuccess(true);
+      setTimeout(() => setGenSuccess(false), 3000);
     } catch (err) {
       console.error("Error creating promo code in DB:", err);
+      alert(err.message || "Failed to create promo code. Please try again.");
     } finally {
-      setTimeout(() => {
-        setGenerating(false);
-        setPromoCodes(prev => [
-          { 
-            code: newCodeInput.toUpperCase().trim(), 
-            discount: newSplit === "15_15" ? "15% off" : "10% off",
-            split: newSplit === "10_20" ? "10% Customer Discount / 20% Commission" : newSplit === "15_15" ? "15% Customer Discount / 15% Commission" : "10% Customer Discount / 15% Commission",
-            active: true,
-            clicks: 0,
-            sales: 0
-          },
-          ...prev
-        ]);
-        setNewCodeInput("");
-        setGenSuccess(true);
-        setTimeout(() => setGenSuccess(false), 3000);
-      }, 600);
+      setGenerating(false);
     }
   };
 
@@ -260,17 +276,20 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
     try {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase
-          .from("promo_codes")
-          .delete()
-          .eq("partner_id", user.id)
-          .eq("code", codeToDelete);
-      }
+      if (!user) throw new Error("You must be logged in to delete promo codes.");
+
+      const { error } = await supabase
+        .from("promo_codes")
+        .delete()
+        .eq("partner_id", user.id)
+        .eq("code", codeToDelete);
+
+      if (error) throw error;
+      setPromoCodes(prev => prev.filter(c => c.code !== codeToDelete));
     } catch (err) {
       console.error("Error deleting promo code:", err);
+      alert(err.message || "Failed to delete promo code. Please try again.");
     }
-    setPromoCodes(prev => prev.filter(c => c.code !== codeToDelete));
   };
 
   const handleSavePayoutMethod = async (e) => {
@@ -285,21 +304,23 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
     try {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from("partner_profiles").update({
-          payout_method: payoutMethod,
-          payout_address: finalAddress
-        }).eq("id", user.id);
-      }
+      if (!user) throw new Error("You must be logged in to save payout settings.");
+
+      const { error } = await supabase.from("partner_profiles").update({
+        payout_method: payoutMethod,
+        payout_address: finalAddress
+      }).eq("id", user.id);
+
+      if (error) throw error;
+
+      setIsPayoutModalOpen(false);
+      setPayoutSaveSuccess(true);
+      setTimeout(() => setPayoutSaveSuccess(false), 4000);
     } catch (err) {
       console.error("Error updating payout method in DB:", err);
+      alert(err.message || "Failed to save payout settings. Please try again.");
     } finally {
-      setTimeout(() => {
-        setSavingPayout(false);
-        setIsPayoutModalOpen(false);
-        setPayoutSaveSuccess(true);
-        setTimeout(() => setPayoutSaveSuccess(false), 4000);
-      }, 600);
+      setSavingPayout(false);
     }
   };
 
@@ -842,7 +863,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
               {payoutMethod === "bank_transfer" && (
                 <div className="space-y-6 animate-in fade-in duration-300 pt-2">
                   <div className="space-y-2">
-                    <label className="text-xs font-semibold text-zinc-900 ml-1 block">Account Holder's Name</label>
+                    <label className="text-xs font-semibold text-zinc-900 ml-1 block">Account Holder&apos;s Name</label>
                     <input 
                       type="text" 
                       required

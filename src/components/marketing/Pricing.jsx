@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { CheckCircle2, ArrowRight, Sparkles, Tag, ShieldCheck, X, Check, ArrowUpRight, Zap, Building2, CreditCard } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase";
 
 export default function Pricing({ onSuccess = null, isModal = false } = {}) {
   const [isIndia, setIsIndia] = useState(true);
@@ -87,12 +88,13 @@ export default function Pricing({ onSuccess = null, isModal = false } = {}) {
     }
   ];
 
-  const handleApplyPromo = (e) => {
+  const handleApplyPromo = async (e) => {
     e.preventDefault();
     setPromoError(null);
     const code = promoCodeInput.trim().toUpperCase();
     if (!code) return;
 
+    // 1. Check for mock codes first
     if (code === "AUTOMIXA30" || code === "CREATORVIP") {
       const discountPercent = code === "AUTOMIXA30" ? 30 : 20;
       const discountFactor = (100 - discountPercent) / 100;
@@ -104,20 +106,154 @@ export default function Pricing({ onSuccess = null, isModal = false } = {}) {
         code,
         discountPercent,
         newPriceInr,
-        newPriceUsd
+        newPriceUsd,
+        partnerId: null
       });
-    } else {
+      return;
+    }
+
+    // 2. Check Supabase DB for custom ambassador code
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("promo_codes")
+        .select("*, partner_id")
+        .eq("code", code)
+        .eq("status", "active")
+        .single();
+
+      if (error || !data) {
+        setPromoError("Invalid or inactive promo code. Please try again.");
+        return;
+      }
+
+      const discountPercent = data.customer_discount_percent || 10;
+      const discountFactor = (100 - discountPercent) / 100;
+      
+      const newPriceInr = Math.round(selectedPlan.raw_inr * discountFactor);
+      const newPriceUsd = Math.round(selectedPlan.raw_usd * discountFactor);
+      
+      setAppliedPromo({
+        code,
+        discountPercent,
+        newPriceInr,
+        newPriceUsd,
+        partnerId: data.partner_id
+      });
+    } catch (err) {
+      console.error("Error applying database promo code:", err);
       setPromoError("Invalid promo code. Please try again.");
     }
   };
 
-  const handleCheckoutSimulate = () => {
+  const handleCheckoutSimulate = async () => {
     setCheckoutLoading(true);
+    const planId = selectedPlan.name === "Viral Scale" ? "viral_scale" : "creator_pro";
+
+    try {
+      const supabase = createClient();
+      
+      // Determine partner attribution
+      let partnerId = null;
+      let promoCodeUsed = null;
+      let transactionAmount = appliedPromo ? appliedPromo.newPriceInr : selectedPlan.raw_inr;
+
+      if (appliedPromo && appliedPromo.partnerId) {
+        partnerId = appliedPromo.partnerId;
+        promoCodeUsed = appliedPromo.code;
+      } else if (typeof window !== "undefined") {
+        const storedRef = localStorage.getItem("automixa_ref");
+        if (storedRef) {
+          const { data: matches } = await supabase
+            .from("partner_profiles")
+            .select("id, master_tracking_link")
+            .or(`master_tracking_link.ilike.%${storedRef}%,id.eq.${storedRef.replace("partner_", "")}`);
+          
+          if (matches && matches.length > 0) {
+            partnerId = matches[0].id;
+          }
+        }
+      }
+
+      // If attributed to a partner, record it!
+      if (partnerId) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          let commissionRate = 0.20; // default split
+          
+          if (promoCodeUsed) {
+            const { data: promo } = await supabase
+              .from("promo_codes")
+              .select("partner_commission_percent, clicks_count, sales_count")
+              .eq("code", promoCodeUsed)
+              .single();
+
+            if (promo) {
+              commissionRate = (promo.partner_commission_percent || 20) / 100;
+              // Increment promo code sales
+              await supabase
+                .from("promo_codes")
+                .update({ sales_count: (promo.sales_count || 0) + 1 })
+                .eq("code", promoCodeUsed);
+            }
+          } else {
+            // Find partner commission rate from profile
+            const { data: profile } = await supabase
+              .from("partner_profiles")
+              .select("commission_rate")
+              .eq("id", partnerId)
+              .single();
+            if (profile) {
+              commissionRate = Number(profile.commission_rate) || 0.15;
+            }
+          }
+
+          const commissionEarned = Math.round(transactionAmount * commissionRate);
+          const transactionId = `pay_sim_${Math.random().toString(36).slice(2, 10)}`;
+
+          // 1. Insert attribution log
+          await supabase.from("referral_attributions").insert({
+            customer_user_id: user.id,
+            promo_code_used: promoCodeUsed,
+            partner_id: partnerId,
+            subscription_plan: planId,
+            transaction_amount: transactionAmount,
+            commission_earned: commissionEarned,
+            transaction_id: transactionId,
+            status: "completed"
+          });
+
+          // 2. Update partner profile metrics
+          const { data: partnerProf } = await supabase
+            .from("partner_profiles")
+            .select("total_referrals_count, monthly_recurring_revenue, unpaid_earnings")
+            .eq("id", partnerId)
+            .single();
+
+          if (partnerProf) {
+            const newReferrals = (partnerProf.total_referrals_count || 0) + 1;
+            const newMRR = (partnerProf.monthly_recurring_revenue || 0) + (transactionAmount / 12);
+            const newUnpaid = (partnerProf.unpaid_earnings || 0) + commissionEarned;
+            
+            await supabase
+              .from("partner_profiles")
+              .update({
+                total_referrals_count: newReferrals,
+                monthly_recurring_revenue: Number(newMRR.toFixed(2)),
+                unpaid_earnings: Number(newUnpaid.toFixed(2))
+              })
+              .eq("id", partnerId);
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Attribution record error:", e);
+    }
+
     setTimeout(() => {
       setCheckoutLoading(false);
       setCheckoutSuccess(true);
       setTimeout(() => {
-        const planId = selectedPlan.name === "Viral Scale" ? "viral_scale" : "creator_pro";
         window.location.assign(`/dashboard?upgrade=${planId}&payment=success`);
       }, 1500);
     }, 1500);
