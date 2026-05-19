@@ -90,20 +90,29 @@ export async function GET(req) {
       });
     }
 
-    const result = await MetaService.getMediaList(instagramId, decryptedToken);
-    if (!result.success) {
-      console.error(`Meta media fetch failed for ig_business_id=${instagramId}:`, result.error);
+    const [mediaResult, storiesResult] = await Promise.all([
+      MetaService.getMediaList(instagramId, decryptedToken),
+      MetaService.getStoriesList(instagramId, decryptedToken).catch((err) => {
+        console.error("Meta stories fetch failed:", err.message);
+        return { success: false, data: [] };
+      })
+    ]);
+
+    if (!mediaResult.success) {
+      console.error(`Meta media fetch failed for ig_business_id=${instagramId}:`, mediaResult.error);
       return NextResponse.json({
         media: [],
-        error: result.error,
+        stories: storiesResult.success ? (storiesResult.data || []) : [],
+        error: mediaResult.error,
         diagnostic:
           "Meta API returned an error. Check if 'instagram_basic' permission is granted (Advanced Access) and the token is valid.",
       });
     }
 
     return NextResponse.json({
-      media: result.data || [],
-      count: result.data?.length || 0,
+      media: mediaResult.data || [],
+      stories: storiesResult.success ? (storiesResult.data || []) : [],
+      count: mediaResult.data?.length || 0,
     });
   } catch (error) {
     console.error("API /api/media Error:", error);

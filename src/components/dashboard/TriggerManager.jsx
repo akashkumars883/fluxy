@@ -169,7 +169,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
 }
 
 
-export function CampaignBuilderWorkspace({ automation, campaignName, templateKey, accountId, onClose, onPublish, currentPlan = "free", media = [] }) {
+export function CampaignBuilderWorkspace({ automation, campaignName, templateKey, accountId, onClose, onPublish, currentPlan = "free", media = [], stories = [] }) {
   const [scanningProfile, setScanningProfile] = useState(false);
   const [suggestedCampaigns, setSuggestedCampaigns] = useState(null);
   const [showSuggestionsDrawer, setShowSuggestionsDrawer] = useState(false);
@@ -473,7 +473,15 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
             onChange={handleWizardChange}
             onBack={onClose}
             media={media}
-            stories={INSTAGRAM_STORIES_MOCK}
+            stories={stories && stories.length > 0 
+              ? stories.map(s => ({
+                  id: s.id,
+                  media_url: s.media_url || s.thumbnail_url,
+                  timestamp: s.timestamp 
+                    ? new Date(s.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) 
+                    : 'Active'
+                }))
+              : INSTAGRAM_STORIES_MOCK}
             selectedPosts={selectedPosts}
             onSelectPosts={(selection) => setSelectedPosts(selection)}
             currentPlan={currentPlan}

@@ -506,6 +506,30 @@ export const MetaService = {
     }
   },
 
+  getStoriesList: async (instagramId, accessToken) => {
+    try {
+      const fields = "id,media_url,permalink,timestamp,media_type,thumbnail_url";
+      let { response, data } = await fetchJson(
+        `${INSTAGRAM_GRAPH_BASE_URL}/${instagramId}/stories?fields=${fields}&access_token=${accessToken}`
+      );
+
+      if (!response.ok) {
+        ({ response, data } = await fetchJson(
+          `${BASE_URL}/${instagramId}/stories?fields=${fields}&access_token=${accessToken}`
+        ));
+      }
+      
+      if (!response.ok) {
+        console.error("Meta API getStoriesList Error:", data?.error?.message);
+        throw new Error(data?.error?.message || "Failed to fetch stories list");
+      }
+      
+      return { success: true, data: data.data || [] };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
   getCommentSenderUsername: async (commentId, accessToken) => {
     try {
       const response = await fetch(`${getGraphBaseUrl(accessToken)}/${commentId}?fields=from&access_token=${accessToken}`);
@@ -557,6 +581,7 @@ export const getMediaContext = MetaService.getMediaContext;
 export const sendReaction = MetaService.sendReaction;
 export const sendGenericCard = MetaService.sendGenericCard;
 export const getMediaList = MetaService.getMediaList;
+export const getStoriesList = MetaService.getStoriesList;
 export const subscribeAccount = MetaService.subscribeAccount;
 export const getCommentSenderUsername = MetaService.getCommentSenderUsername;
 

@@ -98,6 +98,7 @@ export default function Dashboard() {
   const [realtimeTriggers, setRealtimeTriggers] = useState([]);
   const [triggersList, setTriggersList] = useState([]);
   const [instagramMedia, setInstagramMedia] = useState([]);
+  const [instagramStories, setInstagramStories] = useState([]);
 
   const [isAccountSettingsOpen, setIsAccountSettingsOpen] = useState(false);
   const [isSubscriptionOpen, setIsSubscriptionOpen] = useState(false);
@@ -219,9 +220,10 @@ export default function Dashboard() {
              try {
                const res = await fetch(`/api/media?automationId=${selectedAccount.id}`);
                const mediaRes = await res.json();
-               if (mediaRes && mediaRes.media) {
-                 setInstagramMedia(mediaRes.media);
-               }
+               if (mediaRes) {
+                  if (mediaRes.media) setInstagramMedia(mediaRes.media);
+                  if (mediaRes.stories) setInstagramStories(mediaRes.stories);
+                }
              } catch (err) {
                console.warn("Dashboard: Media fetch failed ->", err.message);
              }
@@ -612,6 +614,7 @@ export default function Dashboard() {
                 builderActive ? (
                   <div className="animate-in slide-in-from-bottom-4 duration-500">
                     <CampaignBuilderWorkspace 
+                      stories={instagramStories}
                       automation={selectedAccount}
                       templateKey={builderTemplateKey} 
                       campaignName={builderCampaignName}
