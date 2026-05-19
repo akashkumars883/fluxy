@@ -34,14 +34,34 @@ export default function JsonLd() {
 
   const organizationSchema = {
     "@context": "https://schema.org",
-    "@type": "Corporation",
+    "@type": "Organization",
     "name": "Automixa",
+    "legalName": "Akash Enterprises",
     "url": "https://automixa.in",
     "logo": "https://automixa.in/icon.png",
+    "description": "Automate your Instagram comments and DMs with AI. Scale your growth, generate leads, and boost engagement safely with official APIs.",
     "founder": {
       "@type": "Person",
       "name": "Akash Kumar",
-      "jobTitle": "Founder & CEO"
+      "jobTitle": "Founder & CEO",
+      "url": "https://automixa.in",
+      "sameAs": [
+        "https://instagram.com/automixa",
+        "https://twitter.com/automixa"
+      ]
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+91-6201231875",
+      "contactType": "customer support",
+      "email": "info@automixa.in",
+      "areaServed": "IN",
+      "availableLanguage": ["English", "Hindi"]
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Bihar",
+      "addressCountry": "IN"
     },
     "sameAs": [
       "https://instagram.com/automixa",

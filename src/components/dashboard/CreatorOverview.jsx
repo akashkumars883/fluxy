@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { 
   MessageSquare, 
   Zap, 
@@ -18,7 +19,9 @@ import {
   Clock,
   Users,
   Flame,
-  ArrowRight
+  ArrowRight,
+  X,
+  ShieldAlert
 } from "lucide-react";
 
 import { createClient } from "@/lib/supabase";
@@ -27,6 +30,15 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
   const [isSyncing, setIsSyncing] = useState(false);
   const [hoveredDay, setHoveredDay] = useState(null);
   const [isHumanMimicEnabled, setIsHumanMimicEnabled] = useState(true);
+  const [syncReport, setSyncReport] = useState(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSimulateTrigger = async (type) => {
     if (automationId === "dev-test-id") {
@@ -63,25 +75,27 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
   const handleMetaSync = async () => {
     if (isSyncing) return;
     setIsSyncing(true);
+    setSyncReport(null);
     try {
       const res = await fetch(`/api/media/sync?automationId=${automationId}`);
       const data = await res.json();
       
       if (data.success && data.diagnostics) {
-        const { scope_insights, scope_comments, media_found, comment_replied } = data.diagnostics;
-        alert(
-          `🚀 Meta Sync Report:\n\n` +
-          `• Insights Status: ${scope_insights}\n` +
-          `• Comments Status: ${scope_comments}\n` +
-          `• Media Found: ${media_found}\n` +
-          `• Test Reply Sent: ${comment_replied}\n\n` +
-          `Status: ${scope_insights === "SUCCESS" && scope_comments.includes("SUCCESS") ? "✅ READY FOR REVIEW" : "⚠️ NEEDS ATTENTION"}`
-        );
+        setSyncReport({
+          success: true,
+          diagnostics: data.diagnostics
+        });
       } else {
-        alert("Sync partly failed: " + (data.error || "Unknown error"));
+        setSyncReport({
+          success: false,
+          error: data.error || "Unknown error during sync check."
+        });
       }
     } catch (err) {
-      alert("Network error during Meta sync. Check console for details.");
+      setSyncReport({
+        success: false,
+        error: "Network error occurred while syncing with Meta."
+      });
       console.error(err);
     } finally {
       setIsSyncing(false);
@@ -539,6 +553,112 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
           </button>
         </div>
       </div>
+
+      {/* Meta Sync Report Dialog Modal */}
+      {mounted && syncReport && typeof document !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-300">
+          <div 
+            className="fixed inset-0 bg-[#f3f3f3]/60 backdrop-blur-md transition-all duration-500"
+            onClick={() => setSyncReport(null)}
+          />
+
+          <div className="relative w-full max-w-md bg-white border border-zinc-200 rounded-[32px] shadow-2xl p-6 sm:p-8 flex flex-col gap-6 animate-in zoom-in-95 duration-300 z-10">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-zinc-200/50 pb-4 shrink-0">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-500/10 text-indigo-600 rounded-full text-[9px] font-bold uppercase tracking-wider mb-1">
+                  <Activity size={10} /> Meta Integration
+                </div>
+                <h3 className="text-xl font-bold text-zinc-900 tracking-tight">Meta Connection Report</h3>
+              </div>
+              <button 
+                onClick={() => setSyncReport(null)}
+                className="p-2 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-400 hover:text-zinc-950 transition-all hover:bg-zinc-100"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Content */}
+            {syncReport.success && syncReport.diagnostics ? (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 p-4 bg-zinc-50 rounded-2xl border border-zinc-105">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-[#6366F1] flex items-center justify-center shrink-0">
+                    <Sparkles size={18} />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block">Status Overview</span>
+                    <span className={`text-xs font-bold ${
+                      syncReport.diagnostics.scope_insights === "SUCCESS" && syncReport.diagnostics.scope_comments === "SUCCESS"
+                        ? "text-emerald-600"
+                        : "text-amber-600"
+                    }`}>
+                      {syncReport.diagnostics.scope_insights === "SUCCESS" && syncReport.diagnostics.scope_comments === "SUCCESS"
+                        ? "✅ READY FOR ACTION"
+                        : "⚠️ ATTENTION NEEDED"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between py-2 border-b border-zinc-100">
+                    <span className="text-xs font-semibold text-zinc-500">Insights Reading Permission</span>
+                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
+                      syncReport.diagnostics.scope_insights === "SUCCESS" ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"
+                    }`}>
+                      {syncReport.diagnostics.scope_insights}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between py-2 border-b border-zinc-100">
+                    <span className="text-xs font-semibold text-zinc-500">Comments Auto-Reply Permission</span>
+                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
+                      syncReport.diagnostics.scope_comments === "SUCCESS" ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"
+                    }`}>
+                      {syncReport.diagnostics.scope_comments}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between py-2 border-b border-zinc-100">
+                    <span className="text-xs font-semibold text-zinc-500">Active Media Feed Detected</span>
+                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
+                      syncReport.diagnostics.media_found === "YES" ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"
+                    }`}>
+                      {syncReport.diagnostics.media_found}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-xs font-semibold text-zinc-500">Diagnostics Simulation Reply</span>
+                    <span className="text-xs font-bold text-zinc-400">
+                      {syncReport.diagnostics.comment_replied}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 bg-rose-50 border border-rose-100 rounded-2xl flex gap-3 text-rose-700 text-xs">
+                <ShieldAlert size={18} className="shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-bold block">Sync Diagnostic Failed</span>
+                  <p className="mt-1 leading-normal font-medium text-rose-600/90">{syncReport.error}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Footer */}
+            <div className="border-t border-zinc-200/50 pt-4 flex justify-end shrink-0">
+              <button
+                onClick={() => setSyncReport(null)}
+                className="px-5 py-2.5 bg-zinc-950 text-white rounded-xl font-bold text-xs hover:bg-zinc-900 transition-all shadow-md"
+              >
+                Acknowledge
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
 
     </div>
   );

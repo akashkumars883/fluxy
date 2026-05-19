@@ -601,6 +601,7 @@ export default function Dashboard() {
                   stats={realtimeStats} 
                   history={realtimeHistory} 
                   topTriggers={realtimeTriggers} 
+                  automationId={selectedAccount?.id}
                   isActive={selectedAccount?.is_active}
                   onViewAudience={() => setActiveTab("audience")}
                   onCreateAutoReply={() => {

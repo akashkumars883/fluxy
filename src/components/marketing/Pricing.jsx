@@ -19,11 +19,11 @@ export default function Pricing({ onSuccess = null, isModal = false } = {}) {
   useEffect(() => {
     try {
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      if (tz === "Asia/Kolkata" || tz === "Asia/Calcutta") {
-        setIsIndia(true);
-      } else {
-        setIsIndia(false);
-      }
+      const isInd = tz === "Asia/Kolkata" || tz === "Asia/Calcutta";
+      const timer = setTimeout(() => {
+        setIsIndia(isInd);
+      }, 0);
+      return () => clearTimeout(timer);
     } catch (e) {
       console.error("Location detection failed", e);
     }
@@ -87,14 +87,50 @@ export default function Pricing({ onSuccess = null, isModal = false } = {}) {
     }
   ];
 
+  const handleApplyPromo = (e) => {
+    e.preventDefault();
+    setPromoError(null);
+    const code = promoCodeInput.trim().toUpperCase();
+    if (!code) return;
+
+    if (code === "AUTOMIXA30" || code === "CREATORVIP") {
+      const discountPercent = code === "AUTOMIXA30" ? 30 : 20;
+      const discountFactor = (100 - discountPercent) / 100;
+      
+      const newPriceInr = Math.round(selectedPlan.raw_inr * discountFactor);
+      const newPriceUsd = Math.round(selectedPlan.raw_usd * discountFactor);
+      
+      setAppliedPromo({
+        code,
+        discountPercent,
+        newPriceInr,
+        newPriceUsd
+      });
+    } else {
+      setPromoError("Invalid promo code. Please try again.");
+    }
+  };
+
+  const handleCheckoutSimulate = () => {
+    setCheckoutLoading(true);
+    setTimeout(() => {
+      setCheckoutLoading(false);
+      setCheckoutSuccess(true);
+      setTimeout(() => {
+        const planId = selectedPlan.name === "Viral Scale" ? "viral_scale" : "creator_pro";
+        window.location.assign(`/dashboard?upgrade=${planId}&payment=success`);
+      }, 1500);
+    }, 1500);
+  };
+
   const handlePlanClick = (tier) => {
     if (tier.raw_inr === 0) {
-      window.location.href = "/login";
+      window.location.assign("/login");
       return;
     }
     // Redirect to dashboard with plan info to trigger the real modal
     const planId = tier.name === "Viral Scale" ? "viral_scale" : "creator_pro";
-    window.location.href = `/dashboard?upgrade=${planId}`;
+    window.location.assign(`/dashboard?upgrade=${planId}`);
   };
 
   return (

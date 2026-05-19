@@ -275,17 +275,27 @@ export function DashboardProvider({ children }) {
 
   // Update selected account when selectedWorkspace or allAccounts change
   useEffect(() => {
+    let timer;
     if (selectedWorkspace) {
       const workspaceAccounts = allAccounts.filter(acc => getAccountWorkspaceId(acc) === selectedWorkspace.id);
       
       // If selectedAccount doesn't belong to the active workspace, switch to first account or null
       if (!selectedAccount || !workspaceAccounts.some(acc => acc.id === selectedAccount.id)) {
-        setSelectedAccount(workspaceAccounts.length > 0 ? workspaceAccounts[0] : null);
+        timer = setTimeout(() => {
+          setSelectedAccount(workspaceAccounts.length > 0 ? workspaceAccounts[0] : null);
+        }, 0);
       }
     } else {
-      setSelectedAccount(null);
+      if (selectedAccount !== null) {
+        timer = setTimeout(() => {
+          setSelectedAccount(null);
+        }, 0);
+      }
     }
-  }, [selectedWorkspace, allAccounts]);
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [selectedWorkspace, allAccounts, selectedAccount]);
 
   // Apply dynamic color theme based on active workspace's selected color
   useEffect(() => {

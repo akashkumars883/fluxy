@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ShieldCheck, Zap, Sparkles, Activity, ShieldAlert, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, Sparkles, Activity, ShieldAlert, CheckCircle2 } from "lucide-react";
 
 export default function Safety() {
   return (
@@ -44,7 +44,7 @@ export default function Safety() {
                   Natural Human Delay
                 </h3>
                 <p className="text-sm text-zinc-500 font-normal leading-relaxed">
-                  If your post goes viral, our shield adds a random delay (like 4 to 12 seconds) between replies. This looks completely natural to Instagram's safety filters.
+                  If your post goes viral, our shield adds a random delay (like 4 to 12 seconds) between replies. This looks completely natural to Instagram&apos;s safety filters.
                 </p>
               </div>
             </div>
@@ -98,14 +98,14 @@ export default function Safety() {
                   <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
                   <span className="text-zinc-400 font-bold uppercase tracking-wider text-[8px]">Reply Variant Alpha</span>
                 </div>
-                <p className="text-zinc-700 font-semibold">"Hey Akash! Just sent the link to your inbox: link"</p>
+                <p className="text-zinc-700 font-semibold">&quot;Hey Akash! Just sent the link to your inbox: link&quot;</p>
               </div>
               <div className="p-4 bg-zinc-50/50 rounded-2xl border border-zinc-150 flex flex-col gap-1 shadow-sm opacity-80">
                 <div className="flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                   <span className="text-zinc-400 font-bold uppercase tracking-wider text-[8px]">Reply Variant Beta</span>
                 </div>
-                <p className="text-zinc-700 font-semibold">"Awesome Akash! Check your DMs, link delivered."</p>
+                <p className="text-zinc-700 font-semibold">&quot;Awesome Akash! Check your DMs, link delivered.&quot;</p>
               </div>
             </div>
           </motion.div>
@@ -136,7 +136,7 @@ export default function Safety() {
             <div className="mt-8 p-5 bg-rose-50/30 border border-rose-100/50 rounded-3xl flex items-center justify-between gap-3 text-rose-600">
               <div className="space-y-1.5">
                 <span className="text-[8px] font-black uppercase tracking-wider text-rose-500 block">Abuse Prevention Shield</span>
-                <p className="text-xs font-bold leading-none text-zinc-800">Spammer "spam_bot_99" Blocked</p>
+                <p className="text-xs font-bold leading-none text-zinc-800">Spammer &quot;spam_bot_99&quot; Blocked</p>
               </div>
               <span className="px-3 py-1.5 bg-rose-500 text-white text-[9px] font-bold tracking-wider rounded-xl uppercase shadow-sm">
                 Protected
@@ -161,7 +161,7 @@ export default function Safety() {
                   Official & Approved Connection
                 </h3>
                 <p className="text-sm text-zinc-500 font-normal leading-relaxed">
-                  We do not ask for your password and we do not use fake browser tricks. We connect directly through Instagram's official partner tools.
+                  We do not ask for your password and we do not use fake browser tricks. We connect directly through Instagram&apos;s official partner tools.
                 </p>
               </div>
             </div>

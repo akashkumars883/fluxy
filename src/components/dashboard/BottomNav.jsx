@@ -58,7 +58,7 @@ export default function BottomNav({ onCreateClick, onMoreClick }) {
                 />
               )}
 
-              <span className={`text-[10px] font-semibold mt-0.5 transition-all duration-300 ${isActive ? "text-[#6366F1] opacity-100" : "text-zinc-400 opacity-0"}`}>
+              <span className={`text-[9px] font-bold mt-1 transition-all duration-300 uppercase tracking-wider ${isActive ? "text-[#6366F1] opacity-100 scale-100" : "text-zinc-400 opacity-60 scale-95"}`}>
                 {item.label}
               </span>
             </button>
