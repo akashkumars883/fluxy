@@ -81,9 +81,9 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <UserCheck className="text-emerald-500" size={16} />
-                <h3 className="text-sm font-semibold text-zinc-900 tracking-tight">Instagram Account</h3>
+                <h3 className="text-base font-semibold text-zinc-900 tracking-tight">Instagram Account</h3>
               </div>
-              <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-[9px] font-bold uppercase tracking-wider">Connected</span>
+              <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-xs font-bold uppercase tracking-wider">Connected</span>
             </div>
             
             <div className="flex items-center gap-4 bg-white/60 p-4 rounded-xl border border-zinc-200 shadow-xs">
@@ -93,10 +93,10 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
                 className="w-10 h-10 rounded-full object-cover border border-zinc-200 shadow-sm shrink-0"
               />
               <div className="min-w-0">
-                <h4 className="text-xs font-bold text-zinc-900 truncate">
+                <h4 className="text-sm font-bold text-zinc-900 truncate">
                   @{account?.ig_username || account?.page_name || "connected_account"}
                 </h4>
-                <span className="text-[10px] text-zinc-400 font-semibold block mt-0.5">IG Creator Account</span>
+                <span className="text-xs text-zinc-400 font-semibold block mt-0.5">IG Creator Account</span>
               </div>
             </div>
           </div>
@@ -124,7 +124,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
                 }
               }}
               disabled={isDisconnecting || !account}
-              className="w-full py-2.5 bg-rose-50 hover:bg-rose-100 border border-rose-100 rounded-xl text-[10px] font-bold text-rose-600 shadow-xs transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
+              className="w-full py-2.5 bg-rose-50 hover:bg-rose-100 border border-rose-100 rounded-xl text-xs font-bold text-rose-600 shadow-xs transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
             >
               <LogOut size={12} /> <span>{isDisconnecting ? "Disconnecting..." : "Disconnect Account"}</span>
             </button>
@@ -139,17 +139,17 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Zap className="text-[#6366F1]" size={16} />
-                <h3 className="text-sm font-semibold text-zinc-900 tracking-tight">API Quota Usage</h3>
+                <h3 className="text-base font-semibold text-zinc-900 tracking-tight">API Quota Usage</h3>
               </div>
-              <span className="px-2.5 py-1 bg-[#6366F1]/10 text-[#6366F1] rounded-full text-[9px] font-bold uppercase tracking-wider">
+              <span className="px-2.5 py-1 bg-[#6366F1]/10 text-[#6366F1] rounded-full text-xs font-bold uppercase tracking-wider">
                 {currentPlan === "viral_scale" ? "Platinum" : currentPlan === "creator_pro" ? "Pro" : "Free"} Plan
               </span>
             </div>
             
             <div className="space-y-2 pt-2">
               <div className="flex justify-between items-end">
-                <span className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider block">Replies Used</span>
-                <span className="text-xs font-bold text-zinc-800 tracking-tight">
+                <span className="text-xs font-extrabold text-zinc-400 uppercase tracking-wider block">Replies Used</span>
+                <span className="text-sm font-bold text-zinc-800 tracking-tight">
                   {usedQuota.toLocaleString()} / {maxQuota.toLocaleString()}
                 </span>
               </div>
@@ -159,7 +159,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
                   style={{ width: `${quotaPercent}%` }}
                 />
               </div>
-              <p className="text-[10px] text-zinc-400 font-semibold mt-1">
+              <p className="text-xs text-zinc-400 font-semibold mt-1">
                 Quota resets on your next billing cycle.
               </p>
             </div>
@@ -174,15 +174,15 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Bell className="text-[#6366F1]" size={16} />
-                <h3 className="text-sm font-semibold text-zinc-900 tracking-tight">Notifications</h3>
+                <h3 className="text-base font-semibold text-zinc-900 tracking-tight">Notifications</h3>
               </div>
             </div>
 
             <div className="space-y-2.5">
               <div className="p-3 bg-white border border-zinc-200 rounded-xl flex items-center justify-between shadow-xs">
                 <div className="min-w-0 pr-2">
-                  <h4 className="text-[10px] font-bold text-zinc-900 tracking-tight">Contact Alerts</h4>
-                  <p className="text-[9px] text-zinc-400 font-semibold truncate block mt-0.5">Email on submission</p>
+                  <h4 className="text-xs font-bold text-zinc-900 tracking-tight">Contact Alerts</h4>
+                  <p className="text-xs text-zinc-400 font-semibold truncate block mt-0.5">Email on submission</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer scale-75 origin-right shrink-0">
                   <input type="checkbox" checked={emailAlerts} onChange={() => setEmailAlerts(!emailAlerts)} className="sr-only peer" />
@@ -192,8 +192,8 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
 
               <div className="p-3 bg-white border border-zinc-200 rounded-xl flex items-center justify-between shadow-xs">
                 <div className="min-w-0 pr-2">
-                  <h4 className="text-[10px] font-bold text-zinc-900 tracking-tight">Weekly Summary</h4>
-                  <p className="text-[9px] text-zinc-400 font-semibold truncate block mt-0.5">Growth & reply stats mail</p>
+                  <h4 className="text-xs font-bold text-zinc-900 tracking-tight">Weekly Summary</h4>
+                  <p className="text-xs text-zinc-400 font-semibold truncate block mt-0.5">Growth & reply stats mail</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer scale-75 origin-right shrink-0">
                   <input type="checkbox" checked={weeklyReport} onChange={() => setWeeklyReport(!weeklyReport)} className="sr-only peer" />
@@ -210,9 +210,9 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
             <div>
               <div className="flex items-center gap-2">
                 <Users className="text-[#6366F1]" size={16} />
-                <h3 className="text-sm font-semibold text-zinc-900 tracking-tight">Team & Collaboration</h3>
+                <h3 className="text-base font-semibold text-zinc-900 tracking-tight">Team & Collaboration</h3>
               </div>
-              <p className="text-[10px] font-semibold text-zinc-400 mt-1">
+              <p className="text-xs font-semibold text-zinc-400 mt-1">
                 Active Workspace: <span className="text-[#6366F1] font-bold">"{selectedWorkspace?.name || 'Personal Workspace'}"</span>
               </p>
             </div>
@@ -225,12 +225,12 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
                 placeholder="collaborator@email.com"
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
-                className="flex-1 bg-white border border-zinc-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-zinc-800 placeholder-zinc-400 focus:outline-none focus:border-[#6366F1] transition-all min-w-[180px]"
+                className="flex-1 bg-white border border-zinc-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-zinc-800 placeholder-zinc-400 focus:outline-none focus:border-[#6366F1] transition-all min-w-[180px]"
               />
               <select
                 value={inviteRole}
                 onChange={(e) => setInviteRole(e.target.value)}
-                className="bg-white border border-zinc-200 rounded-xl px-3 py-2.5 text-xs font-semibold text-zinc-700 focus:outline-none focus:border-[#6366F1] transition-all cursor-pointer"
+                className="bg-white border border-zinc-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-zinc-700 focus:outline-none focus:border-[#6366F1] transition-all cursor-pointer"
               >
                 <option value="viewer">Viewer</option>
                 <option value="editor">Editor</option>
@@ -239,7 +239,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
               <button
                 type="submit"
                 disabled={isInviting}
-                className="px-5 py-2.5 bg-zinc-950 hover:bg-[#6366F1] disabled:opacity-50 text-white rounded-xl text-xs font-semibold transition-all shrink-0 flex items-center gap-1.5 hover:scale-105 h-[38px]"
+                className="px-5 py-2.5 bg-zinc-950 hover:bg-[#6366F1] disabled:opacity-50 text-white rounded-xl text-sm font-semibold transition-all shrink-0 flex items-center gap-1.5 hover:scale-105 h-[38px]"
               >
                 {isInviting ? "Inviting..." : "Invite"}
                 <UserPlus size={14} />
@@ -257,15 +257,15 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
             ) : !workspaceMembers || workspaceMembers.length === 0 ? (
               <div className="py-12 text-center border border-dashed border-zinc-200 rounded-xl bg-white/50">
                 <Users size={32} className="mx-auto text-zinc-300 mb-2" />
-                <h4 className="text-xs font-bold text-zinc-800">No collaborators yet</h4>
-                <p className="text-[10px] text-zinc-400 mt-1">Invite team members to work together on this workspace.</p>
+                <h4 className="text-sm font-bold text-zinc-800">No collaborators yet</h4>
+                <p className="text-xs text-zinc-400 mt-1">Invite team members to work together on this workspace.</p>
               </div>
             ) : (
               <div className="overflow-hidden border border-zinc-200/80 rounded-xl bg-white shadow-sm">
                 <div className="overflow-x-auto no-scrollbar">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-zinc-50/50 border-b border-zinc-200/80 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                      <tr className="bg-zinc-50/50 border-b border-zinc-200/80 text-xs font-bold text-zinc-400 uppercase tracking-wider">
                         <th className="py-4 px-6">Collaborator</th>
                         <th className="py-4 px-6">Role</th>
                         <th className="py-4 px-6">Status</th>
@@ -281,8 +281,8 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
                                 {member.email.charAt(0).toUpperCase()}
                               </div>
                               <div>
-                                <p className="text-xs font-bold text-zinc-800">{member.email}</p>
-                                <p className="text-[9px] text-zinc-400 font-semibold mt-0.5">Collaborator</p>
+                                <p className="text-sm font-bold text-zinc-800">{member.email}</p>
+                                <p className="text-xs text-zinc-400 font-semibold mt-0.5">Collaborator</p>
                               </div>
                             </div>
                           </td>
@@ -290,7 +290,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
                             <select
                               value={member.role}
                               onChange={(e) => updateMemberRole(selectedWorkspace?.id, member.id, e.target.value)}
-                              className="bg-zinc-50 border border-zinc-200 rounded-lg px-2.5 py-1.5 text-[10px] font-bold text-zinc-700 focus:outline-none cursor-pointer focus:border-[#6366F1] transition-all"
+                              className="bg-zinc-50 border border-zinc-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-zinc-700 focus:outline-none cursor-pointer focus:border-[#6366F1] transition-all"
                             >
                               <option value="viewer">Viewer</option>
                               <option value="editor">Editor</option>
@@ -298,7 +298,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
                             </select>
                           </td>
                           <td className="py-4 px-6">
-                            <span className={`inline-flex items-center gap-1.5 text-[8px] font-black uppercase tracking-wider px-2 py-0.75 rounded-md border ${
+                            <span className={`inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md border ${
                               member.status === "active" 
                                 ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
                                 : "bg-amber-50 text-amber-700 border-amber-100"
@@ -315,7 +315,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
                                     removeMember(selectedWorkspace?.id, member.id);
                                   }
                               }}
-                              className="px-3 py-1.5 text-[10px] font-bold text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-100 rounded-xl transition-all"
+                              className="px-3 py-1.5 text-xs font-bold text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-100 rounded-xl transition-all"
                             >
                               Revoke Access
                             </button>
