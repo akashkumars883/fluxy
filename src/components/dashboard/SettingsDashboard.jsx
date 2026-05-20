@@ -29,21 +29,20 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   const [isInviting, setIsInviting] = useState(false);
 
   // Webhook States
-  const [webhookUrl, setWebhookUrl] = useState("");
-  const [webhookEnabled, setWebhookEnabled] = useState(false);
+  const [webhookUrl, setWebhookUrl] = useState(account?.metadata?.webhook_url || "");
+  const [webhookEnabled, setWebhookEnabled] = useState(account?.metadata?.webhook_enabled || false);
   const [isTestingWebhook, setIsTestingWebhook] = useState(false);
   const [testWebhookResult, setTestWebhookResult] = useState(null);
   const [testWebhookMessage, setTestWebhookMessage] = useState("");
 
-  // Sync webhook settings when account changes
-  useEffect(() => {
-    if (account) {
-      setWebhookUrl(account.metadata?.webhook_url || "");
-      setWebhookEnabled(account.metadata?.webhook_enabled || false);
-      setTestWebhookResult(null);
-      setTestWebhookMessage("");
-    }
-  }, [account]);
+  const [prevAccount, setPrevAccount] = useState(account);
+  if (account !== prevAccount) {
+    setPrevAccount(account);
+    setWebhookUrl(account?.metadata?.webhook_url || "");
+    setWebhookEnabled(account?.metadata?.webhook_enabled || false);
+    setTestWebhookResult(null);
+    setTestWebhookMessage("");
+  }
 
   const handleInviteSubmit = async (e) => {
     e.preventDefault();

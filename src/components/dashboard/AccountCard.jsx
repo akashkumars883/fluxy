@@ -14,7 +14,7 @@ export default function AccountCard({ account, onSelect }) {
       <div className={`absolute top-0 right-0 w-32 h-32 rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${isContentCreator ? 'bg-sage/20' : 'bg-foreground/5'}`} />
 
       <div className="flex items-start justify-between mb-10 relative z-10">
-        <div className={`w-16 h-16 rounded-[22px] flex items-center justify-center border border-border group-hover:scale-110 transition-transform duration-300 shadow-sm ${isContentCreator ? 'bg-sage text-foreground' : 'bg-background text-foreground'}`}>
+        <div className={`w-16 h-16 rounded-[22px] flex items-center justify-center border group-hover:scale-110 transition-transform duration-300 shadow-sm ${isContentCreator ? 'bg-sage text-white border-transparent' : 'bg-background text-foreground border-border'}`}>
           <Camera size={30} />
         </div>
         <div className="p-2.5 bg-background rounded-full text-zinc-muted group-hover:bg-foreground group-hover:text-background transition-all duration-300 shadow-sm">
@@ -24,7 +24,7 @@ export default function AccountCard({ account, onSelect }) {
 
       <div className="mt-auto relative z-10">
         <div className="flex items-center gap-2 mb-3">
-          <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold flex items-center gap-1.5 border ${isContentCreator ? 'bg-sage/10 text-foreground border-sage/20' : 'bg-foreground/5 text-foreground border-border'}`}>
+          <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold flex items-center gap-1.5 border ${isContentCreator ? 'bg-sage/10 text-[#6366F1] border-sage/20' : 'bg-foreground/5 text-zinc-600 border-border'}`}>
             {isContentCreator ? <UserCircle size={10} /> : <Building2 size={10} />}
             {isContentCreator ? 'Content Creator' : 'Business Owner'}
           </span>
