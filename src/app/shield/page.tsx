@@ -196,7 +196,7 @@ export default function ShieldPage() {
       </section>
 
       {/* Security specific Accordion FAQ */}
-      <FAQ customFaqs={securityFaqs as any} />
+      <FAQ customFaqs={securityFaqs as unknown as null} />
 
       {/* Security CTA Card */}
       <div className="pb-16">

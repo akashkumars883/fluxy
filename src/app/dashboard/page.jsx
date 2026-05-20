@@ -153,11 +153,13 @@ export default function Dashboard() {
   // Sync initial onboarding state on URL parameter changes
   useEffect(() => {
     if (initialOnboardingState.connectedAccount) {
-      setConnectedAccount(initialOnboardingState.connectedAccount);
+      setTimeout(() => setConnectedAccount(initialOnboardingState.connectedAccount), 0);
     }
     if (initialOnboardingState.showOnboarding) {
-      setShowOnboarding(true);
-      setOnboardingStep(initialOnboardingState.onboardingStep);
+      setTimeout(() => {
+        setShowOnboarding(true);
+        setOnboardingStep(initialOnboardingState.onboardingStep);
+      }, 0);
     }
   }, [initialOnboardingState.connectedAccount, initialOnboardingState.showOnboarding, initialOnboardingState.onboardingStep]);
 
@@ -165,7 +167,7 @@ export default function Dashboard() {
     const params = new URLSearchParams(window.location.search);
     let shouldClean = false;
     if (params.get("upgrade")) {
-      setIsSubscriptionOpen(true);
+      setTimeout(() => setIsSubscriptionOpen(true), 0);
       shouldClean = true;
     }
     if (params.get("success") === "instagram_connected") {

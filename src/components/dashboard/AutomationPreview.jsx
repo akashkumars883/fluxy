@@ -26,17 +26,14 @@ export default function AutomationPreview({
   const [testMessages, setTestMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
 
-  useEffect(() => {
-    if (strategy === "faq_assistant" || strategy === "sales_closer") {
-      setView("faq");
-    } else if (strategy === "story_automator") {
-      setView("story");
-    } else if (postUrl) {
-      setView("post");
-    } else {
-      setView("dm");
-    }
-  }, [postUrl, strategy]);
+  const [prevStrategy, setPrevStrategy] = useState(strategy);
+  const [prevPostUrl, setPrevPostUrl] = useState(postUrl);
+
+  if (strategy !== prevStrategy || postUrl !== prevPostUrl) {
+    setPrevStrategy(strategy);
+    setPrevPostUrl(postUrl);
+    setView(strategy === "faq_assistant" || strategy === "sales_closer" ? "faq" : (strategy === "story_automator" ? "story" : (postUrl ? "post" : "dm")));
+  }
 
   const getPersonaResponse = (baseText, persona, useEmojis, isGreeting = false) => {
     if (!baseText && !isGreeting) return "";

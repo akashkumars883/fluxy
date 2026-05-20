@@ -20,12 +20,14 @@ export default function PwaInstallBanner() {
       window.matchMedia("(display-mode: standalone)").matches || 
       (window.navigator).standalone === true;
     
-    setIsStandalone(isStandaloneMode);
-
     // Detect iOS
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
-    setIsIOS(isIOSDevice);
+
+    setTimeout(() => {
+      setIsStandalone(isStandaloneMode);
+      setIsIOS(isIOSDevice);
+    }, 0);
 
     // If already installed, don't show prompt
     if (isStandaloneMode) return;
@@ -151,7 +153,7 @@ export default function PwaInstallBanner() {
                           1
                         </div>
                         <p className="font-semibold text-zinc-600">
-                          Tap Safari's <span className="inline-flex items-center justify-center p-1 bg-white border border-zinc-200 rounded-md mx-0.5"><Share size={12} className="text-[#6366F1]" /></span> **Share** button below.
+                          {`Tap Safari's `}<span className="inline-flex items-center justify-center p-1 bg-white border border-zinc-200 rounded-md mx-0.5"><Share size={12} className="text-[#6366F1]" /></span>{` **Share** button below.`}
                         </p>
                       </div>
 

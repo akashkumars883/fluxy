@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Settings, Shield, Bell, Sparkles, CheckCircle2, UserCheck, Zap, Mail, LogOut, Users, UserPlus } from "lucide-react";
+import { Settings, Shield, Bell, Sparkles, CheckCircle2, UserCheck, Zap, Mail, LogOut, Users, UserPlus, Globe, RefreshCcw, AlertCircle, Loader2 } from "lucide-react";
 import { useDashboard } from "@/context/DashboardContext";
 
 export default function SettingsDashboard({ account, currentPlan = "free", realtimeStats }) {
@@ -12,7 +12,8 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
     inviteMember,
     removeMember,
     updateMemberRole,
-    disconnectAccount
+    disconnectAccount,
+    updateSelectedAccount
   } = useDashboard();
 
   const usedQuota = realtimeStats?.totalDms + realtimeStats?.autoReplies || 0;
@@ -26,6 +27,23 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState("viewer");
   const [isInviting, setIsInviting] = useState(false);
+
+  // Webhook States
+  const [webhookUrl, setWebhookUrl] = useState("");
+  const [webhookEnabled, setWebhookEnabled] = useState(false);
+  const [isTestingWebhook, setIsTestingWebhook] = useState(false);
+  const [testWebhookResult, setTestWebhookResult] = useState(null);
+  const [testWebhookMessage, setTestWebhookMessage] = useState("");
+
+  // Sync webhook settings when account changes
+  useEffect(() => {
+    if (account) {
+      setWebhookUrl(account.metadata?.webhook_url || "");
+      setWebhookEnabled(account.metadata?.webhook_enabled || false);
+      setTestWebhookResult(null);
+      setTestWebhookMessage("");
+    }
+  }, [account]);
 
   const handleInviteSubmit = async (e) => {
     e.preventDefault();
@@ -42,8 +60,20 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async (currentUrl, currentEnabled) => {
     setIsSaved(true);
+    try {
+      await updateSelectedAccount({
+        metadata: {
+          ...(account?.metadata || {}),
+          webhook_url: currentUrl,
+          webhook_enabled: currentEnabled
+        }
+      });
+    } catch (e) {
+      console.error("Failed to save webhook settings to DB:", e);
+    }
+
     if (typeof window !== "undefined") {
       localStorage.setItem("settings_saved", "true");
       window.dispatchEvent(new Event("settings_saved_updated"));
@@ -57,15 +87,46 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
     }, 2000);
   };
 
+  const handleTestWebhook = async () => {
+    if (!webhookUrl.trim()) {
+      setTestWebhookResult("error");
+      setTestWebhookMessage("Please enter a webhook URL first.");
+      return;
+    }
+    setIsTestingWebhook(true);
+    setTestWebhookResult(null);
+    setTestWebhookMessage("");
+    try {
+      const res = await fetch("/api/webhooks/test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ webhookUrl: webhookUrl.trim() })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setTestWebhookResult("success");
+        setTestWebhookMessage("Connection test successful! A test payload was sent.");
+      } else {
+        setTestWebhookResult("error");
+        setTestWebhookMessage(data.error || "Failed to deliver payload. Check your URL.");
+      }
+    } catch (e) {
+      setTestWebhookResult("error");
+      setTestWebhookMessage("Network error. Please try again.");
+    } finally {
+      setIsTestingWebhook(false);
+    }
+  };
+
   useEffect(() => {
     const handleGlobalSave = () => {
-      handleSave();
+      handleSave(webhookUrl, webhookEnabled);
     };
     window.addEventListener("save_settings", handleGlobalSave);
     return () => {
       window.removeEventListener("save_settings", handleGlobalSave);
     };
-  }, []);
+  }, [account, webhookUrl, webhookEnabled, updateSelectedAccount]);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 w-full max-w-[1400px] mx-auto pb-12">
@@ -213,7 +274,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
                 <h3 className="text-base font-semibold text-zinc-900 tracking-tight">Team & Collaboration</h3>
               </div>
               <p className="text-xs font-semibold text-zinc-400 mt-1">
-                Active Workspace: <span className="text-[#6366F1] font-bold">"{selectedWorkspace?.name || 'Personal Workspace'}"</span>
+                Active Workspace: <span className="text-[#6366F1] font-bold">{`"${selectedWorkspace?.name || 'Personal Workspace'}"`}</span>
               </p>
             </div>
             
@@ -325,6 +386,90 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
                     </tbody>
                   </table>
                 </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* BENTO CARD 5: Outbound Webhooks Integration */}
+        <div className="md:col-span-3 bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-2xl p-6 sm:p-8 shadow-xl shadow-zinc-100/40 space-y-6 hover:border-[#6366F1]/20 transition-all duration-300 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full -mr-32 -mt-32 pointer-events-none group-hover:scale-110 transition-all duration-500" />
+          
+          <div className="border-b border-zinc-200/50 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <Globe className="text-[#6366F1]" size={16} />
+                <h3 className="text-base font-semibold text-zinc-900 tracking-tight">Outbound Webhooks</h3>
+              </div>
+              <p className="text-xs font-semibold text-zinc-400 mt-1">
+                Send lead event payloads to Zapier, Make, or your custom URL in real-time.
+              </p>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <span className={`inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md border ${
+                webhookEnabled 
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
+                  : "bg-zinc-50 text-zinc-500 border-zinc-200"
+              }`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${webhookEnabled ? "bg-emerald-500" : "bg-zinc-400"}`} />
+                {webhookEnabled ? "Active" : "Disabled"}
+              </span>
+              <label className="relative inline-flex items-center cursor-pointer scale-75 origin-right shrink-0">
+                <input 
+                  type="checkbox" 
+                  checked={webhookEnabled} 
+                  onChange={(e) => setWebhookEnabled(e.target.checked)} 
+                  className="sr-only peer" 
+                />
+                <div className="w-11 h-6 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#6366F1]"></div>
+              </label>
+            </div>
+          </div>
+
+          <div className="space-y-4 max-w-3xl">
+            <div className="flex flex-col md:flex-row gap-3">
+              <input
+                type="url"
+                placeholder="https://hooks.zapier.com/hooks/catch/12345/abcde/"
+                value={webhookUrl}
+                onChange={(e) => setWebhookUrl(e.target.value)}
+                className="flex-1 bg-white border border-zinc-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-zinc-800 placeholder-zinc-400 focus:outline-none focus:border-[#6366F1] transition-all min-w-[280px]"
+              />
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleTestWebhook}
+                  disabled={isTestingWebhook || !webhookUrl}
+                  className="px-5 py-2.5 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 disabled:opacity-50 text-zinc-700 rounded-xl text-sm font-semibold transition-all shrink-0 flex items-center gap-1.5"
+                >
+                  {isTestingWebhook ? (
+                    <>
+                      <Loader2 size={14} className="animate-spin" />
+                      <span>Testing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCcw size={14} />
+                      <span>Test Connection</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {testWebhookResult && (
+              <div className={`p-3.5 rounded-xl border flex items-start gap-2.5 animate-in slide-in-from-top-1 duration-300 text-xs font-semibold ${
+                testWebhookResult === "success" 
+                  ? "bg-emerald-50/50 border-emerald-100 text-emerald-800" 
+                  : "bg-rose-50/50 border-rose-100 text-rose-800"
+              }`}>
+                {testWebhookResult === "success" ? (
+                  <CheckCircle2 size={16} className="text-emerald-600 shrink-0 mt-0.5" />
+                ) : (
+                  <AlertCircle size={16} className="text-rose-600 shrink-0 mt-0.5" />
+                )}
+                <span>{testWebhookMessage}</span>
               </div>
             )}
           </div>

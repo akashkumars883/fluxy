@@ -20,7 +20,11 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
       const t = setTimeout(() => {
         setKeyword(trigger.keyword || "");
         setResponse(trigger.response || "");
-        setType(trigger.type || "DM");
+        let initialType = trigger.type || "DM";
+        if (initialType.startsWith("STORY")) {
+          initialType = "STORY";
+        }
+        setType(initialType);
         setFollowerGate(trigger.metadata?.follower_gate || false);
         setPublicReply(trigger.variants?.public?.[0] || "");
         setButtonText(trigger.metadata?.button_text || "");
@@ -35,10 +39,14 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
   if (!isOpen) return null;
 
   const handleSave = () => {
+    let finalType = type;
+    if (type === "STORY" && trigger && trigger.type && trigger.type.startsWith("STORY")) {
+      finalType = trigger.type;
+    }
     onSave(trigger.id, {
       keyword,
       response,
-      type,
+      type: finalType,
       metadata: {
         follower_gate: followerGate,
         button_text: buttonLink ? (buttonText || "Get Access") : null,

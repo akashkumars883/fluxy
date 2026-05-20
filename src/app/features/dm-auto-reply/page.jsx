@@ -109,7 +109,7 @@ export default function DMAutoReplyPage() {
                   </div>
                   <div>
                     <h4 className="font-bold text-zinc-900 text-sm">New Lead Captured</h4>
-                    <p className="text-xs text-zinc-500">Auto-reply secured the customer's email.</p>
+                    <p className="text-xs text-zinc-500">{`Auto-reply secured the customer's email.`}</p>
                   </div>
                 </div>
               </div>

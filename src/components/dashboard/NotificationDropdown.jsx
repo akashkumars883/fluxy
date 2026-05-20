@@ -215,7 +215,7 @@ export default function NotificationDropdown({ accounts = [] }) {
       </button>
 
       {isOpen && (
-        <div className="absolute right-[-8px] xs:right-0 mt-3 w-[calc(100vw-2rem)] xs:w-[360px] sm:w-[380px] bg-white border border-zinc-200 rounded-[28px] shadow-2xl py-3 z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+        <div className="absolute right-0 mt-3 w-[calc(100vw-32px)] sm:w-[360px] bg-white border border-zinc-200 rounded-[24px] shadow-2xl py-3 z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
           
           <div className="px-5 py-3 border-b border-zinc-200/50 flex items-center justify-between">
             <div className="flex items-center gap-2">

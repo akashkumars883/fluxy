@@ -36,6 +36,7 @@ interface PageProps {
 export default async function Home({ searchParams }: PageProps) {
   const resolvedParams = await searchParams;
   const code = resolvedParams?.code;
+  const home = resolvedParams?.home;
 
   if (code && typeof code === "string") {
     redirect(`/api/auth/callback?code=${code}`);
@@ -43,7 +44,7 @@ export default async function Home({ searchParams }: PageProps) {
 
   const supabase = createClient();
   const { data: { session } } = await supabase.auth.getSession();
-  if (session) {
+  if (session && home !== "true") {
     redirect("/dashboard");
   }
 

@@ -74,7 +74,7 @@ export default function CreatorsSolutionPage() {
                 Scale Your <span className="text-sage font-normal">Audience</span> on Autopilot.
               </h1>
               <p className="text-zinc-500 text-lg sm:text-xl leading-relaxed max-w-lg">
-                Stop manually replying to "Link in bio" requests. Automatically deliver your courses, ebooks, and digital products directly into your followers' DMs.
+                {`Stop manually replying to "Link in bio" requests. Automatically deliver your courses, ebooks, and digital products directly into your followers' DMs.`}
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
@@ -119,7 +119,7 @@ export default function CreatorsSolutionPage() {
                     <CheckCircle2 className="text-emerald-500" size={24} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-zinc-900 text-sm">"Send link" Comment Received</h4>
+                    <h4 className="font-bold text-zinc-900 text-sm">{`"Send link" Comment Received`}</h4>
                     <p className="text-xs text-zinc-500">Automixa sent the course link to DM in 0.5s</p>
                   </div>
                 </div>

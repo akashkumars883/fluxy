@@ -475,7 +475,20 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
               </div>
 
               <div className="flex justify-end items-center pt-4">
-                <button onClick={() => onPublish("STORY_AUTOMATOR", "STORY_FLOW", { ...values })} className="px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-orange-600 transition-all flex items-center gap-2">
+                <button 
+                  onClick={() => {
+                    const finalKeyword = values.storyCondition === 'ANY' ? '*' : (values.keyword || "").trim().toUpperCase();
+                    const finalResponse = (values.response || "").trim();
+                    const finalType = values.storyTriggerType === 'MENTION' ? 'STORY_MENTION' : 'STORY_REPLY';
+
+                    onPublish(finalKeyword, finalResponse, {
+                      ...values,
+                      type: finalType,
+                      campaign_name: values.campaign_name || "Story Automator ⚡"
+                    });
+                  }}
+                  className="px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-[#6366F1] transition-all flex items-center gap-2"
+                >
                   Activate Story Automator <Rocket size={16} />
                 </button>
               </div>

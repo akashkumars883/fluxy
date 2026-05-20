@@ -55,7 +55,7 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
       <div className="flex items-center gap-1.5 sm:gap-3 overflow-hidden">
         {/* Mobile menu button removed from here as it's now in BottomNav */}
         
-        <div className="flex items-center gap-1.5 sm:gap-2 cursor-pointer" onClick={() => window.location.href = '/dashboard'}>
+        <div className="flex items-center gap-1.5 sm:gap-2 cursor-pointer" onClick={() => window.location.href = '/?home=true'}>
           <img src="/logo.png" alt="Automixa Logo" className="w-7 h-7 sm:w-8 sm:h-8 object-contain shrink-0" />
           <h2 className="text-lg sm:text-xl font-semibold tracking-tight text-zinc-900 truncate">
             automixa
@@ -188,7 +188,7 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
                     <div className="w-16 h-16 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Search className="text-zinc-300" size={32} />
                     </div>
-                    <h3 className="text-zinc-900 font-semibold mb-1">No results for "{searchQuery}"</h3>
+                    <h3 className="text-zinc-900 font-semibold mb-1">{`No results for "${searchQuery}"`}</h3>
                     <p className="text-sm text-zinc-500">Try searching for campaigns, keywords, or account settings.</p>
                   </div>
                 )}

@@ -94,10 +94,7 @@ export default function BlogPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const POSTS_PER_PAGE = 10;
 
-  // Reset page when category or search changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedCategory, searchQuery]);
+
 
   // Calculate total pages
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
@@ -123,6 +120,7 @@ export default function BlogPage() {
 
   const handleBackToList = () => {
     setSelectedPost(null);
+    setReadingProgress(0);
     if (typeof window !== "undefined") {
       window.history.pushState({}, "", "/blog");
     }
@@ -136,7 +134,7 @@ export default function BlogPage() {
       if (postSlug) {
         const post = blogPosts.find(p => p.id === postSlug);
         if (post) {
-          setSelectedPost(post);
+          setTimeout(() => setSelectedPost(post), 0);
         }
       }
     }
@@ -144,10 +142,7 @@ export default function BlogPage() {
 
   // Track scroll reading progress in deep-article mode
   useEffect(() => {
-    if (!selectedPost) {
-      setReadingProgress(0);
-      return;
-    }
+    if (!selectedPost) return;
 
     const handleScroll = () => {
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -329,7 +324,10 @@ export default function BlogPage() {
                       return (
                         <button
                           key={cat}
-                          onClick={() => setSelectedCategory(cat)}
+                          onClick={() => {
+                            setSelectedCategory(cat);
+                            setCurrentPage(1);
+                          }}
                           className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold tracking-tight transition-all duration-300 cursor-pointer shrink-0 border relative ${
                             isActive 
                               ? "bg-foreground text-background border-foreground shadow-md shadow-zinc-950/5 scale-[1.02]" 
@@ -349,7 +347,10 @@ export default function BlogPage() {
                       type="text"
                       placeholder="Search articles..."
                       value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        setCurrentPage(1);
+                      }}
                       className="w-full bg-white/40 backdrop-blur-md border border-zinc-200/50 hover:border-zinc-300 focus:border-[#6366F1] rounded-full pl-11 pr-5 py-3 text-sm font-normal text-zinc-800 focus:outline-none transition-all placeholder-zinc-400 shadow-sm focus:shadow-md focus:shadow-indigo-500/5"
                     />
                   </div>
@@ -516,12 +517,13 @@ export default function BlogPage() {
                     </div>
                     <h3 className="text-lg font-bold text-zinc-800 mb-2">No articles found</h3>
                     <p className="text-zinc-500 text-sm leading-relaxed mb-6">
-                      We couldn't find any articles matching "{searchQuery}". Try updating your keywords or choosing a different category.
+                      {`We couldn't find any articles matching "${searchQuery}". Try updating your keywords or choosing a different category.`}
                     </p>
                     <button
                       onClick={() => {
                         setSearchQuery("");
                         setSelectedCategory("All");
+                        setCurrentPage(1);
                       }}
                       className="px-5 py-2.5 bg-foreground text-background text-xs sm:text-sm font-semibold rounded-full hover:scale-105 active:scale-98 transition-all cursor-pointer shadow-md"
                     >

@@ -55,7 +55,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
   // Sync step state when initialStep changes or modal is opened
   useEffect(() => {
     if (isOpen) {
-      setStep(initialStep);
+      setTimeout(() => setStep(initialStep), 0);
     }
   }, [isOpen, initialStep]);
 

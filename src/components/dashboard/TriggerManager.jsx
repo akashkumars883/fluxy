@@ -190,7 +190,9 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
     ],
     leadCaptureEnabled: false,
     delaySetting: "instantly",
-    campaignStrategy: templateKey || "comment_dm"
+    campaignStrategy: templateKey || "comment_dm",
+    storyCondition: "ANY",
+    storyTriggerType: "MENTION"
   });
 
   // Sync templateKey to campaignStrategy if it changes

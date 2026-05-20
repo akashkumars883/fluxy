@@ -12,11 +12,8 @@ export default function PricingPage() {
   useEffect(() => {
     try {
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      if (tz === "Asia/Kolkata" || tz === "Asia/Calcutta") {
-        setIsIndia(true);
-      } else {
-        setIsIndia(false);
-      }
+      const isIndiaTimezone = tz === "Asia/Kolkata" || tz === "Asia/Calcutta";
+      setTimeout(() => setIsIndia(isIndiaTimezone), 0);
     } catch (e) {}
   }, []);
   const comparisonRows = [

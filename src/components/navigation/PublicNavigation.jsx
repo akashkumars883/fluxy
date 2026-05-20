@@ -6,6 +6,7 @@ import {
   ArrowRight, Zap, MessageSquare, Target, Users, ShoppingBag, ChevronDown
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { createClient } from "@/lib/supabase";
 
 export default function PublicNavigation() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -15,6 +16,23 @@ export default function PublicNavigation() {
 
   // Track active accordion in mobile drawer
   const [mobileDropdown, setMobileDropdown] = useState(null);
+
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -200,10 +218,10 @@ export default function PublicNavigation() {
           <div className="flex items-center gap-3">
             {/* CTA Button: Visible on Tablet/Desktop, Hidden on Mobile */}
             <Link
-              href="/login"
+              href={session ? "/dashboard" : "/login"}
               className="hidden sm:flex bg-foreground text-background text-sm font-normal px-6 py-3 rounded-full hover:scale-[1.05] active:scale-[0.98] transition-all tracking-normal items-center gap-2 group"
             >
-              Get Started
+              {session ? "Dashboard" : "Get Started"}
               <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-rotate-45" />
             </Link>
 
@@ -342,14 +360,14 @@ export default function PublicNavigation() {
                 {/* Mobile-Only CTA Button inside Drawer */}
                 <div className="flex flex-col gap-4 pt-6 sm:hidden border-t border-border mt-2">
                   <Link
-                    href="/login"
+                    href={session ? "/dashboard" : "/login"}
                     onClick={() => {
                       setIsMenuOpen(false);
                       setMobileDropdown(null);
                     }}
                     className="w-full text-center py-4 bg-foreground text-background font-bold rounded-full flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all shadow-lg"
                   >
-                    Get Started
+                    {session ? "Dashboard" : "Get Started"}
                     <ArrowRight size={18} />
                   </Link>
                 </div>

@@ -270,123 +270,28 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         console.log("✅ [DB SUCCESS] History entry created:", logData.id);
       }
 
-      // A. Smart Funnel Decision: Card vs Link?
-      const needsFollow = match.metadata?.follower_gate === true;
-      let followFound = false;
-
-      if (needsFollow) {
-        console.log(`🛡️ Checking follow status early for ${userName}...`);
-        const followData = await MetaService.checkFollowStatus(senderId, pageAccessToken);
-        followFound = followData.success && followData.isFollowing;
-      }
-
       // --- SMARTGUARD: ADAPTIVE SURGE THROTTLING ---
       const adaptiveDelayPhase1 = await SmartGuard.getAdaptiveDelay(automation.id);
       await delay(adaptiveDelayPhase1);
 
-      if (needsFollow && !followFound) {
-        // CASE A: NEW FAN / NOT FOLLOWING -> Show Intro Card
-        console.log(`🎁 Sending Intro Card to NEW fan ${userName}`);
-        const templates = automation.metadata?.templates || {};
-        const introTitle = interpolate(
-          templates.intro_title || "Hey {name}! Thanks for the comment. Tap below and i'll send you the access in just a moment",
-          userName,
-          automation.brand_name
-        );
+      // Always send Intro Greeting Card first
+      console.log(`🎁 Sending Intro Card to ${userName}`);
+      const templates = automation.metadata?.templates || {};
+      const introTitle = interpolate(
+        templates.intro_title || "Hey {name}! 👋 Thanks for the comment! Tap the button below and I'll send you the access right away. ⚡",
+        userName,
+        automation.brand_name
+      );
 
-        const introCardPayload = {
-          attachment: {
-            type: "template",
-            payload: {
-              template_type: "generic",
-              elements: [{
-                title: introTitle || "Welcome! Tap below for access.",
-                buttons: [{
-                  type: "postback",
-                  title: "Send me the access",
-                  payload: match.id
-                }]
-              }]
-            }
-          }
-        };
-        await MetaService.sendPrivateReply(commentId, introCardPayload, pageAccessToken);
-      } else {
-        // CASE B: OLD FAN / ALREADY FOLLOWING -> Send Product Link Directly as Private Reply
-        console.log(`⚡ Sending Product Link DIRECTLY to existing fan ${userName}`);
-        
-        const dmVariants = (Array.isArray(match.variants?.dm) && match.variants.dm.length > 0) 
-          ? match.variants.dm 
-          : [match.response || "Here is your access!"];
-        const rawDm = (getRandom(dmVariants) || "Here is your access!").replace("{{name}}", userName).replace("{name}", userName);
-        // --- SMARTGUARD: DYNAMIC SPINTAX REPHRASING ---
-        let finalDm = SmartGuard.applySpintax(rawDm, userName);
-
-        // 🧠 AI Voice Mirroring & Persona Customization
-        if (text && (match.metadata?.ai_driven || automation.metadata?.ai_driven || match._detectedMood)) {
-          console.log(`🧠 [AI VOICE MIRRORING] Personalizing Private Reply for ${userName}...`);
-          try {
-            const aiResponse = await generatePersonalizedResponse(
-              text, 
-              finalDm, 
-              userName, 
-              match._detectedMood || "BASIC", 
-              match._userMemory || ""
-            );
-            if (aiResponse) {
-              finalDm = aiResponse;
-              console.log(`✅ [AI VOICE SUCCESS] Personalized DM: "${finalDm}"`);
-            }
-          } catch (aiVoiceErr) {
-            console.error("❌ [AI VOICE ERROR] Fallback to standard Private Reply:", aiVoiceErr.message);
-          }
-        }
-
-        const urlRegex = /(https?:\/\/[^\s]+)/g;
-        const scrapedUrls = (finalDm || "").match(urlRegex);
-        const link = match.metadata?.button_link || (scrapedUrls && scrapedUrls[0]);
-        const buttonLabel = match.metadata?.button_text || "Get Access 🔗";
-
-        let sentOk = false;
-        if (link) {
-          try {
-            const textWithoutUrl = match.metadata?.button_link ? finalDm : finalDm.replace(link, "").trim();
-
-            const openingPayload = {
-              attachment: {
-                type: "template",
-                payload: {
-                  template_type: "button",
-                  text: (textWithoutUrl || "Tap below to get instant access!").substring(0, 640),
-                  buttons: [{
-                    type: "postback",
-                    title: (buttonLabel || "Send Me Access").substring(0, 20),
-                    payload: match.id
-                  }]
-                }
-              }
-            };
-            const sendRes = await MetaService.sendPrivateReply(commentId, openingPayload, pageAccessToken);
-            if (sendRes.success) {
-              sentOk = true;
-              await supabaseAdmin.from("automation_history")
-                .update({ status: "SUCCESS", metadata: { funnel_complete: false, sent_optin: true } })
-                .eq("id", logData.id);
-            } else {
-              console.warn("⚠️ Opt-in button template send failed, falling back to text reply:", sendRes.error);
-            }
-          } catch (optinErr) {
-            console.warn("⚠️ Opt-in builder failed, falling back to text reply:", optinErr.message);
-          }
-        }
-
-        if (!sentOk) {
-          await MetaService.sendPrivateReply(commentId, { text: finalDm }, pageAccessToken);
-          await supabaseAdmin.from("automation_history")
-            .update({ status: "SUCCESS", metadata: { funnel_complete: true, fallback_text: true } })
-            .eq("id", logData.id);
-        }
-      }
+      const introCardPayload = {
+        text: introTitle || "Welcome! Tap below for access.",
+        quick_replies: [{
+          content_type: "text",
+          title: "Send me the access",
+          payload: match.id
+        }]
+      };
+      await MetaService.sendPrivateReply(commentId, introCardPayload, pageAccessToken);
 
       // B. Public Comment Reply with Delay (7-10s)
       await delay(Math.floor(Math.random() * 3000) + 7000);
@@ -541,6 +446,35 @@ export async function processAutomation(senderId, text, type, recipientId, comme
           metadata: { funnel_complete: true, scraped: true }
         });
       }
+    }
+
+    // --- OUTBOUND WEBHOOK DISPATCH (Asynchronous, Non-blocking) ---
+    if (automation.metadata?.webhook_enabled === true && automation.metadata?.webhook_url) {
+      const webhookUrlStr = automation.metadata.webhook_url.trim();
+      const webhookPayload = {
+        event: "lead_captured",
+        campaign_name: match.metadata?.campaign_name || "Custom Flow ⚡",
+        keyword: match.keyword,
+        instagram_username: userName || "there",
+        instagram_user_id: senderId,
+        delivered_link: link || null,
+        timestamp: new Date().toISOString()
+      };
+
+      console.log(`📡 [Outbound Webhook] Dispatching payload to: ${webhookUrlStr}`);
+      fetch(webhookUrlStr, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(webhookPayload)
+      }).then(res => {
+        if (!res.ok) {
+          console.warn(`⚠️ [Outbound Webhook] Received error status: ${res.status}`);
+        } else {
+          console.log(`✅ [Outbound Webhook] Delivered successfully to: ${webhookUrlStr}`);
+        }
+      }).catch(fetchErr => {
+        console.error(`❌ [Outbound Webhook] Failed to deliver payload:`, fetchErr.message);
+      });
     }
 
     return { success: true };
