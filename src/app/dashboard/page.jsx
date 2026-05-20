@@ -475,126 +475,128 @@ export default function Dashboard() {
           className="flex-1 p-4 sm:p-6 lg:p-8 max-w-8xl mx-auto w-full overflow-y-auto pb-24 md:pb-10"
         >
           {selectedAccount ? (
-            <div className="space-y-6">
-              {/* Header logic and Tab rendering (Simplified) */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200/50 pb-6">
-                <div>
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="text-[12px] font-bold text-zinc-500">
-                      @{selectedAccount.ig_username || selectedAccount.name || selectedAccount.page_name || 'automixa_user'}
-                    </span>
-                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border shadow-sm ${
-                      (selectedAccount.persona || "content_creator") === "content_creator" 
-                        ? "bg-purple-50 text-purple-700 border-purple-200" 
-                        : "bg-blue-50 text-blue-700 border-blue-200"
-                    }`}>
-                      {(selectedAccount.persona || "content_creator") === "content_creator" ? "Creator Account" : "Business Account"}
-                    </span>
-                  </div>
-                  <h1 className="text-4xl sm:text-5xl font-bold tracking-tighter text-zinc-950 leading-[0.9] mb-2">
-                    {activeTab === "home" ? (
-                      <span className="flex items-center gap-4">
-                        Overview
+            <div className="space-y-5">
+              {/* === COMPACT PAGE HEADER === */}
+              <div className="flex items-center justify-between gap-4 pb-4 border-b border-zinc-200/60">
+                
+                {/* Left: Title + inline account badge */}
+                <div className="flex items-center gap-3 min-w-0">
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 leading-tight">
+                        {activeTab === "home" ? "Overview"
+                          : activeTab === "automations" ? "Automations"
+                          : activeTab === "audience" ? "Audience"
+                          : activeTab === "crm" ? "CRM"
+                          : activeTab === "analytics" ? "Analytics"
+                          : activeTab === "settings" ? "Settings"
+                          : activeTab === "partner" ? "Partner Program"
+                          : activeTab}
+                      </h1>
+                      <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border ${
+                        (selectedAccount.persona || "content_creator") === "content_creator"
+                          ? "bg-purple-50 text-purple-600 border-purple-200"
+                          : "bg-blue-50 text-blue-600 border-blue-200"
+                      }`}>
+                        {(selectedAccount.persona || "content_creator") === "content_creator" ? "Creator" : "Business"}
                       </span>
-                    ) : (
-                      <span className="capitalize">{activeTab}</span>
-                    )}
-                  </h1>
+                    </div>
+                    <p className="text-xs text-zinc-400 font-medium mt-0.5 truncate">
+                      @{selectedAccount.ig_username || selectedAccount.name || selectedAccount.page_name || "automixa_user"}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3 self-start">
+                {/* Right: Contextual Actions */}
+                <div className="flex items-center gap-2 shrink-0">
                   {(activeTab === "audience" || activeTab === "crm") && (
-                    <button 
+                    <button
                       onClick={() => window.dispatchEvent(new Event("export_audience_csv"))}
-                      className={`px-6 py-4 ${currentPlan === "free" ? 'bg-zinc-200 text-zinc-500' : 'bg-zinc-950 hover:bg-[#6366F1] text-white hover:scale-[1.02]'} font-semibold text-[12px] rounded-xl shadow-2xl transition-all flex items-center gap-2 self-start sm:self-center`}
+                      className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition-all ${currentPlan === "free" ? "bg-zinc-100 text-zinc-400 border-zinc-200 cursor-not-allowed" : "bg-zinc-950 hover:bg-[#6366F1] text-white border-transparent shadow-sm hover:scale-[1.02]"}`}
                     >
-                      <Download size={14} className={currentPlan === "free" ? "text-zinc-400" : "text-[#6366F1]"} /> <span>Export Contacts (.CSV)</span>
-                      {currentPlan === "free" && <LucideLock size={12} />}
+                      <Download size={13} />
+                      <span>Export CSV</span>
+                      {currentPlan === "free" && <LucideLock size={11} />}
                     </button>
                   )}
+
                   {activeTab === "analytics" && (
-                    <div className="flex items-center gap-3">
-                      <div className="bg-white/80 p-1 border border-zinc-200/80 rounded-xl flex items-center shadow-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="bg-white border border-zinc-200 rounded-xl p-1 flex items-center shadow-sm">
                         {[
                           { id: "7d", label: "7d" },
                           { id: "30d", label: "30d" },
-                          { id: "all", label: "All Time" }
+                          { id: "all", label: "All" }
                         ].map((t) => (
                           <button
                             key={t.id}
                             onClick={() => setTimeRange(t.id)}
-                            className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
-                              timeRange === t.id ? "bg-zinc-950 text-white shadow-sm" : "text-zinc-500 hover:text-zinc-950"
+                            className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all ${
+                              timeRange === t.id ? "bg-zinc-950 text-white shadow-sm" : "text-zinc-400 hover:text-zinc-800"
                             }`}
                           >
                             {t.label}
                           </button>
                         ))}
                       </div>
-
-                      <button 
+                      <button
                         onClick={handleExportAnalytics}
-                        className="px-4 py-2 bg-zinc-950 hover:bg-[#6366F1] text-white font-bold text-[11px] uppercase tracking-wider rounded-xl shadow-lg transition-all flex items-center gap-1.5 hover:scale-[1.02] shrink-0"
+                        className="flex items-center gap-1.5 px-4 py-2 bg-zinc-950 hover:bg-[#6366F1] text-white text-xs font-semibold rounded-xl shadow-sm transition-all hover:scale-[1.02] shrink-0"
                       >
-                        <Download size={14} className="text-white" /> <span>Export Report</span>
+                        <Download size={13} /> Export
                       </button>
                     </div>
                   )}
 
                   {activeTab === "home" && (
-                    <div className={`flex items-center gap-2.5 px-4 py-2 rounded-2xl border transition-all duration-500 ${selectedAccount?.is_active ? 'bg-emerald-50/50 border-emerald-500/20 text-emerald-700 shadow-sm' : 'bg-rose-50/50 border-rose-500/20 text-rose-700'}`}>
-                      <div className="relative flex h-2 w-2 shrink-0">
-                        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${selectedAccount?.is_active ? 'bg-emerald-400' : 'bg-rose-400'}`} />
-                        <span className={`relative inline-flex rounded-full h-2 w-2 ${selectedAccount?.is_active ? 'bg-emerald-600' : 'bg-rose-600'}`} />
-                      </div>
-                      <span className="text-xs font-bold uppercase tracking-widest">
-                        {selectedAccount?.is_active ? 'Shield Active' : 'System Paused'}
+                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all ${selectedAccount?.is_active ? "bg-emerald-50 border-emerald-200/80 text-emerald-700" : "bg-rose-50 border-rose-200/80 text-rose-600"}`}>
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${selectedAccount?.is_active ? "bg-emerald-400" : "bg-rose-400"}`} />
+                        <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${selectedAccount?.is_active ? "bg-emerald-600" : "bg-rose-600"}`} />
                       </span>
+                      {selectedAccount?.is_active ? "Shield Active" : "System Paused"}
                     </div>
                   )}
 
                   {activeTab === "automations" && !builderActive && (
                     <>
-                      {/* Compact Master Switch */}
-                      <button 
+                      <button
                         onClick={() => updateSelectedAccount({ is_active: !selectedAccount.is_active })}
-                        className={`flex items-center gap-2.5 px-4 py-2.5 rounded-2xl border transition-all duration-300 ${
-                          selectedAccount.is_active 
-                            ? "bg-emerald-50 border-emerald-100 text-emerald-700 shadow-sm" 
+                        className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold transition-all ${
+                          selectedAccount.is_active
+                            ? "bg-emerald-50 border-emerald-200 text-emerald-700"
                             : "bg-zinc-50 border-zinc-200 text-zinc-500"
                         }`}
                       >
-                        <div className={`w-2 h-2 rounded-full ${selectedAccount.is_active ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse' : 'bg-zinc-300'}`} />
-                        <span className="text-xs font-bold uppercase tracking-tight">
-                          {selectedAccount.is_active ? 'Active' : 'Paused'}
-                        </span>
-                        <div className={`w-8 h-4 rounded-full flex items-center px-0.5 ml-1 transition-all duration-300 ${selectedAccount.is_active ? 'bg-emerald-500 justify-end' : 'bg-zinc-300 justify-start'}`}>
-                          <motion.div layout className="w-3 h-3 bg-white rounded-full shadow-sm" />
+                        <div className={`w-1.5 h-1.5 rounded-full ${selectedAccount.is_active ? "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)] animate-pulse" : "bg-zinc-300"}`} />
+                        {selectedAccount.is_active ? "Active" : "Paused"}
+                        <div className={`w-7 h-3.5 rounded-full flex items-center px-0.5 transition-all ${selectedAccount.is_active ? "bg-emerald-500 justify-end" : "bg-zinc-300 justify-start"}`}>
+                          <motion.div layout className="w-2.5 h-2.5 bg-white rounded-full shadow-sm" />
                         </div>
                       </button>
 
                       <button
                         onClick={() => setIsCreateModalOpen(true)}
-                        className="px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-[#6366F1] transition-all flex items-center gap-2"
+                        className="flex items-center gap-1.5 px-4 py-2 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-xl text-xs font-semibold shadow-sm transition-all hover:scale-[1.02]"
                       >
-                        <Plus size={16} strokeWidth={2} /> Create New Campaign
+                        <Plus size={14} strokeWidth={2.5} /> New Campaign
                       </button>
                     </>
                   )}
+
                   {activeTab === "partner" && partnerAppStatus === "approved" && (
-                    <div className="flex items-center gap-2">
-                      <span className="px-5 py-3 bg-zinc-950 text-white font-black text-[10px] rounded-xl shadow-xl uppercase tracking-widest border border-zinc-800">
-                        Tier: {partnerActiveTier} ({partnerCommissionRate}%)
-                      </span>
-                    </div>
+                    <span className="px-3 py-1.5 bg-zinc-950 text-white font-bold text-[10px] rounded-xl uppercase tracking-wider border border-zinc-800">
+                      {partnerActiveTier} · {partnerCommissionRate}% Commission
+                    </span>
                   )}
+
                   {activeTab === "settings" && (
-                    <button 
+                    <button
                       onClick={() => window.dispatchEvent(new Event("save_settings"))}
-                      className="px-6 py-3 bg-zinc-950 hover:bg-[#6366F1] text-white font-bold text-[11px] rounded-xl shadow-lg transition-all flex items-center gap-1.5 hover:scale-105 shrink-0"
+                      className="flex items-center gap-1.5 px-4 py-2 bg-zinc-950 hover:bg-[#6366F1] text-white text-xs font-semibold rounded-xl shadow-sm transition-all hover:scale-[1.02] shrink-0"
                     >
-                      {settingsSaved && <CheckCircle2 size={14} className="text-emerald-400" />}
-                      <span>{settingsSaved ? "Saved!" : "Save Changes"}</span>
+                      {settingsSaved && <CheckCircle2 size={13} className="text-emerald-400" />}
+                      {settingsSaved ? "Saved!" : "Save Changes"}
                     </button>
                   )}
                 </div>

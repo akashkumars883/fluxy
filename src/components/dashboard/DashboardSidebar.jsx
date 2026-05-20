@@ -31,27 +31,22 @@ export default function DashboardSidebar({
   const settingsItem = navigationItems.find(item => item.id === "settings");
 
   return (
-    <aside className={`bg-[#FCFDFE] backdrop-blur-2xl border-r border-[#e9e9eb] hidden md:flex flex-col justify-between select-none transition-all duration-500 ease-[0.16,1,0.3,1] z-30 shrink-0 h-full sticky top-0 overflow-y-auto no-scrollbar ${
-      isSidebarCollapsed ? "w-20 p-4 items-center" : "w-64 p-6"
+    <aside className={`bg-[#FCFDFE] border-r border-[#e9e9eb] hidden md:flex flex-col justify-between select-none transition-all duration-500 ease-[0.16,1,0.3,1] z-30 shrink-0 h-full sticky top-0 overflow-y-auto no-scrollbar ${
+      isSidebarCollapsed ? "w-[72px] p-3 items-center" : "w-60 p-5"
     }`}>
-      {/* Sidebar subtle inner gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
-      <div className="space-y-2 w-full">
 
-          <div className={`flex items-center mb-4 transition-all duration-300 ${isSidebarCollapsed ? "justify-center px-0" : "justify-between px-3"}`}>
-            <p className={`text-xs font-semibold text-zinc-500 tracking-normal capitalize whitespace-nowrap overflow-hidden transition-all duration-300 ${
-              isSidebarCollapsed ? "opacity-0 w-0" : "opacity-100 w-auto"
-            }`}>
-              Main Menu
-            </p>
-            <button
-              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              className={`p-2 text-zinc-400 hover:text-zinc-900 transition-all flex items-center justify-center shrink-0 ${isSidebarCollapsed ? "" : "ml-auto"}`}
-              title="Toggle Sidebar"
-            >
-              <PanelTopOpen size={20} className={`transition-all duration-500 ease-[0.16,1,0.3,1] ${isSidebarCollapsed ? "rotate-90" : "-rotate-90"}`} strokeWidth={2.5} />
-            </button>
-          </div>
+      {/* Top Nav */}
+      <div className="space-y-1 w-full">
+        {/* Collapse Toggle */}
+        <div className={`flex items-center mb-3 ${isSidebarCollapsed ? "justify-center" : "justify-end"}`}>
+          <button
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            className="p-1.5 text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 rounded-lg transition-all"
+            title="Toggle Sidebar"
+          >
+            <PanelTopOpen size={16} className={`transition-all duration-500 ${isSidebarCollapsed ? "rotate-90" : "-rotate-90"}`} strokeWidth={2} />
+          </button>
+        </div>
 
         {mainNavItems.map((item) => {
           const Icon = item.icon;
@@ -66,39 +61,39 @@ export default function DashboardSidebar({
                   setActiveTab(item.id);
                 }
               }}
-              className={`relative flex items-center rounded-xl font-semibold text-xs sm:text-sm transition-all duration-300 h-11 ${
-                isSidebarCollapsed ? "w-11 justify-center p-0 mx-auto" : "w-full justify-start px-3.5 py-3 gap-3"
+              className={`relative flex items-center rounded-xl text-xs font-medium transition-all duration-200 h-10 ${
+                isSidebarCollapsed ? "w-10 justify-center p-0 mx-auto" : "w-full justify-start px-3 gap-3"
               } ${
                 isActive
-                   ? "text-white"
+                  ? "text-white"
                   : item.locked
-                    ? "text-zinc-400 font-medium hover:bg-zinc-100"
-                    : "text-zinc-600 hover:text-zinc-950 hover:bg-white"
+                  ? "text-zinc-300 hover:bg-zinc-50 hover:text-zinc-500"
+                  : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100/80"
               }`}
               title={item.label}
             >
               {isActive && (
-                <motion.div 
+                <motion.div
                   layout
                   layoutId="sidebarActiveTabDesktop"
-                  className="absolute inset-0 bg-[#6366F1] shadow-[0_8px_24px_-6px_rgba(59,130,246,0.25)] rounded-xl z-0"
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  className="absolute inset-0 bg-[#6366F1] shadow-[0_4px_14px_-4px_rgba(99,102,241,0.4)] rounded-xl z-0"
+                  transition={{ type: "spring", stiffness: 350, damping: 30 }}
                 />
               )}
 
               <div className="flex items-center justify-center shrink-0 relative z-10">
-                <Icon size={18} />
+                <Icon size={16} strokeWidth={isActive ? 2.5 : 2} />
               </div>
-              
+
               {!isSidebarCollapsed && (
-                <span className="whitespace-nowrap overflow-hidden flex-1 text-left relative z-10 animate-in fade-in duration-200">
+                <span className="whitespace-nowrap overflow-hidden flex-1 text-left relative z-10 font-semibold animate-in fade-in duration-150">
                   {item.label}
                 </span>
               )}
-              
+
               {!isSidebarCollapsed && item.locked && (
-                <div className="flex items-center justify-center bg-zinc-200/80 w-5 h-5 rounded-full relative z-10">
-                  <LucideLock size={10} className="text-zinc-600 shrink-0" />
+                <div className="flex items-center justify-center bg-zinc-100 w-4 h-4 rounded-full relative z-10">
+                  <LucideLock size={9} className="text-zinc-400 shrink-0" />
                 </div>
               )}
             </button>
@@ -106,11 +101,9 @@ export default function DashboardSidebar({
         })}
       </div>
 
-
-
-
-      <div className="mt-auto space-y-4 w-full">
-        {/* Settings Tab at the bottom */}
+      {/* Bottom Section */}
+      <div className="mt-auto space-y-3 w-full">
+        {/* Settings Tab */}
         {settingsItem && (
           <button
             onClick={() => {
@@ -120,68 +113,66 @@ export default function DashboardSidebar({
                 setActiveTab(settingsItem.id);
               }
             }}
-            className={`relative flex items-center rounded-xl font-semibold text-xs sm:text-sm transition-all duration-300 h-11 ${
-              isSidebarCollapsed ? "w-11 justify-center p-0 mx-auto" : "w-full justify-start px-3.5 py-3 gap-3"
+            className={`relative flex items-center rounded-xl text-xs font-medium transition-all duration-200 h-10 ${
+              isSidebarCollapsed ? "w-10 justify-center p-0 mx-auto" : "w-full justify-start px-3 gap-3"
             } ${
               activeTab === "settings"
-                 ? "text-[#6366F1]"
+                ? "bg-zinc-100 text-zinc-900 font-semibold"
                 : settingsItem.locked
-                  ? "text-zinc-400 font-medium hover:bg-zinc-100"
-                  : "text-zinc-600 hover:text-zinc-950 hover:bg-white"
+                ? "text-zinc-300 hover:bg-zinc-50 hover:text-zinc-500"
+                : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100/80"
             }`}
             title={settingsItem.label}
           >
-
             <div className="flex items-center justify-center shrink-0 relative z-10">
-              <settingsItem.icon size={18} />
+              <settingsItem.icon size={16} strokeWidth={activeTab === "settings" ? 2.5 : 2} />
             </div>
-            
             {!isSidebarCollapsed && (
-              <span className="whitespace-nowrap overflow-hidden flex-1 text-left relative z-10 animate-in fade-in duration-200">
+              <span className="whitespace-nowrap overflow-hidden flex-1 text-left relative z-10 animate-in fade-in duration-150">
                 {settingsItem.label}
               </span>
             )}
-            
             {!isSidebarCollapsed && settingsItem.locked && (
-              <div className="flex items-center justify-center bg-zinc-200/80 w-5 h-5 rounded-full relative z-10">
-                <LucideLock size={10} className="text-zinc-600 shrink-0" />
+              <div className="flex items-center justify-center bg-zinc-100 w-4 h-4 rounded-full relative z-10">
+                <LucideLock size={9} className="text-zinc-400 shrink-0" />
               </div>
             )}
           </button>
         )}
 
+        {/* Account Switcher */}
         {selectedAccount && (
-          <div className="relative w-full pt-4 border-t border-[#e9e9eb]">
+          <div className="relative w-full pt-3 border-t border-[#e9e9eb]">
             <button
               onClick={() => setIsSwitchAccountOpen(!isSwitchAccountOpen)}
-              className={`w-full flex items-center rounded-full transition-all duration-300 ${
-                isSidebarCollapsed ? "justify-center p-0 w-10 h-10 mx-auto" : "justify-between p-1.5"
+              className={`w-full flex items-center rounded-xl transition-all duration-200 hover:bg-zinc-100/80 ${
+                isSidebarCollapsed ? "justify-center p-1.5 w-10 h-10 mx-auto" : "justify-between p-1.5 gap-2"
               }`}
               title="Switch Account"
             >
-              <div className="flex items-center gap-2 overflow-hidden w-full">
+              <div className="flex items-center gap-2 overflow-hidden min-w-0">
                 <img
                   src={selectedAccount.profile_pic || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&h=150&fit=crop&q=80"}
                   alt={selectedAccount.ig_username || selectedAccount.page_name}
-                  className="w-10 h-10 rounded-full object-cover shrink-0 border border-zinc-200 shadow-sm transition-all duration-300"
+                  className="w-8 h-8 rounded-xl object-cover shrink-0 border border-zinc-200 shadow-sm"
                 />
-                <span className={`text-xs font-semibold text-zinc-800 truncate text-left transition-all duration-300 ${
-                  isSidebarCollapsed ? "opacity-0 w-0" : "opacity-100 w-auto flex-1 max-w-[120px]"
+                <span className={`text-xs font-semibold text-zinc-700 truncate text-left transition-all duration-300 ${
+                  isSidebarCollapsed ? "opacity-0 w-0" : "opacity-100 flex-1 min-w-0"
                 }`}>
-                  @{selectedAccount.ig_username || selectedAccount.name || selectedAccount.page_name || 'automixa_user'}
+                  @{selectedAccount.ig_username || selectedAccount.name || selectedAccount.page_name || "automixa_user"}
                 </span>
               </div>
-              <ChevronDown size={14} className={`text-zinc-400 mr-2 shrink-0 transition-all duration-300 ${
-                isSidebarCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto"
+              <ChevronDown size={13} className={`text-zinc-400 shrink-0 transition-all duration-300 ${
+                isSidebarCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"
               }`} />
             </button>
 
             {isSwitchAccountOpen && (
-              <div className={`absolute bottom-full mb-3 bg-white/95 backdrop-blur-2xl border border-zinc-200 rounded-xl p-2 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-200 ${
+              <div className={`absolute bottom-full mb-3 bg-white border border-zinc-200 rounded-xl p-2 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-200 ${
                 isSidebarCollapsed ? "left-0 w-64" : "left-0 w-full min-w-[220px]"
               }`}>
-                <div className="p-2 text-[11px] font-semibold text-zinc-500 border-b border-zinc-100">Switch Instagram Account</div>
-                <div className="py-1 space-y-1 max-h-48 overflow-y-auto">
+                <div className="p-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest border-b border-zinc-100 mb-1">Switch Account</div>
+                <div className="py-1 space-y-0.5 max-h-48 overflow-y-auto">
                   {accounts.map(acc => (
                     <button
                       key={acc.id}
@@ -189,8 +180,8 @@ export default function DashboardSidebar({
                         setSelectedAccount(acc);
                         setIsSwitchAccountOpen(false);
                       }}
-                      className={`w-full flex items-center justify-between p-2.5 rounded-md text-xs font-semibold transition-all ${
-                        selectedAccount.id === acc.id ? "bg-[#6366F1]/10 text-[#6366F1]" : "hover:bg-zinc-100 text-zinc-700"
+                      className={`w-full flex items-center justify-between p-2.5 rounded-lg text-xs font-semibold transition-all ${
+                        selectedAccount.id === acc.id ? "bg-[#6366F1]/10 text-[#6366F1]" : "hover:bg-zinc-50 text-zinc-700"
                       }`}
                     >
                       <div className="flex items-center gap-2 overflow-hidden">
@@ -199,7 +190,7 @@ export default function DashboardSidebar({
                           alt={acc.ig_username || acc.page_name}
                           className="w-6 h-6 rounded-lg object-cover shrink-0"
                         />
-                        <span className="truncate">@{acc.ig_username || acc.name || acc.page_name || 'automixa_user'}</span>
+                        <span className="truncate">@{acc.ig_username || acc.name || acc.page_name || "automixa_user"}</span>
                       </div>
                       {selectedAccount.id === acc.id && <div className="w-1.5 h-1.5 bg-[#6366F1] rounded-full shrink-0" />}
                     </button>
@@ -211,9 +202,9 @@ export default function DashboardSidebar({
                       setIsSwitchAccountOpen(false);
                       onConnectClick();
                     }}
-                    className="w-full flex items-center gap-2 p-2.5 hover:bg-zinc-100 rounded-xl text-xs font-semibold text-zinc-800 transition-all"
+                    className="w-full flex items-center gap-2 p-2.5 hover:bg-zinc-50 rounded-lg text-xs font-semibold text-zinc-700 transition-all"
                   >
-                    <Plus size={14} className="text-[#6366F1]" /> <span>Connect Another Account</span>
+                    <Plus size={13} className="text-[#6366F1]" /> <span>Connect Another Account</span>
                   </button>
                 </div>
               </div>

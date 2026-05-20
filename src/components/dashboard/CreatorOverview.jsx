@@ -230,9 +230,9 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
     : [];
 
   const metricCards = [
-    { label: "Automated Comments", value: autoReplies, icon: MessageSquare, color: "text-[#6366F1] bg-[#6366F1]/10 border-[#6366F1]/20", trend: "+14.8%", bgClass: "bg-[#6366F1]/5 border-[#6366F1]/20 hover:border-[#6366F1]/40 hover:shadow-[#6366F1]/5" },
-    { label: "Messages Sent", value: totalDms, icon: Zap, color: "text-amber-600 bg-amber-50 border-amber-200", trend: "+12.1%", bgClass: "bg-amber-500/5 border-amber-500/20 hover:border-amber-500/40 hover:shadow-amber-500/5" },
-    { label: "Conversion Rate", value: engagementRate, icon: TrendingUp, color: "text-emerald-600 bg-emerald-50 border-emerald-200", trend: "Optimal", bgClass: "bg-emerald-500/5 border-emerald-500/20 hover:border-emerald-500/40 hover:shadow-emerald-500/5" },
+    { label: "Automated Comments", value: autoReplies, icon: MessageSquare, color: "text-[#6366F1] bg-[#6366F1]/10 border-[#6366F1]/20", trend: "Total", bgClass: "bg-[#6366F1]/5 border-[#6366F1]/20 hover:border-[#6366F1]/40 hover:shadow-[#6366F1]/5" },
+    { label: "Messages Sent", value: totalDms, icon: Zap, color: "text-amber-600 bg-amber-50 border-amber-200", trend: "Total", bgClass: "bg-amber-500/5 border-amber-500/20 hover:border-amber-500/40 hover:shadow-amber-500/5" },
+    { label: "Conversion Rate", value: engagementRate, icon: TrendingUp, color: "text-emerald-600 bg-emerald-50 border-emerald-200", trend: "Live", bgClass: "bg-emerald-500/5 border-emerald-500/20 hover:border-emerald-500/40 hover:shadow-emerald-500/5" },
     { label: "Active Rules", value: topTriggers.length, icon: Cpu, color: "text-purple-600 bg-purple-50 border-purple-200", trend: "Active", bgClass: "bg-purple-500/5 border-purple-500/20 hover:border-purple-500/40 hover:shadow-purple-500/5" },
   ];
 
