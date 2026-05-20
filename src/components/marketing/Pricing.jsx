@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { CheckCircle2, ArrowRight, Sparkles, Tag, ShieldCheck, X, Check, ArrowUpRight, Zap, Building2, CreditCard } from "lucide-react";
+import { CheckCircle2, ArrowRight, Tag, X, Zap, CreditCard } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase";
@@ -148,115 +148,124 @@ export default function Pricing({ onSuccess = null, isModal = false } = {}) {
 
   const handleCheckoutSimulate = async () => {
     setCheckoutLoading(true);
+    setPromoError(null);
     const planId = selectedPlan.name === "Viral Scale" ? "viral_scale" : "creator_pro";
 
     try {
       const supabase = createClient();
-      
-      // Determine partner attribution
-      let partnerId = null;
-      let promoCodeUsed = null;
-      let transactionAmount = appliedPromo ? appliedPromo.newPriceInr : selectedPlan.raw_inr;
+      const { data: { user } } = await supabase.auth.getUser();
 
-      if (appliedPromo && appliedPromo.partnerId) {
-        partnerId = appliedPromo.partnerId;
-        promoCodeUsed = appliedPromo.code;
-      } else if (typeof window !== "undefined") {
-        const storedRef = localStorage.getItem("automixa_ref");
-        if (storedRef) {
-          const { data: matches } = await supabase
-            .from("partner_profiles")
-            .select("id, master_tracking_link")
-            .or(`master_tracking_link.ilike.%${storedRef}%,id.eq.${storedRef.replace("partner_", "")}`);
-          
-          if (matches && matches.length > 0) {
-            partnerId = matches[0].id;
-          }
-        }
+      if (!user) {
+        // Redirect to login page and redirect back with upgrade parameter
+        window.location.assign(`/login?redirect=/dashboard?upgrade=${planId}`);
+        return;
       }
 
-      // If attributed to a partner, record it!
-      if (partnerId) {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          let commissionRate = 0.20; // default split
-          
-          if (promoCodeUsed) {
-            const { data: promo } = await supabase
-              .from("promo_codes")
-              .select("partner_commission_percent, clicks_count, sales_count")
-              .eq("code", promoCodeUsed)
-              .single();
+      const storedRef = typeof window !== "undefined" ? localStorage.getItem("automixa_ref") : null;
 
-            if (promo) {
-              commissionRate = (promo.partner_commission_percent || 20) / 100;
-              // Increment promo code sales
-              await supabase
-                .from("promo_codes")
-                .update({ sales_count: (promo.sales_count || 0) + 1 })
-                .eq("code", promoCodeUsed);
-            }
-          } else {
-            // Find partner commission rate from profile
-            const { data: profile } = await supabase
-              .from("partner_profiles")
-              .select("commission_rate")
-              .eq("id", partnerId)
-              .single();
-            if (profile) {
-              commissionRate = Number(profile.commission_rate) || 0.15;
-            }
-          }
+      // 1. Create order on the server
+      const createRes = await fetch("/api/checkout/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          planId,
+          isAnnual: false, // Defaulting monthly on marketing page
+          promoCode: appliedPromo?.code || null,
+          ref: storedRef
+        }),
+      });
 
-          const commissionEarned = Math.round(transactionAmount * commissionRate);
-          const transactionId = `pay_sim_${Math.random().toString(36).slice(2, 10)}`;
-
-          // 1. Insert attribution log
-          await supabase.from("referral_attributions").insert({
-            customer_user_id: user.id,
-            promo_code_used: promoCodeUsed,
-            partner_id: partnerId,
-            subscription_plan: planId,
-            transaction_amount: transactionAmount,
-            commission_earned: commissionEarned,
-            transaction_id: transactionId,
-            status: "completed"
-          });
-
-          // 2. Update partner profile metrics
-          const { data: partnerProf } = await supabase
-            .from("partner_profiles")
-            .select("total_referrals_count, monthly_recurring_revenue, unpaid_earnings")
-            .eq("id", partnerId)
-            .single();
-
-          if (partnerProf) {
-            const newReferrals = (partnerProf.total_referrals_count || 0) + 1;
-            const newMRR = (partnerProf.monthly_recurring_revenue || 0) + (transactionAmount / 12);
-            const newUnpaid = (partnerProf.unpaid_earnings || 0) + commissionEarned;
-            
-            await supabase
-              .from("partner_profiles")
-              .update({
-                total_referrals_count: newReferrals,
-                monthly_recurring_revenue: Number(newMRR.toFixed(2)),
-                unpaid_earnings: Number(newUnpaid.toFixed(2))
-              })
-              .eq("id", partnerId);
-          }
-        }
+      const orderData = await createRes.json();
+      if (!createRes.ok || orderData.error) {
+        throw new Error(orderData.error || "Failed to initiate payment");
       }
-    } catch (e) {
-      console.error("Attribution record error:", e);
-    }
 
-    setTimeout(() => {
+      // 2. Load Razorpay Script dynamically
+      const loadRzpScript = () => {
+        return new Promise((resolve) => {
+          if (window.Razorpay) {
+            resolve(true);
+            return;
+          }
+          const script = document.createElement("script");
+          script.src = "https://checkout.razorpay.com/v1/checkout.js";
+          script.async = true;
+          script.onload = () => resolve(true);
+          script.onerror = () => resolve(false);
+          document.body.appendChild(script);
+        });
+      };
+
+      const isLoaded = await loadRzpScript();
+      if (!isLoaded) {
+        alert("Failed to load Razorpay Checkout SDK. Please try again.");
+        setCheckoutLoading(false);
+        return;
+      }
+
+      // 3. Configure Razorpay checkout options
+      const options = {
+        key: orderData.keyId,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "Automixa AI",
+        description: `Subscription to ${selectedPlan.name}`,
+        image: "/logo.png",
+        order_id: orderData.isSimulated ? undefined : orderData.orderId,
+        handler: async function (response) {
+          try {
+            setCheckoutLoading(true);
+            // Call success webhook verification
+            const res = await fetch("/api/checkout/success", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: orderData.isSimulated ? orderData.orderId : response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+                plan_id: planId,
+                user_id: user.id,
+                amount: (orderData.amount / 100).toString(),
+                currency: orderData.currency,
+                email: user.email,
+                name: user.user_metadata?.full_name || "Automixa User",
+                partner_id: orderData.partnerId,
+                promo_code: appliedPromo?.code || null
+              }),
+            });
+
+            const result = await res.json();
+            if (result.success) {
+              setCheckoutSuccess(true);
+              setTimeout(() => {
+                window.location.assign(`/dashboard?upgrade=${planId}&payment=success`);
+              }, 1500);
+            } else {
+              setPromoError("Payment verification failed: " + (result.error || "Unknown error"));
+              setCheckoutLoading(false);
+            }
+          } catch (err) {
+            console.error("Success verification error:", err);
+            setPromoError("Error verifying transaction. Please contact support.");
+            setCheckoutLoading(false);
+          }
+        },
+        prefill: {
+          name: orderData.userName || "",
+          email: orderData.userEmail || "",
+        },
+        theme: {
+          color: "#6366F1",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      console.error("Checkout launch error:", err);
+      setPromoError("Could not start checkout process: " + err.message);
       setCheckoutLoading(false);
-      setCheckoutSuccess(true);
-      setTimeout(() => {
-        window.location.assign(`/dashboard?upgrade=${planId}&payment=success`);
-      }, 1500);
-    }, 1500);
+    }
   };
 
   const handlePlanClick = (tier) => {

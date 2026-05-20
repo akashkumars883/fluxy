@@ -53,6 +53,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
 
   if (!isOpen) return null;
 
+  const usedQuota = (realtimeStats?.totalDms || 0) + (realtimeStats?.autoReplies || 0);
   const currentMaxQuota = currentPlan === "viral_scale" ? 2000000 : currentPlan === "creator_pro" ? 250000 : 25000;
   const quotaPercent = Math.min(Math.round((usedQuota / currentMaxQuota) * 100), 100);
 
@@ -96,43 +97,73 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
     return rawPrice;
   };
 
-  const handleCheckout = () => {
-    // 1. Plan and Price logic
-    const selectedPlan = plans.find(p => p.id === selectedPlanId);
-    let rawPrice = isIndia ? selectedPlan.price_inr.replace(',', '') : selectedPlan.price_usd;
-    let numericAmount = parseInt(rawPrice);
-    if (isAnnual) {
-      numericAmount = Math.round((numericAmount * 0.8) * 12);
-    }
-    const amount = numericAmount.toString();
-    const currency = isIndia ? "INR" : "USD";
+  const handleCheckout = async () => {
+    try {
+      const storedRef = typeof window !== "undefined" ? localStorage.getItem("automixa_ref") : null;
 
-    // 2. Load Razorpay Script
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.async = true;
-    script.onload = () => {
+      // 1. Create order on the server
+      const createRes = await fetch("/api/checkout/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          planId: selectedPlanId,
+          isAnnual,
+          ref: storedRef
+        }),
+      });
+
+      const orderData = await createRes.json();
+      if (!createRes.ok || orderData.error) {
+        throw new Error(orderData.error || "Failed to initiate payment");
+      }
+
+      // 2. Load Razorpay Script dynamically
+      const loadRzpScript = () => {
+        return new Promise((resolve) => {
+          if (window.Razorpay) {
+            resolve(true);
+            return;
+          }
+          const script = document.createElement("script");
+          script.src = "https://checkout.razorpay.com/v1/checkout.js";
+          script.async = true;
+          script.onload = () => resolve(true);
+          script.onerror = () => resolve(false);
+          document.body.appendChild(script);
+        });
+      };
+
+      const isLoaded = await loadRzpScript();
+      if (!isLoaded) {
+        alert("Failed to load Razorpay Checkout SDK. Please try again.");
+        return;
+      }
+
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_YOUR_KEY_HERE",
-        amount: parseInt(amount) * 100, // Amount in paise
-        currency: currency,
+        key: orderData.keyId,
+        amount: orderData.amount,
+        currency: orderData.currency,
         name: "Automixa AI",
-        description: `Upgrade to ${selectedPlan.name} ${isAnnual ? 'Annual' : 'Monthly'}`,
+        description: `Upgrade to ${selectedPlanId.replace('_', ' ').toUpperCase()} ${isAnnual ? 'Annual' : 'Monthly'}`,
         image: "/logo.png",
+        order_id: orderData.isSimulated ? undefined : orderData.orderId,
         handler: async function (response) {
           try {
-            // Call our backend to verify and save
+            // Call success webhook verification
             const res = await fetch("/api/checkout/success", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                ...response,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: orderData.isSimulated ? orderData.orderId : response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
                 plan_id: selectedPlanId,
                 user_id: user.id,
-                amount: amount,
-                currency: currency,
+                amount: (orderData.amount / 100).toString(),
+                currency: orderData.currency,
                 email: user.email,
-                name: user.user_metadata?.full_name || "Automixa User"
+                name: user.user_metadata?.full_name || "Automixa User",
+                partner_id: orderData.partnerId
               }),
             });
 
@@ -142,15 +173,16 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
               setCurrentPlan(selectedPlanId);
               onClose();
             } else {
-              alert("Payment verification failed. Please contact support.");
+              alert("Payment verification failed: " + (result.error || "Unknown error"));
             }
           } catch (err) {
-            console.error("Success handling error:", err);
+            console.error("Success verification error:", err);
+            alert("Error verifying transaction. Please contact support.");
           }
         },
         prefill: {
-          name: user?.user_metadata?.full_name || "",
-          email: user?.email || "",
+          name: orderData.userName || "",
+          email: orderData.userEmail || "",
         },
         theme: {
           color: "#6366F1",
@@ -159,8 +191,10 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
 
       const rzp = new window.Razorpay(options);
       rzp.open();
-    };
-    document.body.appendChild(script);
+    } catch (err) {
+      console.error("Checkout launch error:", err);
+      alert("Could not start checkout process: " + err.message);
+    }
   };
 
   return (
