@@ -1,6 +1,16 @@
 export const metadata = {
   title: "Instagram DM Sales Automation for Brands | Automixa",
   description: "Turn followers into customers automatically. Automixa replies to comments with discount codes, sends product links, and sky-rockets your conversion rates 24/7.",
+  keywords: [
+    "Instagram DM sales automation",
+    "Instagram sales funnel automation",
+    "Comment to DM for brands",
+    "Instagram lead generation for brands",
+    "Instagram automation tool India",
+    "Meta Graph API automation",
+    "ManyChat alternative India",
+    "Instagram DM bot for business",
+  ],
   openGraph: {
     title: "Instagram DM Sales Automation for Brands | Automixa",
     description: "Automate your Instagram sales funnel and drive sales 24/7 with instant DM replies.",

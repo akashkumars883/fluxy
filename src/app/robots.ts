@@ -1,42 +1,51 @@
 import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
+  const disallow = [
+    '/dashboard',
+    '/dashboard/',
+    '/api',
+    '/api/',
+    '/login',
+    '/login/',
+  ];
+
   return {
     rules: [
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/dashboard/', '/api/', '/login/'],
+        disallow,
       },
       {
         userAgent: 'GPTBot',
         allow: '/',
-        disallow: ['/dashboard/', '/api/', '/login/'],
+        disallow,
       },
       {
         userAgent: 'ChatGPT-User',
         allow: '/',
-        disallow: ['/dashboard/', '/api/', '/login/'],
+        disallow,
       },
       {
         userAgent: 'ClaudeBot',
         allow: '/',
-        disallow: ['/dashboard/', '/api/', '/login/'],
+        disallow,
       },
       {
         userAgent: 'Google-Extended',
         allow: '/',
-        disallow: ['/dashboard/', '/api/', '/login/'],
+        disallow,
       },
       {
         userAgent: 'Anthropic-ai',
         allow: '/',
-        disallow: ['/dashboard/', '/api/', '/login/'],
+        disallow,
       },
       {
         userAgent: 'Cohere-ai',
         allow: '/',
-        disallow: ['/dashboard/', '/api/', '/login/'],
+        disallow,
       }
     ],
     sitemap: 'https://automixa.in/sitemap.xml',

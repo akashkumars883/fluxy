@@ -17,13 +17,31 @@ export async function generateMetadata({ params }) {
   if (!data) {
     return {
       title: "Instagram Automation Comparison | Automixa",
-      description: "Compare Automixa with other Instagram automation platforms to find the safest, most effective tool for modern creators."
+      description: "Compare Automixa with other Instagram automation platforms to find the safest, most effective tool for modern creators.",
+      keywords: [
+        "Instagram automation comparison",
+        "ManyChat alternative India",
+        "Chatfuel alternative",
+        "Instagram DM automation",
+        "Instagram comment auto reply",
+        "Meta Graph API automation",
+        "Auto DM tool India",
+      ],
     };
   }
 
   return {
     title: data.metaTitle,
     description: data.metaDesc,
+    keywords: [
+      "ManyChat alternative India",
+      "Instagram automation tool India",
+      "Instagram DM automation India",
+      "Instagram comment to DM",
+      "Meta Graph API automation",
+      `${competitor} alternative`,
+      `Automixa vs ${competitor}`,
+    ],
     alternates: {
       canonical: `https://automixa.in/compare/${competitor}`,
     }

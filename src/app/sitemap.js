@@ -9,6 +9,12 @@ export default function sitemap() {
       priority: 1.0,
     },
     {
+      url: `${baseUrl}/pricing`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/features/dm-auto-reply`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
@@ -75,6 +81,12 @@ export default function sitemap() {
       priority: 0.7,
     },
     {
+      url: `${baseUrl}/shield`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
       url: `${baseUrl}/contact`,
       lastModified: new Date(),
       changeFrequency: 'yearly',
@@ -85,6 +97,12 @@ export default function sitemap() {
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/sitemap`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.2,
     },
     {
       url: `${baseUrl}/privacy`,
