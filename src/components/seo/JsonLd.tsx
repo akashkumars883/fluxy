@@ -88,6 +88,14 @@ export default function JsonLd() {
           "@type": "Answer",
           "text": "Absolutely! Automixa handles both public comment replies and direct messages. You can set it to automatically send a DM containing a resource link whenever someone comments."
         }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you support Indian payment methods like UPI and GST invoices?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, Automixa supports Indian payment options like UPI (GPay, PhonePe, Paytm), local Net Banking, and provides automated GST-compliant invoices for Indian businesses and agencies."
+        }
       }
     ]
   };

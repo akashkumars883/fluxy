@@ -12,8 +12,8 @@ import JsonLd from "@/components/seo/JsonLd";
 
 export const metadata = {
   title: "Automixa | #1 Instagram Comment Auto-Reply & DM Automation Tool",
-  description: "Automixa is the best, 100% safe Instagram automation tool for creators and brands. Auto-reply to comments, send instant DMs, and grow your followers 24/7.",
-  keywords: "Instagram automation, DM auto-reply, comment auto-responder, Instagram bot, Instagram marketing, grow followers, Instagram CRM",
+  description: "Automixa is the best, 100% safe Instagram automation tool for creators and brands in India. Auto-reply to comments, send instant DMs, and grow followers 24/7 with local UPI billing.",
+  keywords: "Instagram automation India, DM auto-reply bot, comment auto-responder, Instagram bot India, Instagram marketing, grow followers, ConvertDM alternative, WhoseDM alternative, UPI payments",
   openGraph: {
     title: "Automixa | Instagram Comment Auto-Reply & DM Automation Tool",
     description: "Auto-reply to comments, send instant download links via DM, and grow your Instagram followers automatically.",

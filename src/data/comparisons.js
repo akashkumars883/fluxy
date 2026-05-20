@@ -206,5 +206,142 @@ export const competitorsData = {
         a: "Yes. Both tools utilize official Meta Graph APIs for connection. Neither tool asks for your password, and both are fully compliant with Meta Developer Policies, ensuring absolute account security."
       }
     ]
+  },
+  convertdm: {
+    name: "ConvertDM",
+    title: "Automixa vs ConvertDM",
+    tagline: "Basic templates vs AI-powered creator engines.",
+    desc: "ConvertDM is a budget option in the Indian market, but it lacks advanced features like automated AI text rephrasers, active surge protection, and advanced outbound webhooks. Automixa is built for professional creators and growing brands—offering a robust leads CRM, built-in Smart Bio page, and enterprise-grade security.",
+    metaTitle: "ConvertDM Alternative for Instagram | Automixa vs ConvertDM",
+    metaDesc: "Factual comparison of Automixa vs ConvertDM. Discover how Automixa provides smarter comment auto-replies, better analytics, and official Meta API security.",
+    features: [
+      {
+        name: "Official Meta Connection",
+        automixa: "100% Meta API Compliant (Secure, official integration with no password required)",
+        competitor: "100% Meta API Compliant (Secure, official integration with no password required)",
+        winner: "tie"
+      },
+      {
+        name: "AI Reply Randomization",
+        automixa: "AI Text Changer (Automatically rephrases replies so comment logs look unique and organic)",
+        competitor: "Static Templates Only (Requires manually writing each alternate response)",
+        winner: "automixa"
+      },
+      {
+        name: "Link Hub Integration",
+        automixa: "Smart Bio Included (Customizable creator landing page with conversion tracking)",
+        competitor: "Not Provided (Requires separate external tools to hold and trace bio links)",
+        winner: "automixa"
+      },
+      {
+        name: "Outbound Webhooks",
+        automixa: "Advanced Webhooks (Outbound webhooks with test suites built-in for Make/Zapier)",
+        competitor: "Limited / No Direct Outbound Integration (Requires manual data exports)",
+        winner: "automixa"
+      },
+      {
+        name: "Security Surge Buffer",
+        automixa: "Automixa Shield (Rand-delays and circuit-breaker surge block to prevent spam rate-limits)",
+        competitor: "Basic Timing (Simple send delays with no active defense against sudden comment surges)",
+        winner: "automixa"
+      }
+    ],
+    whySwitch: [
+      {
+        title: "All-in-One Lead Hub",
+        desc: "Why pay for ConvertDM, Linktree, and Zapier separately? Automixa packages your DM auto-replies, smart bio links, and contact CRM under one simple subscription with native outbound webhook support."
+      },
+      {
+        title: "Avoid Duplicate Reply Bans",
+        desc: "Instagram's spam algorithms penalize identical replies. Automixa's AI Text Changer automatically spins comment replies so they look fresh and natural, avoiding duplication bans."
+      },
+      {
+        title: "Active Algorithmic Defense",
+        desc: "ConvertDM lacks active circuit breakers. If automated bots spam your keywords, Automixa Shield automatically pauses replies during surge attacks, protecting your channel."
+      }
+    ],
+    faqs: [
+      {
+        q: "What makes Automixa a safer alternative to ConvertDM?",
+        a: "ConvertDM relies on basic API triggers but does not include advanced spam surge buffers. If automated bot accounts spam your keywords, ConvertDM keeps firing replies, which can lead to Instagram rate-limiting your page. Automixa Shield features active circuit breakers that pause replies during spam surges, keeping your channel safe."
+      },
+      {
+        q: "Do I get a link-in-bio tool with ConvertDM?",
+        a: "No. ConvertDM does not provide a customizable creator landing page or link hub. Creators must set up and manage a separate bio link service like Linktree, whereas Automixa includes it natively."
+      },
+      {
+        q: "Do both platforms support official APIs?",
+        a: "Yes. Both tools connect using official, Meta-compliant Graph APIs. They are 100% safe, do not require your Instagram password, and follow Meta's strict platform developer guidelines."
+      }
+    ]
+  },
+  whosedm: {
+    name: "WhoseDM",
+    title: "Automixa vs WhoseDM",
+    tagline: "White-label setup vs Creator-first speed.",
+    desc: "WhoseDM offers decent comment automation but its setup dashboard is complex, and it is positioned more as an agency-first white-label solution. Automixa is designed directly for creators and coaches—offering one-click automation wizards, a simpler creator interface, and native AI-powered content builders.",
+    metaTitle: "WhoseDM Alternative for Instagram | Automixa vs WhoseDM",
+    metaDesc: "Compare Automixa vs WhoseDM. Learn why creators and personal brands choose Automixa's simplified setups, AI reply variations, and built-in Smart Bio.",
+    features: [
+      {
+        name: "Setup Interface",
+        automixa: "One-Click Creator Presets (Launch standard goals like 'Reels Comment to DM' in 2 minutes)",
+        competitor: "Agency Dashboard (Complex configuration panel with high setup learning curve)",
+        winner: "automixa"
+      },
+      {
+        name: "Official Meta Connection",
+        automixa: "100% Meta API Compliant (Secure, official integration with no password required)",
+        competitor: "100% Meta API Compliant (Secure, official integration with no password required)",
+        winner: "tie"
+      },
+      {
+        name: "AI Reply Randomization",
+        automixa: "AI Text Changer (Automatically rephrases replies so comment logs look unique and organic)",
+        competitor: "Manual Template Entries (Requires you to manually write every reply variation yourself)",
+        winner: "automixa"
+      },
+      {
+        name: "Link Hub Integration",
+        automixa: "Smart Bio Included (Customizable creator landing page with conversion tracking)",
+        competitor: "Not Provided (Requires separate external tools to hold and trace bio links)",
+        winner: "automixa"
+      },
+      {
+        name: "Setup Time",
+        automixa: "Under 2 Minutes (Launch-ready presets for quick reels and story setup)",
+        competitor: "Moderate to High (Requires custom workflow setup and white-label configs)",
+        winner: "automixa"
+      }
+    ],
+    whySwitch: [
+      {
+        title: "Designed for Creators, Not Agencies",
+        desc: "WhoseDM is built for agency white-label clients, making the dashboard overly complex. Automixa is lightweight, focused entirely on helping creators turn Reels views into leads."
+      },
+      {
+        title: "Smart Bio Integration",
+        desc: "Automixa has a beautiful, trackable Smart Bio page built natively into your dashboard at no extra cost. WhoseDM does not provide a customizable creator landing page or link hub."
+      },
+      {
+        title: "Automatic Text Spin",
+        desc: "Avoid duplicate comment penalties from Instagram effortlessly. Automixa's built-in AI rephraser automatically spins comment replies so they never trigger duplicate text penalties."
+      }
+    ],
+    faqs: [
+      {
+        q: "How does the interface compare between Automixa and WhoseDM?",
+        a: "WhoseDM is built as a white-label dashboard for agencies, making the interface overly complex for single creators and brands. Automixa is built specifically for creators, with clean presets that let you launch campaigns in under 2 minutes."
+      },
+      {
+        q: "Does WhoseDM offer AI reply variants?",
+        a: "WhoseDM requires you to manually write separate text responses. Automixa has a built-in AI Text Changer that rephrases your replies automatically so they look natural and protect your account from spam filters."
+      },
+      {
+        q: "Are both integrations secure and Meta-compliant?",
+        a: "Yes. Both tools utilize official Meta Graph APIs for connection. Neither tool asks for your password, and both are fully compliant with Meta Developer Policies, ensuring absolute account security."
+      }
+    ]
   }
 };
+

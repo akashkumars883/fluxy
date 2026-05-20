@@ -22,7 +22,20 @@ export const metadata = {
     template: "%s | Automixa"
   },
   description: "Automate your Instagram comments and DMs with AI. Scale your growth, generate leads, and boost engagement with Automixa's smart shield technology.",
-  keywords: ["Instagram Automation", "AI DM Bot", "Auto Reply Instagram", "Instagram Lead Gen", "Creator Tools", "Social Media Marketing"],
+  keywords: [
+    "Instagram Automation", 
+    "AI DM Bot", 
+    "Auto Reply Instagram", 
+    "Instagram Lead Gen", 
+    "Creator Tools", 
+    "Social Media Marketing",
+    "Instagram automation India",
+    "Instagram DM tool India",
+    "ManyChat alternative India",
+    "ConvertDM alternative",
+    "WhoseDM alternative",
+    "UPI payment Instagram bot"
+  ],
   authors: [{ name: "Automixa Team" }],
   creator: "Automixa",
   publisher: "Automixa",

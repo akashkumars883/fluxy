@@ -4,7 +4,9 @@ export function generateStaticParams() {
   return [
     { competitor: "manychat" },
     { competitor: "chatfuel" },
-    { competitor: "instachamp" }
+    { competitor: "instachamp" },
+    { competitor: "convertdm" },
+    { competitor: "whosedm" }
   ];
 }
 
