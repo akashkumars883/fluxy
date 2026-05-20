@@ -53,9 +53,8 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
 
   if (!isOpen) return null;
 
-  const usedQuota = realtimeStats?.totalDms + realtimeStats?.autoReplies || 0;
-  const currentMaxQuota = currentPlan === "free" ? 1000 : 1000000;
-  const quotaPercent = currentPlan === "free" ? Math.min(Math.round((usedQuota / currentMaxQuota) * 100), 100) : 0;
+  const currentMaxQuota = currentPlan === "viral_scale" ? 2000000 : currentPlan === "creator_pro" ? 250000 : 25000;
+  const quotaPercent = Math.min(Math.round((usedQuota / currentMaxQuota) * 100), 100);
 
   const plans = [
     {

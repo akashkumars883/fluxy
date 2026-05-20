@@ -332,33 +332,6 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
   return (
     <div className="space-y-8 animate-in fade-in duration-500 w-full max-w-[1400px] mx-auto pb-12 relative">
       
-      {/* DEV MODE QUICK TOGGLE */}
-      <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shadow-xs">
-        <div className="flex items-center gap-2 text-amber-900 font-bold">
-          <span>🧪 Dev Preview Toggle (Simulate Vetting Status):</span>
-        </div>
-        <div className="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-amber-200">
-          <button 
-            onClick={() => updateAppStatus("unapplied")}
-            className={`px-3 py-1 rounded-lg font-bold transition-all ${appStatus === "unapplied" ? "bg-amber-500 text-white shadow-xs" : "text-zinc-600 hover:bg-zinc-100"}`}
-          >
-            Unapplied Banner
-          </button>
-          <button 
-            onClick={() => updateAppStatus("pending")}
-            className={`px-3 py-1 rounded-lg font-bold transition-all ${appStatus === "pending" ? "bg-amber-500 text-white shadow-xs" : "text-zinc-600 hover:bg-zinc-100"}`}
-          >
-            Pending Review
-          </button>
-          <button 
-            onClick={() => updateAppStatus("approved")}
-            className={`px-3 py-1 rounded-lg font-bold transition-all ${appStatus === "approved" ? "bg-emerald-600 text-white shadow-xs" : "text-zinc-600 hover:bg-zinc-100"}`}
-          >
-            Approved (Active Workspace)
-          </button>
-        </div>
-      </div>
-
 
 
       {/* STATE 1: UNAPPLIED */}

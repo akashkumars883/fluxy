@@ -54,7 +54,7 @@ export default function AudienceCRM({ accountId, history = [], currentPlan = "fr
   });
 
   const isFreePlan = currentPlan === "free";
-  const filteredAudience = displayAudience; // For export logic consistency
+  const filteredAudience = isFreePlan ? displayAudience.slice(0, 50) : displayAudience;
 
   const handleExportCSV = () => {
     if (isFreePlan) {
@@ -195,7 +195,7 @@ export default function AudienceCRM({ accountId, history = [], currentPlan = "fr
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-200/30">
-              {displayAudience.map((usr) => (
+              {filteredAudience.map((usr) => (
                 <tr key={usr.id} className="hover:bg-white/60 transition-all group">
                   <td className="py-4 pl-4">
                     <div className="flex items-center gap-3">
@@ -253,7 +253,7 @@ export default function AudienceCRM({ accountId, history = [], currentPlan = "fr
 
           {/* Mobile Card List View */}
           <div className="md:hidden flex flex-col gap-4">
-            {displayAudience.map((usr) => (
+            {filteredAudience.map((usr) => (
               <div 
                 key={usr.id} 
                 className="bg-white border border-zinc-200 rounded-xl p-5 space-y-4 hover:border-[#6366F1]/40 transition-all"
@@ -306,7 +306,7 @@ export default function AudienceCRM({ accountId, history = [], currentPlan = "fr
             ))}
           </div>
 
-          {displayAudience.length === 0 && (
+          {filteredAudience.length === 0 && (
             <div className="py-12 text-center text-zinc-500 text-xs font-semibold">
               No Instagram users found matching your search or filter tags.
             </div>

@@ -17,7 +17,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   } = useDashboard();
 
   const usedQuota = realtimeStats?.totalDms + realtimeStats?.autoReplies || 0;
-  const maxQuota = currentPlan === "viral_scale" ? 100000 : currentPlan === "creator_pro" ? 25000 : 1000;
+  const maxQuota = currentPlan === "viral_scale" ? 2000000 : currentPlan === "creator_pro" ? 250000 : 25000;
   const quotaPercent = Math.min((usedQuota / maxQuota) * 100, 100);
   const [emailAlerts, setEmailAlerts] = useState(true);
   const [weeklyReport, setWeeklyReport] = useState(true);

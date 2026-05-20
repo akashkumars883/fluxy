@@ -472,6 +472,22 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
                     />
                   </div>
                 </div>
+
+                <div className="pt-2">
+                  <div className="flex items-center justify-between p-4 bg-zinc-50/50 rounded-xl border border-zinc-100/80 group">
+                    <div className="flex flex-col text-left">
+                      <span className="text-xs font-bold text-zinc-800">24-Hour Cooldown (Anti-Spam)</span>
+                      <span className="text-[10px] font-medium text-zinc-400 mt-0.5">Only send one automated response per user every 24 hours.</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => onChange({ cooldownGate: !values.cooldownGate })}
+                      className={`w-12 h-6 rounded-full relative transition-all duration-300 ${values.cooldownGate ? 'bg-[#6366F1] shadow-[0_0_12px_rgba(99,102,241,0.4)]' : 'bg-zinc-200'} cursor-pointer shrink-0`}
+                    >
+                      <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${values.cooldownGate ? 'left-7' : 'left-1'}`} />
+                    </button>
+                  </div>
+                </div>
               </div>
 
               <div className="flex justify-end items-center pt-4">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, MousePointer2, ShieldCheck, Globe, Save, Sparkles, Wand2, Rocket, ArrowRight, ArrowLeft } from "lucide-react";
+import { X, MousePointer2, ShieldCheck, Globe, Save, Sparkles, Wand2, Rocket, ArrowRight, ArrowLeft, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
@@ -9,6 +9,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
   const [response, setResponse] = useState("");
   const [type, setType] = useState("DM");
   const [followerGate, setFollowerGate] = useState(false);
+  const [cooldownGate, setCooldownGate] = useState(false);
   const [publicReply, setPublicReply] = useState("");
   const [buttonText, setButtonText] = useState("");
   const [buttonLink, setButtonLink] = useState("");
@@ -26,6 +27,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
         }
         setType(initialType);
         setFollowerGate(trigger.metadata?.follower_gate || false);
+        setCooldownGate(trigger.metadata?.cooldown_gate || false);
         setPublicReply(trigger.variants?.public?.[0] || "");
         setButtonText(trigger.metadata?.button_text || "");
         setButtonLink(trigger.metadata?.button_link || "");
@@ -49,6 +51,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
       type: finalType,
       metadata: {
         follower_gate: followerGate,
+        cooldown_gate: cooldownGate,
         button_text: buttonLink ? (buttonText || "Get Access") : null,
         button_link: buttonLink,
         campaign_name: campaignName || null
@@ -158,6 +161,26 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
                         <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${followerGate ? 'left-7' : 'left-1'}`} />
                       </button>
                     </div>
+
+                    {type === "STORY" && (
+                      <div className="flex items-center justify-between p-4 bg-zinc-50 rounded-3xl border border-zinc-100 mt-3 animate-in fade-in slide-in-from-top-2">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-2xl bg-white border border-zinc-100 flex items-center justify-center text-zinc-400 shadow-sm">
+                            <Clock size={18} />
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-zinc-950">24-Hour Cooldown</p>
+                            <p className="text-[10px] text-zinc-500 font-normal lowercase">only reply once every 24h per user</p>
+                          </div>
+                        </div>
+                        <button 
+                          onClick={() => setCooldownGate(!cooldownGate)}
+                          className={`w-12 h-6 rounded-full transition-all relative ${cooldownGate ? 'bg-[#6366F1]' : 'bg-zinc-200'}`}
+                        >
+                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${cooldownGate ? 'left-7' : 'left-1'}`} />
+                        </button>
+                      </div>
+                    )}
                   </motion.div>
                 ) : (
                   <motion.div 

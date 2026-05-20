@@ -71,6 +71,8 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     const automation = automationRows[0];
     if (!automation.is_active) return { success: false };
 
+    let userPlan = "free";
+
     // --- PLAN QUOTA LIMITS ENFORCEMENT & WARNING EMAIL ALERTS ---
     try {
       const { count: consumedCount } = await supabaseAdmin
@@ -81,18 +83,18 @@ export async function processAutomation(senderId, text, type, recipientId, comme
 
       const { data: subData } = await supabaseAdmin
         .from("subscriptions")
-        .select("plan")
+        .select("plan_id, plan")
         .eq("user_id", automation.user_id)
         .eq("status", "active")
         .limit(1);
 
-      const userPlan = subData?.[0]?.plan || "free";
+      userPlan = subData?.[0]?.plan_id || subData?.[0]?.plan || "free";
       const planLimits = {
-        free: 1000,
-        creator_pro: 100000,
-        agency_scale: 1000000
+        free: 25000,
+        creator_pro: 250000,
+        viral_scale: 2000000
       };
-      const maxReplies = planLimits[userPlan] || 1000;
+      const maxReplies = planLimits[userPlan] || 25000;
 
       if ((consumedCount || 0) >= maxReplies) {
         console.log(`🚫 [PLAN LIMIT EXCEEDED] Quota limit of ${maxReplies} hit for user ID: ${automation.user_id}. Auto-reply blocked.`);
@@ -131,6 +133,27 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       }
     } catch (limitCheckErr) {
       console.error("⚠️ [LIMIT CHECK FAILED] Skipping limits guard to avoid user block:", limitCheckErr.message);
+    }
+
+    // --- PLAN FEATURE RESTRICTIONS: STORY MENTIONS (Premium Only) ---
+    if (type && type.startsWith("STORY") && userPlan === "free") {
+      console.log(`🚫 [PLAN RESTRICTION] Story Trigger type ${type} blocked for Free Plan user ID: ${automation.user_id}`);
+      
+      try {
+        await supabaseAdmin.from("automation_history").insert({
+          automation_id: automation.id,
+          sender_id: senderId,
+          sender_name: senderUsername || "Plan Check",
+          type: type,
+          keyword: "STORY_TRIGGER_BLOCKED",
+          status: "LIMIT_EXCEEDED",
+          metadata: { error: "Story mention responder is a Premium feature. Please upgrade to Creator Pro.", plan: userPlan }
+        });
+      } catch (e) {
+        console.error("❌ Failed logging story plan restriction:", e.message);
+      }
+
+      return { success: false, reason: "premium_feature_story_mentions" };
     }
 
     const pageAccessToken = decryptToken(automation.access_token);
@@ -248,6 +271,39 @@ export async function processAutomation(senderId, text, type, recipientId, comme
 
     if (!match) return { success: false, reason: "no_trigger_match" };
 
+    // --- STORY/CAMPAIGN COOLDOWN CHECK (24-Hour Cooldown) ---
+    if (match.metadata?.cooldown_gate === true) {
+      try {
+        const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        const { count: recentHistoryCount } = await supabaseAdmin
+          .from("automation_history")
+          .select("id", { count: "exact", head: true })
+          .eq("automation_id", automation.id)
+          .eq("sender_id", senderId)
+          .eq("keyword", match.keyword)
+          .eq("status", "SUCCESS")
+          .gt("created_at", oneDayAgo);
+
+        if (recentHistoryCount && recentHistoryCount > 0) {
+          console.log(`⏳ [COOLDOWN GATE] Blocked trigger for sender ${senderId} - Cooldown active (last message sent within 24h).`);
+          
+          await supabaseAdmin.from("automation_history").insert({
+            automation_id: automation.id,
+            sender_id: senderId,
+            sender_name: userName || "cooldown_gate",
+            type: type,
+            keyword: match.keyword,
+            status: "COOLDOWN_ACTIVE",
+            metadata: { error: "User is in 24-hour cooldown period.", limit: "1 reply/24 hours" }
+          }).catch((e) => console.error("❌ Failed logging cooldown block:", e.message));
+
+          return { success: false, reason: "cooldown_active" };
+        }
+      } catch (cooldownCheckErr) {
+        console.error("⚠️ [COOLDOWN CHECK FAILED] Skipping cooldown check to avoid user block:", cooldownCheckErr.message);
+      }
+    }
+
     // --- PHASE 1: INITIAL COMMENT ENTRY (Premium Card Style) ---
     if (type === "COMMENT" && commentId && !payload) {
       console.log(`🏃 Phase 1: Handling Comment from ${userName}`);
@@ -293,8 +349,14 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       };
       await MetaService.sendPrivateReply(commentId, introCardPayload, pageAccessToken);
 
-      // B. Public Comment Reply with Delay (7-10s)
-      await delay(Math.floor(Math.random() * 3000) + 7000);
+      // B. Public Comment Reply with Delay (7-10s for Premium, 1s for Free)
+      if (userPlan !== "free") {
+        console.log(`⏱️ Premium Plan: Applying randomized AI Human Mimicry Delay (7-10s)`);
+        await delay(Math.floor(Math.random() * 3000) + 7000);
+      } else {
+        console.log(`⏱️ Free Plan: Bypassing AI Human Mimicry Delay (Applying short 1s delay)`);
+        await delay(1000);
+      }
       const publicOptions = match.variants?.public || [];
       const rawPublic = publicOptions.length > 0 ? getRandom(publicOptions) : "Check your DM for the link! 🚀";
       const chosenPublic = SmartGuard.applyCommentSpintax(rawPublic);
