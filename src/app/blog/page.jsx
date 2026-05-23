@@ -171,7 +171,7 @@ export default function BlogPage() {
   };
 
   return (
-    <main className="min-h-screen text-foreground overflow-x-clip relative font-sans pt-32 pb-24 selection:bg-sage/20">
+    <main className="min-h-screen text-foreground overflow-x-clip relative font-sans pt-24 pb-16 selection:bg-sage/20">
       
       {/* Background ambient glowing orbs */}
       <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none" />
@@ -922,6 +922,8 @@ export default function BlogPage() {
         
         .blog-content-container span, 
         .blog-content-container p, 
+        .blog-content-container strong,
+        .blog-content-container b,
         .blog-content-container h1, 
         .blog-content-container h2, 
         .blog-content-container h3, 
