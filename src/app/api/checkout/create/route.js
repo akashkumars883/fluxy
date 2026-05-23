@@ -20,6 +20,8 @@ export async function POST(req) {
   try {
     const body = await req.json().catch(() => ({}));
     const { planId, isAnnual, promoCode, ref } = body;
+    const reqUrl = new URL(req.url);
+    const isDevHost = ["localhost", "127.0.0.1"].includes(reqUrl.hostname);
 
     if (!planId || !PLAN_PRICES[planId]) {
       return NextResponse.json({ error: "Invalid or missing planId" }, { status: 400 });
@@ -100,21 +102,26 @@ export async function POST(req) {
     const amountInPaise = finalPrice * 100; // Razorpay expects amount in paise
 
     // 4. Initialize Razorpay and Create Order
-    const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_placeholderKey";
-    const keySecret = process.env.RAZORPAY_KEY_SECRET || "secret_placeholderSecret";
+    const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID?.trim();
+    const keySecret = process.env.RAZORPAY_KEY_SECRET?.trim();
 
-    // Determine if we should run in simulated sandbox mode
-    const isPlaceholder = keyId.includes("placeholder") || keySecret.includes("placeholder");
+    const missingKeys = !keyId || !keySecret;
 
-    if (isPlaceholder) {
-      console.log("Razorpay Sandbox Mode: Placeholder keys detected. Returning simulated order.");
+    if (missingKeys) {
+      if (!isDevHost) {
+        return NextResponse.json(
+          { error: "Razorpay keys are not configured (NEXT_PUBLIC_RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET)" },
+          { status: 500 }
+        );
+      }
+      console.log("Razorpay Dev Sandbox Mode: Missing keys on localhost. Returning simulated order.");
       return NextResponse.json({
         success: true,
         isSimulated: true,
         orderId: `order_sim_${Math.random().toString(36).substring(2, 10)}`,
         amount: amountInPaise,
         currency: "INR",
-        keyId,
+        keyId: keyId || "",
         userName: currentUser.user_metadata?.full_name || "Automixa User",
         userEmail: currentUser.email || "",
         planId,
@@ -151,7 +158,7 @@ export async function POST(req) {
         orderId: order.id,
         amount: order.amount,
         currency: order.currency,
-        keyId,
+        keyId: keyId || "",
         userName: currentUser.user_metadata?.full_name || "Automixa User",
         userEmail: currentUser.email || "",
         planId,
@@ -161,23 +168,11 @@ export async function POST(req) {
       });
 
     } catch (razorpayErr) {
-      console.warn("Razorpay API creation failed, falling back to Sandbox simulation:", razorpayErr.message);
-      
-      // Graceful fallback to simulated transaction on error
-      return NextResponse.json({
-        success: true,
-        isSimulated: true,
-        orderId: `order_sim_${Math.random().toString(36).substring(2, 10)}`,
-        amount: amountInPaise,
-        currency: "INR",
-        keyId,
-        userName: currentUser.user_metadata?.full_name || "Automixa User",
-        userEmail: currentUser.email || "",
-        planId,
-        isAnnual: !!isAnnual,
-        promoCode: promoCode || null,
-        partnerId
-      });
+      console.warn("Razorpay API creation failed:", razorpayErr.message);
+      return NextResponse.json(
+        { error: "Failed to create Razorpay order" },
+        { status: 502 }
+      );
     }
 
   } catch (error) {

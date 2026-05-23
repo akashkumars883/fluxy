@@ -1,0 +1,3 @@
+module.exports=[2022,a=>{"use strict";var b=a.i(87924);a.s(["default",0,function({title:a,subtitle:c="",lastUpdated:d="April 21, 2026",children:e}){return(0,b.jsx)("main",{className:"flex-1 pt-40 pb-20 px-6",children:(0,b.jsxs)("div",{className:"max-w-3xl mx-auto",children:[(0,b.jsx)("h1",{className:"text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-normal",children:a}),(0,b.jsx)("p",{className:"text-zinc-500 text-sm font-normal tracking-normal mb-12",children:c||`Effective Date: ${d}`}),(0,b.jsx)("div",{className:"prose prose-zinc max-w-none space-y-10 text-zinc-600 font-normal tracking-normal leading-relaxed",children:e})]})})}])}];
+
+//# sourceMappingURL=src_components_marketing_LegalLayout_jsx_05x8t_x._.js.map

@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "next build",
-    "start": "next start",
+    "build": "node scripts/next-build.mjs",
+    "start": "node scripts/next-start.mjs",
     "test": "node tests/run.mjs",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@react-three/fiber": "^9.6.1",
