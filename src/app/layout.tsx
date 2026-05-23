@@ -81,10 +81,7 @@ export async function generateMetadata(): Promise<Metadata> {
         },
       ],
     },
-    icons: {
-      icon: "/logo.png",
-      apple: "/logo.png",
-    },
+
     twitter: {
       card: "summary_large_image",
       title: siteTitle,
@@ -104,9 +101,9 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     icons: {
-      icon: "/favicon.ico",
-      shortcut: "/favicon.ico",
-      apple: "/icon.png",
+      icon: "/logo.png",
+      shortcut: "/logo.png",
+      apple: "/logo.png",
     },
     appleWebApp: {
       capable: true,
