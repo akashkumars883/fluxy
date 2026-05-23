@@ -77,9 +77,13 @@ export async function generateMetadata(): Promise<Metadata> {
           url: ogImage,
           width: 1200,
           height: 630,
-          alt: "Automixa - Instagram AI Automation",
+          alt: "Automixa Preview Image",
         },
       ],
+    },
+    icons: {
+      icon: "/logo.png",
+      apple: "/logo.png",
     },
     twitter: {
       card: "summary_large_image",
