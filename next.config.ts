@@ -3,6 +3,11 @@ import fs from "node:fs";
 import path from "node:path";
 
 function readDistDir() {
+  // Always use standard .next directory on Vercel
+  if (process.env.VERCEL) {
+    return ".next";
+  }
+  
   try {
     const p = path.join(process.cwd(), ".next-distdir");
     const v = fs.readFileSync(p, "utf8").trim();
