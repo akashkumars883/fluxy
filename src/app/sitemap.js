@@ -1,7 +1,23 @@
-export default function sitemap() {
+import { createClient } from "@/lib/supabase";
+
+export default async function sitemap() {
   const baseUrl = "https://automixa.in";
 
-  return [
+  // Fetch blogs dynamically
+  const supabase = createClient();
+  const { data: blogs } = await supabase
+    .from("blogs")
+    .select("id, slug, created_at")
+    .order("created_at", { ascending: false });
+
+  const blogEntries = (blogs || []).map((blog) => ({
+    url: `${baseUrl}/blog/${blog.slug || blog.id}`,
+    lastModified: new Date(blog.created_at || Date.now()),
+    changeFrequency: 'weekly',
+    priority: 0.8,
+  }));
+
+  const staticEntries = [
     {
       url: baseUrl,
       lastModified: new Date(),
@@ -99,12 +115,6 @@ export default function sitemap() {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/sitemap`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.2,
-    },
-    {
       url: `${baseUrl}/privacy`,
       lastModified: new Date(),
       changeFrequency: 'yearly',
@@ -117,4 +127,6 @@ export default function sitemap() {
       priority: 0.3,
     },
   ];
+
+  return [...staticEntries, ...blogEntries];
 }
