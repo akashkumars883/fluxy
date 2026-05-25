@@ -192,7 +192,7 @@ export default function BlogPage() {
         <div className="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
           
           <AnimatePresence mode="wait">
-            {!selectedPost ? (
+            {!selectedPost && (
               // ----------------------------------------------------
               // BLOG DIRECTORY VIEW
               // ----------------------------------------------------
@@ -247,14 +247,12 @@ export default function BlogPage() {
                       className="mb-20"
                     >
                     <Link 
-                      href={`/blog?post=${featuredPost.id}`}
-                      onClick={(e) => { e.preventDefault(); handleSelectPost(featuredPost); }}
-                      className="group block bg-white/40 backdrop-blur-xl border border-white/60 hover:border-white rounded-[32px] p-6 md:p-8 lg:p-10 shadow-xl shadow-zinc-100/40 hover:shadow-2xl hover:shadow-zinc-200/40 transition-all duration-500 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative overflow-hidden"
+                      href={`/blog/${featuredPost.id}`}
+                      className="group block bg-white/40 backdrop-blur-xl border border-white/60 hover:border-[#6366F1]/50 rounded-[32px] p-6 md:p-8 lg:p-10 shadow-xl shadow-zinc-100/40 hover:shadow-2xl hover:shadow-[#6366F1]/20 hover:-translate-y-2 transition-all duration-500 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative overflow-hidden"
                     >
                       {/* Interactive glow overlay */}
-                      <div className="absolute top-1/2 left-0 w-80 h-80 bg-indigo-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -translate-y-1/2" />
-                      
-                      {/* Left: Image (lg:col-span-7) */}
+                      <div className="absolute top-1/2 left-0 w-80 h-80 bg-[#6366F1]/15 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -translate-y-1/2" />
+                      <div className="absolute bottom-0 right-0 w-80 h-80 bg-pink-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                       <div className="lg:col-span-7 rounded-[24px] overflow-hidden aspect-[16/10] md:aspect-[16/9] relative shadow-md">
                         <img 
                           src={featuredPost.image} 
@@ -393,14 +391,13 @@ export default function BlogPage() {
                             className="h-full"
                           >
                             <Link
-                              href={`/blog?post=${post.id}`}
-                              onClick={(e) => { e.preventDefault(); handleSelectPost(post); }}
-                              className="group block bg-white/40 backdrop-blur-xl border border-white/60 hover:border-white rounded-[32px] p-5 shadow-lg shadow-zinc-100/40 hover:shadow-2xl hover:shadow-zinc-200/40 transition-all duration-500 flex flex-col justify-between overflow-hidden relative h-full"
+                              href={`/blog/${post.id}`}
+                              className="group block bg-white/40 backdrop-blur-xl border border-white/60 hover:border-[#6366F1]/40 rounded-[32px] p-5 shadow-lg shadow-zinc-100/40 hover:shadow-2xl hover:shadow-[#6366F1]/10 hover:-translate-y-2 transition-all duration-500 flex flex-col justify-between overflow-hidden relative h-full"
                             >
                               {/* Inner soft card glow */}
-                              <div className="absolute top-1/3 left-0 w-48 h-48 bg-indigo-500/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -translate-y-1/2" />
+                              <div className="absolute top-1/3 left-0 w-48 h-48 bg-[#6366F1]/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -translate-y-1/2" />
                               
-                              <div>
+                              <div className="space-y-4 relative z-10">
                                 {/* Card Image Cover */}
                                 <div className="rounded-[22px] overflow-hidden aspect-[16/10] relative mb-5 shadow-sm">
                                   <img 
@@ -620,202 +617,7 @@ export default function BlogPage() {
                   />
                 </div>
               </motion.div>
-            ) : (
-              // ----------------------------------------------------
-              // SINGLE ARTICLE DETAIL VIEW
-              // ----------------------------------------------------
-              <motion.article
-                key="detail-view"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="max-w-7xl mx-auto w-full"
-              >
-                {/* Back Button */}
-                <Link
-                  href="/blog"
-                  onClick={(e) => { e.preventDefault(); handleBackToList(); }}
-                  className="group inline-flex items-center gap-2.5 text-xs sm:text-sm font-bold text-zinc-500 hover:text-foreground transition-colors cursor-pointer mb-8 bg-white/50 backdrop-blur-md px-4.5 py-2.5 rounded-full border border-zinc-200/40 shadow-sm hover:shadow"
-                >
-                  <ArrowLeft size={16} className="transition-transform duration-300 group-hover:-translate-x-1" />
-                  Back to All Articles
-                </Link>
-
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 xl:gap-16 items-start">
-                  
-                  {/* LEFT COLUMN: Main Article */}
-                  <div className="lg:col-span-8 min-w-0 break-words">
-                    {/* Article Top Meta */}
-                    <div className="space-y-6 mb-8">
-                      <span className="text-xs font-bold text-[#6366F1] uppercase tracking-wider bg-[#6366F1]/5 px-3.5 py-1.5 rounded-md inline-block">
-                        {selectedPost.category}
-                      </span>
-                      
-                      <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-zinc-800 leading-tight">
-                        {selectedPost.title}
-                      </h1>
-
-                      {/* Writer Profile & Stats */}
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-y border-zinc-200/50 py-5">
-                        <div className="flex items-center gap-3">
-                          <img 
-                            src={selectedPost.authorAvatar} 
-                            alt={selectedPost.author}
-                            className="w-12 h-12 rounded-full object-cover border border-zinc-200"
-                          />
-                          <div>
-                            <p className="text-sm font-extrabold text-zinc-800">{selectedPost.author}</p>
-                            <p className="text-xs text-zinc-400 font-medium">{selectedPost.authorRole}</p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-5 text-xs sm:text-sm text-zinc-500 font-medium">
-                          <div className="flex items-center gap-1.5">
-                            <Calendar size={14} className="text-zinc-400" />
-                            <span>{selectedPost.date}</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <Clock size={14} className="text-zinc-400" />
-                            <span>{selectedPost.readTime}</span>
-                          </div>
-                          
-                          {/* Copy Link button */}
-                          <button 
-                            onClick={() => copyPostUrl(selectedPost.id)}
-                            className="p-2 border border-zinc-200 hover:border-zinc-300 rounded-full bg-white text-zinc-500 hover:text-[#6366F1] transition-all cursor-pointer shadow-sm relative group/share"
-                            title="Copy article link"
-                          >
-                            {copiedLink ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
-                            <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-zinc-800 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover/share:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                              {copiedLink ? "Link Copied!" : "Copy Link"}
-                            </span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Article Big Banner Cover */}
-                    <div className="rounded-[32px] overflow-hidden aspect-[16/9] shadow-xl border border-zinc-100 mb-12">
-                      <img 
-                        src={selectedPost.image} 
-                        alt={selectedPost.title} 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-
-                    {/* Premium Typographic Article Content */}
-                    <div 
-                      className="prose prose-zinc prose-lg max-w-none text-zinc-600 leading-relaxed font-normal space-y-6 px-1"
-                      style={{
-                        fontSize: "1.05rem",
-                        fontFamily: "var(--font-outfit), sans-serif",
-                      }}
-                    >
-                      <div 
-                        dangerouslySetInnerHTML={{ __html: selectedPost.content }} 
-                        className="blog-content-container"
-                      />
-                    </div>
-
-                    {/* Article Share Footer Banner */}
-                    <div className="border-t border-zinc-200/50 pt-10 mt-16 flex flex-col sm:flex-row items-center justify-between gap-6">
-                      <div className="space-y-1 text-center sm:text-left">
-                        <h4 className="text-sm font-bold text-zinc-800">Did you find this strategy helpful?</h4>
-                        <p className="text-xs text-zinc-400">Share this article with your community of creators and marketers.</p>
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
-                        <button 
-                          onClick={() => {
-                            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(selectedPost.title)}&url=${encodeURIComponent(window.location.origin + '/blog?post=' + selectedPost.id)}`, '_blank');
-                          }}
-                          className="px-4.5 py-2.5 border border-zinc-200 hover:border-[#6366F1] bg-white hover:bg-[#6366F1]/5 text-zinc-600 hover:text-[#6366F1] font-bold rounded-full transition-all text-xs flex items-center gap-2 cursor-pointer shadow-sm"
-                        >
-                          <Share2 size={13} />
-                          Share on Twitter
-                        </button>
-                        <button 
-                          onClick={() => copyPostUrl(selectedPost.id)}
-                          className="px-4.5 py-2.5 bg-foreground hover:bg-zinc-800 text-background font-bold rounded-full transition-all text-xs flex items-center gap-2 cursor-pointer shadow-sm"
-                        >
-                          {copiedLink ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
-                          {copiedLink ? "Link Copied!" : "Copy Article Link"}
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Related Articles Showcase */}
-                    <div className="border-t border-zinc-200/50 pt-16 mt-16 pb-8">
-                      <h3 className="text-xl sm:text-2xl font-bold text-zinc-800 tracking-tight mb-8">
-                        Related Articles
-                      </h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {blogPosts
-                          .filter(post => post.id !== selectedPost.id)
-                          .slice(0, 3)
-                          .map(post => (
-                            <Link 
-                              key={post.id}
-                              href={`/blog?post=${post.id}`}
-                              onClick={(e) => { e.preventDefault(); handleSelectPost(post); }}
-                              className="group block bg-white/40 backdrop-blur-xl border border-white/60 hover:border-white rounded-[24px] p-4 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col justify-between"
-                            >
-                              <div className="space-y-3">
-                                <div className="rounded-[16px] overflow-hidden aspect-[16/10] relative mb-3">
-                                  <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
-                                </div>
-                                <span className="text-[9px] font-extrabold uppercase tracking-wider text-[#6366F1]">{post.category}</span>
-                                <h4 className="text-sm font-bold text-zinc-800 leading-snug group-hover:text-[#6366F1] transition-colors duration-300 line-clamp-2">
-                                  {post.title}
-                                </h4>
-                              </div>
-                              
-                              <div className="pt-3 border-t border-zinc-100/60 mt-3 flex items-center justify-between">
-                                <span className="text-[10px] text-zinc-400">{post.date}</span>
-                                <div className="w-6 h-6 rounded-full border border-zinc-200 bg-white group-hover:bg-[#6366F1] text-zinc-400 group-hover:text-white flex items-center justify-center transition-all duration-300 shrink-0">
-                                  <ArrowRight size={10} className="group-hover:-rotate-45 transition-transform duration-300" />
-                                </div>
-                              </div>
-                            </Link>
-                          ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* RIGHT COLUMN: Sticky Sidebar */}
-                  <div className="lg:col-span-4 lg:sticky lg:top-32 space-y-8 h-fit mt-12 lg:mt-0 pb-10">
-
-                    {/* Dark Premium CTA */}
-                    <div className="bg-gradient-to-br from-[#0c0c14] via-[#05050a] to-[#010103] rounded-[24px] p-6 border border-white/[0.06] shadow-2xl relative overflow-hidden text-center group/cta">
-                      {/* Inner ambient glows */}
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-[#6366F1]/10 rounded-full blur-3xl pointer-events-none transition-transform duration-700 group-hover/cta:scale-150" />
-                      <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
-                      
-                      {/* Content */}
-                      <div className="relative z-10 flex flex-col items-center">
-                        <div className="w-12 h-12 bg-white/[0.05] border border-white/[0.1] rounded-2xl flex items-center justify-center mb-4 shadow-inner">
-                          <Send size={20} className="text-[#6366F1] -ml-1 mt-0.5" />
-                        </div>
-                        <h4 className="text-xl font-bold text-white mb-2 leading-tight">
-                          Automate Your <br /> Instagram DMs.
-                        </h4>
-                        <p className="text-xs text-zinc-400 leading-relaxed mb-6 px-2">
-                          Stop replying manually. Turn your followers into paying customers while you sleep.
-                        </p>
-                        <Link 
-                          href="/login" 
-                          className="w-full py-3.5 bg-white text-zinc-950 font-bold rounded-full hover:scale-[1.03] active:scale-[0.98] transition-all text-xs flex items-center justify-center gap-2 shadow-xl shadow-white/10"
-                        >
-                          Start Free Trial
-                          <ArrowRight size={14} className="text-zinc-600" />
-                        </Link>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              </motion.article>
+            
             )}
           </AnimatePresence>
           

@@ -115,8 +115,8 @@ export default function PublicNavigation() {
         <div className="max-w-8xl mx-auto px-6 md:px-10 flex items-center justify-between">
 
           {/* Left Side: Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <img src="/logo.png" alt="Automixa Logo" className="w-10 h-10 object-contain" />
+          <Link href="/" className="flex items-center gap-1.5 group">
+            <img src="/logo.png" alt="Automixa Logo" className="w-14 h-14 object-contain" />
             <span className="text-xl font-semibold tracking-normal text-foreground">automixa</span>
           </Link>
 
