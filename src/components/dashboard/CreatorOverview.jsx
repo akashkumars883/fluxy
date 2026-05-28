@@ -8,28 +8,15 @@ import {
   Cpu, 
   Plus, 
   Activity, 
-  BarChart3, 
-  ArrowUpRight,
+  ArrowRight,
   Sparkles,
   Link2,
-  Calendar,
-  Layers,
-  ShieldCheck,
-  Gauge,
-  Clock,
-  Users,
-  Flame,
-  ArrowRight,
   X,
   ShieldAlert
 } from "lucide-react";
 
-import { createClient } from "@/lib/supabase";
-
 export default function CreatorOverview({ stats = {}, history = [], topTriggers = [], automationId, hideHeader = false, onSimulateLocal, isActive = true, onViewAudience, onCreateAutoReply }) {
   const [isSyncing, setIsSyncing] = useState(false);
-  const [hoveredDay, setHoveredDay] = useState(null);
-  const [isHumanMimicEnabled, setIsHumanMimicEnabled] = useState(true);
   const [syncReport, setSyncReport] = useState(null);
   const [mounted, setMounted] = useState(false);
 
@@ -106,7 +93,6 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
     totalDms = 0,
     autoReplies = 0,
     engagementRate = "0%",
-    followerGrowth = 0,
   } = stats;
 
   const currentDate = new Date().toLocaleDateString('en-US', {
