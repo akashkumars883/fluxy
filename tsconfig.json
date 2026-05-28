@@ -42,7 +42,11 @@
     ".next-build-2026-05-23T12-07-47-356Z/types/**/*.ts",
     ".next-build-2026-05-23T12-07-47-356Z/dev/types/**/*.ts",
     ".next-build-2026-05-23T12-08-38-374Z/types/**/*.ts",
-    ".next-build-2026-05-23T12-08-38-374Z/dev/types/**/*.ts"
+    ".next-build-2026-05-23T12-08-38-374Z/dev/types/**/*.ts",
+    ".next-build-2026-05-26T05-08-26-634Z/types/**/*.ts",
+    ".next-build-2026-05-26T05-08-26-634Z/dev/types/**/*.ts",
+    ".next-build-2026-05-28T06-37-01-659Z/types/**/*.ts",
+    ".next-build-2026-05-28T06-37-01-659Z/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

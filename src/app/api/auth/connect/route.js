@@ -35,20 +35,22 @@ export async function GET(request) {
   // Pass role in state to retrieve it in the callback
   const state = JSON.stringify({ persona: role, provider: "instagram" });
   
-  const instagramScopes = [
-    "instagram_business_basic",
-    "instagram_business_manage_comments",
-    "instagram_business_manage_messages"
+  const facebookScopes = [
+    "instagram_basic",
+    "instagram_manage_comments",
+    "instagram_manage_messages",
+    "pages_show_list",
+    "pages_read_engagement",
+    "pages_manage_metadata",
+    "public_profile"
   ].join(",");
 
   const authUrl =
-    `https://www.instagram.com/oauth/authorize?client_id=${appId}` +
+    `https://www.facebook.com/v21.0/dialog/oauth?client_id=${appId}` +
     `&redirect_uri=${encodeURIComponent(redirectUri)}` +
     `&state=${encodeURIComponent(state)}` +
-    `&scope=${encodeURIComponent(instagramScopes)}` +
-    `&response_type=code` +
-    `&enable_fb_login=0` +
-    `&force_authentication=1`;
+    `&scope=${encodeURIComponent(facebookScopes)}` +
+    `&response_type=code`;
 
   return NextResponse.redirect(authUrl);
 }

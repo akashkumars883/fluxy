@@ -39,15 +39,15 @@ export async function GET(request) {
       ? `${origin}/api/auth/callback/facebook`
       : "https://www.automixa.in/api/auth/callback/facebook";
 
-    // 2. Exchange Instagram Login for Business code for a short-lived token
-    const tokenResult = await MetaService.exchangeInstagramCodeForToken(code, redirectUri);
+    // 2. Exchange code for short-lived user token (Facebook Flow)
+    const tokenResult = await MetaService.exchangeCodeForToken(code, redirectUri);
     if (!tokenResult.success) throw new Error(tokenResult.error);
 
-    // 3. Convert to Long-Lived Instagram Token (60 days)
-    const longLivedResult = await MetaService.getLongLivedInstagramToken(tokenResult.accessToken);
+    // 3. Convert to Long-Lived User Token
+    const longLivedResult = await MetaService.getLongLivedToken(tokenResult.accessToken);
     if (!longLivedResult.success) throw new Error(longLivedResult.error);
 
-    const instagramToken = longLivedResult.accessToken;
+    const userToken = longLivedResult.accessToken;
 
     // 1b. Parse persona from state
     let persona = 'business';
@@ -61,28 +61,39 @@ export async function GET(request) {
       }
     }
 
-    // 4. Fetch the connected Instagram Business/Creator account
-    const profileResult = await MetaService.getInstagramProfile(instagramToken);
-    if (!profileResult.success) throw new Error(profileResult.error);
+    // 4. Fetch Instagram Accounts connected to the user's Facebook Pages
+    const accountsResult = await MetaService.getInstagramAccounts(userToken);
+    if (!accountsResult.success) throw new Error(accountsResult.error);
 
-    const profile = profileResult.data;
-    const instagramId = String(profile.user_id || profile.id || tokenResult.userId);
-    if (!instagramId || instagramId === "undefined") {
+    if (!accountsResult.accounts || accountsResult.accounts.length === 0) {
+      throw new Error("No connected Instagram Business accounts found on your Facebook Pages.");
+    }
+
+    // We take the first connected Instagram account
+    const account = accountsResult.accounts[0];
+    const { page_id: pageId, page_name: pageName, page_token: pageToken, instagram_business_id: instagramId } = account;
+
+    if (!instagramId) {
       throw new Error("Instagram profile did not return a connected account ID");
     }
-    const username = profile.username || `instagram_${instagramId}`;
-    const accountType = profile.account_type || "BUSINESS";
 
-    // 4b. Subscribe the Instagram account to the webhook app
-    console.log(`Subscribing Instagram Business ID: ${instagramId} to Webhooks...`);
-    const subscriptionResult = await MetaService.subscribeAccount(instagramToken);
+    // 5. Fetch IG profile details using the business ID and page token
+    const profileResult = await MetaService.getInstagramBusinessProfile(instagramId, pageToken);
+    if (!profileResult.success) throw new Error(profileResult.error);
+    const profile = profileResult.data;
+    const username = profile.username || `instagram_${instagramId}`;
+    const accountType = "BUSINESS";
+
+    // 6. Subscribe the Facebook Page to Webhooks
+    console.log(`Subscribing Facebook Page ID: ${pageId} to Webhooks...`);
+    const subscriptionResult = await MetaService.subscribePageToWebhooks(pageId, pageToken);
     if (!subscriptionResult.success) {
       console.warn(`⚠️ Webhook Subscription Warning for ${username}:`, subscriptionResult.error);
     } else {
       console.log(`✅ Webhook Subscription Successful for ${username} (${instagramId})`);
     }
 
-    const encryptedToken = encryptToken(instagramToken);
+    const encryptedToken = encryptToken(pageToken);
 
     const { data: savedAutomation, error: upsertError } = await supabase
       .from('automations')
@@ -95,12 +106,13 @@ export async function GET(request) {
         is_active: true,
         persona,
         metadata: {
-          auth_provider: "instagram_login_for_business",
+          auth_provider: "facebook_login",
           username,
           account_type: accountType,
           profile_picture_url: profile.profile_picture_url || null,
-          permissions: tokenResult.permissions || [],
-          token_expires_in: longLivedResult.expiresIn || null,
+          token_expires_in: "never",
+          facebook_page_id: pageId,
+          facebook_page_name: pageName
         },
       }, {
         onConflict: 'page_id'

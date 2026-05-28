@@ -12,7 +12,7 @@ import JsonLd from "@/components/seo/JsonLd";
 
 export const metadata = {
   title: "Automixa | #1 Instagram Comment Auto-Reply & DM Automation Tool",
-  description: "Automixa is the best, 100% safe Instagram automation tool for creators and brands in India. Auto-reply to comments, send instant DMs, and grow followers 24/7 with local UPI billing.",
+  description: "Automixa: India's #1 Instagram automation tool. Auto-reply to comments, send instant DMs & grow followers 24/7. Safe, fast & UPI-friendly.",
   keywords: [
     "Instagram automation tool India",
     "Instagram DM automation India",

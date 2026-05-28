@@ -221,6 +221,27 @@ export const MetaService = {
   },
 
   /**
+   * Fetch IG Profile using Business ID and Page Token (For Facebook Login Flow)
+   */
+  getInstagramBusinessProfile: async (igBusinessId, pageToken) => {
+    try {
+      const fields = "id,username,name,profile_picture_url";
+      const { response, data } = await fetchJson(
+        `${BASE_URL}/${igBusinessId}?fields=${fields}&access_token=${pageToken}`
+      );
+
+      if (!response.ok) {
+        throw new Error(data?.error?.message || "Failed to fetch Instagram profile via Business ID");
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      console.error("Meta API - getInstagramBusinessProfile Error:", error.message);
+      return { success: false, error: error.message };
+    }
+  },
+
+  /**
    * Debug a token (shows granted scopes / granular scopes).
    * This requires INSTAGRAM_APP_ID + INSTAGRAM_APP_SECRET server-side.
    */
@@ -565,6 +586,34 @@ export const MetaService = {
       return { success: true, data };
     } catch (error) {
       console.error("Meta API - subscribeAccount Error:", error.message);
+      return { success: false, error: error.message };
+    }
+  },
+
+  /**
+   * Subscribe the Facebook Page to the webhook app (Facebook Login Flow).
+   */
+  subscribePageToWebhooks: async (pageId, pageToken) => {
+    try {
+      const { response, data } = await fetchJson(
+        `${BASE_URL}/${pageId}/subscribed_apps`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            access_token: pageToken,
+            subscribed_fields: "messages,messaging_postbacks,messaging_optins,message_reactions,comments"
+          })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(data?.error?.message || "Failed to subscribe page to webhooks");
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      console.error("Meta API - subscribePageToWebhooks Error:", error.message);
       return { success: false, error: error.message };
     }
   }

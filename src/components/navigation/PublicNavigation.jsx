@@ -105,8 +105,8 @@ export default function PublicNavigation() {
     <>
       <nav
         className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 border-b ${isScrolled || isMenuOpen
-            ? "bg-white/40 backdrop-blur-2xl border-zinc-200/40 py-4"
-            : "bg-transparent border-transparent py-6"
+          ? "bg-white/40 backdrop-blur-2xl border-zinc-200/40 py-4"
+          : "bg-transparent border-transparent py-6"
           }`}
         style={{
           transform: isVisible || isMenuOpen ? "translateY(0)" : "translateY(-100%)"
@@ -115,7 +115,7 @@ export default function PublicNavigation() {
         <div className="max-w-8xl mx-auto px-6 md:px-10 flex items-center justify-between">
 
           {/* Left Side: Logo */}
-          <Link href="/" className="flex items-center gap-1.5 group">
+          <Link href="/" className="flex items-center group">
             <img src="/logo.png" alt="Automixa Logo" className="w-14 h-14 object-contain" />
             <span className="text-xl font-semibold tracking-normal text-foreground">automixa</span>
           </Link>
