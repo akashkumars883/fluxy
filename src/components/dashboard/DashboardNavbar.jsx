@@ -68,13 +68,13 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
       <div className="flex items-center gap-2 sm:gap-4 shrink-0">
         <div className="hidden lg:flex items-center w-64 mr-2">
           <div className="relative w-full group cursor-pointer" onClick={() => setIsSearchOpen(true)}>
-            <div className="w-full bg-zinc-100/50 hover:bg-zinc-100/80 backdrop-blur-xl border border-zinc-200/50 rounded-2xl pl-10 pr-10 py-2.5 text-xs font-medium text-zinc-400 transition-all duration-300 shadow-inner flex items-center">
-              Search...
+            <div className="w-full bg-zinc-50/80 hover:bg-white backdrop-blur-xl border border-zinc-200 hover:border-zinc-300 rounded-[14px] pl-10 pr-12 py-2 text-[13px] font-medium text-zinc-400 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] hover:shadow-sm flex items-center h-[38px] group-hover:ring-4 group-hover:ring-zinc-50">
+              Search Automixa...
             </div>
             <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none group-hover:text-[#6366F1] transition-colors z-10">
-              <Search size={14} strokeWidth={2.5} />
+              <Search size={16} strokeWidth={2} />
             </div>
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-white border border-zinc-200 text-[10px] font-bold text-zinc-400 pointer-events-none transition-opacity">
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center gap-0.5 px-2 py-0.5 rounded-[6px] bg-white border border-zinc-200 text-[10px] font-semibold text-zinc-500 pointer-events-none transition-all shadow-sm group-hover:bg-zinc-50">
               <span>⌘</span>
               <span>K</span>
             </div>
