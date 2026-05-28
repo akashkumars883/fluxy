@@ -3,6 +3,13 @@ const BASE_URL = `https://graph.facebook.com/${GRAPH_API_VERSION}`;
 const INSTAGRAM_AUTH_URL = "https://api.instagram.com/oauth/access_token";
 const INSTAGRAM_GRAPH_BASE_URL = `https://graph.instagram.com/${GRAPH_API_VERSION}`;
 const DEFAULT_TIMEOUT_MS = 15000;
+const PAGE_WEBHOOK_SUBSCRIBED_FIELDS = [
+  "messages",
+  "messaging_postbacks",
+  "messaging_optins",
+  "message_reactions",
+  "feed",
+];
 
 function getGraphBaseUrl(token) {
   if (token && typeof token === "string" && token.startsWith("IGAA")) {
@@ -602,7 +609,7 @@ export const MetaService = {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             access_token: pageToken,
-            subscribed_fields: "messages,messaging_postbacks,messaging_optins,message_reactions,comments"
+            subscribed_fields: PAGE_WEBHOOK_SUBSCRIBED_FIELDS.join(",")
           })
         }
       );

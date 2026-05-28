@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase';
+import crypto from "node:crypto";
 
 export async function GET(request) {
   const supabase = createClient();
@@ -32,16 +33,24 @@ export async function GET(request) {
     ? `${origin}/api/auth/callback/facebook`
     : "https://www.automixa.in/api/auth/callback/facebook";
   
-  // Pass role in state to retrieve it in the callback
-  const state = JSON.stringify({ persona: role, provider: "instagram" });
+  // Pass a nonce-bound state to retrieve persona and prevent callback CSRF.
+  const nonce = crypto.randomUUID();
+  const state = JSON.stringify({ nonce, persona: role, provider: "instagram" });
   
   // 2. Facebook Login for Business requires a Configuration ID
   const configId = process.env.NEXT_PUBLIC_FB_CONFIG_ID || "";
 
-  let fbAuthUrl = `https://www.facebook.com/v21.0/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${encodeURIComponent(state)}&response_type=code`;
+  const authParams = new URLSearchParams({
+    client_id: appId,
+    redirect_uri: redirectUri,
+    state,
+    response_type: "code",
+    auth_type: "rerequest",
+  });
 
   if (configId) {
-    fbAuthUrl += `&config_id=${configId}`;
+    authParams.set("config_id", configId);
+    authParams.set("override_default_response_type", "true");
   } else {
     const facebookScopes = [
       "instagram_basic",
@@ -52,8 +61,18 @@ export async function GET(request) {
       "pages_manage_metadata",
       "public_profile"
     ].join(",");
-    fbAuthUrl += `&scope=${encodeURIComponent(facebookScopes)}`;
+    authParams.set("scope", facebookScopes);
   }
 
-  return NextResponse.redirect(fbAuthUrl);
+  const fbAuthUrl = `https://www.facebook.com/v21.0/dialog/oauth?${authParams.toString()}`;
+
+  const response = NextResponse.redirect(fbAuthUrl);
+  response.cookies.set("automixa_meta_oauth_state", nonce, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: !isLocal,
+    maxAge: 10 * 60,
+    path: "/",
+  });
+  return response;
 }
