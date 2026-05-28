@@ -2,19 +2,7 @@ import "./globals.css";
 import ClientLayout from "@/components/layout/ClientLayout";
 import Script from "next/script";
 import type { Metadata, Viewport } from "next";
-
-import { Outfit, Space_Grotesk } from "next/font/google";
 import { createClient } from "@/lib/supabase";
-
-const outfit = Outfit({
-  subsets: ["latin"],
-  variable: "--font-outfit",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
-});
 
 export async function generateMetadata(): Promise<Metadata> {
   const supabase = createClient();
@@ -133,7 +121,15 @@ export default function RootLayout({
   const hasGA = !!gaId;
 
   return (
-    <html lang="en" className={`h-full antialiased ${outfit.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en" className="h-full antialiased">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="min-h-full flex flex-col bg-[#FBFBFD]">
         {hasGA ? (
           <>

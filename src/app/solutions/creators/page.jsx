@@ -1,11 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { ArrowRight, Zap, Target, Users, Play, CheckCircle2, TrendingUp, Link as LinkIcon, Gift } from "lucide-react";
-import PageTransition from "@/components/ui/PageTransition";
-import FAQ from "@/components/marketing/FAQ";
 import CTA from "@/components/marketing/CTA";
+import FAQ from "@/components/marketing/FAQ";
+import PageTransition from "@/components/ui/PageTransition";
+import { motion } from "framer-motion";
+import { ArrowRight,CheckCircle2,Gift,Link as LinkIcon,Play,TrendingUp,Users } from "lucide-react";
+import Link from "next/link";
 
 export default function CreatorsSolutionPage() {
   const benefits = [

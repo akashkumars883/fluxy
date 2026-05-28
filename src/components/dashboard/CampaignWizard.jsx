@@ -1,49 +1,33 @@
 "use client";
 
+import { AnimatePresence,motion } from "framer-motion";
 import {
-  MessageSquare,
-  Send,
-  Sparkles,
-  Rocket,
-  ArrowRight,
-  ArrowLeft,
-  Check,
-  Users,
-  ShieldCheck,
-  Globe,
-  Zap,
-  MousePointer2,
-  RefreshCcw,
-  Plus,
-  Bot,
-  Target,
-  Brain,
-  Lock as LucideLock,
-  Trash2,
-  X,
-  Heart,
-  Camera,
-  Layout
+ArrowLeft,
+ArrowRight,
+Brain,
+Check,
+Globe,
+Heart,
+MessageSquare,
+Plus,
+Rocket,
+ShieldCheck,
+Target,
+Trash2,
+Users,
+Zap
 } from "lucide-react";
-import { useState } from "react";
-import AutomationPreview from "./AutomationPreview";
-import { motion, AnimatePresence } from "framer-motion";
 
-export default function CampaignWizard({ step = 1, onStepChange, onPublish, onChange, onBack, values, media = [], stories = [], selectedPosts = [], onSelectPosts, currentPlan = "free" }) {
+export default function CampaignWizard({ step = 1, onStepChange, onPublish, onChange, onBack, values, media = [], stories = [], selectedPosts = [], onSelectPosts }) {
   const {
     keyword = "",
     response = "",
-    type = "COMMENT",
     followerGate = false,
     publicReply = "",
     buttonText = "",
     buttonLink = "",
     campaignStrategy = "comment_dm",
-    campaignName = "",
-    syncStory = false,
-    faqEnabled = false,
     faqs = [],
-    leadCaptureEnabled = false,
     aiGoal = "",
     aiPersona = "friendly",
     aiUseEmojis = true

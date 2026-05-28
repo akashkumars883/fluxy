@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { Zap, Settings, ArrowLeft, Heart, Palette, LayoutDashboard, Menu, X, LifeBuoy } from "lucide-react";
+import { ArrowLeft,Heart,LayoutDashboard,LifeBuoy,Menu,Palette,Settings,X,Zap } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
-export default function AutomationSidebar({ accountId, persona = null, activeTab, onTabChange, onBack }) {
+export default function AutomationSidebar({ persona = null, activeTab, onTabChange, onBack }) {
     const isCreator = persona === 'content_creator';
     const [isExpanded, setIsExpanded] = useState(false);
 

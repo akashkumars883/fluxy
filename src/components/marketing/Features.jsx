@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Zap, MessageSquare, Target, CheckCircle2, ArrowRight, Layout, Link as LinkIcon } from "lucide-react";
+import { ArrowRight,CheckCircle2,Layout,MessageSquare,Target,Zap } from "lucide-react";
 import Link from "next/link";
 
 const features = [

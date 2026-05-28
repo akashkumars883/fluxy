@@ -1,4 +1,4 @@
-import { Brain, Sparkles } from "lucide-react";
+import { Brain } from "lucide-react";
 
 export default function AiSettingsCard({ automation, onUpdate }) {
   return (

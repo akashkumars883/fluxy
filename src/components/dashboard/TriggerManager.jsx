@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Plus, Trash2, Edit2, Rocket, ArrowRight, ArrowLeft, CheckCircle2, AlertCircle, MessageSquare, Sparkles, Cpu, Lock as LucideLock, X, Layout, Send, Zap, Wand2, Globe, Check, CircleChevronLeft, ArrowUp, Users, Brain, Gift, Calendar, Video, Star, Clock, Camera, MousePointer2, Loader2 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import CampaignWizard from "./CampaignWizard";
+import { AnimatePresence,motion } from "framer-motion";
+import { AlertCircle,ArrowRight,Brain,Calendar,Camera,Check,CircleChevronLeft,Clock,Edit2,Gift,Globe,Loader2,MessageSquare,MousePointer2,Plus,Rocket,Send,Sparkles,Star,Trash2,Users,Video,X,Zap } from "lucide-react";
+import { useEffect,useState } from "react";
 import AutomationPreview from "./AutomationPreview";
+import CampaignWizard from "./CampaignWizard";
 
 export default function TriggerManager({ initialTriggers, media = [] }) {
   return (

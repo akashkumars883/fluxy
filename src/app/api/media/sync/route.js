@@ -74,7 +74,8 @@ export async function GET(req) {
         await supabaseAdmin
           .from("automations")
           .update({ ig_business_id: instagramId })
-          .eq("id", automationId);
+          .eq("id", automationId)
+          .eq("user_id", currentUser.id);
       }
     }
 

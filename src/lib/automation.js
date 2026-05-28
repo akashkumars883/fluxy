@@ -12,6 +12,17 @@ import { validatePublicWebhookUrl } from "./webhook-url.js";
 const supabaseAdmin = createAdminClient();
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const SHIELD_ENTRY_DELAY_MIN_MS = 2000;
+const SHIELD_ENTRY_DELAY_MAX_MS = 4500;
+const SHIELD_PUBLIC_REPLY_DELAY_MIN_MS = 7000;
+const SHIELD_PUBLIC_REPLY_DELAY_MAX_MS = 12000;
+const SHIELD_SURGE_LOOKBACK_MS = 60 * 1000;
+const SHIELD_SURGE_COOLDOWN_MS = 2 * 60 * 1000;
+const SHIELD_SURGE_THRESHOLD_PER_MINUTE = 18;
+const SHIELD_HEAVY_TRAFFIC_MESSAGE = "Your account is facing heavy traffic right now, so Automixa Shield has placed it in cooldown for account safety. Replies will resume automatically shortly.";
+
+const getShieldDelay = (minMs, maxMs) => Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs;
+
 const getRandom = (arr) => {
   if (Array.isArray(arr) && arr.length > 0) return arr[Math.floor(Math.random() * arr.length)];
   if (typeof arr === 'string' && arr.length > 0) return arr;
@@ -28,10 +39,127 @@ const interpolate = (text, name, brand) => {
     .replace(/{brand}/g, brand || "us");
 };
 
+const buildEventKey = ({ type, commentId, messageId, senderId, recipientId, payload, text }) => {
+  if (commentId) return `comment:${commentId}`;
+  if (messageId) return `message:${messageId}`;
+  if (payload) return `postback:${recipientId}:${senderId}:${payload}`;
+  return `event:${recipientId}:${senderId}:${type}:${(text || "").trim().toLowerCase().slice(0, 80)}`;
+};
+
+async function findExistingEvent(automationId, eventKey, commentId, messageId) {
+  if (!automationId) return null;
+
+  let query = supabaseAdmin
+    .from("automation_history")
+    .select("id,status,created_at,metadata")
+    .eq("automation_id", automationId)
+    .limit(1);
+
+  if (eventKey) {
+    query = query.eq("metadata->>event_key", eventKey);
+  } else if (commentId) {
+    query = query.eq("metadata->>comment_id", commentId);
+  } else if (messageId) {
+    query = query.eq("metadata->>message_id", messageId);
+  } else {
+    return null;
+  }
+
+  const { data, error } = await query;
+  if (error) {
+    console.error("🛡️ [Automixa Shield] Duplicate event check failed:", error.message);
+    return null;
+  }
+  return data?.[0] || null;
+}
+
+async function logShieldEvent(automationId, senderId, senderName, keyword, status, metadata = {}) {
+  await supabaseAdmin.from("automation_history").insert({
+    automation_id: automationId,
+    sender_id: senderId,
+    sender_name: senderName || "Automixa Shield",
+    type: "AUTOMIXA_SHIELD",
+    keyword: keyword || "AUTOMIXA_SHIELD",
+    status,
+    metadata: {
+      shield: "automixa_shield",
+      ...metadata
+    }
+  }).catch((e) => console.error("🛡️ [Automixa Shield] Failed logging shield event:", e.message));
+}
+
+async function getActiveShieldCooldown(automationId) {
+  const cooldownWindowStart = new Date(Date.now() - SHIELD_SURGE_COOLDOWN_MS).toISOString();
+  const { data, error } = await supabaseAdmin
+    .from("automation_history")
+    .select("id,created_at,metadata")
+    .eq("automation_id", automationId)
+    .eq("type", "AUTOMIXA_SHIELD")
+    .eq("status", "COOLDOWN_ACTIVE")
+    .eq("metadata->>reason", "heavy_traffic_surge")
+    .gt("created_at", cooldownWindowStart)
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  if (error) {
+    console.error("Automixa Shield cooldown check failed:", error.message);
+    return null;
+  }
+
+  return data?.[0] || null;
+}
+
+async function getRecentAccountTrafficCount(automationId) {
+  const surgeWindowStart = new Date(Date.now() - SHIELD_SURGE_LOOKBACK_MS).toISOString();
+  const { count, error } = await supabaseAdmin
+    .from("automation_history")
+    .select("id", { count: "exact", head: true })
+    .eq("automation_id", automationId)
+    .neq("type", "AUTOMIXA_SHIELD")
+    .gt("created_at", surgeWindowStart);
+
+  if (error) {
+    console.error("Automixa Shield traffic count failed:", error.message);
+    return 0;
+  }
+
+  return count || 0;
+}
+
+async function enforceAutomixaShieldTrafficGate(automation, senderId, senderName, keyword, type) {
+  const activeCooldown = await getActiveShieldCooldown(automation.id);
+  if (activeCooldown) {
+    await logShieldEvent(automation.id, senderId, senderName, keyword, "COOLDOWN_ACTIVE", {
+      reason: "heavy_traffic_cooldown",
+      source: type || "UNKNOWN",
+      user_message: SHIELD_HEAVY_TRAFFIC_MESSAGE,
+      active_cooldown_id: activeCooldown.id
+    });
+    return false;
+  }
+
+  const recentTrafficCount = await getRecentAccountTrafficCount(automation.id);
+  if (recentTrafficCount >= SHIELD_SURGE_THRESHOLD_PER_MINUTE) {
+    await logShieldEvent(automation.id, senderId, senderName, keyword, "COOLDOWN_ACTIVE", {
+      reason: "heavy_traffic_surge",
+      source: type || "UNKNOWN",
+      user_message: SHIELD_HEAVY_TRAFFIC_MESSAGE,
+      traffic_window_seconds: SHIELD_SURGE_LOOKBACK_MS / 1000,
+      traffic_count: recentTrafficCount,
+      threshold: SHIELD_SURGE_THRESHOLD_PER_MINUTE,
+      cooldown_seconds: SHIELD_SURGE_COOLDOWN_MS / 1000
+    });
+    return false;
+  }
+
+  return true;
+}
+
 /**
  * Main Engine Orchestrator
  */
 export async function processAutomation(senderId, text, type, recipientId, commentId = null, mediaId = null, messageId = null, payload = null, senderUsername = null) {
+  const eventKey = buildEventKey({ type, commentId, messageId, senderId, recipientId, payload, text });
   // --- ANTI-LOOP & SELF-REPLY GUARD ---
   if (senderId === recipientId) {
     console.log(`🤖 Self-reply/Loop detected for ${senderId}. Skipping.`);
@@ -71,6 +199,12 @@ export async function processAutomation(senderId, text, type, recipientId, comme
 
     const automation = automationRows[0];
     if (!automation.is_active) return { success: false };
+
+    const existingEvent = await findExistingEvent(automation.id, eventKey, commentId, messageId);
+    if (existingEvent) {
+      console.log(`🛡️ [Automixa Shield] Duplicate webhook event skipped: ${eventKey}`);
+      return { success: false, reason: "duplicate_event" };
+    }
 
     let userPlan = "free";
 
@@ -173,19 +307,24 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       userName = profileResult.success ? (profileResult.data.username || profileResult.data.name) : "there";
     }
 
+    // --- AUTOMIXA SHIELD: ACCOUNT-WIDE DELAY + HEAVY TRAFFIC COOLDOWN ---
+    const shieldKeyword = text ? text.substring(0, 100) : (payload || type || "AUTOMIXA_SHIELD");
+    const shieldCanContinue = await enforceAutomixaShieldTrafficGate(automation, senderId, userName, shieldKeyword, type);
+    if (!shieldCanContinue) {
+      console.warn(`Automixa Shield cooldown active for automation ${automation.id}. Event paused for account safety.`);
+      return { success: false, reason: "automixa_shield_cooldown" };
+    }
+    await delay(getShieldDelay(SHIELD_ENTRY_DELAY_MIN_MS, SHIELD_ENTRY_DELAY_MAX_MS));
+
     // --- SMARTGUARD: ANTI-SPAM CIRCUIT BREAKER ---
     const isSpam = await SmartGuard.checkSpamAttack(senderId, automation.id);
     if (isSpam) {
       console.warn(`🛡️ [SmartGuard] Blocked abusive spamming by sender: ${senderId}`);
-      await supabaseAdmin.from("automation_history").insert({
-        automation_id: automation.id,
-        sender_id: senderId,
-        sender_name: userName,
-        type: type,
-        keyword: text ? text.substring(0, 100) : "SPAM_ABUSE",
-        status: "BLOCKED",
-        metadata: { error: "SmartGuard isolated abusive repetitive triggers." }
-      }).catch(() => {});
+      await logShieldEvent(automation.id, senderId, userName, text ? text.substring(0, 100) : "SPAM_ABUSE", "BLOCKED", {
+        reason: "repetitive_sender_spam",
+        source: type || "UNKNOWN",
+        error: "Automixa Shield isolated abusive repetitive triggers."
+      });
       return { success: false, reason: "smartguard_spam_blocked" };
     }
 
@@ -317,7 +456,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         type: type,
         keyword: match.keyword,
         status: "INTERACTED",
-        metadata: { funnel_complete: false }
+        metadata: { funnel_complete: false, event_key: eventKey, comment_id: commentId, message_id: messageId, media_id: mediaId }
       }).select().single();
 
       if (logError) {
@@ -358,6 +497,10 @@ export async function processAutomation(senderId, text, type, recipientId, comme
               status: requiresMessageAccess ? "ACTION_REQUIRED" : "FAILED",
               metadata: {
                 funnel_complete: false,
+                event_key: eventKey,
+                comment_id: commentId,
+                message_id: messageId,
+                media_id: mediaId,
                 error: privateReplyResult.error,
                 action_required: requiresMessageAccess ? "enable_instagram_message_access" : null
               }
@@ -369,14 +512,10 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         }
       }
 
-      // B. Public Comment Reply with Delay (7-10s for Premium, 1s for Free)
-      if (userPlan !== "free") {
-        console.log(`⏱️ Premium Plan: Applying randomized AI Human Mimicry Delay (7-10s)`);
-        await delay(Math.floor(Math.random() * 3000) + 7000);
-      } else {
-        console.log(`⏱️ Free Plan: Bypassing AI Human Mimicry Delay (Applying short 1s delay)`);
-        await delay(1000);
-      }
+      // B. Public Comment Reply with Automixa Shield delay for every plan.
+      const publicReplyDelay = getShieldDelay(SHIELD_PUBLIC_REPLY_DELAY_MIN_MS, SHIELD_PUBLIC_REPLY_DELAY_MAX_MS);
+      console.log(`Automixa Shield: applying public reply safety delay (${publicReplyDelay}ms) for ${userPlan || "free"} plan.`);
+      await delay(publicReplyDelay);
       const publicOptions = match.variants?.public || [];
       const rawPublic = publicOptions.length > 0 ? getRandom(publicOptions) : "Check your DM for the link! 🚀";
       const chosenPublic = SmartGuard.applyCommentSpintax(rawPublic);
@@ -495,7 +634,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       await supabaseAdmin.from("automation_history")
         .update({ 
           status: "SUCCESS", 
-          metadata: { funnel_complete: true, scraped: true } 
+          metadata: { funnel_complete: true, scraped: true, event_key: eventKey, comment_id: commentId, message_id: messageId, media_id: mediaId } 
         })
         .eq("automation_id", automation.id)
         .eq("sender_id", senderId)
@@ -514,7 +653,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         await supabaseAdmin.from("automation_history")
           .update({ 
             status: "SUCCESS", 
-            metadata: { funnel_complete: true, scraped: true } 
+            metadata: { funnel_complete: true, scraped: true, event_key: eventKey, comment_id: commentId, message_id: messageId, media_id: mediaId } 
           })
           .eq("id", existingLogs[0].id);
       } else {
@@ -525,7 +664,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
           type: type || "DM",
           keyword: match.keyword,
           status: "SUCCESS",
-          metadata: { funnel_complete: true, scraped: true }
+          metadata: { funnel_complete: true, scraped: true, event_key: eventKey, comment_id: commentId, message_id: messageId, media_id: mediaId }
         });
       }
     }

@@ -1,11 +1,11 @@
 "use client";
 
-import { use, useState } from "react";
-import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { Check, X, Sparkles, ArrowRight, ShieldCheck, Plus, Minus, Star, Zap } from "lucide-react";
-import { competitorsData } from "@/data/comparisons";
 import CTA from "@/components/marketing/CTA";
+import { competitorsData } from "@/data/comparisons";
+import { AnimatePresence,motion } from "framer-motion";
+import { ArrowRight,Check,Minus,Plus,ShieldCheck,Sparkles,X,Zap } from "lucide-react";
+import Link from "next/link";
+import { use,useState } from "react";
 
 export default function ComparePage({ params: paramsPromise }) {
   const params = use(paramsPromise);

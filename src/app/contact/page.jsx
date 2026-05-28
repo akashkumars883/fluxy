@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Mail, ShieldCheck, ChevronDown, ArrowRight, Ticket, HelpCircle } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import PageTransition from "@/components/ui/PageTransition";
+import { motion } from "framer-motion";
+import { ArrowRight,Mail,ShieldCheck,Ticket } from "lucide-react";
+import { useState } from "react";
 
 import FAQ from "@/components/marketing/FAQ";
 

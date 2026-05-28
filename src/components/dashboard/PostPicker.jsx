@@ -1,15 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import { Check, CheckCircle2, LayoutGrid, Calendar, AlertCircle } from "lucide-react";
 import Loader from "@/components/ui/Loader";
+import { AlertCircle,Check } from "lucide-react";
+import { useEffect,useState } from "react";
 
 /**
  * POST PICKER COMPONENT
  * Fetches and displays Instagram media for selection.
  */
-export default function PostPicker({ automationId, media, loading, error: fetchError, onSelect, selectedPosts, layout = "grid" }) {
+export default function PostPicker({ media, loading, error: fetchError, onSelect, selectedPosts, layout = "grid" }) {
   const [selection, setSelection] = useState(selectedPosts || []);
 
   const togglePost = (postId) => {
@@ -22,7 +21,7 @@ export default function PostPicker({ automationId, media, loading, error: fetchE
 
   useEffect(() => {
     onSelect(selection);
-  }, [selection]);
+  }, [onSelect, selection]);
 
   const isHorizontal = layout === "horizontal";
 

@@ -2,7 +2,10 @@
 
 import { motion } from "framer-motion";
 import {
-  MessageSquare, Zap, Target, Users, TrendingUp, ShieldCheck, Heart, Lock as LucideLock, Blocks
+MessageSquare,
+ShieldCheck,
+TrendingUp,
+Users
 } from "lucide-react";
 
 export default function SocialProof() {

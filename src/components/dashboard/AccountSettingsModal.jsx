@@ -1,7 +1,7 @@
 "use client";
 
-import { X, User, Mail, Shield, Calendar, LogOut, Camera } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence,motion } from "framer-motion";
+import { Calendar,Camera,Mail,Shield,User,X } from "lucide-react";
 
 export default function AccountSettingsModal({ isOpen, onClose, user }) {
   if (!isOpen) return null;

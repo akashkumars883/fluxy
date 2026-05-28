@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
-import { DollarSign, Copy, Check, Users, BarChart3, Star, Clock, AlertCircle, ArrowRight, ExternalLink, Sparkles, CheckCircle2, TrendingUp, Plus, Tag, Percent, RefreshCw, X, Building2, CreditCard, Save, Trash2 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/lib/supabase";
+import { AnimatePresence,motion } from "framer-motion";
+import { ArrowRight,Check,Clock,Copy,CreditCard,ExternalLink,Plus,Tag,Trash2,TrendingUp,Users,X } from "lucide-react";
+import { useEffect,useState } from "react";
+import { createPortal } from "react-dom";
 
 export default function PartnerDashboard({ currentPlan = "free" }) {
   const [appStatus, setAppStatus] = useState("approved"); // 'unapplied', 'pending', 'approved'
@@ -46,7 +46,6 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
   const [bankAccountNo, setBankAccountNo] = useState("31920391203");
   const [bankIfsc, setBankIfsc] = useState("HDFC0001234");
   const [bankHolderName, setBankHolderName] = useState("Rohit Sharma");
-  const [savingPayout, setSavingPayout] = useState(false);
   const [payoutSaveSuccess, setPayoutSaveSuccess] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -294,7 +293,6 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
 
   const handleSavePayoutMethod = async (e) => {
     e.preventDefault();
-    setSavingPayout(true);
     const finalAddress = payoutMethod === "upi" ? upiId : JSON.stringify({
       accountNo: bankAccountNo,
       ifsc: bankIfsc,
@@ -319,8 +317,6 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
     } catch (err) {
       console.error("Error updating payout method in DB:", err);
       alert(err.message || "Failed to save payout settings. Please try again.");
-    } finally {
-      setSavingPayout(false);
     }
   };
 

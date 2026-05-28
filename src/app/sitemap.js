@@ -1,14 +1,12 @@
 import { createClient } from "@/lib/supabase";
+import { fetchPublishedBlogs } from "@/lib/blogs";
 
 export default async function sitemap() {
   const baseUrl = "https://automixa.in";
 
   // Fetch blogs dynamically
   const supabase = createClient();
-  const { data: blogs } = await supabase
-    .from("blogs")
-    .select("id, slug, created_at")
-    .order("created_at", { ascending: false });
+  const blogs = await fetchPublishedBlogs(supabase).catch(() => []);
 
   const blogEntries = (blogs || []).map((blog) => ({
     url: `${baseUrl}/blog/${blog.slug || blog.id}`,

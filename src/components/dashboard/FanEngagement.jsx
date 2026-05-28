@@ -1,6 +1,6 @@
 "use client";
 
-import { Users, Heart, MessageSquare, TrendingUp, Award, UserCircle, CheckCircle2, ShieldAlert, Clock } from "lucide-react";
+import { Award,CheckCircle2,Clock,ShieldAlert,TrendingUp,Users } from "lucide-react";
 
 export default function FanEngagement({ stats, history }) {
   // Aggregate unique fans with their latest status and counts

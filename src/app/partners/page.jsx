@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
-import { ArrowRight, DollarSign, Users, Gift, Link as LinkIcon, BarChart3, Star, Target, CheckCircle2, X, Send, Sparkles } from "lucide-react";
-import PageTransition from "@/components/ui/PageTransition";
 import CTA from "@/components/marketing/CTA";
 import FAQ from "@/components/marketing/FAQ";
+import PageTransition from "@/components/ui/PageTransition";
 import { createClient } from "@/lib/supabase";
+import { AnimatePresence,motion } from "framer-motion";
+import { ArrowRight,BarChart3,CheckCircle2,DollarSign,Link as LinkIcon,Send,Sparkles,Star,Users,X } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 
 export default function PartnersPage() {
   // Calculator State

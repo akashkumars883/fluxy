@@ -1,28 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, Lock as LucideLock, Sparkles, ChevronDown, Plus } from "lucide-react";
-import { useDashboard } from "@/context/DashboardContext";
 import WorkspaceSwitcher from "@/components/dashboard/WorkspaceSwitcher";
+import { useDashboard } from "@/context/DashboardContext";
+import { AnimatePresence,motion } from "framer-motion";
+import { ChevronDown,Lock as LucideLock,Plus,X } from "lucide-react";
+import { useState } from "react";
 
 export default function MobileSidebar({ 
   isOpen, 
   onClose, 
   navigationItems, 
   onPricingClick,
-  onConnectClick,
-  quotaPercent,
-  usedQuota,
-  maxQuota
+  onConnectClick
 }) {
   const { 
     activeTab, 
     setActiveTab, 
     selectedAccount, 
     setSelectedAccount,
-    accounts,
-    currentPlan 
+    accounts
   } = useDashboard();
 
   const [isSwitchAccountOpen, setIsSwitchAccountOpen] = useState(false);

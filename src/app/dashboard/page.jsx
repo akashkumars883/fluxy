@@ -1,45 +1,40 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
+import { motion } from "framer-motion";
 import {
-  Home,
-  Cpu,
-  Users,
-  BarChart2,
-  Settings,
-  Sparkles,
-  ChevronRight,
-  Camera,
-  MessageSquare,
-  Plus,
-  Lock as LucideLock,
-  Palette,
-  Download,
-  CheckCircle2,
+BarChart2,
+CheckCircle2,
+Cpu,
+Download,
+Home,
+Lock as LucideLock,
+Plus,
+Settings,
+Sparkles,
+Users
 } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useEffect,useState } from "react";
 
 // Components
-import OnboardingModal from "@/components/dashboard/OnboardingModal";
-import Loader from "@/components/ui/Loader";
-import CreatorOverview from "@/components/dashboard/CreatorOverview";
-import { TriggerInputModal, CampaignBuilderWorkspace, TriggerList, INSTAGRAM_POSTS_MOCK } from "@/components/dashboard/TriggerManager";
-import EditTriggerModal from "@/components/dashboard/EditTriggerModal";
-import AudienceCRM from "@/components/dashboard/AudienceCRM";
-import AnalyticsDashboard from "@/components/dashboard/AnalyticsDashboard";
-import SettingsDashboard from "@/components/dashboard/SettingsDashboard";
-import HelpSlider from "@/components/dashboard/HelpSlider";
-import PartnerDashboard from "@/components/dashboard/PartnerDashboard";
-import Pricing from "@/components/marketing/Pricing";
-import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
-import DashboardNavbar from "@/components/dashboard/DashboardNavbar";
-import MobileSidebar from "@/components/dashboard/MobileSidebar";
 import AccountSettingsModal from "@/components/dashboard/AccountSettingsModal";
-import SubscriptionModal from "@/components/dashboard/SubscriptionModal";
+import AnalyticsDashboard from "@/components/dashboard/AnalyticsDashboard";
+import AudienceCRM from "@/components/dashboard/AudienceCRM";
 import BottomNav from "@/components/dashboard/BottomNav";
+import CreatorOverview from "@/components/dashboard/CreatorOverview";
+import DashboardNavbar from "@/components/dashboard/DashboardNavbar";
+import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import EditTriggerModal from "@/components/dashboard/EditTriggerModal";
+import HelpSlider from "@/components/dashboard/HelpSlider";
+import MobileSidebar from "@/components/dashboard/MobileSidebar";
+import OnboardingModal from "@/components/dashboard/OnboardingModal";
+import PartnerDashboard from "@/components/dashboard/PartnerDashboard";
 import PwaInstallBanner from "@/components/dashboard/PwaInstallBanner";
+import SettingsDashboard from "@/components/dashboard/SettingsDashboard";
+import SubscriptionModal from "@/components/dashboard/SubscriptionModal";
+import { CampaignBuilderWorkspace,TriggerInputModal,TriggerList } from "@/components/dashboard/TriggerManager";
+import Loader from "@/components/ui/Loader";
 
 
 // Context
@@ -71,15 +66,11 @@ export default function Dashboard() {
   const {
     user,
     accounts,
-    setAccounts,
     selectedAccount,
-    setSelectedAccount,
     loading,
-    setLoading,
     activeTab,
     setActiveTab,
     currentPlan,
-    setCurrentPlan,
     realtimeStats,
     setRealtimeStats,
     updateSelectedAccount,
@@ -108,7 +99,6 @@ export default function Dashboard() {
   const [builderActive, setBuilderActive] = useState(false);
   const [builderCampaignName, setBuilderCampaignName] = useState("");
   const [builderTemplateKey, setBuilderTemplateKey] = useState("custom");
-  const [triggerError, setTriggerError] = useState(null);
   const [timeRange, setTimeRange] = useState("all");
   const [partnerAppStatus, setPartnerAppStatus] = useState("approved");
   const [partnerActiveTier, setPartnerActiveTier] = useState("silver");
@@ -716,7 +706,7 @@ export default function Dashboard() {
                     { image: "story-mentions", title: "Story Mentions", desc: "Instantly DM followers when they mention you.", color: "pink" },
                     { image: "faq-chatbot", title: "Smart Chatbot", desc: "Resolve common user questions automatically 24/7.", color: "emerald" },
                     { image: "smart-bio", title: "Smart Bio", desc: "Create a beautiful page to aggregate all your links.", color: "amber" },
-                  ].map(({ image, title, desc, color }) => (
+                  ].map(({ image, title, desc }) => (
                     <div key={title} className="bg-white border border-zinc-200/80 rounded-[24px] overflow-hidden flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 group h-full">
                       <div className="p-5 pb-0 relative z-10">
                         <h3 className="text-[15px] sm:text-base font-bold text-zinc-900 mb-1 leading-snug tracking-tight">{title}</h3>

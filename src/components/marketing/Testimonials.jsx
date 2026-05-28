@@ -1,7 +1,6 @@
 "use client";
 
-import { Star, CheckCircle } from "lucide-react";
-import { motion } from "framer-motion";
+import { CheckCircle,Star } from "lucide-react";
 
 export default function Testimonials() {
   const row1 = [

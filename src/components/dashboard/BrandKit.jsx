@@ -1,6 +1,6 @@
 "use client";
 
-import { Palette, Sparkles, MessageSquare, ShieldCheck, Save, Brain } from "lucide-react";
+import { Brain,MessageSquare,Palette,Save,Sparkles } from "lucide-react";
 import { useState } from "react";
 
 export default function BrandKit({ automation, onUpdate }) {

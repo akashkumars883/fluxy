@@ -1,10 +1,10 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import { User, LogOut, ChevronDown, Settings, CreditCard, HelpCircle, Zap } from "lucide-react";
-import { createClient } from "@/lib/supabase";
 import { useDashboard } from "@/context/DashboardContext";
+import { createClient } from "@/lib/supabase";
+import { CreditCard,LogOut,Settings,User,Zap } from "lucide-react";
+import { useEffect,useRef,useState } from "react";
 
-export default function ProfileDropdown({ user, realtimeStats, setActiveTab, onAccountSettingsClick, onSubscriptionClick }) {
+export default function ProfileDropdown({ user, realtimeStats, onAccountSettingsClick, onSubscriptionClick }) {
   const { currentPlan } = useDashboard();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);

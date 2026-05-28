@@ -1,12 +1,10 @@
 "use client";
 
-import { Settings, Shield, Power, Trash2, AlertTriangle, ShieldCheck, ArrowLeft } from "lucide-react";
+import { AlertTriangle,Shield,ShieldCheck } from "lucide-react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
-export default function GeneralSettings({ automation, onUpdate, onDelete }) {
+export default function GeneralSettings({ automation, onDelete }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const router = useRouter();
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">

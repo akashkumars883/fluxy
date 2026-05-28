@@ -1,9 +1,8 @@
 "use client";
 
+import { motion } from "framer-motion";
+import { ArrowRight,ShieldCheck } from "lucide-react";
 import Link from "next/link";
-import { ArrowRight, Sparkles, ShieldCheck } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
 
 export default function Hero() {
   return (

@@ -1,4 +1,4 @@
-import { createServerClient, createBrowserClient } from "@supabase/ssr";
+import { createBrowserClient,createServerClient } from "@supabase/ssr";
 
 /**
  * Universal Supabase Client
@@ -22,7 +22,7 @@ export function createClient() {
                         const { cookies } = await import("next/headers");
                         const cookieStore = await cookies();
                         return cookieStore.get(name)?.value;
-                    } catch (e) {
+                    } catch {
                         return undefined;
                     }
                 },
@@ -31,7 +31,7 @@ export function createClient() {
                         const { cookies } = await import("next/headers");
                         const cookieStore = await cookies();
                         cookieStore.set(name, value, options);
-                    } catch (e) {
+                    } catch {
                     }
                 },
                 async remove(name, options) {
@@ -39,7 +39,7 @@ export function createClient() {
                         const { cookies } = await import("next/headers");
                         const cookieStore = await cookies();
                         cookieStore.set(name, "", { ...options, maxAge: 0 });
-                    } catch (e) {
+                    } catch {
                     }
                 },
             },

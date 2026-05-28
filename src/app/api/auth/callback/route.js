@@ -1,10 +1,17 @@
 import { NextResponse } from 'next/server' // Line 1: Response handle karne ke liye
 import { createClient } from '@/lib/supabase' // Line 2: Supabase setup
 
+function safeInternalPath(value) {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) {
+    return "/dashboard";
+  }
+  return value;
+}
+
 export async function GET(request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? '/dashboard'
+  const next = safeInternalPath(searchParams.get('next'))
 
   if (code) {
     const supabase = createClient()

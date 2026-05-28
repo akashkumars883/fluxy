@@ -1,18 +1,17 @@
-import fs from "node:fs/promises";
 import { spawn } from "node:child_process";
 
-const npx = process.platform === "win32" ? "npx.cmd" : "npx";
+const nextCli = "node_modules/next/dist/bin/next";
 
 function run(cmd, args, env) {
   return new Promise((resolve) => {
-    const child = spawn(cmd, args, { stdio: "inherit", shell: true, env });
+    const child = spawn(cmd, args, { stdio: "inherit", shell: false, env });
     child.on("exit", (code) => resolve(code ?? 1));
   });
 }
 
 async function main() {
   // distDir is resolved from `.next-distdir` inside `next.config.ts`.
-  const code = await run(npx, ["next", "start"], { ...process.env });
+  const code = await run(process.execPath, [nextCli, "start"], { ...process.env });
   process.exit(code);
 }
 

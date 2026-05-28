@@ -1,19 +1,18 @@
 "use client";
-import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
-import { 
-  MessageSquare, 
-  Zap, 
-  TrendingUp, 
-  Cpu, 
-  Plus, 
-  Activity, 
-  ArrowRight,
-  Sparkles,
-  Link2,
-  X,
-  ShieldAlert
+import {
+Activity,
+ArrowRight,
+Cpu,
+MessageSquare,
+Plus,
+ShieldAlert,
+Sparkles,
+TrendingUp,
+X,
+Zap
 } from "lucide-react";
+import { useEffect,useState } from "react";
+import { createPortal } from "react-dom";
 
 export default function CreatorOverview({ stats = {}, history = [], topTriggers = [], automationId, hideHeader = false, onSimulateLocal, isActive = true, onViewAudience, onCreateAutoReply }) {
   const [isSyncing, setIsSyncing] = useState(false);

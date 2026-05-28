@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
-import { CheckCircle2, ArrowRight, Tag, X, Zap, CreditCard } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase";
+import { AnimatePresence,motion } from "framer-motion";
+import { ArrowRight,CheckCircle2,CreditCard,Tag,X,Zap } from "lucide-react";
+import Link from "next/link";
+import { useEffect,useState } from "react";
+import { createPortal } from "react-dom";
 
-export default function Pricing({ onSuccess = null, isModal = false } = {}) {
+export default function Pricing({ isModal = false } = {}) {
   const [isIndia, setIsIndia] = useState(true);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [promoCodeInput, setPromoCodeInput] = useState("");

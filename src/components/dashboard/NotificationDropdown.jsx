@@ -1,6 +1,6 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import { Bell, CheckCircle2, MessageSquare, AlertTriangle, Sparkles, Check, HelpCircle } from "lucide-react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import { Bell, CheckCircle2, MessageSquare, ShieldAlert, Sparkles, Check, HelpCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase";
 
 export default function NotificationDropdown({ accounts = [] }) {
@@ -8,9 +8,9 @@ export default function NotificationDropdown({ accounts = [] }) {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef(null);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
-  const formatTimeAgo = (dateString) => {
+  const formatTimeAgo = useCallback((dateString) => {
     if (!dateString) return "Just now";
     const date = new Date(dateString);
     const now = new Date();
@@ -23,14 +23,18 @@ export default function NotificationDropdown({ accounts = [] }) {
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHrs < 24) return `${diffHrs}h ago`;
     return `${diffDays}d ago`;
-  };
+  }, []);
 
-  const mapHistoryToNotification = (item) => {
+  const mapHistoryToNotification = useCallback((item) => {
     let title = "Automation Event";
     let desc = `Activity registered from ${item.sender_name || "a user"}.`;
     let type = "automation";
 
-    if (item.type === "HELP_REQUESTED" || item.status === "HANDOVER") {
+    if (item.type === "AUTOMIXA_SHIELD" || item.metadata?.shield === "automixa_shield") {
+      title = item.status === "COOLDOWN_ACTIVE" ? "Automixa Shield Cooldown" : "Automixa Shield Protected";
+      desc = item.metadata?.user_message || "Automixa Shield paused suspicious activity to keep your account safe.";
+      type = "shield";
+    } else if (item.type === "HELP_REQUESTED" || item.status === "HANDOVER") {
       title = "Support Requested 💬";
       desc = `${item.sender_name || "User"} requested human assistance ("${item.metadata?.text || 'help'}").`;
       type = "help";
@@ -53,7 +57,7 @@ export default function NotificationDropdown({ accounts = [] }) {
       read: item.is_read || false,
       rawDate: item.created_at
     };
-  };
+  }, [formatTimeAgo]);
 
   useEffect(() => {
     if (!accounts || accounts.length === 0) return;
@@ -131,7 +135,7 @@ export default function NotificationDropdown({ accounts = [] }) {
       supabase.removeChannel(channel);
       window.removeEventListener("automixa-simulated-event", handleSimulatedEvent);
     };
-  }, [accounts]);
+  }, [accounts, mapHistoryToNotification, supabase]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -184,6 +188,8 @@ export default function NotificationDropdown({ accounts = [] }) {
         return <MessageSquare size={16} className="text-[#6366F1]" />;
       case "help":
         return <HelpCircle size={16} className="text-amber-600" />;
+      case "shield":
+        return <ShieldAlert size={16} className="text-sky-700" />;
       default:
         return <Sparkles size={16} className="text-[#6366F1]" />;
     }
@@ -197,6 +203,8 @@ export default function NotificationDropdown({ accounts = [] }) {
         return "bg-[#6366F1]/10 border border-[#6366F1]/20";
       case "help":
         return "bg-amber-50 border border-amber-200";
+      case "shield":
+        return "bg-sky-50 border border-sky-200";
       default:
         return "bg-[#6366F1]/5 border border-[#6366F1]/10";
     }

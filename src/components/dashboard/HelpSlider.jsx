@@ -1,9 +1,9 @@
 "use client";
 
+import { AnimatePresence,motion } from "framer-motion";
+import { AlertTriangle,ArrowLeft,Clock,FileText,HelpCircle,Mail,MessageSquare,RefreshCw,Trash2,X } from "lucide-react";
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { HelpCircle, X, Mail, MessageSquare, AlertTriangle, Trash2, FileText, CheckCircle2, ChevronRight, Clock, RefreshCw, ArrowLeft } from "lucide-react";
 
 export default function HelpSlider({ isOpen, onClose }) {
   const [showDeletionForm, setShowDeletionForm] = useState(false);

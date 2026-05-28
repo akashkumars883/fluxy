@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Pricing from "@/components/marketing/Pricing";
-import FAQ from "@/components/marketing/FAQ";
 import CTA from "@/components/marketing/CTA";
-import { Check, X, Sparkles, HelpCircle } from "lucide-react";
+import FAQ from "@/components/marketing/FAQ";
+import Pricing from "@/components/marketing/Pricing";
+import { Check,Sparkles,X } from "lucide-react";
+import { useEffect,useState } from "react";
 
 export default function PricingPage() {
   const [isIndia, setIsIndia] = useState(true);
@@ -14,7 +14,7 @@ export default function PricingPage() {
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const isIndiaTimezone = tz === "Asia/Kolkata" || tz === "Asia/Calcutta";
       setTimeout(() => setIsIndia(isIndiaTimezone), 0);
-    } catch (e) {}
+    } catch {}
   }, []);
   const comparisonRows = [
     { feature: "AI Credits per Month", free: "25,000 Credits", pro: "250,000 Credits (10X)", viral: "2,000,000 Credits (100X)", agency: "Custom Quota", desc: "Monthly quota for smart AI conversational responses" },

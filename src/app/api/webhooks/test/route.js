@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
+import { validatePublicWebhookUrl } from "@/lib/webhook-url";
 
 export async function POST(req) {
   try {
     const { webhookUrl } = await req.json();
 
-    if (!webhookUrl || (!webhookUrl.startsWith("http://") && !webhookUrl.startsWith("https://"))) {
-      return NextResponse.json({ error: "Invalid Webhook URL. Must begin with http:// or https://" }, { status: 400 });
+    const validated = await validatePublicWebhookUrl(webhookUrl);
+    if (!validated.ok) {
+      return NextResponse.json({ error: validated.error }, { status: 400 });
     }
 
     const testPayload = {
@@ -27,7 +29,7 @@ export async function POST(req) {
 
     let response;
     try {
-      response = await fetch(webhookUrl, {
+      response = await fetch(validated.url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(testPayload),

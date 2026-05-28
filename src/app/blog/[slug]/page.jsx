@@ -1,17 +1,13 @@
 import BlogClient from "./BlogClient";
 import { createClient } from "@/lib/supabase";
+import { fetchBlogBySlug } from "@/lib/blogs";
 
 // Next.js 16 requires awaiting params
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const supabase = createClient();
   
-  // Try finding by slug first, then ID
-  let { data: post } = await supabase.from("blogs").select("*").eq("slug", slug).single();
-  if (!post) {
-    const { data: postById } = await supabase.from("blogs").select("*").eq("id", slug).single();
-    post = postById;
-  }
+  const post = await fetchBlogBySlug(supabase, slug);
 
   if (!post) {
     return {
@@ -54,11 +50,7 @@ export default async function Page({ params }) {
   const { slug } = await params;
   const supabase = createClient();
   
-  let { data: post } = await supabase.from("blogs").select("*").eq("slug", slug).single();
-  if (!post) {
-    const { data: postById } = await supabase.from("blogs").select("*").eq("id", slug).single();
-    post = postById;
-  }
+  const post = await fetchBlogBySlug(supabase, slug);
 
   return (
     <>

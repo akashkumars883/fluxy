@@ -1,8 +1,8 @@
 "use client";
 
-import { MessageSquare, Users, Send } from "lucide-react";
+import { MessageSquare,Send,Users } from "lucide-react";
 
-export default function AnalyticsDashboard({ account, realtimeStats, history = [], triggers = [] }) {
+export default function AnalyticsDashboard({ realtimeStats, history = [], triggers = [] }) {
   // Calculate real unique contacts from history
   const uniqueContacts = new Set((history || []).filter(h => h.sender_id).map(h => h.sender_id)).size;
 

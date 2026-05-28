@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
-import { Shield, ShieldCheck, ShieldAlert, Cpu, Heart, Check, X, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
-import Safety from "@/components/marketing/Safety";
 import CTA from "@/components/marketing/CTA";
 import FAQ from "@/components/marketing/FAQ";
+import Safety from "@/components/marketing/Safety";
+import { motion } from "framer-motion";
+import { ArrowRight,Check,Shield,ShieldAlert,ShieldCheck,X } from "lucide-react";
+import Link from "next/link";
 
 export default function ShieldPage() {
 

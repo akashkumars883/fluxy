@@ -1,17 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Send, MoreHorizontal, Camera, Heart, MessageCircle, Bookmark, MoreVertical, Layout, MessageSquare, Phone, Video, Mic, Image as ImageIcon, Smile, Brain, X, Users } from "lucide-react";
+import { Bookmark,Brain,Camera,Heart,Image as ImageIcon,Layout,MessageCircle,MessageSquare,Mic,MoreHorizontal,Phone,Send,Smile,Users,Video,X } from "lucide-react";
+import { useState } from "react";
 
 export default function AutomationPreview({ 
   keyword, 
   response, 
-  type, 
   buttonText, 
   buttonLink, 
   publicReply, 
   postUrl,
-  aiImageUrl = "/default-bot.png", 
   aiName = "Automixa AI",
   strategy = "faq_assistant",
   faqs = [],
@@ -124,8 +122,6 @@ export default function AutomationPreview({
 
         if (strategy === "sales_closer") {
           const lowerGoal = aiGoal.toLowerCase();
-          const lowerKnowledge = aiKnowledge.toLowerCase();
-          
           // SUCCESS CHECK: If user provides an email
           if (userMsg.includes('@') && userMsg.includes('.')) {
             aiText = `Perfect! Thank you for sharing your email. I've noted it down and will send you the information right away! Is there anything else you'd like to know?`;

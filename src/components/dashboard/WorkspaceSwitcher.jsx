@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
 import { useDashboard } from "@/context/DashboardContext";
-import { ChevronDown, Plus, Settings2, Check, Edit3, Trash2, X, Instagram, FolderKanban } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence,motion } from "framer-motion";
+import { Check,ChevronDown,Edit3,FolderKanban,Plus,Settings2,Trash2,X } from "lucide-react";
+import { useEffect,useRef,useState } from "react";
 
 const AVATAR_COLORS = [
   "bg-indigo-600",

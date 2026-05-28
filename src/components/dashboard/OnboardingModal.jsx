@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Building2, UserCircle, Target, MessageCircle, Zap, ArrowRight, Camera, CheckCircle2, Loader2 } from "lucide-react";
-import { createClient } from "@/lib/supabase";
+import { AnimatePresence,motion } from "framer-motion";
+import { ArrowRight,CheckCircle2,Loader2 } from "lucide-react";
+import { useEffect,useState } from "react";
 
 // Custom premium CSS-based confetti using Framer Motion
 const Confetti = () => {
@@ -49,7 +48,7 @@ const Confetti = () => {
 
 export default function OnboardingModal({ isOpen, onClose, initialStep = 1, connectedAccount = null, user = null }) {
   const [step, setStep] = useState(initialStep);
-  const [role, setRole] = useState(user?.user_metadata?.role || null);
+  const role = user?.user_metadata?.role || null;
   const [isConnecting, setIsConnecting] = useState(false);
 
   // Sync step state when initialStep changes or modal is opened
@@ -60,21 +59,6 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
   }, [isOpen, initialStep]);
 
   if (!isOpen) return null;
-
-  const nextStep = async () => {
-    // If transitioning from step 2 to step 3, we save onboarding as completed in DB
-    if (step === 2) {
-      try {
-        const supabase = createClient();
-        await supabase.auth.updateUser({
-          data: { onboarding_completed: true, role: role }
-        });
-      } catch (e) {
-        console.error("Failed to update user onboarding metadata:", e);
-      }
-    }
-    setStep(prev => prev + 1);
-  };
 
   const handleSkipOrClose = async () => {
     try {
@@ -180,7 +164,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                     
                     <div className="pt-2 sm:pt-4">
                       <button onClick={handleSkipOrClose} className="text-xs sm:text-sm text-zinc-400 hover:text-zinc-700 transition-colors underline underline-offset-4 font-medium">
-                        Cancel, I'll do this later
+                        Cancel, I&apos;ll do this later
                       </button>
                     </div>
                   </>

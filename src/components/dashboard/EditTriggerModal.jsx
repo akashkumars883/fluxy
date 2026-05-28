@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { X, MousePointer2, ShieldCheck, Globe, Save, Sparkles, Wand2, Rocket, ArrowRight, ArrowLeft, Clock } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence,motion } from "framer-motion";
+import { ArrowRight,Clock,Rocket,Save,ShieldCheck,X } from "lucide-react";
+import { useEffect,useState } from "react";
 
 export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
   const [keyword, setKeyword] = useState("");

@@ -1,17 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, Lock as LucideLock, Sparkles, ChevronDown, Plus, X, PanelTopOpen } from "lucide-react";
 import { useDashboard } from "@/context/DashboardContext";
+import { motion } from "framer-motion";
+import { ChevronDown,Lock as LucideLock,PanelTopOpen,Plus } from "lucide-react";
+import { useState } from "react";
 
 export default function DashboardSidebar({ 
   navigationItems, 
   onPricingClick, 
-  onConnectClick,
-  quotaPercent,
-  usedQuota,
-  maxQuota
+  onConnectClick
 }) {
   const { 
     activeTab, 
@@ -20,9 +17,7 @@ export default function DashboardSidebar({
     setIsSidebarCollapsed, 
     selectedAccount, 
     setSelectedAccount,
-    accounts,
-    currentPlan,
-    updateSelectedAccount
+    accounts
   } = useDashboard();
 
   const [isSwitchAccountOpen, setIsSwitchAccountOpen] = useState(false);

@@ -1,65 +1,118 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createClient as createSupabaseClient } from "@/lib/supabase";
+import { createClient as createSupabaseAdminClient } from "@supabase/supabase-js";
 import { sendInvoiceEmail } from "@/lib/resend";
 import crypto from "crypto";
+import Razorpay from "razorpay";
+
+const PLAN_IDS = new Set(["creator_pro", "viral_scale"]);
+
+function timingSafeHexEqual(a, b) {
+  const aBuf = Buffer.from(a || "", "hex");
+  const bBuf = Buffer.from(b || "", "hex");
+  return aBuf.length === bBuf.length && crypto.timingSafeEqual(aBuf, bBuf);
+}
 
 export async function POST(req) {
   try {
     const { 
-      razorpay_payment_id, 
-      razorpay_order_id, 
       razorpay_signature,
-      plan_id,
-      user_id,
-      amount,
-      currency,
-      email,
-      name,
-      partner_id,
-      promo_code
+      razorpay_order_id: orderIdFromClient,
+      razorpay_payment_id: paymentIdFromClient,
     } = await req.json();
 
-    // 1. Verify Signature (Security)
-    const key_secret = process.env.RAZORPAY_KEY_SECRET;
-    const isSimulated = (razorpay_order_id && razorpay_order_id.startsWith("order_sim_")) || 
-                        (!key_secret || key_secret.includes("placeholder"));
+    const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID?.trim();
+    const keySecret = process.env.RAZORPAY_KEY_SECRET?.trim();
+    const reqUrl = new URL(req.url);
+    const isLocalhost = ["localhost", "127.0.0.1"].includes(reqUrl.hostname);
 
-    if (!isSimulated) {
+    const supabaseAuth = createSupabaseClient();
+    const {
+      data: { user },
+    } = await supabaseAuth.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const isSimulated = isLocalhost && orderIdFromClient?.startsWith("order_sim_");
+    let verifiedOrder;
+    let verifiedPayment;
+
+    if (isSimulated) {
+      console.log("Razorpay local sandbox: accepting simulated order on localhost only.");
+      verifiedOrder = {
+        id: orderIdFromClient,
+        amount: Number(0),
+        currency: "INR",
+        notes: {
+          userId: user.id,
+          planId: "creator_pro",
+          isAnnual: "false",
+          promoCode: "",
+          partnerId: "",
+        },
+      };
+      verifiedPayment = { id: paymentIdFromClient || `pay_sim_${Date.now()}` };
+    } else {
+      if (!keyId || !keySecret) {
+        return NextResponse.json({ error: "Razorpay keys are not configured" }, { status: 500 });
+      }
       if (!razorpay_signature) {
         return NextResponse.json({ error: "Missing payment signature" }, { status: 400 });
       }
-      const hmac = crypto.createHmac("sha256", key_secret || "");
-      hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
+      if (!orderIdFromClient || !paymentIdFromClient) {
+        return NextResponse.json({ error: "Missing payment details" }, { status: 400 });
+      }
+
+      const hmac = crypto.createHmac("sha256", keySecret);
+      hmac.update(`${orderIdFromClient}|${paymentIdFromClient}`);
       const generated_signature = hmac.digest("hex");
 
-      if (generated_signature !== razorpay_signature) {
+      if (!timingSafeHexEqual(generated_signature, razorpay_signature)) {
         return NextResponse.json({ error: "Invalid signature. Payment could not be verified." }, { status: 400 });
       }
-    } else {
-      console.log("Razorpay Sandbox Mode: Bypassing signature check for simulated order/placeholder secret.");
+
+      const razorpay = new Razorpay({
+        key_id: keyId,
+        key_secret: keySecret,
+      });
+
+      [verifiedOrder, verifiedPayment] = await Promise.all([
+        razorpay.orders.fetch(orderIdFromClient),
+        razorpay.payments.fetch(paymentIdFromClient),
+      ]);
+
+      if (verifiedPayment.order_id !== verifiedOrder.id) {
+        return NextResponse.json({ error: "Payment does not belong to this order" }, { status: 400 });
+      }
+      if (!["captured", "authorized"].includes(verifiedPayment.status)) {
+        return NextResponse.json({ error: "Payment is not complete" }, { status: 400 });
+      }
+      if (Number(verifiedPayment.amount) !== Number(verifiedOrder.amount)) {
+        return NextResponse.json({ error: "Payment amount mismatch" }, { status: 400 });
+      }
     }
 
-    const isDevBypass = user_id === "00000000-0000-0000-0000-000000000000";
+    const orderNotes = verifiedOrder.notes || {};
+    const plan_id = String(orderNotes.planId || "");
+    const partner_id = orderNotes.partnerId || null;
+    const promo_code = orderNotes.promoCode || null;
+    const amount = (Number(verifiedOrder.amount || verifiedPayment.amount || 0) / 100).toFixed(2);
+    const currency = verifiedOrder.currency || verifiedPayment.currency || "INR";
+    const email = user.email;
+    const name = user.user_metadata?.full_name || "Automixa User";
+
+    if (!PLAN_IDS.has(plan_id)) {
+      return NextResponse.json({ error: "Invalid plan on order" }, { status: 400 });
+    }
+    if (orderNotes.userId !== user.id) {
+      return NextResponse.json({ error: "Order does not belong to this user" }, { status: 403 });
+    }
+
     const invoiceNumber = `INV-${Date.now().toString().slice(-6)}`;
 
-    if (isDevBypass) {
-      console.log("Dev bypass checkout: Bypassing DB storage for mock session.");
-      // Trigger invoice email sending helper (mock)
-      try {
-        await sendInvoiceEmail({
-          email,
-          name,
-          planName: plan_id.replace('_', ' '),
-          amount: `${currency} ${amount}`,
-          invoiceId: invoiceNumber
-        });
-      } catch (e) {
-        console.warn("Mock email send warning:", e.message);
-      }
-      return NextResponse.json({ success: true, invoiceNumber });
-    }
-
-    const supabase = createClient(
+    const supabase = createSupabaseAdminClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,
       process.env.SUPABASE_SERVICE_ROLE_KEY
     );
@@ -68,11 +121,11 @@ export async function POST(req) {
     const { error: invError } = await supabase
       .from("invoices")
       .insert([{
-        user_id,
+        user_id: user.id,
         amount,
         currency,
         plan_name: plan_id.replace('_', ' ').toUpperCase(),
-        payment_id: razorpay_payment_id,
+        payment_id: verifiedPayment.id,
         invoice_number: invoiceNumber,
         status: 'paid'
       }]);
@@ -83,7 +136,7 @@ export async function POST(req) {
     const { error: subError } = await supabase
       .from("subscriptions")
       .upsert({
-        user_id,
+        user_id: user.id,
         plan_id,
         status: 'active',
         updated_at: new Date().toISOString()
@@ -128,13 +181,13 @@ export async function POST(req) {
 
         // 1. Insert attribution log
         await supabase.from("referral_attributions").insert({
-          customer_user_id: user_id,
+          customer_user_id: user.id,
           promo_code_used: promo_code || null,
           partner_id: partner_id,
           subscription_plan: plan_id,
           transaction_amount: transactionAmount,
           commission_earned: commissionEarned,
-          transaction_id: razorpay_payment_id || `pay_${Date.now()}`,
+          transaction_id: verifiedPayment.id || `pay_${Date.now()}`,
           status: "completed"
         });
 

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Settings, Shield, Bell, Sparkles, CheckCircle2, UserCheck, Zap, Mail, LogOut, Users, UserPlus, Globe, RefreshCcw, AlertCircle, Loader2 } from "lucide-react";
 import { useDashboard } from "@/context/DashboardContext";
+import { AlertCircle,Bell,CheckCircle2,Globe,Loader2,LogOut,RefreshCcw,UserCheck,UserPlus,Users,Zap } from "lucide-react";
+import { useEffect,useState } from "react";
 
 export default function SettingsDashboard({ account, currentPlan = "free", realtimeStats }) {
   const {

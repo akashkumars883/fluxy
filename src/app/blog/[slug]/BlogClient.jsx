@@ -1,14 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
-import { 
-  ArrowLeft, Calendar, Clock, ArrowRight, Share2, Check, Copy, Send
-} from "lucide-react";
-import { motion } from "framer-motion";
-import Link from "next/link";
 import PageTransition from "@/components/ui/PageTransition";
+import { fetchPublishedBlogs } from "@/lib/blogs";
 import { createClient } from "@/lib/supabase";
+import { motion } from "framer-motion";
+import {
+ArrowLeft,
+ArrowRight,
+Calendar,
+Check,
+Clock,
+Copy,
+Share2
+} from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useEffect,useState } from "react";
 
 export default function BlogPostPage() {
   const params = useParams();
@@ -22,29 +29,9 @@ export default function BlogPostPage() {
     async function fetchBlogs() {
       try {
         const supabase = createClient();
-        const { data, error } = await supabase
-          .from("blogs")
-          .select("*")
-          .order("created_at", { ascending: false });
-
-        if (!error && data && data.length > 0) {
-          const mappedPosts = data.map((post) => ({
-            id: post.slug || post.id || "",
-            title: post.title || "Untitled Post",
-            description: post.description || "", 
-            category: post.category || "General",
-            author: post.author || "Automixa Team",
-            authorRole: post.author_role || "Author",
-            authorAvatar: post.author_avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop",
-            date: post.date || "May 5, 2026",
-            readTime: post.read_time || "5 min read",
-            isFeatured: post.is_featured || false,
-            image: post.image || "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1200&auto=format&fit=crop",
-            content: post.content || ""
-          }));
-          setBlogPosts(mappedPosts);
-        }
-      } catch (err) {}
+        const posts = await fetchPublishedBlogs(supabase);
+        setBlogPosts(posts);
+      } catch {}
     }
     fetchBlogs();
   }, []);
@@ -53,7 +40,7 @@ export default function BlogPostPage() {
     if (blogPosts.length > 0 && slug) {
       const post = blogPosts.find(p => p.id === slug);
       if (post) {
-        setSelectedPost(post);
+        setTimeout(() => setSelectedPost(post), 0);
       }
     }
   }, [blogPosts, slug]);
@@ -423,4 +410,3 @@ export default function BlogPostPage() {
     </main>
   );
 }
-

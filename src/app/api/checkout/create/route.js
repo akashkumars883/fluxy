@@ -84,11 +84,28 @@ export async function POST(req) {
     // 3.5. If partnerId is not yet resolved via promoCode, try to resolve via tracking ref parameter
     if (!partnerId && ref) {
       try {
+        const cleanRef = String(ref).trim().slice(0, 120);
+        const partnerIdCandidate = cleanRef.startsWith("partner_")
+          ? cleanRef.replace("partner_", "")
+          : cleanRef;
+        const isUuid =
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(partnerIdCandidate);
         const supabaseAdmin = createAdminClient();
-        const { data: matches } = await supabaseAdmin
+        let query = supabaseAdmin
           .from("partner_profiles")
           .select("id")
-          .or(`master_tracking_link.ilike.%${ref}%,id.eq.${ref.replace("partner_", "")}`);
+          .ilike("master_tracking_link", `%${cleanRef}%`)
+          .limit(1);
+
+        if (isUuid) {
+          query = supabaseAdmin
+            .from("partner_profiles")
+            .select("id")
+            .eq("id", partnerIdCandidate)
+            .limit(1);
+        }
+
+        const { data: matches } = await query;
 
         if (matches && matches.length > 0) {
           partnerId = matches[0].id;

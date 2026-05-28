@@ -1,14 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { X, Zap, CheckCircle2, CreditCard, ArrowRight, BarChart3, ShieldCheck, Sparkles, Plus } from "lucide-react";
-import { createClient } from "@/lib/supabase";
 import { useDashboard } from "@/context/DashboardContext";
-import { motion, AnimatePresence } from "framer-motion";
+import { createClient } from "@/lib/supabase";
+import { AnimatePresence,motion } from "framer-motion";
+import { ArrowRight,BarChart3,CheckCircle2,CreditCard,Sparkles,X,Zap } from "lucide-react";
+import { useEffect,useState } from "react";
 
 export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free", realtimeStats }) {
   const { user, setCurrentPlan } = useDashboard();
-  const [step, setStep] = useState(1);
   const [isIndia, setIsIndia] = useState(true);
   const [isAnnual, setIsAnnual] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState(currentPlan);
@@ -36,7 +35,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
       if (!user) return;
       setLoadingInvoices(true);
       const supabase = createClient();
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("invoices")
         .select("*")
         .eq("user_id", user.id)

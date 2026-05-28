@@ -1,7 +1,7 @@
 "use client";
 
+import { Camera,Hash,MessageSquare,MousePointer2,Rocket,Send,ShieldCheck,Sparkles } from "lucide-react";
 import { useState } from "react";
-import { Zap, Send, MessageSquare, Camera, MousePointer2, ShieldCheck, Rocket, ChevronRight, Hash, Sparkles } from "lucide-react";
 
 /**
  * NEXUS ENGINE COMPONENT

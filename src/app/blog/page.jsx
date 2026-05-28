@@ -1,15 +1,20 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
-import { 
-  Search, ArrowLeft, Calendar, Clock, ArrowRight, BookOpen, 
-  Share2, Check, Copy, Sparkles, Send, HelpCircle, ChevronLeft, ChevronRight
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
-import PageTransition from "@/components/ui/PageTransition";
 import FAQ from "@/components/marketing/FAQ";
+import PageTransition from "@/components/ui/PageTransition";
+import { fetchPublishedBlogs } from "@/lib/blogs";
 import { createClient } from "@/lib/supabase";
+import { AnimatePresence,motion } from "framer-motion";
+import {
+ArrowRight,
+Check,
+ChevronLeft,ChevronRight,
+HelpCircle,
+Search,
+Sparkles
+} from "lucide-react";
+import Link from "next/link";
+import { useEffect,useMemo,useState } from "react";
 
 // Available categories
 const categories = ["All", "Instagram Automation", "Marketing Tips", "Product Updates", "Creator Growth"];
@@ -22,7 +27,6 @@ export default function BlogPage() {
   const [selectedPost, setSelectedPost] = useState(null);
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [copiedLink, setCopiedLink] = useState(false);
   const [readingProgress, setReadingProgress] = useState(0);
 
   // Fetch blogs dynamically from Supabase
@@ -31,31 +35,10 @@ export default function BlogPage() {
       try {
         setIsLoading(true);
         const supabase = createClient();
-        const { data, error } = await supabase
-          .from("blogs")
-          .select("*")
-          .order("created_at", { ascending: false });
+        const posts = await fetchPublishedBlogs(supabase);
 
-        if (error) {
-          console.error("Error fetching blogs from Supabase:", error);
-          setBlogPosts([]);
-        } else if (data && data.length > 0) {
-          // Map properties safely from the blogs table
-          const mappedPosts = data.map((post) => ({
-            id: post.slug || post.id || "",
-            title: post.title || "Untitled Post",
-            description: post.description || "", 
-            category: post.category || "General",
-            author: post.author || "Automixa Team",
-            authorRole: post.author_role || "Author",
-            authorAvatar: post.author_avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop",
-            date: post.date || "May 5, 2026",
-            readTime: post.read_time || "5 min read",
-            isFeatured: post.is_featured || false,
-            image: post.image || "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1200&auto=format&fit=crop",
-            content: post.content || ""
-          }));
-          setBlogPosts(mappedPosts);
+        if (posts.length > 0) {
+          setBlogPosts(posts);
         } else {
           // Table exists but has no entries yet
           setBlogPosts([]);
@@ -103,22 +86,6 @@ export default function BlogPage() {
     return blogPosts.find(post => post.isFeatured) || blogPosts[0];
   }, [blogPosts]);
 
-  // Handle select/unselect and sync with address bar dynamically
-  const handleSelectPost = (post) => {
-    setSelectedPost(post);
-    if (typeof window !== "undefined") {
-      window.history.pushState({}, "", `/blog?post=${post.id}`);
-    }
-  };
-
-  const handleBackToList = () => {
-    setSelectedPost(null);
-    setReadingProgress(0);
-    if (typeof window !== "undefined") {
-      window.history.pushState({}, "", "/blog");
-    }
-  };
-
   // Automatically select a post on initial load if ?post=slug-name is in the URL query parameters
   useEffect(() => {
     if (blogPosts.length > 0 && typeof window !== "undefined") {
@@ -161,13 +128,6 @@ export default function BlogPage() {
     setTimeout(() => {
       setNewsletterEmail("");
     }, 3000);
-  };
-
-  const copyPostUrl = (postId) => {
-    const url = `${window.location.origin}/blog?post=${postId}`;
-    navigator.clipboard.writeText(url);
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2000);
   };
 
   return (

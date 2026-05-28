@@ -1,22 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
 import {
-  Users,
-  Search,
-  MessageSquare,
-  Clock,
-  ArrowUpRight,
-  UserCheck,
-  X,
-  Zap,
-  Filter,
-  ChevronRight,
-  Activity,
+Activity,
+ChevronRight,
+Clock,
+Filter,
+MessageSquare,
+Search,
+UserCheck,
+Users,
+X,
+Zap
 } from "lucide-react";
+import { useEffect,useState } from "react";
+import { createPortal } from "react-dom";
 
-export default function AudienceCRM({ accountId, history = [], currentPlan = "free" }) {
+export default function AudienceCRM({ history = [], currentPlan = "free" }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [selectedUser, setSelectedUser] = useState(null);
