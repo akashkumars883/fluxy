@@ -102,11 +102,12 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
   };
 
   // --- FLOW 1: COMMENT & DM AUTOMATOR ---
+  // --- FLOW 1: COMMENT & DM AUTOMATOR ---
   const renderCommentDMFlow = () => {
     return (
-      <div className="space-y-6">
+      <AnimatePresence mode="wait">
         {step === 1 && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <motion.div key="step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
             <div className="bg-white border border-zinc-200/60 rounded-xl p-8 shadow-xl shadow-zinc-200/20">
               {renderStepHeader()}
               <div className="text-left mb-8 px-2">
@@ -139,7 +140,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
         )}
 
         {step === 2 && (
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+          <motion.div key="step2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
             <div className="bg-white border border-zinc-200/60 rounded-xl p-8 shadow-xl shadow-zinc-200/20 space-y-8">
               {renderStepHeader()}
               <div className="text-left px-2">
@@ -165,7 +166,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
         )}
 
         {step === 3 && (
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+          <motion.div key="step3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
             <div className="bg-white border border-zinc-200/60 rounded-xl p-8 shadow-xl shadow-zinc-200/20 space-y-8">
               {renderStepHeader()}
               <div className="text-left px-2">
@@ -209,7 +210,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
             </div>
           </motion.div>
         )}
-      </div>
+      </AnimatePresence>
     );
   };
 
@@ -320,9 +321,9 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
   // --- FLOW 4: STORY AUTOMATOR ---
   const renderStoryFlow = () => {
     return (
-      <div className="space-y-6">
+      <AnimatePresence mode="wait">
         {step === 1 && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 relative">
+          <motion.div key="story-step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6 relative">
             <div className={`bg-white border border-zinc-200/60 rounded-xl p-8 shadow-xl shadow-zinc-200/20 space-y-8`}>
               {renderStepHeader()}
               <div className="text-start">
@@ -402,7 +403,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
         )}
 
         {step === 2 && (
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+          <motion.div key="story-step2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
             <div className={`bg-white border border-zinc-200/60 rounded-xl p-8 shadow-xl shadow-zinc-200/20 space-y-8`}>
               {renderStepHeader()}
               <div className="text-start">
@@ -511,7 +512,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
             </div>
           </motion.div>
         )}
-      </div>
+      </AnimatePresence>
     );
   };
 
@@ -615,8 +616,8 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
   };
 
   return (
-    <AnimatePresence mode="wait">
+    <div key={campaignStrategy}>
       {renderFlow()}
-    </AnimatePresence>
+    </div>
   );
 }

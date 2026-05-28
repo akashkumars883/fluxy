@@ -148,7 +148,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
             
             <div className="flex items-center gap-4 bg-white/60 p-4 rounded-xl border border-zinc-200 shadow-xs">
               <img 
-                src={account?.profile_pic || account?.profile_picture_url || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&h=150&fit=crop&q=80"} 
+                src={account?.profile_pic || account?.profile_picture_url || account?.metadata?.profile_picture_url || account?.metadata?.profile_pic || "https://ui-avatars.com/api/?name=" + encodeURIComponent(account?.page_name || "User") + "&background=6366f1&color=fff&size=150"} 
                 alt="Instagram Profile" 
                 className="w-10 h-10 rounded-full object-cover border border-zinc-200 shadow-sm shrink-0"
               />

@@ -358,7 +358,7 @@ export default function WorkspaceSwitcher({ variant = "sidebar" }) {
                           <div key={acc.id} className="flex items-center justify-between p-2 hover:bg-zinc-50 rounded-xl border border-zinc-100 bg-white">
                             <div className="flex items-center gap-2 overflow-hidden flex-1 mr-2">
                               <img
-                                src={acc.profile_pic || acc.profile_picture_url || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&h=150&fit=crop&q=80"}
+                                src={acc.profile_pic || acc.profile_picture_url || acc.metadata?.profile_picture_url || acc.metadata?.profile_pic || "https://ui-avatars.com/api/?name=" + encodeURIComponent(acc.page_name || "User") + "&background=6366f1&color=fff&size=150"}
                                 alt={acc.ig_username || acc.page_name}
                                 className="w-6 h-6 rounded-md object-cover border border-zinc-200 shadow-sm"
                               />

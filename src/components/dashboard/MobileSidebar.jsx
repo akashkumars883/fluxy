@@ -125,7 +125,7 @@ export default function MobileSidebar({
                   >
                     <div className="flex items-center gap-2 overflow-hidden w-full">
                       <img
-                        src={selectedAccount.profile_pic || selectedAccount.profile_picture_url || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&h=150&fit=crop&q=80"}
+                        src={selectedAccount.profile_pic || selectedAccount.profile_picture_url || selectedAccount.metadata?.profile_picture_url || selectedAccount.metadata?.profile_pic || "https://ui-avatars.com/api/?name=" + encodeURIComponent(selectedAccount.page_name || "User") + "&background=6366f1&color=fff&size=150"}
                         alt={selectedAccount.ig_username || selectedAccount.page_name}
                         className="w-9 h-9 rounded-full object-cover shrink-0 border border-zinc-200 shadow-sm"
                       />
@@ -163,7 +163,7 @@ export default function MobileSidebar({
                             >
                               <div className="flex items-center gap-2 overflow-hidden">
                                 <img
-                                  src={acc.profile_pic || acc.profile_picture_url || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&h=150&fit=crop&q=80"}
+                                  src={acc.profile_pic || acc.profile_picture_url || acc.metadata?.profile_picture_url || acc.metadata?.profile_pic || "https://ui-avatars.com/api/?name=" + encodeURIComponent(acc.page_name || "User") + "&background=6366f1&color=fff&size=150"}
                                   alt={acc.ig_username || acc.page_name}
                                   className="w-6 h-6 rounded-lg object-cover shrink-0"
                                 />
