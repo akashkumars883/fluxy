@@ -96,7 +96,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
               </button>
             </div>
 
-            <div className="overflow-y-auto py-1 pr-1 flex-1 space-y-5 min-h-0 no-scrollbar">
+            <div className="overflow-y-auto overflow-x-hidden py-1 px-0.5 flex-1 space-y-5 min-h-0 no-scrollbar">
               <div className="space-y-3">
                 <label className="text-[12px] font-medium text-zinc-400 ml-1">Campaign Title</label>
                 <input 
@@ -110,7 +110,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
 
               <div className="space-y-4">
                 <label className="text-[12px] font-bold text-zinc-400 ml-1">Select Your Goal</label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div className="grid grid-cols-2 gap-3">
                   {strategies.map((t) => {
                     // TEMP UNLOCK: isLocked set to false for limited time promotion
                     const isLocked = false; 
@@ -125,7 +125,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                             setCampaignName(t.title);
                           }
                         }} 
-                        className={`group relative border-2 rounded-2xl p-4 flex flex-col items-center text-center gap-3 transition-all duration-300 ${selectedTemplate === t.id ? 'border-[#6366F1] bg-[#6366F1]/5 shadow-xl shadow-[#6366F1]/5 cursor-pointer scale-[1.02]' : 'border-zinc-50 bg-zinc-50/50 hover:border-zinc-200 hover:bg-white cursor-pointer hover:-translate-y-0.5'}`}
+                        className={`group relative border-2 rounded-2xl p-4 flex flex-col items-center text-center gap-3 transition-all duration-300 ${selectedTemplate === t.id ? 'border-[#6366F1] bg-[#6366F1]/5 shadow-lg shadow-[#6366F1]/10 cursor-pointer' : 'border-zinc-100 bg-zinc-50/50 hover:border-zinc-200 hover:bg-white cursor-pointer hover:-translate-y-0.5'}`}
                       >
                         <div className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-500 ${selectedTemplate === t.id ? 'bg-[#6366F1] text-white shadow-xl shadow-[#6366F1]/20 rotate-6' : `${t.bg} ${t.color}`}`}>
                           <t.icon size={24} />
