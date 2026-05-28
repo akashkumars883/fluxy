@@ -10,12 +10,9 @@ import {
   ArrowUpRight,
   UserCheck,
   X,
-  Activity,
   Zap,
   Filter,
   ChevronRight,
-  Mail,
-  Phone,
 } from "lucide-react";
 
 export default function AudienceCRM({ accountId, history = [], currentPlan = "free" }) {
@@ -193,29 +190,26 @@ export default function AudienceCRM({ accountId, history = [], currentPlan = "fr
         })}
       </div>
 
-      {/* Main Content: 2-column layout like Overview */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+      {/* Main Content: Full width user list */}
+      <div className="bg-white border border-zinc-200/80 rounded-[24px] p-6 sm:p-8 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#6366F1]/3 to-transparent rounded-full -mr-32 -mt-32 pointer-events-none" />
 
-        {/* Left: User List */}
-        <div className="lg:col-span-2 bg-white border border-zinc-200/80 rounded-[24px] p-6 sm:p-8 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#6366F1]/3 to-transparent rounded-full -mr-32 -mt-32 pointer-events-none" />
-
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6 border-b border-zinc-100 pb-6 shrink-0 relative z-10">
-            <div className="space-y-1">
-              <h3 className="font-bold text-2xl sm:text-3xl text-zinc-950 tracking-tight flex items-center gap-2">
-                Audience <Users size={24} className="text-[#6366F1]" />
-              </h3>
-              <p className="text-[13px] text-zinc-500 font-medium">
-                Users who interacted with your automations.
-              </p>
-            </div>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6 border-b border-zinc-100 pb-6 shrink-0 relative z-10">
+          <div className="space-y-1">
+            <h3 className="font-bold text-2xl sm:text-3xl text-zinc-950 tracking-tight flex items-center gap-2">
+              Audience <Users size={24} className="text-[#6366F1]" />
+            </h3>
+            <p className="text-[13px] text-zinc-500 font-medium">
+              Instagram users who triggered your automations — commented on your posts or sent DMs with a keyword.
+            </p>
           </div>
+        </div>
 
-          {/* Search + Filter */}
-          <div className="flex flex-col sm:flex-row gap-3 mb-5 relative z-10">
-            <div className="relative flex-1 group">
-              <Search size={14} strokeWidth={2.5} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[#6366F1] transition-colors pointer-events-none" />
+        {/* Search + Filter */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-5 relative z-10">
+          <div className="relative flex-1 group">
+            <Search size={14} strokeWidth={2.5} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[#6366F1] transition-colors pointer-events-none" />
               <input
                 type="text"
                 placeholder="Search by username or keyword..."
@@ -301,67 +295,6 @@ export default function AudienceCRM({ accountId, history = [], currentPlan = "fr
                 </button>
               ))
             )}
-          </div>
-        </div>
-
-        {/* Right: Activity Feed */}
-        <div className="bg-white border border-zinc-200/80 rounded-[24px] p-6 sm:p-8 shadow-xl shadow-zinc-100/40 hover:shadow-2xl transition-all duration-500 flex flex-col relative" style={{ minHeight: "480px" }}>
-          <div className="flex items-center justify-between mb-6 border-b border-zinc-100 pb-6 shrink-0">
-            <div className="space-y-1">
-              <h3 className="font-bold text-xl sm:text-2xl text-zinc-950 tracking-tight flex items-center gap-2">
-                Live Feed <Activity size={20} className="text-emerald-500" />
-              </h3>
-              <p className="text-[13px] text-zinc-500 font-medium">Recent automation events.</p>
-            </div>
-            {(history || []).length > 0 && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 border border-emerald-200 rounded-full">
-                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                <span className="text-[9px] font-bold text-emerald-700 uppercase tracking-wider">Live</span>
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-4 flex-1 overflow-y-auto no-scrollbar relative z-10">
-            {!history || history.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full py-10 text-center space-y-3">
-                <div className="w-12 h-12 rounded-full bg-zinc-50 flex items-center justify-center">
-                  <Activity size={20} className="text-zinc-300" />
-                </div>
-                <p className="text-sm text-zinc-500 font-medium">No recent activity.</p>
-                <p className="text-xs text-zinc-400">Events will appear here when users interact.</p>
-              </div>
-            ) : (
-              [...(history || [])].slice(0, 20).map((log, idx) => (
-                <div key={log.id || idx} className="flex items-start gap-3 group cursor-default">
-                  <div className="w-9 h-9 bg-zinc-100 rounded-xl flex items-center justify-center text-[10px] font-bold text-zinc-600 shrink-0 border border-zinc-200/50 group-hover:border-zinc-300 transition-colors">
-                    {(log.sender_name || "??").slice(0, 2).toUpperCase()}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2 mb-0.5">
-                      <span className="text-[13px] font-bold text-zinc-900 truncate">
-                        @{log.sender_name || "unknown"}
-                      </span>
-                      <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${
-                        log.status === "SUCCESS"
-                          ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
-                          : "bg-zinc-100 text-zinc-500"
-                      }`}>
-                        {log.status === "SUCCESS" ? "Sent" : "Triggered"}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-zinc-500 font-medium truncate">
-                      {log.type === "COMMENT" ? "💬 Commented" : log.type?.startsWith("STORY") ? "📖 Story reply" : "📩 DM"} — keyword:{" "}
-                      <span className="text-[#6366F1] font-bold">'{log.keyword || "AUTO"}'</span>
-                    </p>
-                    <p className="text-[10px] text-zinc-400 mt-0.5 flex items-center gap-1">
-                      <Clock size={9} />
-                      {formatTimeAgo(new Date(log.created_at))}
-                    </p>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
         </div>
       </div>
 
