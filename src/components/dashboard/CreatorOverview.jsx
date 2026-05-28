@@ -140,7 +140,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
           return (
             <div 
               key={card.label}
-              className={`backdrop-blur-3xl border rounded-2xl p-6 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden bg-white hover:-translate-y-0.5`}
+              className={`backdrop-blur-3xl rounded-2xl p-6 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden bg-white hover:-translate-y-0.5`}
             >
               <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#6366F1]/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
               
@@ -177,7 +177,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
             
             <button 
               onClick={onCreateAutoReply}
-              className="hidden sm:flex items-center gap-2 text-sm font-bold text-white bg-zinc-950 hover:bg-zinc-800 px-5 py-2.5 rounded-xl transition-all shadow-md hover:shadow-lg"
+              className="hidden sm:flex items-center gap-2 text-sm font-bold text-white bg-[#6366F1] hover:bg-[#4f46e5] px-5 py-2.5 rounded-xl transition-all shadow-md shadow-[#6366F1]/10 hover:shadow-lg hover:shadow-[#6366F1]/20"
             >
               <Plus size={16} strokeWidth={3} /> Create Rule
             </button>
@@ -266,38 +266,6 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
           </div>
         </div>
 
-      </div>
-
-      <div className="bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-xl p-6 lg:p-8 shadow-xl shadow-zinc-100/40 hover:shadow-2xl hover:shadow-zinc-200/40 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden transition-all duration-500">
-        <div className="absolute top-0 right-0 w-36 h-36 bg-[#6366F1]/5 rounded-full -mr-16 -mt-16 pointer-events-none" />
-        <div className="flex items-center gap-6 relative z-10">
-          <div className="w-16 h-16 rounded-xl bg-[#6366F1] flex items-center justify-center text-white shadow-md shrink-0 shadow-[#6366F1]/20">
-            <Sparkles size={28} className="animate-pulse" />
-          </div>
-          <div>
-            <h3 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight leading-snug">Boost sales with auto-reply keywords</h3>
-            <p className="text-xs sm:text-sm text-zinc-500 font-normal max-w-2xl mt-2 leading-relaxed lowercase">
-              set up keywords to automatically send links, guides, or discount codes when people comment on your posts or reply to your stories.
-            </p>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-4 relative z-10 shrink-0 self-start md:self-auto">
-          <button
-            onClick={handleMetaSync}
-            disabled={isSyncing}
-            className="px-6 py-4 bg-white border border-zinc-200 hover:border-[#6366F1] shadow-sm text-zinc-700 hover:text-[#6366F1] font-semibold text-[10px] rounded-xl transition-all flex items-center gap-2 shrink-0"
-          >
-            <Link2 size={16} /> {isSyncing ? "Syncing Meta..." : "Test Connection"}
-          </button>
-          
-          <button
-            onClick={onCreateAutoReply}
-            className="px-8 py-4 bg-zinc-950 text-white font-semibold text-[10px] rounded-xl hover:bg-zinc-900 shadow-lg shadow-zinc-200/50 transition-all flex items-center gap-2 shrink-0"
-          >
-            <Plus size={16} strokeWidth={3} /> Create Auto-Reply
-          </button>
-        </div>
       </div>
 
       {/* Meta Sync Report Dialog Modal */}
@@ -396,7 +364,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
             <div className="border-t border-zinc-200/50 pt-4 flex justify-end shrink-0">
               <button
                 onClick={() => setSyncReport(null)}
-                className="px-5 py-2.5 bg-zinc-950 text-white rounded-xl font-bold text-xs hover:bg-zinc-900 transition-all shadow-md"
+                className="px-5 py-2.5 bg-[#6366F1] hover:bg-[#4f46e5] text-white rounded-xl font-bold text-xs transition-all shadow-md shadow-[#6366F1]/10 hover:shadow-lg hover:shadow-[#6366F1]/20"
               >
                 Acknowledge
               </button>
