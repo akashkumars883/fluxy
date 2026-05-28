@@ -16,7 +16,7 @@ export default function ProfileDropdown({ user, realtimeStats, onAccountSettings
   };
 
   const usedReplies = realtimeStats?.totalDms + realtimeStats?.autoReplies || 0;
-  const totalReplies = currentPlan === "free" ? 1000 : currentPlan === "creator_pro" ? 100000 : 1000000;
+  const totalReplies = currentPlan === "free" ? 1000 : currentPlan === "creator_pro" ? 15000 : 50000;
   const usagePercentage = Math.min(Math.round((usedReplies / totalReplies) * 100), 100);
 
   useEffect(() => {
@@ -55,18 +55,18 @@ export default function ProfileDropdown({ user, realtimeStats, onAccountSettings
       </button>
 
       {isOpen && (
-        <div className="fixed sm:absolute left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0 right-auto sm:right-0 top-[64px] sm:top-auto sm:mt-3 w-[calc(100vw-32px)] sm:w-[340px] bg-white border border-zinc-200 rounded-2xl shadow-2xl py-2 z-[999] animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed sm:absolute left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0 right-auto sm:right-0 top-[64px] sm:top-auto sm:mt-2 w-[calc(100vw-32px)] sm:w-[320px] bg-white border border-zinc-200/80 rounded-2xl py-1 z-[999] animate-in fade-in zoom-in-95 duration-200">
           
-          <div className="px-5 py-4 border-b border-zinc-200/50 flex items-center gap-3">
+          <div className="px-4 py-3 border-b border-zinc-200/50 flex items-center gap-3">
             {avatarUrl ? (
               <img 
                 src={avatarUrl} 
                 alt={fullNameForDropdown} 
                 referrerPolicy="no-referrer"
-                className="w-10 h-10 rounded-full object-cover border border-zinc-100 shrink-0 shadow-sm"
+                className="w-9 h-9 rounded-full object-cover border border-zinc-100 shrink-0"
               />
             ) : (
-              <div className="w-10 h-10 bg-[#6366F1]/10 text-[#6366F1] rounded-full flex items-center justify-center font-semibold text-base border border-zinc-200 shrink-0 shadow-sm">
+              <div className="w-9 h-9 bg-[#6366F1]/10 text-[#6366F1] rounded-full flex items-center justify-center font-semibold text-base border border-zinc-200 shrink-0">
                 {firstLetter || <User size={18} />}
               </div>
             )}
@@ -76,7 +76,7 @@ export default function ProfileDropdown({ user, realtimeStats, onAccountSettings
             </div>
           </div>
 
-          <div className="px-5 py-4 bg-zinc-50/80 border-b border-zinc-200/50">
+          <div className="px-4 py-3 bg-zinc-50/80 border-b border-zinc-200/50">
             <div className="flex items-center justify-between text-xs font-semibold text-zinc-600 capitalize mb-2">
               <span className="flex items-center gap-1.5"><Zap size={14} className="text-[#6366F1] fill-[#6366F1]/10" /> Monthly Usage</span>
               <span className="text-zinc-900 font-semibold">{usagePercentage}%</span>
@@ -103,9 +103,9 @@ export default function ProfileDropdown({ user, realtimeStats, onAccountSettings
               <button
                 key={item.label}
                 onClick={() => { setIsOpen(false); item.action(); }}
-                className="w-full flex items-start gap-3 p-3 rounded-2xl hover:bg-white text-left transition-all shadow-sm group border border-transparent hover:border-zinc-200/60"
+                className="w-full flex items-start gap-3 p-2.5 rounded-2xl hover:bg-zinc-50 text-left transition-all group border border-transparent"
               >
-                <div className="p-2.5 bg-zinc-100 text-zinc-600 rounded-xl group-hover:bg-[#6366F1]/10 group-hover:text-[#6366F1] transition-colors shrink-0 shadow-sm">
+                <div className="p-2 bg-zinc-100 text-zinc-600 rounded-xl group-hover:bg-[#6366F1]/10 group-hover:text-[#6366F1] transition-colors shrink-0">
                   <item.icon size={16} />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -119,9 +119,9 @@ export default function ProfileDropdown({ user, realtimeStats, onAccountSettings
           <div className="p-2">
             <button 
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 p-3 text-xs sm:text-sm text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 rounded-2xl font-semibold transition-all shadow-sm group"
+              className="w-full flex items-center gap-3 p-2.5 text-xs sm:text-sm text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 rounded-2xl font-semibold transition-all group"
             >
-              <div className="p-2.5 bg-rose-100/50 text-rose-600 rounded-xl group-hover:bg-rose-100 transition-colors shrink-0 shadow-sm">
+              <div className="p-2 bg-rose-100/50 text-rose-600 rounded-xl group-hover:bg-rose-100 transition-colors shrink-0">
                 <LogOut size={16} />
               </div>
               Sign Out

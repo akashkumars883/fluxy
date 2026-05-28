@@ -53,7 +53,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
   if (!isOpen) return null;
 
   const usedQuota = (realtimeStats?.totalDms || 0) + (realtimeStats?.autoReplies || 0);
-  const currentMaxQuota = currentPlan === "viral_scale" ? 2000000 : currentPlan === "creator_pro" ? 250000 : 25000;
+  const currentMaxQuota = currentPlan === "viral_scale" ? 50000 : currentPlan === "creator_pro" ? 15000 : 1000;
   const quotaPercent = Math.min(Math.round((usedQuota / currentMaxQuota) * 100), 100);
 
   const plans = [
@@ -62,7 +62,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
       name: 'Free Plan',
       price_inr: '0',
       price_usd: '0',
-      features: ['25k AI Credits', '5 Automations', 'Basic CRM'],
+      features: ['1k AI Credits', '5 Automations', 'Basic CRM'],
       popular: false
     },
     {
@@ -70,7 +70,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
       name: 'Creator Pro',
       price_inr: '899',
       price_usd: '14',
-      features: ['250k AI Credits', 'Unlimited Automations', 'Story Mentions'],
+      features: ['15k AI Credits', 'Unlimited Automations', 'Story Mentions'],
       popular: true
     },
     {
@@ -78,7 +78,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
       name: 'Viral Scale',
       price_inr: '1,999',
       price_usd: '29',
-      features: ['2M AI Credits', 'Custom Persona', 'Priority SLA'],
+      features: ['50k AI Credits', 'Custom Persona', 'Priority SLA'],
       popular: false
     }
   ];
@@ -212,125 +212,85 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative bg-white/95 backdrop-blur-3xl w-full max-w-5xl h-[92vh] sm:h-[680px] rounded-[28px] sm:rounded-[40px] shadow-2xl border border-zinc-200/80 overflow-hidden flex flex-col md:flex-row z-10"
+            className="relative bg-white/95 backdrop-blur-3xl w-full max-w-2xl max-h-[90vh] rounded-[24px] sm:rounded-[32px] shadow-2xl border border-zinc-200/80 overflow-hidden flex flex-col z-10"
           >
-        
-        {/* Left Sidebar - Navigation */}
-        <div className="w-full md:w-64 bg-zinc-50/50 backdrop-blur-md border-b md:border-b-0 md:border-r border-zinc-200/60 p-4 sm:p-6 md:p-8 flex flex-row md:flex-col justify-between items-center md:items-stretch gap-4 shrink-0">
-          <div className="flex flex-row md:flex-col items-center md:items-stretch gap-4 md:gap-8 w-full md:w-auto justify-between md:justify-start">
-            <div className="flex items-center gap-3 shrink-0">
-              <div className="w-8 h-8 rounded-2xl bg-zinc-950 flex items-center justify-center text-white border border-zinc-800 shadow-lg">
-                <CreditCard size={14} className="text-[#6366F1]" />
-              </div>
-              <span className="font-black text-zinc-950 tracking-tight text-[11px] uppercase hidden sm:inline">Billing Center</span>
-            </div>
-
-            <nav className="flex flex-row md:flex-col gap-1.5">
-              {[
-                { id: 'plans', label: 'Plans & Pricing', icon: Zap },
-                { id: 'invoices', label: 'Invoice History', icon: BarChart3 },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
-                    activeTab === tab.id 
-                      ? "text-zinc-950 bg-white border border-zinc-200/60 shadow-sm" 
-                      : "text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100/50"
-                  }`}
-                >
-                  <tab.icon size={13} className={activeTab === tab.id ? "text-[#6366F1]" : "text-zinc-400"} />
-                  <span>{tab.label}</span>
-                </button>
-              ))}
-            </nav>
-          </div>
-
-          <div className="hidden md:block p-5 bg-white/60 backdrop-blur-xl border border-zinc-200/60 rounded-3xl shadow-sm space-y-3">
-             <div className="flex justify-between items-center text-[10px] font-black text-zinc-400 uppercase tracking-widest">
-                <span>Usage Quota</span>
-                <span className="text-[#6366F1] font-black">{quotaPercent}%</span>
-             </div>
-             <div className="w-full h-1.5 bg-zinc-100 border border-zinc-200/20 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-[#6366F1] to-purple-600 transition-all duration-1000 rounded-full" style={{ width: `${quotaPercent}%` }} />
-             </div>
-             <p className="text-[10px] text-zinc-500 font-bold tracking-tight">{usedQuota.toLocaleString()} DMs sent this month</p>
-          </div>
-        </div>
  
-        {/* Right Content Area */}
-        <div className="flex-1 flex flex-col min-w-0 bg-white/40 min-h-0">
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col min-w-0 bg-white min-h-0">
           {/* Header */}
-          <div className="px-6 sm:px-10 py-5 sm:py-7 flex items-center justify-between border-b border-zinc-200/50 shrink-0">
+          <div className="px-5 sm:px-6 py-4 sm:py-5 flex items-center justify-between border-b border-zinc-200/50 shrink-0">
              <div>
-                <h3 className="text-xl sm:text-3xl font-black text-zinc-950 tracking-tight leading-none">
+                <h3 className="text-xl sm:text-2xl font-semibold text-zinc-950 tracking-tight leading-none">
                    {activeTab === 'plans' ? "Available Plans" : "Invoice History"}
                 </h3>
-                <p className="text-[9px] sm:text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1.5">Manage your Automixa subscription and billing details</p>
+                <p className="text-[11px] sm:text-xs text-zinc-500 font-medium mt-1.5">Manage your Automixa subscription and billing details</p>
              </div>
-             <button onClick={onClose} className="p-2.5 hover:bg-zinc-100 border border-zinc-200/60 rounded-xl transition-all shadow-sm cursor-pointer">
+             <button onClick={onClose} className="p-2 hover:bg-zinc-100 border border-zinc-200/60 rounded-xl transition-all shadow-sm cursor-pointer">
                 <X size={16} className="text-zinc-500 hover:text-zinc-900" />
              </button>
           </div>
  
           {/* Tab Content */}
-          <div className="flex-1 overflow-y-auto no-scrollbar p-6 sm:p-10">
+          <div className="flex-1 overflow-y-auto no-scrollbar p-5 sm:p-6">
              
              {/* Section: Plans */}
              {activeTab === 'plans' && (
-                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
                    {/* Toggles & Location */}
                    <div className="flex items-center justify-between w-full border-b border-zinc-100 pb-4">
                       <div className="bg-zinc-100/80 p-0.5 rounded-full flex items-center gap-0.5 border border-zinc-200/60 shadow-inner">
-                         <button onClick={() => setIsAnnual(false)} className={`px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all ${!isAnnual ? 'bg-white shadow-md text-zinc-950' : 'text-zinc-400 hover:text-zinc-900'}`}>Monthly</button>
-                         <button onClick={() => setIsAnnual(true)} className={`px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all ${isAnnual ? 'bg-white shadow-md text-zinc-950' : 'text-zinc-400 hover:text-zinc-900'}`}>Yearly <span className="text-[9px] text-emerald-600 ml-0.5">-20%</span></button>
+                         <button onClick={() => setIsAnnual(false)} className={`px-5 py-1.5 rounded-full text-xs font-semibold transition-all ${!isAnnual ? 'bg-white shadow-md text-zinc-950' : 'text-zinc-400 hover:text-zinc-900'}`}>Monthly</button>
+                         <button onClick={() => setIsAnnual(true)} className={`px-5 py-1.5 rounded-full text-xs font-semibold transition-all ${isAnnual ? 'bg-white shadow-md text-zinc-950' : 'text-zinc-400 hover:text-zinc-900'}`}>Yearly <span className="text-[11px] text-emerald-600 ml-0.5">-20%</span></button>
                       </div>
                       <div className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-50 border border-zinc-200/60 rounded-full shadow-xs">
-                        <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Billing Location:</span>
-                        <span className="text-[10px] font-black text-[#6366F1] uppercase tracking-wider">{isIndia ? "🇮🇳 India (INR)" : "🌍 Global (USD)"}</span>
+                        <span className="text-xs font-medium text-zinc-500">Billing Location:</span>
+                        <span className="text-xs font-semibold text-[#6366F1]">{isIndia ? "🇮🇳 India (INR)" : "🌍 Global (USD)"}</span>
                       </div>
                    </div>
 
-                   {/* Plan Cards */}
-                   <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                   {/* Plan Cards - List View */}
+                   <div className="flex flex-col gap-3">
                       {plans.map((plan) => (
                          <div 
                            key={plan.id}
                            onClick={() => setSelectedPlanId(plan.id)}
-                           className={`relative p-5 rounded-[28px] border-2 transition-all cursor-pointer flex flex-col justify-between group h-full ${
+                           className={`relative p-4 rounded-[14px] border transition-all cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group ${
                              selectedPlanId === plan.id 
-                               ? "border-[#6366F1] bg-[#6366F1]/5 shadow-xl shadow-indigo-500/5 scale-[1.02]" 
-                               : "border-zinc-200/60 hover:border-zinc-300 hover:bg-zinc-50/50"
+                               ? "bg-[#6366F1]/[0.02] border-[#6366F1] shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]" 
+                               : "bg-white border-zinc-200/60 hover:bg-zinc-50 hover:border-zinc-300"
                            }`}
                          >
-                            {plan.popular && (
-                               <div className="absolute top-0 right-6 -translate-y-1/2 bg-[#6366F1] text-white text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-lg shadow-indigo-500/20">Popular</div>
-                            )}
-                            
-                            <div className="space-y-4">
-                               <div className="flex items-center justify-between">
-                                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
-                                     selectedPlanId === plan.id ? 'bg-[#6366F1] text-white shadow-md' : 'bg-white border border-zinc-200/60 text-zinc-400 group-hover:border-zinc-300 shadow-xs'
-                                  }`}>
-                                     {plan.id === 'viral_scale' ? <Sparkles size={16} /> : plan.id === 'creator_pro' ? <Zap size={16} /> : <BarChart3 size={16} />}
-                                  </div>
-                                  {selectedPlanId === plan.id && <CheckCircle2 size={16} className="text-[#6366F1]" />}
+                            <div className="flex items-center gap-4">
+                               <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all shrink-0 ${
+                                  selectedPlanId === plan.id ? 'bg-[#6366F1]/10 text-[#6366F1]' : 'bg-zinc-100 text-zinc-400 group-hover:bg-zinc-200 group-hover:text-zinc-600'
+                               }`}>
+                                  {plan.id === 'viral_scale' ? <Sparkles size={18} /> : plan.id === 'creator_pro' ? <Zap size={18} /> : <BarChart3 size={18} />}
                                </div>
                                <div>
-                                  <h4 className="font-black text-zinc-950 text-sm tracking-tight">{plan.name}</h4>
-                                  <div className="mt-2.5 flex items-baseline gap-0.5">
-                                     <span className="text-xl sm:text-2xl font-black text-zinc-950 tracking-tight">{isIndia ? '₹' : '$'}{getDisplayPrice(plan)}</span>
-                                     <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">{isAnnual ? '/yr' : '/mo'}</span>
+                                  <div className="flex items-center gap-2">
+                                     <h4 className="font-medium text-zinc-950 text-sm tracking-tight leading-none">{plan.name}</h4>
+                                     {plan.popular && (
+                                        <span className="bg-[#6366F1] text-white text-[11px] font-semibold px-2 py-0.5 rounded-md">popular</span>
+                                     )}
+                                  </div>
+                                  <p className="text-[11px] text-zinc-500 font-medium mt-1.5 leading-tight">
+                                     {plan.features.join(" • ")}
+                                  </p>
+                               </div>
+                            </div>
+                            
+                            <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 border-zinc-100 pt-3 sm:pt-0">
+                               <div className="text-left sm:text-right">
+                                  <div className="flex items-baseline justify-start sm:justify-end gap-0.5">
+                                     <span className="text-xl font-semibold text-zinc-950 tracking-tight leading-none">{isIndia ? '₹' : '$'}{getDisplayPrice(plan)}</span>
+                                     <span className="text-xs font-medium text-zinc-400">/{isAnnual ? 'yr' : 'mo'}</span>
                                   </div>
                                </div>
-                               <ul className="space-y-2 pt-2 border-t border-zinc-100">
-                                  {plan.features.map((f, i) => (
-                                     <li key={i} className="flex items-center gap-2 text-[10px] font-semibold text-zinc-500 tracking-tight">
-                                        <div className="w-1.5 h-1.5 bg-[#6366F1]/30 rounded-full" />
-                                        <span>{f}</span>
-                                     </li>
-                                  ))}
-                               </ul>
+                               <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all shrink-0 ${
+                                  selectedPlanId === plan.id ? 'border-[#6366F1] bg-[#6366F1]' : 'border-zinc-300'
+                               }`}>
+                                  {selectedPlanId === plan.id && <div className="w-2 h-2 bg-white rounded-full shadow-sm" />}
+                               </div>
                             </div>
                          </div>
                       ))}
@@ -339,14 +299,14 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                    <button 
                      onClick={handleCheckout}
                      disabled={selectedPlanId === currentPlan}
-                     className="w-full py-4 bg-zinc-950 text-white rounded-2xl font-bold text-xs uppercase tracking-wider shadow-xl flex items-center justify-center gap-2 hover:bg-zinc-800 disabled:opacity-50 hover:scale-[1.01] transition-all active:scale-[0.98]"
+                     className="w-full py-4 bg-zinc-950 text-white rounded-2xl font-medium text-xs shadow-xl flex items-center justify-center gap-2 hover:bg-zinc-800 disabled:opacity-50 hover:scale-[1.01] transition-all active:scale-[0.98]"
                    >
                       <span>{selectedPlanId === currentPlan ? "Current Active Plan" : `Upgrade to ${selectedPlanId.replace('_', ' ')}`}</span>
                       <ArrowRight size={14} />
                    </button>
                    
-                   <p className="text-center text-[9px] text-zinc-400 font-bold uppercase tracking-widest pt-2">
-                      🔒 Secure Checkout powered by Razorpay Subscriptions API
+                   <p className="text-center text-[11px] text-zinc-400 font-medium pt-2">
+                      🔒 secure checkout powered by razorpay subscriptions api
                    </p>
                 </div>
              )}
@@ -359,23 +319,23 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                       <table className="w-full text-left">
                          <thead className="bg-zinc-50">
                             <tr>
-                               <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Invoice ID</th>
-                               <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Plan</th>
-                               <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Date</th>
-                               <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Amount</th>
-                               <th className="px-6 py-4 text-[10px] font-bold text-zinc-400 uppercase tracking-wider text-right">Status</th>
+                               <th className="px-6 py-4 text-xs font-medium text-zinc-400">Invoice ID</th>
+                               <th className="px-6 py-4 text-xs font-medium text-zinc-400">Plan</th>
+                               <th className="px-6 py-4 text-xs font-medium text-zinc-400">Date</th>
+                               <th className="px-6 py-4 text-xs font-medium text-zinc-400">Amount</th>
+                               <th className="px-6 py-4 text-xs font-medium text-zinc-400 text-right">Status</th>
                             </tr>
                          </thead>
                          <tbody className="divide-y divide-zinc-100">
                             {invoices.length > 0 ? (
                                invoices.map((inv) => (
                                   <tr key={inv.id} className="hover:bg-zinc-50/50 transition-all cursor-default">
-                                     <td className="px-6 py-4 text-xs font-bold text-zinc-900">{inv.invoice_number}</td>
+                                     <td className="px-6 py-4 text-xs font-medium text-zinc-900">{inv.invoice_number}</td>
                                      <td className="px-6 py-4 text-xs font-semibold text-zinc-600">{inv.plan_name}</td>
                                      <td className="px-6 py-4 text-xs font-semibold text-zinc-500">{new Date(inv.created_at).toLocaleDateString()}</td>
-                                     <td className="px-6 py-4 text-xs font-bold text-zinc-900">{inv.currency} {inv.amount}</td>
+                                     <td className="px-6 py-4 text-xs font-medium text-zinc-900">{inv.currency} {inv.amount}</td>
                                      <td className="px-6 py-4 text-right">
-                                        <span className={`px-2.5 py-1 text-[9px] font-semibold rounded-full border ${
+                                        <span className={`px-2.5 py-1 text-[11px] font-semibold rounded-full border ${
                                           inv.status === 'paid' ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-zinc-100 text-zinc-500 border-zinc-200"
                                         }`}>
                                            {inv.status}
@@ -394,7 +354,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                       </table>
                    </div>
                    <div className="text-center py-6 bg-zinc-50 rounded-[28px] border border-zinc-200/60 border-dashed">
-                      <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Older invoices are archived. Contact support for assistance.</p>
+                      <p className="text-xs text-zinc-400 font-medium">older invoices are archived. contact support for assistance.</p>
                    </div>
                 </div>
              )}

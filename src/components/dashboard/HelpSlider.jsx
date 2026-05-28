@@ -1,67 +1,141 @@
 "use client";
 
-import { AnimatePresence,motion } from "framer-motion";
-import { AlertTriangle,ArrowLeft,Clock,FileText,HelpCircle,Mail,MessageSquare,RefreshCw,Trash2,X } from "lucide-react";
-import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { AlertTriangle, ArrowLeft, BookOpen, ChevronRight, Clock, HelpCircle, Mail, MessageSquare, PlayCircle, RefreshCw, Send, Trash2, X, CheckCircle2 } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { useDashboard } from "@/context/DashboardContext";
 
 export default function HelpSlider({ isOpen, onClose }) {
-  const [showDeletionForm, setShowDeletionForm] = useState(false);
+  // Navigation State
+  const [activeView, setActiveView] = useState("home"); // home, docs, chat, email, delete
+  
+  // Dashboard Context
+  const { currentPlan } = useDashboard();
+  
+  // -- Deletion State --
   const [selectedReason, setSelectedReason] = useState("");
   const [otherReasonText, setOtherReasonText] = useState("");
   const [userFeedback, setUserFeedback] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  // Ticket State
   const [activeTicket, setActiveTicket] = useState(null);
+
+  // -- Chat State --
+  const [chatMessages, setChatMessages] = useState([
+    { id: 1, text: "Hi there! I am the Automixa Support Bot. How can we help you today?", sender: "agent", time: "Just now" }
+  ]);
+  const [chatInput, setChatInput] = useState("");
+  const chatScrollRef = useRef(null);
+
+  // -- Email State --
+  const [emailSubject, setEmailSubject] = useState("");
+  const [emailBody, setEmailBody] = useState("");
+  const [emailSending, setEmailSending] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   if (typeof document === "undefined") return null;
 
   const reasons = [
-    { id: "no_longer_using", label: "No longer using Instagram automation" },
-    { id: "too_difficult", label: "Too difficult or confusing to set up" },
-    { id: "missing_features", label: "Missing specific features I need" },
-    { id: "pricing", label: "Pricing / Subscription cost issues" },
-    { id: "privacy", label: "Privacy or data security concerns" },
+    { id: "no_longer_using", label: "No longer using automation" },
+    { id: "too_difficult", label: "Too difficult to set up" },
+    { id: "missing_features", label: "Missing specific features" },
+    { id: "pricing", label: "Pricing or cost issues" },
+    { id: "privacy", label: "Privacy concerns" },
     { id: "other", label: "Other reason" }
   ];
 
+  // Helpers
+  const goBack = () => {
+    setActiveView("home");
+    // Reset ticket if they go back? No, keep it active in state.
+  };
+
+  // Priority Logic based on plans
+  const getSupportTier = () => {
+    if (currentPlan === "viral_scale") return { label: "VIP Priority", color: "bg-amber-100 text-amber-700 border-amber-200", eta: "under 15 mins", iconColor: "text-amber-500" };
+    if (currentPlan === "creator_pro") return { label: "High Priority", color: "bg-purple-100 text-purple-700 border-purple-200", eta: "within 2 hours", iconColor: "text-purple-500" };
+    return { label: "Standard Support", color: "bg-zinc-100 text-zinc-600 border-zinc-200", eta: "within 24 hours", iconColor: "text-zinc-500" };
+  };
+  const supportTier = getSupportTier();
+
+  // Handlers
   const handleRaiseTicket = (e) => {
     e.preventDefault();
     if (!selectedReason) {
-      alert("Please select a reason for account deletion.");
+      alert("Please select a reason.");
       return;
     }
-
     setIsSubmitting(true);
     setTimeout(() => {
       const newTicket = {
         id: "TKT-DEL-" + Math.floor(1000 + Math.random() * 9000),
         reason: selectedReason === "other" ? otherReasonText || "Other" : reasons.find(r => r.id === selectedReason)?.label,
-        feedback: userFeedback,
-        submittedAt: "Just now",
-        status: "Pending Data Purge",
+        status: "Pending Purge",
         estimatedCompletion: "24-48 Hours"
       };
       setActiveTicket(newTicket);
       setIsSubmitting(false);
-      setShowDeletionForm(false);
     }, 1200);
   };
 
-  const handleCancelTicket = () => {
-    alert("Your account deletion ticket has been successfully cancelled. We are thrilled to keep you with us!");
-    setActiveTicket(null);
-    setSelectedReason("");
-    setOtherReasonText("");
-    setUserFeedback("");
+  const handleSendChat = (e) => {
+    e.preventDefault();
+    if (!chatInput.trim()) return;
+    
+    const newMsg = { id: Date.now(), text: chatInput, sender: "user", time: "Just now" };
+    setChatMessages(prev => [...prev, newMsg]);
+    setChatInput("");
+
+    // Mock admin panel reply
+    setTimeout(() => {
+      setChatMessages(prev => [...prev, {
+        id: Date.now() + 1,
+        text: `Thanks for reaching out! You are on our ${currentPlan.replace('_', ' ')} plan. An agent will connect with you ${supportTier.eta}.`,
+        sender: "agent",
+        time: "Just now"
+      }]);
+    }, 1500);
   };
 
-  const faqs = [
-    { q: "How to connect Instagram Business account?", a: "Make sure your Instagram account is converted to a Professional/Business profile and linked to a Facebook Page." },
-    { q: "Why is my auto-reply not working?", a: "Verify that 'Allow access to messages' is turned on in your Instagram App -> Settings -> Privacy -> Messages." },
-    { q: "How does Follower Gate work?", a: "Automixa checks if the commenter follows you. If not, it prompts them to follow before delivering the link." }
-  ];
+  useEffect(() => {
+    if (chatScrollRef.current) {
+      chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+    }
+  }, [chatMessages, activeView]);
+
+  const handleSendEmail = (e) => {
+    e.preventDefault();
+    if (!emailSubject || !emailBody) return;
+    setEmailSending(true);
+    setTimeout(() => {
+      setEmailSending(false);
+      setEmailSent(true);
+      setTimeout(() => {
+        setEmailSent(false);
+        setEmailSubject("");
+        setEmailBody("");
+        goBack();
+      }, 2000);
+    }, 1500);
+  };
+
+  const getHeaderTitle = () => {
+    if (activeView === 'docs') return "Documentation";
+    if (activeView === 'chat') return "Live Chat";
+    if (activeView === 'email') return "Email Support";
+    if (activeView === 'delete') return "Account Deletion";
+    if (activeTicket) return "Ticket Status";
+    return "Help & Resources";
+  };
+
+  const getHeaderSubtitle = () => {
+    if (activeView === 'docs') return "Browse our detailed guides";
+    if (activeView === 'chat') return supportTier.label + " Agent Access";
+    if (activeView === 'email') return "Create a support ticket";
+    if (activeView === 'delete') return "Submit deletion request";
+    if (activeTicket) return "Track your request";
+    return "Get assistance with Automixa";
+  };
 
   return createPortal(
     <AnimatePresence>
@@ -73,258 +147,344 @@ export default function HelpSlider({ isOpen, onClose }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-zinc-950/30 backdrop-blur-sm" 
+            className="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm" 
             onClick={onClose} 
           />
 
-          {/* Slide-over Drawer */}
+          {/* Slide-over Drawer - NO SCROLLING */}
           <motion.div 
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="relative w-full max-w-lg h-full bg-white shadow-2xl flex flex-col overflow-y-auto z-10 select-none"
+            className="relative w-full max-w-lg h-full bg-white shadow-2xl flex flex-col overflow-hidden z-10 select-none"
           >
             
             {/* Header */}
-            <div className="p-6 border-b border-zinc-200/60 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-10 shrink-0">
-              <div className="flex items-center gap-2.5">
-                <div className={`w-10 h-10 rounded-2xl flex items-center justify-center border shadow-sm shrink-0 ${
-                  showDeletionForm || activeTicket ? "bg-rose-50 text-rose-600 border-rose-200" : "bg-[#6366F1]/10 text-[#6366F1] border-[#6366F1]/20"
-                }`}>
-                  {showDeletionForm || activeTicket ? <AlertTriangle size={20} /> : <HelpCircle size={20} />}
-                </div>
+            <div className="px-6 py-5 sm:px-8 border-b border-zinc-200/60 flex items-center justify-between bg-white shrink-0">
+              <div className="flex items-center gap-3">
+                {activeView !== 'home' ? (
+                  <button onClick={goBack} className="w-10 h-10 rounded-xl flex items-center justify-center bg-zinc-50 border border-zinc-200/80 text-zinc-500 hover:text-zinc-900 transition-all">
+                    <ArrowLeft size={18} />
+                  </button>
+                ) : (
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-sm ${
+                    activeView === 'delete' || activeTicket ? "bg-rose-50 text-rose-600 border-rose-200" : "bg-zinc-50 text-zinc-900 border-zinc-200/80"
+                  }`}>
+                    {activeView === 'delete' || activeTicket ? <AlertTriangle size={18} /> : <HelpCircle size={18} />}
+                  </div>
+                )}
                 <div>
                   <h2 className="text-lg font-semibold text-zinc-900 tracking-tight">
-                    {showDeletionForm ? "Raise Deletion Ticket" : activeTicket ? "Active Deletion Ticket" : "Help & Support"}
+                    {getHeaderTitle()}
                   </h2>
-                  <p className="text-xs text-zinc-500 font-normal">
-                    {showDeletionForm ? "Submit your request" : activeTicket ? "Ticket Status" : "Quick answers and support"}
+                  <p className="text-xs text-zinc-500 font-medium mt-0.5 flex items-center gap-1.5">
+                    {getHeaderSubtitle()}
                   </p>
                 </div>
               </div>
               <button 
                 onClick={onClose}
-                className="p-2.5 bg-zinc-50 border border-zinc-200 rounded-2xl text-zinc-500 hover:text-zinc-950 shadow-sm transition-all shrink-0"
+                className="p-2.5 bg-zinc-50 border border-zinc-200/80 rounded-xl text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 shadow-sm transition-all"
               >
-                <X size={18} />
+                <X size={16} />
               </button>
             </div>
 
-            {/* Content */}
-            <div className="p-6 flex-1 flex flex-col justify-between">
+            {/* Content Area */}
+            <div className="flex-1 flex flex-col bg-zinc-50/30 overflow-hidden relative">
               
-              {/* Default Help Screen */}
-              {!showDeletionForm && !activeTicket && (
-                <div className="space-y-8 animate-in fade-in duration-300">
-                  {/* FAQ Section */}
-                  <div className="space-y-4">
-                    <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider pl-1">Frequently Asked Questions</h3>
-                    <div className="space-y-3">
-                      {faqs.map((faq, idx) => (
-                        <div key={idx} className="p-4 bg-zinc-50 border border-zinc-200/80 rounded-[20px] space-y-1.5 shadow-xs">
-                          <h4 className="text-xs sm:text-sm font-semibold text-zinc-900 flex items-center gap-1.5">
-                            <FileText size={14} className="text-[#6366F1] shrink-0" /> {faq.q}
-                          </h4>
-                          <p className="text-xs text-zinc-600 pl-5 leading-relaxed">{faq.a}</p>
+              {/* --- VIEW: HOME --- */}
+              {activeView === 'home' && !activeTicket && (
+                <div className="px-6 py-6 sm:px-8 flex-1 flex flex-col animate-in fade-in slide-in-from-right-4 duration-300">
+                  <div className="space-y-1 mb-8">
+                    <h3 className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider pl-2 mb-3">Support Options</h3>
+                    
+                    <button onClick={() => setActiveView('docs')} className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-zinc-50 transition-all group border border-transparent hover:border-zinc-200/60">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-[14px] bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <BookOpen size={18} />
                         </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Contact Support */}
-                  <div className="space-y-4">
-                    <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider pl-1">Get in Touch</h3>
-                    <div className="grid grid-cols-2 gap-3">
-                      <a 
-                        href="mailto:support@automixa.com"
-                        className="p-4 bg-white border border-zinc-200 hover:border-[#6366F1] rounded-[20px] flex flex-col items-center justify-center text-center gap-2 shadow-sm transition-all group"
-                      >
-                        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-105 transition-all">
-                          <Mail size={18} />
+                        <div className="text-left">
+                          <h4 className="font-semibold text-zinc-900 text-sm">Documentation</h4>
+                          <p className="text-xs text-zinc-500 mt-0.5">Read our step-by-step guides</p>
                         </div>
-                        <span className="text-xs font-semibold text-zinc-800">Email Support</span>
-                      </a>
+                      </div>
+                      <ChevronRight size={16} className="text-zinc-300 group-hover:text-zinc-600 transition-colors" />
+                    </button>
 
-                      <button 
-                        onClick={() => alert("Launching Live Chat... Our team is online!")}
-                        className="p-4 bg-white border border-zinc-200 hover:border-[#6366F1] rounded-[20px] flex flex-col items-center justify-center text-center gap-2 shadow-sm transition-all group"
-                      >
-                        <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-105 transition-all">
+                    <button onClick={() => setActiveView('chat')} className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-zinc-50 transition-all group border border-transparent hover:border-zinc-200/60">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-[14px] bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-105 transition-transform">
                           <MessageSquare size={18} />
                         </div>
-                        <span className="text-xs font-semibold text-zinc-800">Live Chat</span>
-                      </button>
-                    </div>
+                        <div className="text-left flex items-center gap-2">
+                          <div>
+                            <h4 className="font-semibold text-zinc-900 text-sm">Live Chat</h4>
+                            <p className="text-xs text-zinc-500 mt-0.5">Talk to our support team</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        {currentPlan !== 'free' && (
+                           <span className={`text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md border ${supportTier.color}`}>
+                             {supportTier.label}
+                           </span>
+                        )}
+                        <ChevronRight size={16} className="text-zinc-300 group-hover:text-zinc-600 transition-colors" />
+                      </div>
+                    </button>
+
+                    <button onClick={() => setActiveView('email')} className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-zinc-50 transition-all group border border-transparent hover:border-zinc-200/60">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-[14px] bg-sky-50 text-sky-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <Mail size={18} />
+                        </div>
+                        <div className="text-left">
+                          <h4 className="font-semibold text-zinc-900 text-sm">Email Support</h4>
+                          <p className="text-xs text-zinc-500 mt-0.5">Guaranteed {supportTier.eta} response</p>
+                        </div>
+                      </div>
+                      <ChevronRight size={16} className="text-zinc-300 group-hover:text-zinc-600 transition-colors" />
+                    </button>
                   </div>
 
-                  {/* Account Deletion System Banner */}
-                  <div className="space-y-4 pt-4 border-t border-zinc-200/60">
-                    <h3 className="text-xs font-semibold text-rose-500 uppercase tracking-wider pl-1 flex items-center gap-1">
-                      <AlertTriangle size={14} /> Account Deletion System
-                    </h3>
-
-                    <div className="p-6 bg-rose-50/60 border border-rose-200/80 rounded-[24px] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+                  <div className="mt-auto">
+                    <div className="p-5 border border-rose-100 bg-rose-50/30 rounded-2xl flex items-center justify-between">
                       <div>
-                        <h4 className="text-xs sm:text-sm font-semibold text-rose-950 tracking-tight">Raise Deletion Ticket</h4>
-                        <p className="text-xs text-rose-700/90 mt-0.5 leading-relaxed max-w-xs">
-                          Submit a formal ticket to permanently erase your account, webhooks, and captured data.
-                        </p>
+                        <h4 className="text-sm font-semibold text-rose-950">Danger Zone</h4>
+                        <p className="text-xs text-rose-700/70 mt-0.5">Permanently delete account</p>
                       </div>
-
                       <button
-                        onClick={() => setShowDeletionForm(true)}
-                        className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 shrink-0 hover:scale-105"
+                        onClick={() => setActiveView('delete')}
+                        className="px-4 py-2 bg-white text-rose-600 hover:bg-rose-600 hover:text-white border border-rose-200 hover:border-rose-600 font-semibold text-xs rounded-xl transition-all shadow-sm"
                       >
-                        <Trash2 size={14} /> <span>Raise Ticket</span>
+                        Delete
                       </button>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Ticket Creation Wizard Form */}
-              {showDeletionForm && (
-                <form onSubmit={handleRaiseTicket} className="space-y-6 animate-in fade-in duration-300 flex-1 flex flex-col justify-between">
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between border-b border-rose-100 pb-4">
-                      <div>
-                        <h4 className="text-base font-semibold text-rose-950 tracking-tight">Account Deletion Request</h4>
-                        <p className="text-xs text-zinc-500 mt-0.5">Please let us know why you are leaving so we can improve.</p>
+              {/* --- VIEW: DOCS --- */}
+              {activeView === 'docs' && (
+                <div className="flex-1 flex flex-col overflow-y-auto no-scrollbar p-6 sm:p-8 animate-in fade-in slide-in-from-right-4 duration-300">
+                  <div className="space-y-4">
+                     {[
+                       { title: "Connecting Instagram Account", text: "Ensure your account is a Professional or Business account. Go to Settings > Privacy > Messages and enable 'Allow access to messages'." },
+                       { title: "Setting up your first Trigger", text: "Go to Dashboard > Create Trigger. Select the trigger type (Keyword, Story Reply) and build your flow in the editor." },
+                       { title: "How Follower Gate Works", text: "When enabled, Automixa checks if the user follows you before sending the payload. If they don't, it sends a fallback message asking them to follow." },
+                       { title: "Managing Subscription", text: "You can upgrade or downgrade your plan at any time from the Billing Center. Pro-rated charges apply automatically." }
+                     ].map((doc, idx) => (
+                       <div key={idx} className="bg-white p-5 rounded-2xl border border-zinc-200/80 shadow-sm space-y-2">
+                         <h4 className="text-sm font-semibold text-zinc-900 flex items-center gap-2">
+                            <BookOpen size={14} className="text-indigo-500" />
+                            {doc.title}
+                         </h4>
+                         <p className="text-xs text-zinc-600 leading-relaxed pl-5">{doc.text}</p>
+                       </div>
+                     ))}
+                  </div>
+                </div>
+              )}
+
+              {/* --- VIEW: CHAT --- */}
+              {activeView === 'chat' && (
+                <div className="flex-1 flex flex-col h-full bg-white animate-in fade-in slide-in-from-right-4 duration-300">
+                  <div className="px-6 py-3 border-b border-zinc-100 flex items-center justify-between bg-zinc-50">
+                     <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-md border ${supportTier.color}`}>
+                       {supportTier.label} SLA
+                     </span>
+                     <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1.5">
+                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                        Admin Online
+                     </span>
+                  </div>
+                  
+                  {/* Messages Area */}
+                  <div ref={chatScrollRef} className="flex-1 overflow-y-auto p-6 space-y-4">
+                    {chatMessages.map((msg) => (
+                      <div key={msg.id} className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
+                        <div className={`max-w-[85%] p-3.5 rounded-2xl text-sm font-medium ${
+                          msg.sender === 'user' 
+                            ? 'bg-zinc-900 text-white rounded-tr-sm' 
+                            : 'bg-zinc-100 text-zinc-900 rounded-tl-sm'
+                        }`}>
+                          {msg.text}
+                        </div>
+                        <span className="text-[10px] text-zinc-400 font-semibold mt-1 px-1">{msg.time}</span>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => setShowDeletionForm(false)}
-                        className="px-3 py-1.5 bg-zinc-100 hover:bg-zinc-200 rounded-xl text-xs font-semibold text-zinc-600 transition-all flex items-center gap-1"
-                      >
-                        <ArrowLeft size={14} /> Back
-                      </button>
-                    </div>
+                    ))}
+                  </div>
 
-                    {/* Reason Selection */}
-                    <div className="space-y-3">
-                      <label className="text-xs font-semibold text-zinc-700 block">Select Deletion Reason <span className="text-rose-500">*</span></label>
-                      <div className="grid grid-cols-1 gap-2">
-                        {reasons.map((r) => (
-                          <label
-                            key={r.id}
-                            className={`flex items-center gap-3 p-3 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
-                              selectedReason === r.id ? "bg-rose-50 border-rose-300 text-rose-900 shadow-xs" : "bg-zinc-50/50 border-zinc-200/80 text-zinc-700 hover:bg-zinc-50"
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              name="deletionReason"
-                              value={r.id}
-                              checked={selectedReason === r.id}
-                              onChange={() => setSelectedReason(r.id)}
-                              className="text-rose-600 focus:ring-rose-500"
-                            />
-                            <span>{r.label}</span>
-                          </label>
-                        ))}
-                      </div>
-
-                      {selectedReason === "other" && (
-                        <input
-                          type="text"
-                          placeholder="Please specify your reason..."
-                          value={otherReasonText}
-                          onChange={(e) => setOtherReasonText(e.target.value)}
-                          required
-                          className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl text-xs font-semibold text-zinc-800 outline-none focus:border-rose-400 mt-2"
-                        />
-                      )}
-                    </div>
-
-                    {/* Additional Feedback */}
-                    <div className="space-y-2">
-                      <label className="text-xs font-semibold text-zinc-700 block">How could we improve? (Optional)</label>
-                      <textarea
-                        rows={3}
-                        value={userFeedback}
-                        onChange={(e) => setUserFeedback(e.target.value)}
-                        placeholder="Tell us what was missing or what you didn&apos;t like..."
-                        className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl text-xs font-semibold text-zinc-800 outline-none focus:border-rose-400 resize-none"
+                  {/* Input Area */}
+                  <div className="p-4 sm:p-6 border-t border-zinc-100 bg-white">
+                    <form onSubmit={handleSendChat} className="flex items-center gap-3 bg-zinc-50 p-2 rounded-2xl border border-zinc-200/80 focus-within:border-indigo-400 focus-within:ring-2 ring-indigo-100 transition-all">
+                      <input 
+                        type="text" 
+                        value={chatInput}
+                        onChange={(e) => setChatInput(e.target.value)}
+                        placeholder="Type your message..." 
+                        className="flex-1 bg-transparent px-3 text-sm font-medium outline-none"
                       />
+                      <button type="submit" disabled={!chatInput.trim()} className="w-10 h-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white flex items-center justify-center transition-all shadow-sm">
+                        <Send size={16} />
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              )}
+
+              {/* --- VIEW: EMAIL --- */}
+              {activeView === 'email' && (
+                <div className="flex-1 flex flex-col p-6 sm:p-8 animate-in fade-in slide-in-from-right-4 duration-300">
+                  {emailSent ? (
+                    <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4 animate-in zoom-in duration-300">
+                       <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-2">
+                          <CheckCircle2 size={32} />
+                       </div>
+                       <h3 className="text-xl font-bold text-zinc-900">Email Sent!</h3>
+                       <p className="text-sm text-zinc-500 max-w-xs">Our team will get back to you {supportTier.eta}. Check your inbox soon.</p>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSendEmail} className="h-full flex flex-col justify-between">
+                      <div className="space-y-4">
+                        <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-2xl mb-2 flex items-center gap-3">
+                           <Clock size={20} className="text-blue-500 shrink-0" />
+                           <div>
+                              <p className="text-xs font-semibold text-blue-900">Priority: {supportTier.label}</p>
+                              <p className="text-[11px] text-blue-700/80">Expected reply: {supportTier.eta}</p>
+                           </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                           <label className="text-xs font-semibold text-zinc-700 pl-1">Subject</label>
+                           <input 
+                             type="text"
+                             value={emailSubject}
+                             onChange={(e) => setEmailSubject(e.target.value)}
+                             required
+                             placeholder="What is this regarding?"
+                             className="w-full p-3.5 bg-white border border-zinc-200/80 rounded-xl text-sm font-medium outline-none focus:border-blue-400 shadow-sm"
+                           />
+                        </div>
+
+                        <div className="space-y-1.5">
+                           <label className="text-xs font-semibold text-zinc-700 pl-1">Message</label>
+                           <textarea 
+                             rows={6}
+                             value={emailBody}
+                             onChange={(e) => setEmailBody(e.target.value)}
+                             required
+                             placeholder="Please describe your issue in detail..."
+                             className="w-full p-3.5 bg-white border border-zinc-200/80 rounded-xl text-sm font-medium outline-none focus:border-blue-400 shadow-sm resize-none"
+                           />
+                        </div>
+                      </div>
+
+                      <button 
+                        type="submit" 
+                        disabled={emailSending}
+                        className="mt-6 w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow-md transition-all flex justify-center items-center gap-2"
+                      >
+                        {emailSending ? <RefreshCw size={16} className="animate-spin" /> : <Mail size={16} />}
+                        {emailSending ? "Sending..." : "Send Email"}
+                      </button>
+                    </form>
+                  )}
+                </div>
+              )}
+
+              {/* --- VIEW: DELETE --- */}
+              {activeView === 'delete' && !activeTicket && (
+                <form onSubmit={handleRaiseTicket} className="p-6 sm:p-8 animate-in fade-in slide-in-from-right-4 duration-300 h-full flex flex-col justify-between">
+                  <div className="space-y-6">
+                    <div className="bg-white p-6 rounded-3xl border border-rose-100 shadow-sm">
+                      <h4 className="text-sm font-semibold text-rose-950 mb-1">Why are you leaving?</h4>
+                      <p className="text-xs text-rose-700/80 mb-5">Your feedback helps us improve.</p>
+                      
+                      <div className="space-y-4">
+                        <select 
+                          value={selectedReason} 
+                          onChange={(e) => setSelectedReason(e.target.value)}
+                          className="w-full p-3.5 bg-zinc-50 border border-zinc-200/80 rounded-xl text-sm font-medium text-zinc-900 outline-none focus:border-rose-400 focus:bg-white transition-colors"
+                          required
+                        >
+                          <option value="" disabled>Select a reason...</option>
+                          {reasons.map(r => <option key={r.id} value={r.id}>{r.label}</option>)}
+                        </select>
+
+                        {selectedReason === "other" && (
+                          <input
+                            type="text"
+                            placeholder="Specify reason..."
+                            value={otherReasonText}
+                            onChange={(e) => setOtherReasonText(e.target.value)}
+                            required
+                            className="w-full p-3.5 bg-zinc-50 border border-zinc-200/80 rounded-xl text-sm font-medium text-zinc-900 outline-none focus:border-rose-400 focus:bg-white transition-colors"
+                          />
+                        )}
+
+                        <textarea
+                          rows={3}
+                          value={userFeedback}
+                          onChange={(e) => setUserFeedback(e.target.value)}
+                          placeholder="How could we improve? (Optional)"
+                          className="w-full p-3.5 bg-zinc-50 border border-zinc-200/80 rounded-xl text-sm font-medium text-zinc-900 outline-none focus:border-rose-400 focus:bg-white resize-none transition-colors"
+                        />
+                      </div>
                     </div>
 
-                    <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200/80 text-[11px] text-amber-800 font-medium flex items-start gap-2.5">
-                      <AlertTriangle size={16} className="text-amber-600 shrink-0 mt-0.5" />
-                      <span>Submitting this ticket will notify our compliance team. All data will be purged within 24-48 hours.</span>
+                    <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200/80 text-xs text-amber-800 font-medium flex gap-3 shadow-sm">
+                      <AlertTriangle size={18} className="text-amber-600 shrink-0" />
+                      <span>All data, active campaigns, and webhooks will be permanently purged within 24-48 hours.</span>
                     </div>
                   </div>
 
-                  {/* Actions */}
-                  <div className="pt-4 border-t border-zinc-200/60 flex items-center justify-end gap-3 mt-6">
-                    <button
-                      type="button"
-                      onClick={() => setShowDeletionForm(false)}
-                      className="px-5 py-2.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-semibold text-xs rounded-xl transition-all"
-                    >
-                      Cancel
-                    </button>
+                  <div className="flex items-center gap-3 mt-auto pt-6">
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="px-6 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-md shadow-rose-600/20 transition-all flex items-center justify-center gap-2"
+                      className="w-full py-3.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
                     >
-                      {isSubmitting ? "Submitting Ticket..." : "Submit Ticket"}
+                      {isSubmitting ? "Submitting..." : "Submit Ticket"}
                     </button>
                   </div>
                 </form>
               )}
 
-              {/* Active Ticket Display View */}
+              {/* --- VIEW: ACTIVE TICKET --- */}
               {activeTicket && (
-                <div className="space-y-6 animate-in fade-in duration-300 flex-1 flex flex-col justify-between">
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between border-b border-rose-100 pb-4">
-                      <div>
-                        <span className="text-[10px] font-semibold text-rose-600 uppercase tracking-wider bg-rose-100 px-2.5 py-1 rounded-full">
-                          Active Ticket
-                        </span>
-                        <h4 className="text-xl font-semibold text-rose-950 mt-2">{activeTicket.id}</h4>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-xs">
-                          <Clock size={12} className="animate-spin" /> {activeTicket.status}
-                        </span>
-                      </div>
+                <div className="p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-300 h-full flex flex-col justify-center">
+                  <div className="bg-white border border-rose-200 p-8 rounded-3xl shadow-xl shadow-rose-500/5 text-center space-y-6">
+                    <div className="w-20 h-20 mx-auto bg-rose-50 rounded-[24px] flex items-center justify-center text-rose-600 mb-2 border border-rose-100">
+                      <Clock size={32} className="animate-pulse" />
+                    </div>
+                    
+                    <div>
+                      <span className="text-[10px] font-bold text-rose-500 tracking-wider uppercase bg-rose-50 px-3 py-1 rounded-full">Active Ticket</span>
+                      <h3 className="text-2xl font-bold text-zinc-900 mt-4 tracking-tight">{activeTicket.id}</h3>
+                      <p className="text-sm text-zinc-500 font-medium mt-1">Data purge in progress</p>
                     </div>
 
-                    <div className="p-6 bg-rose-50/50 border border-rose-200/80 rounded-[28px] space-y-4">
-                      <div className="flex justify-between text-xs">
-                        <span className="text-zinc-500">Selected Reason:</span>
-                        <span className="font-semibold text-zinc-900 max-w-[220px] truncate">{activeTicket.reason}</span>
+                    <div className="bg-zinc-50 p-4 rounded-2xl border border-zinc-100 text-left space-y-3">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-zinc-500 font-medium">Reason</span>
+                        <span className="font-semibold text-zinc-900 max-w-[150px] truncate">{activeTicket.reason}</span>
                       </div>
-                      <div className="flex justify-between text-xs">
-                        <span className="text-zinc-500">Estimated Purge Time:</span>
-                        <span className="font-semibold text-zinc-900">{activeTicket.estimatedCompletion}</span>
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-zinc-500 font-medium">ETA</span>
+                        <span className="font-semibold text-amber-600">{activeTicket.estimatedCompletion}</span>
                       </div>
-                      {activeTicket.feedback && (
-                        <div className="pt-3 border-t border-rose-100/60">
-                          <span className="text-zinc-500 text-xs block mb-1">Feedback Provided:</span>
-                          <p className="text-xs text-zinc-700 italic bg-white/80 p-3 rounded-xl border border-rose-100/50 leading-relaxed">
-                            &ldquo;{activeTicket.feedback}&rdquo;
-                          </p>
-                        </div>
-                      )}
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-zinc-200/60 flex items-center justify-between gap-3 mt-6">
+                  <div className="flex flex-col gap-3 mt-8">
                     <button
                       onClick={() => setActiveTicket(null)}
-                      className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-semibold text-xs rounded-xl transition-all flex items-center gap-1"
+                      className="w-full py-4 bg-zinc-950 hover:bg-zinc-800 text-white font-semibold text-sm rounded-2xl shadow-xl flex items-center justify-center gap-2 transition-all"
                     >
-                      <ArrowLeft size={14} /> Back to Help
-                    </button>
-                    <button
-                      onClick={handleCancelTicket}
-                      className="px-5 py-2.5 bg-zinc-950 hover:bg-zinc-800 text-white font-semibold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5"
-                    >
-                      <RefreshCw size={12} /> Cancel Deletion Ticket
+                      <RefreshCw size={16} /> Cancel Request
                     </button>
                   </div>
                 </div>
@@ -333,9 +493,9 @@ export default function HelpSlider({ isOpen, onClose }) {
             </div>
 
             {/* Footer */}
-            <div className="p-6 border-t border-zinc-200/60 bg-zinc-50/50 flex items-center justify-between text-xs text-zinc-500 font-semibold shrink-0">
-              <span>Automixa v2.5</span>
-              <a href="https://automixa.com/privacy" target="_blank" rel="noreferrer" className="hover:underline">Privacy Policy</a>
+            <div className="px-6 py-4 sm:px-8 border-t border-zinc-200/60 bg-white flex items-center justify-between text-[11px] text-zinc-400 font-semibold shrink-0">
+              <span>Automixa Support</span>
+              <a href="#" className="hover:text-zinc-900 transition-colors">Privacy Policy</a>
             </div>
 
           </motion.div>

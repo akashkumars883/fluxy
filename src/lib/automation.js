@@ -225,11 +225,11 @@ export async function processAutomation(senderId, text, type, recipientId, comme
 
       userPlan = subData?.[0]?.plan_id || subData?.[0]?.plan || "free";
       const planLimits = {
-        free: 25000,
-        creator_pro: 250000,
-        viral_scale: 2000000
+        free: 1000,
+        creator_pro: 15000,
+        viral_scale: 50000
       };
-      const maxReplies = planLimits[userPlan] || 25000;
+      const maxReplies = planLimits[userPlan] || 1000;
 
       if ((consumedCount || 0) >= maxReplies) {
         console.log(`🚫 [PLAN LIMIT EXCEEDED] Quota limit of ${maxReplies} hit for user ID: ${automation.user_id}. Auto-reply blocked.`);

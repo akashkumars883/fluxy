@@ -8,6 +8,7 @@ CheckCircle2,
 Cpu,
 Download,
 Home,
+Link2,
 Lock as LucideLock,
 Plus,
 Settings,
@@ -32,6 +33,7 @@ import OnboardingModal from "@/components/dashboard/OnboardingModal";
 import PartnerDashboard from "@/components/dashboard/PartnerDashboard";
 import PwaInstallBanner from "@/components/dashboard/PwaInstallBanner";
 import SettingsDashboard from "@/components/dashboard/SettingsDashboard";
+import SmartBio from "@/components/dashboard/SmartBio";
 import SubscriptionModal from "@/components/dashboard/SubscriptionModal";
 import { CampaignBuilderWorkspace,TriggerInputModal,TriggerList } from "@/components/dashboard/TriggerManager";
 import Loader from "@/components/ui/Loader";
@@ -283,8 +285,7 @@ export default function Dashboard() {
   }, [selectedAccount, setRealtimeStats]);
 
   const handleCreateTriggerStart = (templateId = "custom", title = "New Campaign") => {
-    // TEMP: Allowing free users more than 5 triggers for promotion
-    if (currentPlan === "free" && triggersList.length >= 100) {
+    if (currentPlan === "free" && triggersList.length >= 5) {
       setIsCreateModalOpen(false);
       setIsSubscriptionOpen(true);
       return;
@@ -296,15 +297,11 @@ export default function Dashboard() {
   };
 
   const handleAddTrigger = async (keyword, response, options = {}) => {
-    // TEMP: Allowing free users more than 5 triggers
-    if (currentPlan === "free" && triggersList.length >= 100) {
+    if (currentPlan === "free" && triggersList.length >= 5) {
       setIsSubscriptionOpen(true);
       return;
     }
 
-    const supabase = createClient();
-    
-    // Prepare the trigger data
     const triggerPayload = {
       automation_id: selectedAccount.id,
       keyword: keyword.trim().toUpperCase(),
@@ -324,21 +321,29 @@ export default function Dashboard() {
     };
 
     try {
-      const { data, error } = await supabase
-        .from("triggers")
-        .insert([triggerPayload])
-        .select()
-        .single();
+      const res = await fetch("/api/triggers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(triggerPayload)
+      });
 
-      if (error) throw error;
+      const result = await res.json();
 
-      if (data) {
-        setTriggersList(prev => [data, ...prev]);
+      if (!res.ok) {
+        if (res.status === 403) {
+          setIsSubscriptionOpen(true);
+          return;
+        }
+        throw new Error(result.error || result.message || "Failed to create trigger");
+      }
+
+      if (result.success && result.trigger) {
+        setTriggersList(prev => [result.trigger, ...prev]);
         setBuilderActive(false);
       }
     } catch (err) {
       console.error("Error adding trigger:", err);
-      setTriggerError("Failed to save trigger. Please try again.");
+      alert(err.message || "Failed to save trigger. Please try again.");
     }
   };
 
@@ -424,6 +429,7 @@ export default function Dashboard() {
     { id: "home", label: selectedAccount ? "Overview" : "Home", icon: Home, reqPlan: "free" },
     { id: "automations", label: "Automations", icon: Cpu, reqPlan: "free" },
     { id: "audience", label: "Audience", icon: Users, reqPlan: "free" },
+    { id: "smart_bio", label: "Smart Bio", icon: Link2, reqPlan: "free" },
     { id: "analytics", label: "Analytics", icon: BarChart2, reqPlan: "free" },
     { id: "partner", label: "Partner Program", icon: Sparkles, reqPlan: "creator_pro" },
     { id: "settings", label: "Settings", icon: Settings, reqPlan: "free" },
@@ -445,7 +451,7 @@ export default function Dashboard() {
     };
   });
 
-  const maxQuota = currentPlan === "viral_scale" ? 2000000 : currentPlan === "creator_pro" ? 250000 : 25000;
+  const maxQuota = currentPlan === "viral_scale" ? 50000 : currentPlan === "creator_pro" ? 15000 : 1000;
   const usedQuota = realtimeStats?.autoReplies || 1420;
   const quotaPercent = Math.min(100, Math.round((usedQuota / maxQuota) * 100));
 
@@ -498,6 +504,7 @@ export default function Dashboard() {
                         {activeTab === "home" ? "Overview"
                           : activeTab === "automations" ? "Automations"
                           : activeTab === "audience" ? "Audience"
+                          : activeTab === "smart_bio" ? "Smart Bio"
                           : activeTab === "crm" ? "CRM"
                           : activeTab === "analytics" ? "Analytics"
                           : activeTab === "settings" ? "Settings"
@@ -657,6 +664,7 @@ export default function Dashboard() {
               )}
 
               {activeTab === "audience" && <AudienceCRM accountId={selectedAccount.id} history={realtimeHistory} currentPlan={currentPlan} />}
+              {activeTab === "smart_bio" && <SmartBio accountId={selectedAccount.id} />}
               {activeTab === "crm" && <AudienceCRM accountId={selectedAccount.id} history={realtimeHistory} currentPlan={currentPlan} />}
               {activeTab === "analytics" && <AnalyticsDashboard account={selectedAccount} realtimeStats={realtimeStats} history={realtimeHistory} triggers={triggersList} />}
               {activeTab === "settings" && <SettingsDashboard account={selectedAccount} currentPlan={currentPlan} realtimeStats={realtimeStats} onSubscriptionClick={() => setIsSubscriptionOpen(true)} />}
