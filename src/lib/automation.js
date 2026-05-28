@@ -7,6 +7,7 @@ import { getLinkPreview } from "./scraper.js";
 import { matchIntent, generatePersonalizedResponse } from "./ai.js";
 import { sendLimitExceededEmail } from "./resend.js";
 import { SmartGuard } from "./smartguard.js";
+import { validatePublicWebhookUrl } from "./webhook-url.js";
 
 const supabaseAdmin = createAdminClient();
 
@@ -60,7 +61,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     ({ data: automationRows, error: authError } = await supabaseAdmin
       .from("automations")
       .select("*")
-      .or(`page_id.eq.${recipientId},ig_business_id.eq.${recipientId}`)
+      .or(`page_id.eq.${recipientId},ig_business_id.eq.${recipientId},metadata->>facebook_page_id.eq.${recipientId}`)
       .limit(1));
 
     if (authError || !automationRows?.length) {
@@ -347,7 +348,26 @@ export async function processAutomation(senderId, text, type, recipientId, comme
           payload: match.id
         }]
       };
-      await MetaService.sendPrivateReply(commentId, introCardPayload, pageAccessToken);
+      const privateReplyResult = await MetaService.sendPrivateReply(commentId, introCardPayload, pageAccessToken);
+      if (!privateReplyResult.success) {
+        const requiresMessageAccess =
+          privateReplyResult.error?.includes("disabled access to Instagram Direct messages");
+        if (logData?.id) {
+          const { error: updateError } = await supabaseAdmin.from("automation_history")
+            .update({
+              status: requiresMessageAccess ? "ACTION_REQUIRED" : "FAILED",
+              metadata: {
+                funnel_complete: false,
+                error: privateReplyResult.error,
+                action_required: requiresMessageAccess ? "enable_instagram_message_access" : null
+              }
+            })
+            .eq("id", logData.id);
+          if (updateError) {
+            console.error("❌ Failed updating private reply error:", updateError.message);
+          }
+        }
+      }
 
       // B. Public Comment Reply with Delay (7-10s for Premium, 1s for Free)
       if (userPlan !== "free") {
@@ -524,12 +544,17 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       };
 
       console.log(`📡 [Outbound Webhook] Dispatching payload to: ${webhookUrlStr}`);
-      fetch(webhookUrlStr, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(webhookPayload)
-      }).then(res => {
-        if (!res.ok) {
+      const validatedWebhook = await validatePublicWebhookUrl(webhookUrlStr);
+      if (!validatedWebhook.ok) {
+        console.warn(`[Outbound Webhook] Blocked invalid URL: ${validatedWebhook.error}`);
+      } else {
+        console.log(`[Outbound Webhook] Dispatching payload to: ${validatedWebhook.url}`);
+        fetch(validatedWebhook.url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(webhookPayload)
+        }).then(res => {
+          if (!res.ok) {
           console.warn(`⚠️ [Outbound Webhook] Received error status: ${res.status}`);
         } else {
           console.log(`✅ [Outbound Webhook] Delivered successfully to: ${webhookUrlStr}`);
@@ -537,6 +562,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       }).catch(fetchErr => {
         console.error(`❌ [Outbound Webhook] Failed to deliver payload:`, fetchErr.message);
       });
+      }
     }
 
     return { success: true };
