@@ -653,76 +653,53 @@ export default function Dashboard() {
               {activeTab === "partner" && <PartnerDashboard currentPlan={currentPlan} />}
             </div>
           ) : (
-            <div className="space-y-10">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200/50 pb-8">
+            <div className="flex flex-col h-[calc(100vh-140px)] sm:h-[calc(100vh-160px)]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200/50 pb-6 shrink-0">
                 <div>
-                  <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-2 text-zinc-950">
+                  <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2 text-zinc-950">
                     Welcome to Automixa
                   </h1>
-                  <p className="text-zinc-600 text-sm sm:text-base font-normal">
-                    Connect your Instagram account to activate premium automation features.
+                  <p className="text-zinc-500 text-sm sm:text-base font-normal">
+                    Connect your Facebook or Instagram account to activate automation features.
                   </p>
                 </div>
-                <div className="flex flex-col sm:flex-row items-center gap-3">
+                <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
                   <button
                     onClick={handleConnectClick}
-                    className="px-12 py-4 bg-[#6366F1] text-white rounded-xl text-[12px] font-semibold shadow-2xl transition-all flex items-center gap-2 hover:scale-[1.02]"
+                    className="w-full sm:w-auto px-8 py-3.5 bg-[#6366F1] text-white rounded-xl text-sm font-bold shadow-[0_8px_30px_-8px_rgba(99,102,241,0.5)] transition-all flex items-center justify-center gap-2 hover:scale-[1.02]"
                   >
-                    <Plus size={16} strokeWidth={2} /> Connect Instagram
+                    <Plus size={18} strokeWidth={2.5} /> Connect Account
                   </button>
                 </div>
               </div>
 
-              <div className="bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-[32px] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl shadow-zinc-100/40 transition-all duration-500">
-                <div className="space-y-4 max-w-xl">
-                  <div className="flex items-center gap-2 text-[#6366F1]">
-                    <LucideLock size={18} />
-                    <span className="text-xs font-bold uppercase tracking-widest">Premium Feature Locked</span>
-                  </div>
-                  <h2 className="text-2xl sm:text-3xl font-semibold text-zinc-900 tracking-tight leading-tight">
-                    Start automating your Instagram profile today.
-                  </h2>
-                  <p className="text-zinc-500 text-xs sm:text-sm font-normal leading-relaxed">
-                    Connect your account to enable keyword-based auto-replies for comments and DMs. Grow your leads while you sleep.
-                  </p>
-                </div>
-                <div className="flex items-center gap-4 shrink-0">
-                   <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 border border-indigo-100">
-                      <Cpu size={24} />
-                   </div>
-                   <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600 border border-amber-100">
-                      <Sparkles size={24} />
-                   </div>
-                   <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 border border-emerald-100">
-                      <MessageSquare size={24} />
-                   </div>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl sm:text-2xl font-semibold text-zinc-900 tracking-tight">Explore Pre-built Templates</h2>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="flex-1 flex flex-col justify-center min-h-0 pt-4 pb-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                   {[
-                    { icon: MessageSquare, title: "Comment-to-DM AutoReply", desc: "Instantly send a custom DM when a user comments a specific keyword on your post." },
-                    { icon: Sparkles, title: "Story Mention Responder", desc: "Boost loyalty by instantly replying with a personalized DM whenever a follower mentions you." },
-                    { icon: Cpu, title: "24/7 FAQ Chatbot", desc: "Instantly resolve typical user questions regarding pricing, shipping, or hours in Instagram DMs." },
-                  ].map(({ icon: Icon, title, desc }) => (
-                    <div key={title} className="bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-[32px] p-6 lg:p-8 flex flex-col justify-between shadow-xl shadow-zinc-100/40 hover:shadow-2xl transition-all duration-500 group">
-                      <div>
-                        <div className="w-14 h-14 bg-[#6366F1]/10 text-[#6366F1] border border-[#6366F1]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-all shadow-sm">
-                          <Icon size={24} />
+                    { icon: MessageSquare, title: "Comment-to-DM", desc: "Auto-reply to comments and instantly send custom DMs when a user comments a specific keyword.", color: "indigo" },
+                    { icon: Sparkles, title: "Story Mentions", desc: "Boost engagement by instantly replying with a personalized DM whenever a follower mentions you in their story.", color: "pink" },
+                    { icon: Cpu, title: "Smart FAQ Chatbot", desc: "Resolve common user questions regarding pricing, shipping, or hours 24/7 through Instagram DMs automatically.", color: "emerald" },
+                  ].map(({ icon: Icon, title, desc, color }) => (
+                    <div key={title} className="bg-white border border-zinc-200/80 rounded-[28px] p-6 flex flex-col shadow-xl shadow-zinc-100/40 hover:shadow-2xl transition-all duration-300 group h-full">
+                      <div className="flex-1">
+                        <div className={`w-12 h-12 rounded-[18px] flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110 shadow-sm ${
+                          color === 'indigo' ? 'bg-indigo-50 text-indigo-600 border border-indigo-100' :
+                          color === 'pink' ? 'bg-pink-50 text-pink-600 border border-pink-100' :
+                          'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                        }`}>
+                          <Icon size={22} strokeWidth={2} />
                         </div>
-                        <h3 className="text-xl font-semibold text-zinc-900 mb-2 leading-snug tracking-tight">{title}</h3>
-                        <p className="text-xs sm:text-sm text-zinc-600 font-normal leading-relaxed mb-8">{desc}</p>
+                        <h3 className="text-lg font-bold text-zinc-900 mb-2 leading-snug tracking-tight">{title}</h3>
+                        <p className="text-sm text-zinc-500 font-normal leading-relaxed">{desc}</p>
                       </div>
-                      <button
-                        onClick={handleConnectClick}
-                        className="w-full bg-white border border-zinc-200/80 text-zinc-700 font-semibold text-xs sm:text-sm py-3.5 rounded-2xl flex items-center justify-center gap-1.5 group-hover:bg-[#6366F1] group-hover:text-white group-hover:border-[#6366F1] shadow-sm transition-all duration-300"
-                      >
-                        <LucideLock size={14} /> Connect to Use
-                      </button>
+                      <div className="mt-5 pt-4 border-t border-zinc-100">
+                        <button
+                          onClick={handleConnectClick}
+                          className="w-full text-zinc-400 font-semibold text-[13px] py-2.5 rounded-xl flex items-center justify-center gap-2 group-hover:text-[#6366F1] group-hover:bg-indigo-50/50 transition-all duration-300"
+                        >
+                          <LucideLock size={14} /> Connect to Unlock
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
