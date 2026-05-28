@@ -161,7 +161,7 @@ export default function AudienceCRM({ history = [], currentPlan = "free" }) {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 w-full max-w-[1400px] mx-auto pb-10">
+    <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700 w-full max-w-[1400px] mx-auto pb-8">
 
       {/* Stats Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -170,7 +170,7 @@ export default function AudienceCRM({ history = [], currentPlan = "free" }) {
           return (
             <div
               key={card.label}
-              className="bg-white rounded-2xl p-6 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5"
+              className="bg-white rounded-[24px] p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5"
             >
               <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#6366F1]/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
               <div className="flex items-center justify-between mb-4 relative z-10">
@@ -192,7 +192,7 @@ export default function AudienceCRM({ history = [], currentPlan = "free" }) {
       </div>
 
       {/* Main Content: Full width user list */}
-      <div className="bg-white border border-zinc-200/80 rounded-[24px] p-6 sm:p-8 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col relative overflow-hidden">
+      <div className="bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#6366F1]/3 to-transparent rounded-full -mr-32 -mt-32 pointer-events-none" />
 
         {/* Header */}
@@ -216,7 +216,7 @@ export default function AudienceCRM({ history = [], currentPlan = "free" }) {
                 placeholder="Search by username or keyword..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-zinc-50 hover:bg-zinc-100/80 focus:bg-white border border-zinc-200 focus:border-[#6366F1]/50 rounded-xl pl-10 pr-4 py-2.5 text-xs font-medium text-zinc-800 placeholder:text-zinc-400 transition-all outline-none"
+                className="w-full bg-zinc-50/80 hover:bg-white border border-zinc-200 hover:border-zinc-300 rounded-[14px] pl-10 pr-4 py-2.5 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 outline-none"
               />
             </div>
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">

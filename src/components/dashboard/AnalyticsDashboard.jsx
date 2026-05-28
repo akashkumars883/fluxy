@@ -34,7 +34,7 @@ export default function AnalyticsDashboard({ realtimeStats, history = [], trigge
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 w-full max-w-[1400px] mx-auto">
+    <div className="space-y-4 animate-in fade-in duration-500 w-full max-w-[1400px] mx-auto pb-8">
       
       {/* 3 Simple Clean Metrics (ManyChat style) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -47,22 +47,22 @@ export default function AnalyticsDashboard({ realtimeStats, history = [], trigge
           return (
             <div 
               key={idx} 
-              className={`backdrop-blur-3xl border rounded-xl p-6 flex flex-col justify-between shadow-xl shadow-zinc-200/10 hover:shadow-2xl transition-all duration-500 group cursor-default relative overflow-hidden hover:-translate-y-1 ${card.bgClass}`}
+              className={`bg-white rounded-[24px] p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5`}
             >
               <div className="absolute top-0 right-0 w-24 h-24 bg-[#6366F1]/5 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
               
               <div className="flex items-center justify-between mb-6 relative z-10">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-lg backdrop-blur-md transition-all duration-500 group-hover:scale-110 ${card.color}`}>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-sm transition-all duration-500 group-hover:scale-110 ${card.color}`}>
                   <Icon size={18} />
                 </div>
                 <span className="text-[9px] font-semibold px-3 py-1 rounded-full shadow-sm bg-zinc-950 text-white border border-zinc-900">{card.desc}</span>
               </div>
               
               <div className="space-y-0.5 relative z-10">
-                <span className="text-3xl sm:text-4xl font-semibold text-zinc-950 tracking-tighter block group-hover:text-[#6366F1] transition-colors duration-300">
+                <span className="text-3xl sm:text-4xl font-bold text-zinc-950 tracking-tighter block group-hover:text-[#6366F1] transition-colors duration-300">
                   {card.value}
                 </span>
-                <span className="text-[12px] font-semibold text-zinc-400 block mt-2">
+                <span className="text-[12px] font-semibold text-zinc-500 tracking-wide block mt-1">
                   {card.title}
                 </span>
               </div>
@@ -72,9 +72,9 @@ export default function AnalyticsDashboard({ realtimeStats, history = [], trigge
       </div>
 
       {/* Simple Active Campaigns Breakdown */}
-      <div className="bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-xl p-6 sm:p-8 shadow-xl shadow-zinc-100/40 space-y-6">
+      <div className="bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col relative overflow-hidden space-y-4">
         <div className="flex items-center justify-between border-b border-zinc-200/50 pb-4">
-          <h3 className="text-lg font-semibold text-zinc-900 tracking-tight">Campaign Breakdown</h3>
+          <h3 className="text-lg font-bold text-zinc-950 tracking-tight">Campaign Breakdown</h3>
           <span className="text-xs font-semibold text-[#6366F1] bg-[#6366F1]/10 px-3 py-1 rounded-full shadow-sm">Live</span>
         </div>
 
@@ -91,7 +91,7 @@ export default function AnalyticsDashboard({ realtimeStats, history = [], trigge
             </thead>
             <tbody className="divide-y divide-zinc-200/30">
               {currentData.campaigns.map((c, i) => (
-                <tr key={i} className="hover:bg-white/60 transition-all group">
+                <tr key={i} className="hover:bg-zinc-50 transition-all group">
                   <td className="py-4 pl-4">
                     <h4 className="text-xs sm:text-sm font-semibold text-zinc-900">{c.name}</h4>
                   </td>

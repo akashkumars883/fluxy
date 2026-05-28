@@ -128,13 +128,13 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   }, [account, webhookUrl, webhookEnabled, updateSelectedAccount]);
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 w-full max-w-[1400px] mx-auto pb-12">
+    <div className="space-y-4 animate-in fade-in duration-500 w-full max-w-[1400px] mx-auto pb-8">
 
       {/* Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         
         {/* BENTO CARD 1: Connected Instagram Account */}
-        <div className="md:col-span-1 bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-2xl p-6 sm:p-8 shadow-xl shadow-zinc-100/30 flex flex-col justify-between hover:border-[#6366F1]/20 transition-all duration-300 relative overflow-hidden group min-h-[220px]">
+        <div className="md:col-span-1 bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 flex flex-col justify-between hover:shadow-2xl hover:shadow-[#6366F1]/5 hover:border-[#6366F1]/20 transition-all duration-500 relative overflow-hidden group min-h-[220px]">
           <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full -mr-24 -mt-24 pointer-events-none group-hover:scale-110 transition-all duration-500" />
           
           <div className="space-y-4">
@@ -192,7 +192,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
         </div>
 
         {/* BENTO CARD 2: API Usage Quota */}
-        <div className="md:col-span-1 bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-2xl p-6 sm:p-8 shadow-xl shadow-zinc-100/30 flex flex-col justify-between hover:border-[#6366F1]/20 transition-all duration-300 relative overflow-hidden group min-h-[220px]">
+        <div className="md:col-span-1 bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 flex flex-col justify-between hover:shadow-2xl hover:shadow-[#6366F1]/5 hover:border-[#6366F1]/20 transition-all duration-500 relative overflow-hidden group min-h-[220px]">
           <div className="absolute top-0 right-0 w-48 h-48 bg-[#6366F1]/5 rounded-full -mr-24 -mt-24 pointer-events-none group-hover:scale-110 transition-all duration-500" />
           
           <div className="space-y-4">
@@ -227,7 +227,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
         </div>
 
         {/* BENTO CARD 3: Email Notifications */}
-        <div className="md:col-span-1 bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-2xl p-6 sm:p-8 shadow-xl shadow-zinc-100/30 flex flex-col justify-between hover:border-[#6366F1]/20 transition-all duration-300 relative overflow-hidden group min-h-[220px]">
+        <div className="md:col-span-1 bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 flex flex-col justify-between hover:shadow-2xl hover:shadow-[#6366F1]/5 hover:border-[#6366F1]/20 transition-all duration-500 relative overflow-hidden group min-h-[220px]">
           <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/5 rounded-full -mr-24 -mt-24 pointer-events-none group-hover:scale-110 transition-all duration-500" />
           
           <div className="space-y-4 w-full">
@@ -265,7 +265,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
         </div>
 
         {/* BENTO CARD 4: Team Collaboration (col-span-3) */}
-        <div className="md:col-span-3 bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-2xl p-6 sm:p-8 shadow-xl shadow-zinc-100/40 space-y-6 hover:border-[#6366F1]/20 transition-all duration-300 relative overflow-hidden group">
+        <div className="md:col-span-3 bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 space-y-4 hover:shadow-2xl hover:shadow-[#6366F1]/5 hover:border-[#6366F1]/20 transition-all duration-500 relative overflow-hidden group">
           <div className="border-b border-zinc-200/50 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
@@ -285,12 +285,12 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
                 placeholder="collaborator@email.com"
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
-                className="flex-1 bg-white border border-zinc-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-zinc-800 placeholder-zinc-400 focus:outline-none focus:border-[#6366F1] transition-all min-w-[180px]"
+                className="flex-1 bg-zinc-50/80 hover:bg-white border border-zinc-200 hover:border-zinc-300 rounded-[14px] px-4 py-2.5 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 outline-none min-w-[180px]"
               />
               <select
                 value={inviteRole}
                 onChange={(e) => setInviteRole(e.target.value)}
-                className="bg-white border border-zinc-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-zinc-700 focus:outline-none focus:border-[#6366F1] transition-all cursor-pointer"
+                className="bg-zinc-50/80 hover:bg-white border border-zinc-200 hover:border-zinc-300 rounded-[14px] px-3 py-2.5 text-[13px] font-medium text-zinc-900 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 outline-none cursor-pointer"
               >
                 <option value="viewer">Viewer</option>
                 <option value="editor">Editor</option>
@@ -299,7 +299,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
               <button
                 type="submit"
                 disabled={isInviting}
-                className="px-5 py-2.5 bg-zinc-950 hover:bg-[#6366F1] disabled:opacity-50 text-white rounded-xl text-sm font-semibold transition-all shrink-0 flex items-center gap-1.5 hover:scale-105 h-[38px]"
+                className="px-5 py-2.5 bg-zinc-950 hover:bg-[#6366F1] disabled:opacity-50 text-white rounded-[14px] text-sm font-semibold transition-all shrink-0 flex items-center gap-1.5 hover:scale-105 h-[42px]"
               >
                 {isInviting ? "Inviting..." : "Invite"}
                 <UserPlus size={14} />
@@ -315,13 +315,13 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
                 <span>Loading team members...</span>
               </div>
             ) : !workspaceMembers || workspaceMembers.length === 0 ? (
-              <div className="py-12 text-center border border-dashed border-zinc-200 rounded-xl bg-white/50">
+              <div className="py-12 text-center border border-dashed border-zinc-200 rounded-[20px] bg-white/50">
                 <Users size={32} className="mx-auto text-zinc-300 mb-2" />
                 <h4 className="text-sm font-bold text-zinc-800">No collaborators yet</h4>
                 <p className="text-xs text-zinc-400 mt-1">Invite team members to work together on this workspace.</p>
               </div>
             ) : (
-              <div className="overflow-hidden border border-zinc-200/80 rounded-xl bg-white shadow-sm">
+              <div className="overflow-hidden border border-zinc-200/80 rounded-[20px] bg-white shadow-sm">
                 <div className="overflow-x-auto no-scrollbar">
                   <table className="w-full text-left border-collapse">
                     <thead>
@@ -391,7 +391,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
         </div>
 
         {/* BENTO CARD 5: Outbound Webhooks Integration */}
-        <div className="md:col-span-3 bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-2xl p-6 sm:p-8 shadow-xl shadow-zinc-100/40 space-y-6 hover:border-[#6366F1]/20 transition-all duration-300 relative overflow-hidden group">
+        <div className="md:col-span-3 bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 space-y-4 hover:shadow-2xl hover:shadow-[#6366F1]/5 hover:border-[#6366F1]/20 transition-all duration-500 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full -mr-32 -mt-32 pointer-events-none group-hover:scale-110 transition-all duration-500" />
           
           <div className="border-b border-zinc-200/50 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -433,14 +433,14 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
                 placeholder="https://hooks.zapier.com/hooks/catch/12345/abcde/"
                 value={webhookUrl}
                 onChange={(e) => setWebhookUrl(e.target.value)}
-                className="flex-1 bg-white border border-zinc-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-zinc-800 placeholder-zinc-400 focus:outline-none focus:border-[#6366F1] transition-all min-w-[280px]"
+                className="flex-1 bg-zinc-50/80 hover:bg-white border border-zinc-200 hover:border-zinc-300 rounded-[14px] px-4 py-2.5 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 outline-none min-w-[280px]"
               />
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={handleTestWebhook}
                   disabled={isTestingWebhook || !webhookUrl}
-                  className="px-5 py-2.5 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 disabled:opacity-50 text-zinc-700 rounded-xl text-sm font-semibold transition-all shrink-0 flex items-center gap-1.5"
+                  className="px-5 py-2.5 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 disabled:opacity-50 text-zinc-700 rounded-[14px] text-sm font-semibold transition-all shrink-0 flex items-center gap-1.5 h-[42px]"
                 >
                   {isTestingWebhook ? (
                     <>

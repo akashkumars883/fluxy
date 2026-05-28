@@ -132,14 +132,14 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 w-full max-w-[1400px] mx-auto pb-10">
+    <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700 w-full max-w-[1400px] mx-auto pb-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {metricCards.map((card) => {
           const Icon = card.icon;
           return (
             <div 
               key={card.label}
-              className={`backdrop-blur-3xl rounded-2xl p-6 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden bg-white hover:-translate-y-0.5`}
+              className="bg-white rounded-[24px] p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5"
             >
               <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#6366F1]/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
               
@@ -162,10 +162,10 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
         })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
         
         {/* Left Column: Active Automations */}
-        <div className="lg:col-span-2 bg-white border border-zinc-200/80 rounded-[24px] p-6 sm:p-8 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col relative overflow-hidden">
+        <div className="lg:col-span-2 bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col relative overflow-hidden">
           <div className="flex items-center justify-between mb-8 relative z-10 shrink-0 border-b border-zinc-100 pb-6">
             <div className="space-y-1.5">
               <h3 className="font-bold text-2xl sm:text-3xl text-zinc-950 tracking-tight flex items-center gap-2">
@@ -220,7 +220,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
         </div>
 
         {/* Right Column: Live Feed */}
-        <div className="bg-white border border-zinc-200/80 rounded-[24px] p-6 sm:p-8 shadow-xl shadow-zinc-100/40 hover:shadow-2xl transition-all duration-500 flex flex-col relative h-[480px]">
+        <div className="bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-100/40 hover:shadow-2xl transition-all duration-500 flex flex-col relative h-[480px]">
           <div className="flex items-center justify-between mb-6 border-b border-zinc-100 pb-6 shrink-0">
             <div className="space-y-1.5">
               <h3 className="font-bold text-xl sm:text-2xl text-zinc-950 tracking-tight flex items-center gap-2">

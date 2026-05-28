@@ -81,7 +81,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-xl bg-white border border-zinc-200/60 rounded-[28px] shadow-2xl p-5 sm:p-8 flex flex-col gap-6"
+            className="relative w-full max-w-xl bg-white border border-zinc-200/60 rounded-[24px] sm:rounded-[28px] shadow-2xl p-4 sm:p-8 flex flex-col gap-4 sm:gap-6"
           >
             <div className="flex items-center justify-between border-b border-zinc-100 pb-4 shrink-0">
               <div>
@@ -96,21 +96,21 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
               </button>
             </div>
 
-            <div className="py-1 px-1 flex-1 space-y-6">
-              <div className="space-y-3">
+            <div className="py-1 flex-1 space-y-4">
+              <div className="space-y-2 sm:space-y-3">
                 <label className="text-[12px] font-medium text-zinc-400 ml-1">Campaign Title</label>
                 <input 
                   type="text" 
                   placeholder="e.g. Summer Giveaway Campaign" 
                   value={campaignName} 
                   onChange={(e) => setCampaignName(e.target.value)} 
-                  className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-5 py-3.5 text-sm font-medium text-black placeholder:text-zinc-400 focus:border-[#6366F1] focus:bg-white outline-none transition-all shadow-sm focus:shadow-md"
+                  className="w-full bg-zinc-50/80 hover:bg-white border border-zinc-200 hover:border-zinc-300 rounded-[14px] px-4 py-2.5 sm:px-5 sm:py-3 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 outline-none"
                 />
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-2 sm:space-y-4">
                 <label className="text-[12px] font-bold text-zinc-400 ml-1">Select Your Goal</label>
-                <div className="flex flex-col gap-3 px-1">
+                <div className="flex flex-col gap-2 sm:gap-2.5">
                   {strategies.map((t) => {
                     // TEMP UNLOCK: isLocked set to false for limited time promotion
                     const isLocked = false; 
@@ -125,21 +125,21 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                             setCampaignName(t.title);
                           }
                         }} 
-                        className={`group border rounded-2xl p-4 flex items-center gap-4 transition-all duration-300 cursor-pointer overflow-visible ${
+                        className={`group border rounded-2xl p-3 sm:p-3.5 flex items-center gap-3 sm:gap-4 transition-all duration-200 cursor-pointer overflow-visible ${
                           selectedTemplate === t.id 
                             ? 'border-[#6366F1] bg-[#6366F1]/5 shadow-sm shadow-[#6366F1]/10 ring-1 ring-[#6366F1]' 
-                            : 'border-zinc-200/80 bg-white hover:border-zinc-300 hover:shadow-md hover:-translate-y-1'
+                            : 'border-zinc-200/80 bg-white hover:border-zinc-300'
                         }`}
                       >
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500 ${
+                        <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 ${
                           selectedTemplate === t.id ? 'bg-[#6366F1] text-white shadow-lg shadow-[#6366F1]/20' : `${t.bg} ${t.color}`
                         }`}>
-                          <t.icon size={22} />
+                          <t.icon size={20} className="sm:w-[22px] sm:h-[22px]" />
                         </div>
                         
                         <div className="flex-1 min-w-0 flex flex-col justify-center">
                           <div className="flex items-center gap-2">
-                            <h4 className={`text-sm font-bold tracking-tight transition-colors ${selectedTemplate === t.id ? 'text-[#6366F1]' : 'text-zinc-900 group-hover:text-[#6366F1]'}`}>
+                            <h4 className={`text-[13px] sm:text-sm font-bold tracking-tight transition-colors ${selectedTemplate === t.id ? 'text-[#6366F1]' : 'text-zinc-900 group-hover:text-[#6366F1]'}`}>
                               {t.title}
                             </h4>
                             {t.isAI && (
@@ -148,17 +148,17 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                               </span>
                             )}
                           </div>
-                          <p className="text-xs font-medium text-zinc-500 leading-snug mt-1 pr-2">
+                          <p className="text-[11px] sm:text-xs font-medium text-zinc-500 leading-snug mt-0.5 sm:mt-1 pr-1">
                             {t.desc}
                           </p>
                         </div>
 
-                        <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 border-2 transition-all duration-300 ${
+                        <div className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center shrink-0 border-2 transition-all duration-300 ${
                           selectedTemplate === t.id 
                             ? 'bg-[#6366F1] border-[#6366F1]' 
                             : 'bg-zinc-100 border-zinc-200 group-hover:border-zinc-300'
                         }`}>
-                          {selectedTemplate === t.id && <Check size={10} strokeWidth={3} className="text-white" />}
+                          {selectedTemplate === t.id && <Check size={10} strokeWidth={3} className="text-white w-2 h-2 sm:w-2.5 sm:h-2.5" />}
                         </div>
                       </div>
                     );
@@ -167,12 +167,12 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
               </div>
             </div>
 
-            <div className="flex items-center gap-4 border-t border-zinc-100 pt-5 mt-2 shrink-0">
-              <button onClick={onClose} className="px-6 py-3.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-600 transition-all cursor-pointer">Cancel</button>
+            <div className="flex flex-col-reverse sm:flex-row items-center gap-3 sm:gap-4 border-t border-zinc-100 pt-4 sm:pt-5 mt-1 sm:mt-2 shrink-0">
+              <button onClick={onClose} className="w-full sm:w-auto px-6 py-3.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-600 transition-all cursor-pointer">Cancel</button>
                 <button 
                   onClick={handleCreate} 
                   disabled={!campaignName.trim()} 
-                  className="flex-1 px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-xl hover:shadow-2xl hover:bg-[#6366F1] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed hover:-translate-y-0.5 cursor-pointer"
+                  className="w-full sm:flex-1 px-12 py-3.5 sm:py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-xl hover:shadow-2xl hover:bg-[#6366F1] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   Continue to Editor <ArrowRight size={18} />
                 </button>
@@ -385,7 +385,7 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
                     placeholder={isGenerating ? "AI is copywriting your campaign... ✨" : "Describe your automation goal..."}
                     value={aiPrompt}
                     onChange={(e) => setAiPrompt(e.target.value)}
-                    className={`w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-[12px] font-medium text-zinc-600 placeholder:text-zinc-400 focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 outline-none shadow-sm transition-all ${isGenerating ? 'opacity-85 animate-pulse bg-indigo-50/20 border-[#6366F1]/20' : ''}`}
+                    className={`w-full bg-zinc-50/80 hover:bg-white border border-zinc-200 hover:border-zinc-300 rounded-[14px] px-4 py-2.5 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 outline-none ${isGenerating ? 'opacity-85 animate-pulse bg-indigo-50/20 border-[#6366F1]/20' : ''}`}
                   />
                   <button
                     type="submit"
@@ -640,7 +640,7 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 gap-4">
         {triggers.map((t) => (
           <div 
             key={t.id} 

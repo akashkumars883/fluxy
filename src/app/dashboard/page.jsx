@@ -483,10 +483,10 @@ export default function Dashboard() {
 
         <main 
           onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-          className="flex-1 p-4 sm:p-6 lg:p-8 max-w-8xl mx-auto w-full overflow-y-auto pb-24 md:pb-10"
+          className="flex-1 p-2 sm:p-4 lg:p-5 max-w-8xl mx-auto w-full overflow-y-auto pb-24 md:pb-10"
         >
           {selectedAccount ? (
-            <div className="space-y-5">
+            <div className="space-y-4">
               {/* === COMPACT PAGE HEADER === */}
               <div className="flex items-center justify-between gap-4 pb-4 border-b border-zinc-200/60">
                 

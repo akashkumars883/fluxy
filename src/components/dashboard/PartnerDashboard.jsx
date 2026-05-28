@@ -326,13 +326,13 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
   ];
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 w-full max-w-[1400px] mx-auto pb-12 relative">
+    <div className="space-y-4 animate-in fade-in duration-500 w-full max-w-[1400px] mx-auto pb-8 relative">
       
 
 
       {/* STATE 1: UNAPPLIED */}
       {appStatus === "unapplied" && (
-        <div className="bg-white/40 backdrop-blur-3xl border border-zinc-200/80 rounded-xl p-10 sm:p-16 shadow-xl shadow-zinc-200/20 text-center space-y-8 max-w-4xl mx-auto relative overflow-hidden">
+        <div className="bg-white border border-zinc-200/80 rounded-[32px] p-10 sm:p-16 shadow-xl shadow-zinc-200/20 text-center space-y-8 max-w-4xl mx-auto relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#6366F1]/5 rounded-full -mr-32 -mt-32 pointer-events-none" />
           <div className="w-20 h-20 rounded-xl bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center mx-auto border border-[#6366F1]/20 shadow-xl backdrop-blur-md relative z-10">
             <Users size={36} />
@@ -393,7 +393,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in duration-500 w-full">
           
           {/* BENTO CARD 1: Tracking Link (col-span-2) */}
-          <div className="lg:col-span-2 bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-2xl p-6 sm:p-8 shadow-xl shadow-zinc-100/30 flex flex-col justify-between hover:border-[#6366F1]/20 transition-all duration-300 relative overflow-hidden group">
+          <div className="lg:col-span-2 bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 flex flex-col justify-between hover:shadow-2xl hover:shadow-[#6366F1]/5 hover:border-[#6366F1]/20 transition-all duration-500 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#6366F1]/5 rounded-full -mr-32 -mt-32 pointer-events-none" />
             <div className="relative z-10 space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -429,7 +429,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
           </div>
 
           {/* BENTO CARD 2: Tier & Earnings (col-span-1) */}
-          <div className="lg:col-span-1 bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-2xl p-6 sm:p-8 shadow-xl shadow-zinc-100/30 flex flex-col justify-between hover:border-[#6366F1]/20 transition-all duration-300 relative overflow-hidden group">
+          <div className="lg:col-span-1 bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 flex flex-col justify-between hover:shadow-2xl hover:shadow-[#6366F1]/5 hover:border-[#6366F1]/20 transition-all duration-500 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full -mr-24 -mt-24 pointer-events-none group-hover:scale-110 transition-all duration-500" />
             
             <div className="space-y-4">
@@ -462,7 +462,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
           </div>
 
           {/* BENTO CARD 3: Custom Promo Codes (col-span-2) */}
-          <div className="lg:col-span-2 bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-2xl p-6 sm:p-8 shadow-xl shadow-zinc-100/40 space-y-6 flex flex-col justify-between hover:border-[#6366F1]/20 transition-all duration-300 relative overflow-hidden group">
+          <div className="lg:col-span-2 bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 space-y-4 flex flex-col justify-between hover:shadow-2xl hover:shadow-[#6366F1]/5 hover:border-[#6366F1]/20 transition-all duration-500 relative overflow-hidden group">
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200/50 pb-4">
                 <div>
@@ -491,7 +491,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
                       placeholder="e.g. VIPROHIT30"
                       value={newCodeInput}
                       onChange={(e) => setNewCodeInput(e.target.value.replace(/\s+/g, ''))}
-                      className="w-full pl-8 pr-4 py-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs font-bold text-zinc-900 outline-none focus:border-[#6366F1] uppercase"
+                      className="w-full pl-8 pr-4 py-2.5 bg-zinc-50/80 hover:bg-white border border-zinc-200 hover:border-zinc-300 rounded-[14px] text-[13px] font-medium text-zinc-900 outline-none shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 uppercase transition-all duration-300"
                     />
                   </div>
                 </div>
@@ -501,7 +501,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
                   <select 
                     value={newSplit}
                     onChange={(e) => setNewSplit(e.target.value)}
-                    className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs font-semibold text-zinc-900 outline-none focus:border-[#6366F1]"
+                    className="w-full p-2.5 bg-zinc-50/80 hover:bg-white border border-zinc-200 hover:border-zinc-300 rounded-[14px] text-[13px] font-medium text-zinc-900 outline-none shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all duration-300"
                   >
                     <option value="10_20">10% Customer Off / 20% Commission (Gold Standard)</option>
                     <option value="15_15">15% Customer Off / 15% Commission (Balanced Split)</option>
@@ -624,7 +624,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
           </div>
 
           {/* BENTO CARD 4: Payout Settings (col-span-1) */}
-          <div className="lg:col-span-1 bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-2xl p-6 sm:p-8 shadow-xl shadow-zinc-100/30 flex flex-col justify-between hover:border-[#6366F1]/20 transition-all duration-300 relative overflow-hidden group">
+          <div className="lg:col-span-1 bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 flex flex-col justify-between hover:shadow-2xl hover:shadow-[#6366F1]/5 hover:border-[#6366F1]/20 transition-all duration-500 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/5 rounded-full -mr-24 -mt-24 pointer-events-none group-hover:scale-110 transition-all duration-500" />
             
             <div className="space-y-6">
@@ -674,7 +674,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
           </div>
 
           {/* BENTO CARD 5: Recent Payouts Table (col-span-3) */}
-          <div className="lg:col-span-3 bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-2xl p-6 sm:p-8 shadow-xl shadow-zinc-100/40 space-y-6 hover:border-[#6366F1]/20 transition-all duration-300 relative overflow-hidden group">
+          <div className="lg:col-span-3 bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 space-y-4 hover:shadow-2xl hover:shadow-[#6366F1]/5 hover:border-[#6366F1]/20 transition-all duration-500 relative overflow-hidden group">
             <div className="border-b border-zinc-200/50 pb-4 flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold text-zinc-900 tracking-tight">Recent Payouts</h3>
@@ -823,7 +823,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
                     placeholder="e.g. rohit@okaxis or creator@ybl" 
                     value={upiId} 
                     onChange={(e) => setUpiId(e.target.value)} 
-                    className="w-full bg-white/60 border border-zinc-200/80 rounded-xl p-4 text-xs sm:text-sm font-semibold text-zinc-900 placeholder:text-zinc-400 focus:border-[#6366F1] focus:bg-white outline-none shadow-sm transition-all"
+                    className="w-full bg-zinc-50/80 hover:bg-white border border-zinc-200 hover:border-zinc-300 rounded-[14px] px-4 py-2.5 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 outline-none"
                   />
                 </div>
               )}
@@ -839,7 +839,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
                       placeholder="e.g. Rohit Sharma" 
                       value={bankHolderName} 
                       onChange={(e) => setBankHolderName(e.target.value)} 
-                      className="w-full bg-white/60 border border-zinc-200/80 rounded-xl p-4 text-xs sm:text-sm font-semibold text-zinc-900 placeholder:text-zinc-400 focus:border-[#6366F1] focus:bg-white outline-none shadow-sm transition-all"
+                      className="w-full bg-zinc-50/80 hover:bg-white border border-zinc-200 hover:border-zinc-300 rounded-[14px] px-4 py-2.5 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 outline-none"
                     />
                   </div>
 
@@ -852,7 +852,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
                         placeholder="e.g. 31920391203" 
                         value={bankAccountNo} 
                         onChange={(e) => setBankAccountNo(e.target.value)} 
-                        className="w-full bg-white/60 border border-zinc-200/80 rounded-xl p-4 text-xs sm:text-sm font-semibold text-zinc-900 placeholder:text-zinc-400 focus:border-[#6366F1] focus:bg-white outline-none shadow-sm transition-all"
+                        className="w-full bg-zinc-50/80 hover:bg-white border border-zinc-200 hover:border-zinc-300 rounded-[14px] px-4 py-2.5 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 outline-none"
                       />
                     </div>
                     <div className="space-y-2">
@@ -863,7 +863,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
                         placeholder="e.g. HDFC0001234" 
                         value={bankIfsc} 
                         onChange={(e) => setBankIfsc(e.target.value.toUpperCase())} 
-                        className="w-full bg-white/60 border border-zinc-200/80 rounded-xl p-4 text-xs sm:text-sm font-semibold text-zinc-900 placeholder:text-zinc-400 focus:border-[#6366F1] focus:bg-white outline-none shadow-sm transition-all uppercase"
+                        className="w-full bg-zinc-50/80 hover:bg-white border border-zinc-200 hover:border-zinc-300 rounded-[14px] px-4 py-2.5 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 outline-none uppercase"
                       />
                     </div>
                   </div>
