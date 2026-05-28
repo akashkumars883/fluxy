@@ -142,23 +142,29 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                   </div>
                 ) : (
                   <>
-                    <div className="w-24 h-24 bg-gradient-to-tr from-purple-500 via-pink-500 to-orange-500 rounded-[32px] mx-auto flex items-center justify-center shadow-2xl animate-pulse">
-                      <Camera size={48} className="text-white" />
+                    <div className="w-24 h-24 bg-gradient-to-tr from-blue-600 to-blue-400 rounded-[32px] mx-auto flex items-center justify-center shadow-2xl animate-pulse">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="w-12 h-12 text-white"
+                      >
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                      </svg>
                     </div>
                     
                     <div className="space-y-3">
-                      <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">Connect Instagram</h2>
+                      <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">Connect with Facebook</h2>
                       <p className="text-zinc-muted font-medium text-lg max-w-sm mx-auto">
-                        Link your Instagram professional account via Facebook to unlock AI automations, DM auto-replies, and comment tracking.
+                        Link your Facebook account to grant Automixa access to manage your connected Instagram professional profiles.
                       </p>
                     </div>
 
                     <div className="pt-8 flex flex-col items-center gap-4">
                       <button 
                         onClick={handleConnectClick}
-                        className="w-full sm:w-auto px-12 py-4 bg-gradient-to-r from-[#6366F1] to-[#EC4899] text-white rounded-xl text-sm font-bold shadow-[0_10px_40px_-10px_rgba(99,102,241,0.5)] hover:shadow-[0_10px_50px_-10px_rgba(99,102,241,0.7)] transition-all flex items-center justify-center gap-3 hover:scale-[1.02]"
+                        className="w-full sm:w-auto px-12 py-4 bg-[#1877F2] text-white rounded-xl text-sm font-bold shadow-[0_10px_40px_-10px_rgba(24,119,242,0.5)] hover:shadow-[0_10px_50px_-10px_rgba(24,119,242,0.7)] transition-all flex items-center justify-center gap-3 hover:scale-[1.02]"
                       >
-                        Connect Instagram <ArrowRight size={20} />
+                        Login with Facebook <ArrowRight size={20} />
                       </button>
                       <div className="flex items-center gap-2 text-xs text-zinc-400 font-medium bg-zinc-50 px-4 py-2 rounded-full border border-zinc-100">
                         <CheckCircle2 size={14} className="text-emerald-500" />
