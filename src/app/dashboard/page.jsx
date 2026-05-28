@@ -706,7 +706,7 @@ export default function Dashboard() {
                         <img 
                           src={`/images/features/${image}.png`} 
                           alt={title} 
-                          className="w-[95%] h-[95%] object-contain object-bottom mix-blend-multiply transition-transform duration-500 group-hover:scale-105 mb-1" 
+                          className="w-[95%] h-[95%] object-contain object-bottom mix-blend-multiply mb-1" 
                         />
                       </div>
                       
