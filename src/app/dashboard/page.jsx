@@ -702,11 +702,11 @@ export default function Dashboard() {
                         <p className="text-[11px] sm:text-xs text-zinc-500 font-normal leading-relaxed line-clamp-2">{desc}</p>
                       </div>
                       
-                      <div className="flex-1 w-full h-24 sm:h-[110px] lg:h-[120px] mt-3 bg-white flex items-end justify-center overflow-hidden shrink-0">
+                      <div className="flex-1 w-full h-24 sm:h-[110px] lg:h-[120px] mt-2 bg-white flex items-end justify-center overflow-hidden shrink-0">
                         <img 
                           src={`/images/features/${image}.png`} 
                           alt={title} 
-                          className="w-full h-[150%] object-cover object-bottom mix-blend-multiply transition-transform duration-500 group-hover:scale-110" 
+                          className="w-[95%] h-[95%] object-contain object-bottom mix-blend-multiply transition-transform duration-500 group-hover:scale-105 mb-1" 
                         />
                       </div>
                       
