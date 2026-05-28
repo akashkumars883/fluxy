@@ -35,22 +35,25 @@ export async function GET(request) {
   // Pass role in state to retrieve it in the callback
   const state = JSON.stringify({ persona: role, provider: "instagram" });
   
-  const facebookScopes = [
-    "instagram_basic",
-    "instagram_manage_comments",
-    "instagram_manage_messages",
-    "pages_show_list",
-    "pages_read_engagement",
-    "pages_manage_metadata",
-    "public_profile"
-  ].join(",");
+  // 2. Facebook Login for Business requires a Configuration ID
+  const configId = process.env.NEXT_PUBLIC_FB_CONFIG_ID || "";
 
-  const authUrl =
-    `https://www.facebook.com/v21.0/dialog/oauth?client_id=${appId}` +
-    `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-    `&state=${encodeURIComponent(state)}` +
-    `&scope=${encodeURIComponent(facebookScopes)}` +
-    `&response_type=code`;
+  let fbAuthUrl = `https://www.facebook.com/v21.0/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${encodeURIComponent(state)}&response_type=code`;
 
-  return NextResponse.redirect(authUrl);
+  if (configId) {
+    fbAuthUrl += `&config_id=${configId}`;
+  } else {
+    const facebookScopes = [
+      "instagram_basic",
+      "instagram_manage_comments",
+      "instagram_manage_messages",
+      "pages_show_list",
+      "pages_read_engagement",
+      "pages_manage_metadata",
+      "public_profile"
+    ].join(",");
+    fbAuthUrl += `&scope=${encodeURIComponent(facebookScopes)}`;
+  }
+
+  return NextResponse.redirect(fbAuthUrl);
 }
