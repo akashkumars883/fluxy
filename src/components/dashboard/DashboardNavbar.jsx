@@ -47,10 +47,10 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
   ];
 
   return (
-    <nav className={`sticky top-0 z-50 transition-all duration-500 border-b px-3 sm:px-6 flex items-center justify-between shrink-0 ${
+    <nav className={`sticky top-0 z-50 transition-all duration-300 border-b px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between shrink-0 ${
       isScrolled 
-        ? "bg-white border-zinc-200 py-3 sm:py-4 shadow-sm" 
-        : "bg-white border-transparent py-4 sm:py-5 shadow-none"
+        ? "bg-white/90 backdrop-blur-md border-zinc-200 shadow-sm" 
+        : "bg-white border-transparent shadow-none"
     }`}>
       <div className="flex items-center gap-1.5 sm:gap-3 overflow-hidden">
         {/* Mobile menu button removed from here as it's now in BottomNav */}
