@@ -9,6 +9,36 @@ function safeEqual(a, b) {
   return crypto.timingSafeEqual(aBuf, bBuf);
 }
 
+function getWebhookAppSecrets() {
+  return [
+    process.env.FACEBOOK_APP_SECRET,
+    process.env.INSTAGRAM_APP_SECRET,
+  ]
+    .map((secret) => secret?.trim())
+    .filter(Boolean);
+}
+
+function verifyWebhookSignature(signature, rawBodyBuffer) {
+  const appSecrets = getWebhookAppSecrets();
+  if (appSecrets.length === 0) return { ok: true, expectedHint: null };
+  if (!signature) return { ok: false, expectedHint: "missing signature" };
+
+  for (const appSecret of appSecrets) {
+    const expected =
+      "sha256=" +
+      crypto.createHmac("sha256", appSecret).update(rawBodyBuffer).digest("hex");
+
+    if (safeEqual(signature, expected)) {
+      return { ok: true, expectedHint: null };
+    }
+  }
+
+  const expected =
+    "sha256=" +
+    crypto.createHmac("sha256", appSecrets[0]).update(rawBodyBuffer).digest("hex");
+  return { ok: false, expectedHint: `${expected.substring(0, 12)}...` };
+}
+
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const mode = searchParams.get("hub.mode");
@@ -27,32 +57,27 @@ export async function GET(req) {
 export async function POST(req) {
   // console.log("📥 [Incoming Webhook] Received POST request at /api/webhook");
 
-  let rawBody = "";
+  let rawBodyBuffer;
   try {
-    rawBody = await req.text();
+    rawBodyBuffer = Buffer.from(await req.arrayBuffer());
     // console.log("📥 [Incoming Webhook] Payload:", rawBody);
   } catch (err) {
     console.error("❌ [Incoming Webhook] Failed to read body:", err.message);
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
   }
 
-  const appSecret = process.env.INSTAGRAM_APP_SECRET;
-  if (appSecret) {
-    const signature = req.headers.get("x-hub-signature-256") || "";
-    const expected =
-      "sha256=" +
-      crypto.createHmac("sha256", appSecret).update(rawBody).digest("hex");
-
-    if (!signature || !safeEqual(signature, expected)) {
-      console.error("❌ Webhook Signature Mismatch!");
-      console.log("Expected Token Hint:", expected.substring(0, 8) + "...");
-      console.log("Received Signature:", signature);
-      return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
-    }
+  const signature = req.headers.get("x-hub-signature-256") || "";
+  const signatureCheck = verifyWebhookSignature(signature, rawBodyBuffer);
+  if (!signatureCheck.ok) {
+    console.error("❌ Webhook Signature Mismatch!");
+    console.log("Expected Token Hint:", signatureCheck.expectedHint);
+    console.log("Received Signature:", signature || "missing signature");
+    return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
 
   let body;
   try {
+    const rawBody = rawBodyBuffer.toString("utf8");
     body = JSON.parse(rawBody || "{}");
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
