@@ -13,6 +13,7 @@ import {
   Zap,
   Filter,
   ChevronRight,
+  Activity,
 } from "lucide-react";
 
 export default function AudienceCRM({ accountId, history = [], currentPlan = "free" }) {
@@ -22,7 +23,8 @@ export default function AudienceCRM({ accountId, history = [], currentPlan = "fr
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const id = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(id);
   }, []);
 
   // Build real audience map from history
@@ -275,7 +277,7 @@ export default function AudienceCRM({ accountId, history = [], currentPlan = "fr
                       </div>
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-[10px] font-bold px-2 py-0.5 bg-[#6366F1]/10 text-[#6366F1] rounded-lg">
-                          '{usr.keywordTriggered}'
+                          &apos;{usr.keywordTriggered}&apos;
                         </span>
                         <span className="text-[10px] text-zinc-400 font-medium flex items-center gap-1">
                           <Clock size={9} /> {formatTimeAgo(usr.lastActive)}
@@ -317,7 +319,7 @@ export default function AudienceCRM({ accountId, history = [], currentPlan = "fr
                   </h3>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-[10px] font-bold px-2 py-0.5 bg-[#6366F1]/10 text-[#6366F1] rounded-lg">
-                      '{selectedUser.keywordTriggered}'
+                      &apos;{selectedUser.keywordTriggered}&apos;
                     </span>
                     <span className="text-[10px] text-zinc-400 font-medium">
                       {selectedUser.interactionCount} interactions

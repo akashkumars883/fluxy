@@ -2,15 +2,18 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase';
 import { MetaService } from '@/lib/meta';
 import { encryptToken } from '@/lib/security';
+import { cookies } from "next/headers";
 
 export async function GET(request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
   const error = searchParams.get('error');
+  const errorDescription = searchParams.get('error_description') || searchParams.get('error_reason');
 
   if (error || !code) {
-    console.error("Meta OAuth Error:", error);
-    return NextResponse.redirect(`${origin}/dashboard?error=meta_auth_failed`);
+    console.error("Meta OAuth Error:", error, errorDescription || "");
+    const reason = errorDescription || error || "missing_code";
+    return NextResponse.redirect(`${origin}/dashboard?error=meta_auth_failed&reason=${encodeURIComponent(reason)}`);
   }
 
   const supabase = createClient();
@@ -52,13 +55,21 @@ export async function GET(request) {
     // 1b. Parse persona from state
     let persona = 'business';
     const stateParam = searchParams.get('state');
+    const cookieStore = await cookies();
+    const expectedNonce = cookieStore.get("automixa_meta_oauth_state")?.value;
     if (stateParam) {
       try {
         const state = JSON.parse(stateParam);
+        if (!expectedNonce || state.nonce !== expectedNonce) {
+          throw new Error("Invalid OAuth state");
+        }
         persona = state.persona || 'business';
       } catch (e) {
         console.error("Error parsing state:", e);
+        return NextResponse.redirect(`${origin}/dashboard?error=invalid_oauth_state`);
       }
+    } else {
+      return NextResponse.redirect(`${origin}/dashboard?error=missing_oauth_state`);
     }
 
     // 4. Fetch Instagram Accounts connected to the user's Facebook Pages
@@ -131,6 +142,6 @@ export async function GET(request) {
 
   } catch (err) {
     console.error("Critical Callback Error:", err.message);
-    return NextResponse.redirect(`${origin}/dashboard?error=connection_failed`);
+    return NextResponse.redirect(`${origin}/dashboard?error=connection_failed&reason=${encodeURIComponent(err.message)}`);
   }
 }

@@ -38,7 +38,12 @@ export async function GET(request) {
   const state = JSON.stringify({ nonce, persona: role, provider: "instagram" });
   
   // 2. Facebook Login for Business requires a Configuration ID
-  const configId = process.env.NEXT_PUBLIC_FB_CONFIG_ID || "";
+  const configId = (
+    process.env.FACEBOOK_LOGIN_CONFIG_ID ||
+    process.env.FB_CONFIG_ID ||
+    process.env.NEXT_PUBLIC_FB_CONFIG_ID ||
+    ""
+  ).trim();
 
   const authParams = new URLSearchParams({
     client_id: appId,
