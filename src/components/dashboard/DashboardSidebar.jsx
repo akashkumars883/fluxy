@@ -61,14 +61,14 @@ export default function DashboardSidebar({
                   setActiveTab(item.id);
                 }
               }}
-              className={`relative flex items-center rounded-xl text-xs font-medium transition-all duration-200 h-10 ${
+              className={`relative flex items-center rounded-xl text-sm font-normal transition-all duration-200 h-10 ${
                 isSidebarCollapsed ? "w-10 justify-center p-0 mx-auto" : "w-full justify-start px-3 gap-3"
               } ${
                 isActive
                   ? "text-white"
                   : item.locked
-                  ? "text-zinc-300 hover:bg-zinc-50 hover:text-zinc-500"
-                  : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100/80"
+                  ? "text-zinc-400 hover:bg-zinc-50 hover:text-zinc-500"
+                  : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/80"
               }`}
               title={item.label}
             >
@@ -82,11 +82,11 @@ export default function DashboardSidebar({
               )}
 
               <div className="flex items-center justify-center shrink-0 relative z-10">
-                <Icon size={16} strokeWidth={isActive ? 2.5 : 2} />
+                <Icon size={18} strokeWidth={isActive ? 2 : 1.5} />
               </div>
 
               {!isSidebarCollapsed && (
-                <span className="whitespace-nowrap overflow-hidden flex-1 text-left relative z-10 font-semibold animate-in fade-in duration-150">
+                <span className="whitespace-nowrap overflow-hidden flex-1 text-left relative z-10 font-normal animate-in fade-in duration-150">
                   {item.label}
                 </span>
               )}
@@ -113,22 +113,22 @@ export default function DashboardSidebar({
                 setActiveTab(settingsItem.id);
               }
             }}
-            className={`relative flex items-center rounded-xl text-xs font-medium transition-all duration-200 h-10 ${
+            className={`relative flex items-center rounded-xl text-sm font-normal transition-all duration-200 h-10 ${
               isSidebarCollapsed ? "w-10 justify-center p-0 mx-auto" : "w-full justify-start px-3 gap-3"
             } ${
               activeTab === "settings"
-                ? "bg-zinc-100 text-zinc-900 font-semibold"
+                ? "bg-zinc-100 text-zinc-900"
                 : settingsItem.locked
-                ? "text-zinc-300 hover:bg-zinc-50 hover:text-zinc-500"
-                : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100/80"
+                ? "text-zinc-400 hover:bg-zinc-50 hover:text-zinc-500"
+                : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/80"
             }`}
             title={settingsItem.label}
           >
             <div className="flex items-center justify-center shrink-0 relative z-10">
-              <settingsItem.icon size={16} strokeWidth={activeTab === "settings" ? 2.5 : 2} />
+              <settingsItem.icon size={18} strokeWidth={activeTab === "settings" ? 2 : 1.5} />
             </div>
             {!isSidebarCollapsed && (
-              <span className="whitespace-nowrap overflow-hidden flex-1 text-left relative z-10 animate-in fade-in duration-150">
+              <span className="whitespace-nowrap overflow-hidden flex-1 text-left relative z-10 font-normal animate-in fade-in duration-150">
                 {settingsItem.label}
               </span>
             )}
