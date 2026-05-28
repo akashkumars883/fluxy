@@ -691,25 +691,22 @@ export default function Dashboard() {
               <div className="flex-1 flex flex-col justify-center min-h-0 pt-4 sm:pt-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 h-full">
                   {[
-                    { icon: MessageSquare, title: "Comment-to-DM", desc: "Auto-reply to comments with custom DMs.", color: "indigo" },
-                    { icon: Sparkles, title: "Story Mentions", desc: "Instantly DM followers when they mention you.", color: "pink" },
-                    { icon: Cpu, title: "Smart Chatbot", desc: "Resolve common user questions automatically 24/7.", color: "emerald" },
-                    { icon: Palette, title: "Smart Bio", desc: "Create a beautiful page to aggregate all your links.", color: "amber" },
-                  ].map(({ icon: Icon, title, desc, color }) => (
-                    <div key={title} className="bg-white border border-zinc-200/80 rounded-[24px] p-5 flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 group h-full">
-                      <div className="flex-1">
-                        <div className={`w-10 h-10 rounded-[14px] flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110 shadow-sm ${
-                          color === 'indigo' ? 'bg-indigo-50 text-indigo-600 border border-indigo-100' :
-                          color === 'pink' ? 'bg-pink-50 text-pink-600 border border-pink-100' :
-                          color === 'emerald' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' :
-                          'bg-amber-50 text-amber-600 border border-amber-100'
-                        }`}>
-                          <Icon size={18} strokeWidth={2} />
+                    { image: "comment-to-dm", title: "Comment-to-DM", desc: "Auto-reply to comments with custom DMs.", color: "indigo" },
+                    { image: "story-mentions", title: "Story Mentions", desc: "Instantly DM followers when they mention you.", color: "pink" },
+                    { image: "faq-chatbot", title: "Smart Chatbot", desc: "Resolve common user questions automatically 24/7.", color: "emerald" },
+                    { image: "smart-bio", title: "Smart Bio", desc: "Create a beautiful page to aggregate all your links.", color: "amber" },
+                  ].map(({ image, title, desc, color }) => (
+                    <div key={title} className="bg-white border border-zinc-200/80 rounded-[24px] p-4 flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 group h-full">
+                      <div className="flex-1 flex flex-col">
+                        <div className="w-full h-24 sm:h-[100px] lg:h-[110px] mb-3 rounded-2xl overflow-hidden bg-white flex items-center justify-center transition-transform duration-500 group-hover:scale-105 shrink-0">
+                          <img src={`/images/features/${image}.png`} alt={title} className="w-full h-full object-contain mix-blend-multiply scale-110" />
                         </div>
-                        <h3 className="text-base font-bold text-zinc-900 mb-1.5 leading-snug tracking-tight">{title}</h3>
-                        <p className="text-xs text-zinc-500 font-normal leading-relaxed">{desc}</p>
+                        <div className="px-1">
+                          <h3 className="text-base font-bold text-zinc-900 mb-1 leading-snug tracking-tight">{title}</h3>
+                          <p className="text-[11px] sm:text-xs text-zinc-500 font-normal leading-relaxed">{desc}</p>
+                        </div>
                       </div>
-                      <div className="mt-4 pt-3 border-t border-zinc-100">
+                      <div className="mt-3 pt-3 border-t border-zinc-100">
                         <button
                           onClick={handleConnectClick}
                           className="w-full text-zinc-400 font-semibold text-xs py-2 rounded-lg flex items-center justify-center gap-1.5 group-hover:text-[#6366F1] group-hover:bg-indigo-50/50 transition-all duration-300"
