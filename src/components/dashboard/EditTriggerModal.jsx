@@ -107,9 +107,9 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
                 {step === 1 ? (
                   <motion.div 
                     key="step1"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                     className="space-y-6"
                   >
                     <div className="space-y-3">
@@ -185,9 +185,9 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
                 ) : (
                   <motion.div 
                     key="step2"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                     className="space-y-6"
                   >
                     {type === 'COMMENT' && (

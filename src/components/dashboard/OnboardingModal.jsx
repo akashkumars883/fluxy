@@ -127,9 +127,9 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
             {step !== 4 && (
               <motion.div 
                 key="connect"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 className="space-y-5 sm:space-y-6 text-center py-2 sm:py-4"
               >
                 {isConnecting ? (
