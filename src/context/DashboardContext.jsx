@@ -91,7 +91,7 @@ export function DashboardProvider({ children }) {
   const [allAccounts, setAllAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("home");
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const [currentPlan, setCurrentPlan] = useState("free");
   
   // Workspaces State

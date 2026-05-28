@@ -666,15 +666,20 @@ export default function Dashboard() {
           ) : (
             <div className="flex flex-col h-[calc(100vh-140px)] sm:h-[calc(100vh-160px)]">
               {(!currentPlan || currentPlan === "free" || currentPlan?.name?.toLowerCase() === "free") && (
-                <div className="bg-gradient-to-r from-[#6366F1] via-purple-500 to-pink-500 rounded-2xl p-4 sm:p-5 text-white shadow-xl mb-4 sm:mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
-                  <div className="flex items-center gap-3">
+                <div className="relative rounded-2xl p-4 sm:p-5 text-white shadow-xl mb-4 sm:mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0 overflow-hidden group">
+                  <div className="absolute inset-0 z-0">
+                    <img src="/images/upgrade_banner_bg.png" alt="Premium Background" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#6366F1]/80 via-purple-900/40 to-transparent mix-blend-overlay" />
+                    <div className="absolute inset-0 bg-black/40" />
+                  </div>
+                  <div className="flex items-center gap-3 relative z-10">
                     <div className="p-2.5 bg-white/20 rounded-xl backdrop-blur-sm"><Sparkles size={20} /></div>
                     <div>
-                      <h3 className="text-base sm:text-lg font-bold leading-tight">Upgrade to Automixa Pro</h3>
-                      <p className="text-white/90 text-xs sm:text-sm mt-0.5 font-medium">Unlock unlimited automations and advanced features.</p>
+                      <h3 className="text-base sm:text-lg font-bold leading-tight drop-shadow-md">Upgrade to Automixa Pro</h3>
+                      <p className="text-white/90 text-xs sm:text-sm mt-0.5 font-medium drop-shadow-sm">Unlock unlimited automations and advanced features.</p>
                     </div>
                   </div>
-                  <button onClick={() => setIsSubscriptionOpen(true)} className="w-full sm:w-auto px-6 py-2.5 bg-white text-[#6366F1] text-sm font-bold rounded-xl shadow-lg hover:scale-105 transition-all">
+                  <button onClick={() => setIsSubscriptionOpen(true)} className="w-full sm:w-auto px-6 py-2.5 bg-white text-[#6366F1] text-sm font-bold rounded-xl shadow-[0_8px_30px_-8px_rgba(0,0,0,0.5)] hover:scale-105 transition-all relative z-10">
                     Upgrade Now
                   </button>
                 </div>

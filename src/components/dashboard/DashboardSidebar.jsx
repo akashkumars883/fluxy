@@ -26,7 +26,7 @@ export default function DashboardSidebar({
   const settingsItem = navigationItems.find(item => item.id === "settings");
 
   return (
-    <aside className={`bg-[#FCFDFE] border-r border-[#e9e9eb] hidden md:flex flex-col justify-between select-none transition-all duration-500 ease-[0.16,1,0.3,1] z-30 shrink-0 h-full sticky top-0 overflow-y-auto no-scrollbar ${
+    <aside className={`bg-[#FCFDFE] border-r border-[#e9e9eb] hidden md:flex flex-col justify-between select-none transition-all duration-500 ease-[0.16,1,0.3,1] z-30 shrink-0 h-full sticky top-0 overflow-visible ${
       isSidebarCollapsed ? "w-[72px] p-3 items-center" : "w-60 p-5"
     }`}>
 
@@ -56,7 +56,7 @@ export default function DashboardSidebar({
                   setActiveTab(item.id);
                 }
               }}
-              className={`relative flex items-center rounded-xl text-sm font-normal transition-all duration-200 h-10 ${
+              className={`group relative flex items-center rounded-xl text-sm font-normal transition-all duration-200 h-10 ${
                 isSidebarCollapsed ? "w-10 justify-center p-0 mx-auto" : "w-full justify-start px-3 gap-3"
               } ${
                 isActive
@@ -65,7 +65,7 @@ export default function DashboardSidebar({
                   ? "text-zinc-400 hover:bg-zinc-50 hover:text-zinc-500"
                   : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/80"
               }`}
-              title={item.label}
+              title={isSidebarCollapsed ? "" : item.label}
             >
               {isActive && (
                 <motion.div
@@ -79,6 +79,13 @@ export default function DashboardSidebar({
               <div className="flex items-center justify-center shrink-0 relative z-10">
                 <Icon size={18} strokeWidth={isActive ? 2 : 1.5} />
               </div>
+
+              {isSidebarCollapsed && (
+                <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-zinc-800 text-white text-[11px] font-medium rounded-md opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none transition-all duration-200 whitespace-nowrap z-50 shadow-lg flex items-center">
+                  {item.label}
+                  <div className="absolute top-1/2 -left-1 -mt-1 border-[4px] border-transparent border-r-zinc-800" />
+                </div>
+              )}
 
               {!isSidebarCollapsed && (
                 <span className="whitespace-nowrap overflow-hidden flex-1 text-left relative z-10 font-normal animate-in fade-in duration-150">
@@ -108,7 +115,7 @@ export default function DashboardSidebar({
                 setActiveTab(settingsItem.id);
               }
             }}
-            className={`relative flex items-center rounded-xl text-sm font-normal transition-all duration-200 h-10 ${
+            className={`group relative flex items-center rounded-xl text-sm font-normal transition-all duration-200 h-10 ${
               isSidebarCollapsed ? "w-10 justify-center p-0 mx-auto" : "w-full justify-start px-3 gap-3"
             } ${
               activeTab === "settings"
@@ -117,11 +124,19 @@ export default function DashboardSidebar({
                 ? "text-zinc-400 hover:bg-zinc-50 hover:text-zinc-500"
                 : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/80"
             }`}
-            title={settingsItem.label}
+            title={isSidebarCollapsed ? "" : settingsItem.label}
           >
             <div className="flex items-center justify-center shrink-0 relative z-10">
               <settingsItem.icon size={18} strokeWidth={activeTab === "settings" ? 2 : 1.5} />
             </div>
+
+            {isSidebarCollapsed && (
+              <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-zinc-800 text-white text-[11px] font-medium rounded-md opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none transition-all duration-200 whitespace-nowrap z-50 shadow-lg flex items-center">
+                {settingsItem.label}
+                <div className="absolute top-1/2 -left-1 -mt-1 border-[4px] border-transparent border-r-zinc-800" />
+              </div>
+            )}
+
             {!isSidebarCollapsed && (
               <span className="whitespace-nowrap overflow-hidden flex-1 text-left relative z-10 font-normal animate-in fade-in duration-150">
                 {settingsItem.label}
@@ -210,4 +225,3 @@ export default function DashboardSidebar({
     </aside>
   );
 }
-
