@@ -1,6 +1,6 @@
 "use client";
 
-import { HelpCircle, Search, X, Clock, Zap, ArrowRight } from "lucide-react";
+import { HelpCircle, Search, X, Clock, Zap, ArrowRight, Users, BarChart2, Settings } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationDropdown from "@/components/dashboard/NotificationDropdown";
@@ -45,6 +45,19 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
     { name: "View CRM", icon: Zap, tab: "audience" },
     { name: "Settings", icon: Zap, tab: "settings" }
   ];
+
+  const searchableItems = [
+    { title: "Comment-to-DM Setup", type: "Automation", url: "automations", icon: Zap },
+    { title: "Story Auto-Reply Setup", type: "Automation", url: "automations", icon: Zap },
+    { title: "Instagram Campaign 2024", type: "Campaign", url: "automations", icon: Zap },
+    { title: "Lead Gen Analytics", type: "Analytics", url: "analytics", icon: BarChart2 },
+    { title: "Audience CRM", type: "Contacts", url: "audience", icon: Users },
+    { title: "Account Settings", type: "Settings", url: "settings", icon: Settings },
+  ];
+
+  const filteredResults = searchQuery.length > 0 
+    ? searchableItems.filter(item => item.title.toLowerCase().includes(searchQuery.toLowerCase()) || item.type.toLowerCase().includes(searchQuery.toLowerCase()))
+    : [];
 
   return (
     <nav className={`sticky top-0 z-50 transition-all duration-300 border-b px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between shrink-0 ${
@@ -176,6 +189,7 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
                         {recentSearches.map((search, i) => (
                           <button 
                             key={i}
+                            onClick={() => setSearchQuery(search)}
                             className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-50 transition-colors text-sm text-zinc-600 group"
                           >
                             <Clock size={16} className="text-zinc-300 group-hover:text-zinc-500" />
@@ -186,12 +200,41 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
                     </div>
                   </div>
                 ) : (
-                  <div className="py-12 text-center">
-                    <div className="w-16 h-16 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Search className="text-zinc-300" size={32} />
-                    </div>
-                    <h3 className="text-zinc-900 font-semibold mb-1">{`No results for "${searchQuery}"`}</h3>
-                    <p className="text-sm text-zinc-500">Try searching for campaigns, keywords, or account settings.</p>
+                  <div className="space-y-2">
+                    {filteredResults.length > 0 ? (
+                      <>
+                        <h3 className="text-[10px] font-semibold text-zinc-400 mb-4 px-2">Search Results</h3>
+                        {filteredResults.map((result, i) => (
+                          <button 
+                            key={i}
+                            onClick={() => {
+                              setActiveTab(result.url);
+                              setIsSearchOpen(false);
+                            }}
+                            className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-zinc-50 transition-colors text-sm group"
+                          >
+                            <div className="flex items-center gap-3">
+                               <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-500">
+                                 <result.icon size={18} />
+                               </div>
+                               <div className="text-left">
+                                 <div className="font-semibold text-zinc-900">{result.title}</div>
+                                 <div className="text-xs text-zinc-500">{result.type}</div>
+                               </div>
+                            </div>
+                            <ArrowRight size={16} className="text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </button>
+                        ))}
+                      </>
+                    ) : (
+                      <div className="py-12 text-center">
+                        <div className="w-16 h-16 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Search className="text-zinc-300" size={32} />
+                        </div>
+                        <h3 className="text-zinc-900 font-semibold mb-1">{`No results for "${searchQuery}"`}</h3>
+                        <p className="text-sm text-zinc-500">Try searching for campaigns, keywords, or account settings.</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
