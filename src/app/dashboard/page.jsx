@@ -696,23 +696,29 @@ export default function Dashboard() {
                     { image: "faq-chatbot", title: "Smart Chatbot", desc: "Resolve common user questions automatically 24/7.", color: "emerald" },
                     { image: "smart-bio", title: "Smart Bio", desc: "Create a beautiful page to aggregate all your links.", color: "amber" },
                   ].map(({ image, title, desc, color }) => (
-                    <div key={title} className="bg-white border border-zinc-200/80 rounded-[24px] p-4 flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 group h-full">
-                      <div className="flex-1 flex flex-col">
-                        <div className="w-full h-24 sm:h-[100px] lg:h-[110px] mb-3 rounded-2xl overflow-hidden bg-white flex items-center justify-center transition-transform duration-500 group-hover:scale-105 shrink-0">
-                          <img src={`/images/features/${image}.png`} alt={title} className="w-full h-full object-contain mix-blend-multiply scale-110" />
-                        </div>
-                        <div className="px-1">
-                          <h3 className="text-base font-bold text-zinc-900 mb-1 leading-snug tracking-tight">{title}</h3>
-                          <p className="text-[11px] sm:text-xs text-zinc-500 font-normal leading-relaxed">{desc}</p>
-                        </div>
+                    <div key={title} className="bg-white border border-zinc-200/80 rounded-[24px] overflow-hidden flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 group h-full">
+                      <div className="p-5 pb-0 relative z-10">
+                        <h3 className="text-[15px] sm:text-base font-bold text-zinc-900 mb-1 leading-snug tracking-tight">{title}</h3>
+                        <p className="text-[11px] sm:text-xs text-zinc-500 font-normal leading-relaxed line-clamp-2">{desc}</p>
                       </div>
-                      <div className="mt-3 pt-3 border-t border-zinc-100">
-                        <button
-                          onClick={handleConnectClick}
-                          className="w-full text-zinc-400 font-semibold text-xs py-2 rounded-lg flex items-center justify-center gap-1.5 group-hover:text-[#6366F1] group-hover:bg-indigo-50/50 transition-all duration-300"
-                        >
-                          <LucideLock size={12} /> Connect to Unlock
-                        </button>
+                      
+                      <div className="flex-1 w-full h-24 sm:h-[110px] lg:h-[120px] mt-3 bg-white flex items-end justify-center overflow-hidden shrink-0">
+                        <img 
+                          src={`/images/features/${image}.png`} 
+                          alt={title} 
+                          className="w-full h-[150%] object-cover object-bottom mix-blend-multiply transition-transform duration-500 group-hover:scale-110" 
+                        />
+                      </div>
+                      
+                      <div className="px-4 pb-4 pt-1 bg-white relative z-10">
+                        <div className="pt-2 border-t border-zinc-100">
+                          <button
+                            onClick={handleConnectClick}
+                            className="w-full text-zinc-400 font-semibold text-xs py-2 rounded-lg flex items-center justify-center gap-1.5 group-hover:text-[#6366F1] group-hover:bg-indigo-50/50 transition-all duration-300"
+                          >
+                            <LucideLock size={12} /> Connect to Unlock
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
