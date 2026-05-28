@@ -44,7 +44,7 @@ export async function GET(request) {
     redirect_uri: redirectUri,
     state,
     response_type: "code",
-    scope: ["instagram_business_basic", "instagram_business_manage_messages"].join(",")
+    scope: ["instagram_business_basic", "instagram_business_manage_messages", "instagram_business_manage_comments"].join(",")
   });
 
   // Direct Instagram Login for Business Endpoint
