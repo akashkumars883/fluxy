@@ -81,7 +81,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-xl bg-white border border-zinc-200/60 rounded-[28px] shadow-2xl p-5 sm:p-8 flex flex-col max-h-[92vh] sm:max-h-[85vh] gap-6"
+            className="relative w-full max-w-xl bg-white border border-zinc-200/60 rounded-[28px] shadow-2xl p-5 sm:p-8 flex flex-col gap-6"
           >
             <div className="flex items-center justify-between border-b border-zinc-100 pb-4 shrink-0">
               <div>
@@ -96,7 +96,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
               </button>
             </div>
 
-            <div className="overflow-y-auto overflow-x-hidden py-1 px-0.5 flex-1 space-y-5 min-h-0 no-scrollbar">
+            <div className="py-1 px-1 flex-1 space-y-6">
               <div className="space-y-3">
                 <label className="text-[12px] font-medium text-zinc-400 ml-1">Campaign Title</label>
                 <input 
@@ -104,13 +104,13 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                   placeholder="e.g. Summer Giveaway Campaign" 
                   value={campaignName} 
                   onChange={(e) => setCampaignName(e.target.value)} 
-                  className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-5 py-3.5 text-sm font-medium text-black placeholder:text-zinc-400 focus:border-[#6366F1] focus:bg-white outline-none transition-all"
+                  className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-5 py-3.5 text-sm font-medium text-black placeholder:text-zinc-400 focus:border-[#6366F1] focus:bg-white outline-none transition-all shadow-sm focus:shadow-md"
                 />
               </div>
 
               <div className="space-y-4">
                 <label className="text-[12px] font-bold text-zinc-400 ml-1">Select Your Goal</label>
-                <div className="grid grid-cols-1 gap-3">
+                <div className="flex flex-col gap-3 px-1">
                   {strategies.map((t) => {
                     // TEMP UNLOCK: isLocked set to false for limited time promotion
                     const isLocked = false; 
@@ -125,21 +125,21 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                             setCampaignName(t.title);
                           }
                         }} 
-                        className={`group border-2 rounded-2xl p-4 flex items-center gap-4 transition-all duration-300 cursor-pointer ${
+                        className={`group border rounded-2xl p-4 flex items-center gap-4 transition-all duration-300 cursor-pointer overflow-visible ${
                           selectedTemplate === t.id 
-                            ? 'border-[#6366F1] bg-[#6366F1]/5 shadow-md shadow-[#6366F1]/10' 
-                            : 'border-zinc-100 bg-zinc-50/50 hover:border-zinc-200 hover:bg-white hover:-translate-x-1'
+                            ? 'border-[#6366F1] bg-[#6366F1]/5 shadow-sm shadow-[#6366F1]/10 ring-1 ring-[#6366F1]' 
+                            : 'border-zinc-200/80 bg-white hover:border-zinc-300 hover:shadow-md hover:-translate-y-1'
                         }`}
                       >
                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500 ${
-                          selectedTemplate === t.id ? 'bg-[#6366F1] text-white shadow-lg shadow-[#6366F1]/20 rotate-6' : `${t.bg} ${t.color}`
+                          selectedTemplate === t.id ? 'bg-[#6366F1] text-white shadow-lg shadow-[#6366F1]/20' : `${t.bg} ${t.color}`
                         }`}>
                           <t.icon size={22} />
                         </div>
                         
                         <div className="flex-1 min-w-0 flex flex-col justify-center">
                           <div className="flex items-center gap-2">
-                            <h4 className={`text-sm font-bold tracking-tight ${selectedTemplate === t.id ? 'text-[#6366F1]' : 'text-zinc-950'}`}>
+                            <h4 className={`text-sm font-bold tracking-tight transition-colors ${selectedTemplate === t.id ? 'text-[#6366F1]' : 'text-zinc-900 group-hover:text-[#6366F1]'}`}>
                               {t.title}
                             </h4>
                             {t.isAI && (
@@ -148,7 +148,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                               </span>
                             )}
                           </div>
-                          <p className="text-[11px] font-medium text-zinc-500 leading-snug mt-0.5 pr-2 sm:truncate">
+                          <p className="text-xs font-medium text-zinc-500 leading-snug mt-1 pr-2">
                             {t.desc}
                           </p>
                         </div>
@@ -156,7 +156,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                         <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 border-2 transition-all duration-300 ${
                           selectedTemplate === t.id 
                             ? 'bg-[#6366F1] border-[#6366F1]' 
-                            : 'bg-white border-zinc-200 group-hover:border-zinc-300'
+                            : 'bg-zinc-100 border-zinc-200 group-hover:border-zinc-300'
                         }`}>
                           {selectedTemplate === t.id && <Check size={10} strokeWidth={3} className="text-white" />}
                         </div>
@@ -167,12 +167,12 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
               </div>
             </div>
 
-            <div className="flex items-center gap-4 border-t border-zinc-100 pt-4 shrink-0">
+            <div className="flex items-center gap-4 border-t border-zinc-100 pt-5 mt-2 shrink-0">
               <button onClick={onClose} className="px-6 py-3.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-600 transition-all cursor-pointer">Cancel</button>
                 <button 
                   onClick={handleCreate} 
                   disabled={!campaignName.trim()} 
-                  className="flex-1 px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-[#6366F1] transition-all flex items-center justify-center gap-3 disabled:opacity-50 hover:scale-[1.02] cursor-pointer"
+                  className="flex-1 px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-xl hover:shadow-2xl hover:bg-[#6366F1] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed hover:-translate-y-0.5 cursor-pointer"
                 >
                   Continue to Editor <ArrowRight size={18} />
                 </button>
