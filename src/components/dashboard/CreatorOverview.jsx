@@ -127,104 +127,14 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
     return date.toLocaleDateString();
   };
 
-  const getWeeklyData = () => {
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const last7Days = [];
-    const now = new Date();
-    
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date(now);
-      d.setDate(d.getDate() - i);
-      last7Days.push({ 
-        day: days[d.getDay()], 
-        date: d.toDateString(),
-        value: 0 
-      });
-    }
-
-    if (history && history.length > 0) {
-      history.forEach(log => {
-        const logDate = new Date(log.created_at).toDateString();
-        const dayMatch = last7Days.find(d => d.date === logDate);
-        if (dayMatch) {
-          dayMatch.value += 1;
-        }
-      });
-    }
-
-    // If we have no real data, return zeros instead of mock data
-    const hasData = last7Days.some(d => d.value > 0);
-    if (!hasData) {
-      return last7Days.map(d => ({
-        day: d.day,
-        value: 0,
-        label: "0 replies"
-      }));
-    }
-
-    return last7Days.map(d => ({
-      day: d.day,
-      value: d.value,
-      label: `${d.value} replies`
-    }));
-  };
-
-  const graphData = getWeeklyData();
-
-  const width = 600;
-  const height = 180;
-  const padding = 25;
-  const graphWidth = width - padding * 2;
-  const graphHeight = height - padding * 2;
-  const maxVal = Math.max(...graphData.map(d => d.value)) || 10;
-
-  const points = graphData.map((d, i) => {
-    const x = padding + (i / (graphData.length - 1)) * graphWidth;
-    const y = padding + graphHeight - (d.value / maxVal) * graphHeight;
-    return { x, y, ...d };
-  });
-
-  const pathData = points.reduce((acc, p, i, arr) => {
-    if (i === 0) return `M ${p.x} ${p.y}`;
-    const prev = arr[i - 1];
-    const cpX1 = prev.x + (p.x - prev.x) / 2;
-    const cpY1 = prev.y;
-    const cpX2 = prev.x + (p.x - prev.x) / 2;
-    const cpY2 = p.y;
-    return `${acc} C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${p.x} ${p.y}`;
-  }, "");
-
-  const areaPathData = `${pathData} L ${points[points.length - 1].x} ${height - padding} L ${points[0].x} ${height - padding} Z`;
-
   const activeKeywords = topTriggers && topTriggers.length > 0
     ? topTriggers.map((t, idx) => {
-        const commentsCount = t.count;
-        const dmsCount = t.count; // Simplified for real data
-        const clicksCount = 0; // Not tracked yet
-        
         const triggerTypes = ["Post Comment", "Reel Comment", "Direct Inbox", "Story Reply"];
         return {
           keyword: (t.keyword || "AUTO").toUpperCase(),
           triggerType: triggerTypes[idx % triggerTypes.length],
-          delivery: "100%",
-          comments: commentsCount,
-          dms: dmsCount,
-          clicks: clicksCount,
-          ctr: "0%"
-        };
-      })
-    : [];
-
-  const activeLeads = history && history.length > 0
-    ? history.map((log, idx) => {
-        return {
-          handle: log.sender_name || `user_${log.id}`,
-          name: log.sender_name 
-            ? log.sender_name.replace(/_|\./g, ' ') 
-            : `User #${log.sender_id?.slice(0,4)}`,
-          interactions: 1,
-          status: "Real Lead",
-          lastActive: formatTime(log.created_at)
+          status: "Active",
+          comments: t.count
         };
       })
     : [];
@@ -244,28 +154,21 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
           return (
             <div 
               key={card.label}
-              className={`backdrop-blur-3xl border rounded-xl p-6 flex flex-col justify-between shadow-xl shadow-zinc-200/10 hover:shadow-2xl transition-all duration-500 group cursor-default relative overflow-hidden hover:-translate-y-1 ${card.bgClass}`}
+              className={`backdrop-blur-3xl border rounded-2xl p-6 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden bg-white hover:-translate-y-0.5`}
             >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[#6366F1]/5 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#6366F1]/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
               
-              <div className="flex items-center justify-between mb-6 relative z-10">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-lg backdrop-blur-md transition-all duration-500 group-hover:scale-110 ${card.color}`}>
+              <div className="flex items-center justify-between mb-4 relative z-10">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-sm transition-all duration-500 group-hover:scale-110 ${card.color}`}>
                   <Icon size={18} />
                 </div>
-                <span className={`text-[9px] font-semibold px-3 py-1 rounded-full shadow-sm ${
-                  card.trend === "Optimal" || card.trend === "Active"
-                    ? "bg-zinc-950 text-white"
-                    : "bg-emerald-50 text-emerald-700 border border-emerald-100"
-                }`}>
-                  {card.trend}
-                </span>
               </div>
               
-              <div className="space-y-0.5 relative z-10">
-                <span className="text-3xl sm:text-4xl font-semibold text-zinc-950 tracking-tighter leading-none block group-hover:text-[#6366F1] transition-colors duration-300">
+              <div className="space-y-1 relative z-10">
+                <span className="text-3xl sm:text-4xl font-bold text-zinc-950 tracking-tighter leading-none block group-hover:text-[#6366F1] transition-colors duration-300">
                   {card.value}
                 </span>
-                <span className="text-[12px] font-semibold text-zinc-400 leading-tight block mt-2">
+                <span className="text-[12px] font-semibold text-zinc-500 tracking-wide block mt-1">
                   {card.label}
                 </span>
               </div>
@@ -276,93 +179,73 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
         
-        <div className="lg:col-span-2 bg-white/40 backdrop-blur-3xl border border-zinc-200/80 rounded-xl p-8 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 hover:border-[#6366F1]/40 transition-all duration-500 flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#6366F1]/5 rounded-full -mr-32 -mt-32 pointer-events-none group-hover:scale-110 transition-transform duration-700" />
-          
-          <div className="flex items-center justify-between mb-8 relative z-10 shrink-0">
-            <div className="space-y-2">
-              <span className="text-[10px] font-semibold text-[#6366F1]">Performance Monitor</span>
-              <h3 className="font-bold text-2xl sm:text-3xl text-zinc-950 tracking-tighter leading-none flex items-center gap-3 group-hover:text-[#6366F1] transition-colors">
-                Weekly Activity 
+        {/* Left Column: Active Automations */}
+        <div className="lg:col-span-2 bg-white border border-zinc-200/80 rounded-[24px] p-6 sm:p-8 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col relative overflow-hidden">
+          <div className="flex items-center justify-between mb-8 relative z-10 shrink-0 border-b border-zinc-100 pb-6">
+            <div className="space-y-1.5">
+              <h3 className="font-bold text-2xl sm:text-3xl text-zinc-950 tracking-tight flex items-center gap-2">
+                Active Automations <Zap size={24} className="text-[#6366F1]" fill="#6366F1" fillOpacity={0.2} />
               </h3>
+              <p className="text-[13px] text-zinc-500 font-medium">Manage your currently running auto-reply rules.</p>
             </div>
             
-            <div className="flex items-center gap-2 text-[10px] font-semibold text-zinc-400 bg-white border border-zinc-100 px-4 py-2.5 rounded-xl shadow-sm">
-              <Calendar size={14} className="text-[#6366F1]" />
-              <span>Last 7 Days</span>
-            </div>
+            <button 
+              onClick={onCreateAutoReply}
+              className="hidden sm:flex items-center gap-2 text-sm font-bold text-white bg-zinc-950 hover:bg-zinc-800 px-5 py-2.5 rounded-xl transition-all shadow-md hover:shadow-lg"
+            >
+              <Plus size={16} strokeWidth={3} /> Create Rule
+            </button>
           </div>
 
-          <div className="relative flex-1 flex items-center justify-center my-4 h-[180px] w-full">
-            <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full overflow-visible">
-              <defs>
-                <linearGradient id="brandGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#6366F1" stopOpacity="0.3" />
-                  <stop offset="100%" stopColor="#6366F1" stopOpacity="0.0" />
-                </linearGradient>
-              </defs>
-
-              <line x1={padding} y1={padding} x2={width - padding} y2={padding} stroke="#f1f5f9" strokeWidth="1.5" />
-              <line x1={padding} y1={padding + graphHeight / 2} x2={width - padding} y2={padding + graphHeight / 2} stroke="#f1f5f9" strokeWidth="1.5" strokeDasharray="4 4" />
-              <line x1={padding} y1={height - padding} x2={width - padding} y2={height - padding} stroke="#e2e8f0" strokeWidth="1.5" />
-
-              <path d={areaPathData} fill="url(#brandGradient)" className="transition-all duration-700 ease-in-out" />
-
-              <path d={pathData} fill="none" stroke="#6366F1" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="transition-all duration-700 ease-in-out" />
-
-              {points.map((p, i) => (
-                <g key={p.day}>
-                  {hoveredDay === i && (
-                    <circle cx={p.x} cy={p.y} r={9} fill="#6366F1" fillOpacity="0.15" className="animate-ping" />
-                  )}
-                  <circle 
-                    cx={p.x} 
-                    cy={p.y} 
-                    r={hoveredDay === i ? 6 : 4.5} 
-                    fill="#ffffff" 
-                    stroke="#6366F1" 
-                    strokeWidth={hoveredDay === i ? 3.5 : 2.5}
-                    className="cursor-pointer transition-all duration-150"
-                    onMouseEnter={() => setHoveredDay(i)}
-                    onMouseLeave={() => setHoveredDay(null)}
-                  />
-                  <text 
-                    x={p.x} 
-                    y={height - 5} 
-                    textAnchor="middle" 
-                    className="text-xs font-semibold fill-zinc-600 capitalize tracking-normal cursor-default"
-                  >
-                    {p.day}
-                  </text>
-                </g>
-              ))}
-            </svg>
-
-            {hoveredDay !== null && (
-              <div 
-                className="absolute bg-zinc-950 text-white font-semibold text-xs px-3 py-2 rounded-xl shadow-2xl pointer-events-none transform -translate-x-1/2 -translate-y-full transition-all duration-150"
-                style={{ 
-                  left: `${((points[hoveredDay].x - padding) / graphWidth) * 100}%`,
-                  top: `${(points[hoveredDay].y / height) * 100 - 8}%`
-                }}
-              >
-                {points[hoveredDay].label}
+          <div className="space-y-3 flex-1 relative z-10 max-h-[360px] overflow-y-auto no-scrollbar pr-1">
+            {!activeKeywords || activeKeywords.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full py-12 text-center space-y-4 bg-zinc-50/50 rounded-2xl border border-zinc-200 border-dashed">
+                <div className="w-14 h-14 rounded-2xl bg-white border border-zinc-100 shadow-sm flex items-center justify-center">
+                  <Zap size={24} className="text-zinc-300" />
+                </div>
+                <div>
+                  <p className="text-base font-bold text-zinc-700">No active automations</p>
+                  <p className="text-sm text-zinc-500 max-w-xs mx-auto mt-1">Create your first rule to start automating replies and DMs.</p>
+                </div>
               </div>
+            ) : (
+              activeKeywords.map((item, index) => (
+                <div key={index} className="flex items-center justify-between p-4 bg-zinc-50/80 hover:bg-white border border-zinc-100 hover:border-zinc-200 rounded-2xl transition-all duration-200 group">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-indigo-50 border border-indigo-100/50 text-[#6366F1] rounded-xl flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+                      <MessageSquare size={20} />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2.5 mb-1.5">
+                        <span className="font-bold text-[15px] text-zinc-900">{item.keyword}</span>
+                        <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[9px] font-bold uppercase rounded-md border border-emerald-100">Active</span>
+                      </div>
+                      <span className="text-[13px] text-zinc-500 font-medium">{item.triggerType} <span className="mx-1.5 text-zinc-300">•</span> <span className="text-zinc-900 font-semibold">{item.comments}</span> replies sent</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-6 bg-[#6366F1] rounded-full relative cursor-pointer shadow-inner hover:opacity-90 transition-opacity">
+                      <div className="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 shadow-sm" />
+                    </div>
+                  </div>
+                </div>
+              ))
             )}
           </div>
         </div>
 
-        <div className="bg-white/40 backdrop-blur-xl border border-zinc-200/80 rounded-xl p-8 shadow-xl shadow-zinc-100/40 hover:shadow-2xl hover:shadow-zinc-200/40 flex flex-col relative transition-all duration-500 h-[380px]">
-          <div className="flex items-center justify-between mb-8 border-b border-zinc-200/50 pb-6 shrink-0">
-            <div className="space-y-2">
-              <span className="text-[10px] font-semibold text-[#6366F1]">Live Feed</span>
-              <h3 className="font-bold text-2xl sm:text-3xl text-zinc-950 tracking-tighter leading-none flex items-center gap-3">
-                Recent Leads <Activity size={24} className="text-emerald-500 shrink-0" />
+        {/* Right Column: Live Feed */}
+        <div className="bg-white border border-zinc-200/80 rounded-[24px] p-6 sm:p-8 shadow-xl shadow-zinc-100/40 hover:shadow-2xl transition-all duration-500 flex flex-col relative h-[480px]">
+          <div className="flex items-center justify-between mb-6 border-b border-zinc-100 pb-6 shrink-0">
+            <div className="space-y-1.5">
+              <h3 className="font-bold text-xl sm:text-2xl text-zinc-950 tracking-tight flex items-center gap-2">
+                Recent Activity <Activity size={20} className="text-emerald-500" />
               </h3>
+              <p className="text-[13px] text-zinc-500 font-medium">Live feed of interactions.</p>
             </div>
             <button 
               onClick={onViewAudience}
-              className="p-2.5 bg-white border border-zinc-100 rounded-xl text-zinc-400 hover:text-[#6366F1] hover:shadow-lg transition-all shadow-sm"
+              className="w-10 h-10 flex items-center justify-center rounded-xl bg-zinc-50 border border-zinc-100 text-zinc-400 hover:text-[#6366F1] hover:border-[#6366F1]/20 hover:bg-[#6366F1]/5 transition-all"
             >
               <ArrowRight size={18} />
             </button>
@@ -370,153 +253,30 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
 
           <div className="space-y-5 flex-1 overflow-y-auto no-scrollbar pb-2 pr-1 relative z-10">
             {!history || history.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full py-10 text-center space-y-2">
-                <Activity size={28} className="text-zinc-300 animate-pulse" />
-                <p className="text-xs text-zinc-500 font-normal italic lowercase">no recent messages logged.</p>
+              <div className="flex flex-col items-center justify-center h-full py-10 text-center space-y-3">
+                <div className="w-12 h-12 rounded-full bg-zinc-50 flex items-center justify-center">
+                  <Activity size={20} className="text-zinc-300" />
+                </div>
+                <p className="text-sm text-zinc-500 font-medium">No recent activity.</p>
               </div>
             ) : (
               history.map((log) => (
-                <div key={log.id} className="flex items-start justify-between group cursor-default border-b border-zinc-200/50 pb-4 last:border-0 last:pb-0">
+                <div key={log.id} className="flex items-start justify-between group cursor-default">
                   <div className="flex items-start gap-3.5">
-                    <div className="w-10 h-10 bg-white border border-zinc-200 rounded-xl flex items-center justify-center text-[10px] font-bold text-zinc-800 shadow-sm shrink-0 group-hover:border-[#6366F1] group-hover:text-[#6366F1] transition-all">
+                    <div className="w-10 h-10 bg-zinc-100 rounded-xl flex items-center justify-center text-[11px] font-bold text-zinc-600 shrink-0 border border-zinc-200/50 group-hover:border-zinc-300 transition-colors">
                       {log.sender_name?.slice(0, 2).toUpperCase() || "??"}
                     </div>
-                    
-                    <div className="space-y-1">
-                      <span className="text-xs sm:text-sm font-bold text-foreground tracking-tight block leading-none">@{log.sender_name || "unknown"}</span>
-                      <span className="text-[10px] text-zinc-500 font-normal block">
-                        {log.type === "COMMENT" ? "commented" : (log.type === "STORY_REPLY" ? "story reply" : "message")} 
-                        <span className="opacity-40 mx-1">→</span> 
-                        <span className="text-[#6366F1]">sent dm</span>
+                    <div className="space-y-1 mt-0.5">
+                      <span className="text-[13px] font-bold text-zinc-900 block leading-none">@{log.sender_name || "unknown"}</span>
+                      <span className="text-[11px] text-zinc-500 font-medium block">
+                        {log.type === "COMMENT" ? "commented on post" : "replied to story"}
                       </span>
                     </div>
                   </div>
-                  
-                  <span className="text-[10px] font-bold text-zinc-400 shrink-0 mt-0.5">{formatTime(log.created_at)}</span>
+                  <span className="text-[10px] font-semibold text-zinc-400 shrink-0 mt-1.5">{formatTime(log.created_at)}</span>
                 </div>
               ))
             )}
-          </div>
-        </div>
-
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-        
-        <div className="lg:col-span-2 bg-white/40 backdrop-blur-3xl border border-zinc-200/80 rounded-xl p-8 lg:p-10 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-48 h-48 bg-[#6366F1]/5 rounded-full -mr-24 -mt-24 pointer-events-none" />
-          
-          <div className="relative z-10 w-full">
-            <div className="flex items-center justify-between mb-8 border-b border-zinc-200/50 pb-6 shrink-0">
-              <div className="space-y-2">
-                <span className="text-[10px] font-semibold text-[#6366F1]">Traffic Sources</span>
-                <h3 className="font-bold text-2xl sm:text-3xl text-zinc-950 tracking-tighter leading-[1.1] flex items-center gap-2">
-                  Top Keywords <Flame size={28} className="text-orange-500 fill-orange-500 shrink-0" />
-                </h3>
-              </div>
-              <div className="hidden sm:flex items-center gap-2 text-[10px] font-semibold text-zinc-500 bg-white border border-zinc-100 px-3 py-1.5 rounded-xl shadow-sm">
-                <Gauge size={14} className="text-[#6366F1]" />
-                <span>Real-time Insights</span>
-              </div>
-            </div>
-
-            <div className="overflow-x-auto no-scrollbar">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-zinc-200/80 pb-4">
-                    <th className="text-[10px] font-semibold text-zinc-400 pb-4">Keyword</th>
-                    <th className="text-[10px] font-semibold text-zinc-400 pb-4 hidden sm:table-cell">Trigger Type</th>
-                    <th className="text-[10px] font-semibold text-zinc-400 pb-4 text-center">Comments</th>
-                    <th className="text-[10px] font-semibold text-zinc-400 pb-4 text-center">DM Sent</th>
-                    <th className="text-[10px] font-semibold text-zinc-400 pb-4 text-right">Clicks</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-200/50">
-                  {activeKeywords.map((item, index) => (
-                    <tr key={index} className="group/row hover:bg-white/60 transition-all duration-150">
-                      <td className="py-3">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#6366F1] text-white rounded-lg text-[10px] font-bold shadow-sm uppercase tracking-wider">
-                          {item.keyword}
-                        </span>
-                      </td>
-                      <td className="py-3 text-xs sm:text-sm font-bold text-zinc-600 hidden sm:table-cell">
-                        {item.triggerType}
-                      </td>
-                      <td className="py-3 text-xs sm:text-sm font-bold text-foreground text-center">
-                        {item.comments || 0}
-                      </td>
-                      <td className="py-3 text-xs sm:text-sm font-bold text-emerald-600 text-center">
-                        {item.dms || 0} <span className="text-[10px] font-normal text-zinc-400 ml-1">({item.delivery || '0%'})</span>
-                      </td>
-                      <td className="py-3 text-right">
-                        <div className="flex flex-col items-end">
-                          <span className="text-xs sm:text-sm font-bold text-foreground tracking-tight leading-none">
-                            {item.ctr}
-                          </span>
-                          <span className="text-[10px] font-semibold text-[#6366F1] leading-none mt-1">
-                            {item.clicks} Clicks
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white/40 backdrop-blur-3xl border border-zinc-200/80 rounded-xl p-8 lg:p-10 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-[#6366F1]/5 rounded-full -mr-16 -mt-16 pointer-events-none" />
-          
-          <div className="relative z-10 w-full flex-1 flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-8">
-              <div className="space-y-2">
-                <span className="text-[10px] font-semibold text-[#6366F1]">Active Directory</span>
-                <h3 className="font-bold text-2xl sm:text-3xl text-zinc-950 tracking-tighter leading-[1.1] flex items-center gap-2">
-                  New Leads <Users size={28} className="text-blue-500 shrink-0" />
-                </h3>
-              </div>
-              
-              <div className="hidden sm:flex items-center gap-2 text-[10px] font-semibold text-zinc-500 bg-white border border-zinc-100 px-3 py-1.5 rounded-xl shadow-sm">
-                <ShieldCheck size={14} className="text-[#6366F1]" />
-                <span>Verified</span>
-              </div>
-            </div>
-
-            <div className="space-y-4 flex-1 overflow-y-auto no-scrollbar max-h-[220px]">
-              {activeLeads.map((lead, index) => (
-                <div key={index} className="flex items-center justify-between group cursor-default border-b border-zinc-200/50 pb-4 last:border-0 last:pb-0">
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-10 h-10 bg-white rounded-xl border border-zinc-200 flex items-center justify-center text-[10px] font-bold text-zinc-800 shadow-sm group-hover:border-[#6366F1] group-hover:text-[#6366F1] transition-all duration-300 shrink-0">
-                      {lead.handle.slice(0, 2).toUpperCase()}
-                    </div>
-                    
-                    <div className="space-y-0.5">
-                      <span className="text-xs sm:text-sm font-bold text-foreground block leading-none hover:text-[#6366F1] transition-colors">
-                        @{lead.handle}
-                      </span>
-                      <span className="text-[10px] text-zinc-400 font-normal block uppercase tracking-tight">
-                        {lead.interactions} interactions
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col items-end shrink-0 text-right">
-                    <span className={`text-[9px] font-semibold px-2.5 py-1 rounded-full shadow-sm ${
-                      lead.status === "Converted" 
-                        ? "bg-emerald-50 text-emerald-600 border border-emerald-100" 
-                        : "bg-amber-50 text-amber-600 border border-amber-100"
-                    }`}>
-                      {lead.status}
-                    </span>
-                    <span className="text-[9px] font-semibold text-zinc-400 mt-1">
-                      {lead.lastActive}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
 
