@@ -163,9 +163,30 @@ export default function Dashboard() {
     }
   }, [initialOnboardingState.connectedAccount, initialOnboardingState.showOnboarding, initialOnboardingState.onboardingStep]);
 
+  // Set dynamic document title based on active tab
+  useEffect(() => {
+    const tabLabels = {
+      home: selectedAccount ? "Overview" : "Home",
+      automations: "Automations",
+      audience: "Audience",
+      analytics: "Analytics",
+      partner: "Partner Program",
+      settings: "Settings"
+    };
+    const tabName = tabLabels[activeTab] || activeTab;
+    document.title = `${tabName} | Automixa Dashboard`;
+  }, [activeTab, selectedAccount]);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     let shouldClean = false;
+
+    const tabParam = params.get("tab");
+    if (tabParam) {
+      setActiveTab(tabParam);
+      shouldClean = true;
+    }
+
     if (params.get("upgrade")) {
       setTimeout(() => setIsSubscriptionOpen(true), 0);
       shouldClean = true;
@@ -177,7 +198,7 @@ export default function Dashboard() {
       // Clean up the URL completely to prevent repeat alerts/modals on refresh
       window.history.replaceState({}, '', window.location.pathname);
     }
-  }, []);
+  }, [setActiveTab]);
 
   useEffect(() => {
     const supabase = createClient();
