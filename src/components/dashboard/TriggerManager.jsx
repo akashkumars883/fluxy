@@ -110,7 +110,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
 
               <div className="space-y-4">
                 <label className="text-[12px] font-bold text-zinc-400 ml-1">Select Your Goal</label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3">
                   {strategies.map((t) => {
                     // TEMP UNLOCK: isLocked set to false for limited time promotion
                     const isLocked = false; 
@@ -125,25 +125,41 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                             setCampaignName(t.title);
                           }
                         }} 
-                        className={`group relative border-2 rounded-2xl p-4 flex flex-col items-center text-center gap-3 transition-all duration-300 ${selectedTemplate === t.id ? 'border-[#6366F1] bg-[#6366F1]/5 shadow-lg shadow-[#6366F1]/10 cursor-pointer' : 'border-zinc-100 bg-zinc-50/50 hover:border-zinc-200 hover:bg-white cursor-pointer hover:-translate-y-0.5'}`}
+                        className={`group border-2 rounded-2xl p-4 flex items-center gap-4 transition-all duration-300 cursor-pointer ${
+                          selectedTemplate === t.id 
+                            ? 'border-[#6366F1] bg-[#6366F1]/5 shadow-md shadow-[#6366F1]/10' 
+                            : 'border-zinc-100 bg-zinc-50/50 hover:border-zinc-200 hover:bg-white hover:-translate-x-1'
+                        }`}
                       >
-                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-500 ${selectedTemplate === t.id ? 'bg-[#6366F1] text-white shadow-xl shadow-[#6366F1]/20 rotate-6' : `${t.bg} ${t.color}`}`}>
-                          <t.icon size={24} />
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500 ${
+                          selectedTemplate === t.id ? 'bg-[#6366F1] text-white shadow-lg shadow-[#6366F1]/20 rotate-6' : `${t.bg} ${t.color}`
+                        }`}>
+                          <t.icon size={22} />
                         </div>
-                        <div className="space-y-1">
-                          <h4 className="text-sm font-bold text-zinc-950 tracking-tight">{t.title}</h4>
-                          <p className="text-[11px] font-medium text-zinc-500 leading-relaxed px-2">{t.desc}</p>
+                        
+                        <div className="flex-1 min-w-0 flex flex-col justify-center">
+                          <div className="flex items-center gap-2">
+                            <h4 className={`text-sm font-bold tracking-tight ${selectedTemplate === t.id ? 'text-[#6366F1]' : 'text-zinc-950'}`}>
+                              {t.title}
+                            </h4>
+                            {t.isAI && (
+                              <span className="px-1.5 py-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white text-[9px] font-semibold rounded-md shadow-sm">
+                                AI
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[11px] font-medium text-zinc-500 leading-snug mt-0.5 pr-2 sm:truncate">
+                            {t.desc}
+                          </p>
                         </div>
-                        {t.isAI && (
-                          <div className="absolute top-3 left-3 px-2 py-1 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white text-[9px] font-semibold rounded-lg shadow-lg shadow-[#6366F1]/20 flex items-center justify-center animate-in slide-in-from-top-1 duration-500">
-                             <span>AI</span>
-                          </div>
-                        )}
-                        {selectedTemplate === t.id && (
-                          <div className="absolute top-3 right-3 w-5 h-5 bg-[#6366F1] rounded-full flex items-center justify-center shadow-lg animate-in zoom-in-50 duration-300 border-2 border-white">
-                             <Check size={10} className="text-white" />
-                          </div>
-                        )}
+
+                        <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 border-2 transition-all duration-300 ${
+                          selectedTemplate === t.id 
+                            ? 'bg-[#6366F1] border-[#6366F1]' 
+                            : 'bg-white border-zinc-200 group-hover:border-zinc-300'
+                        }`}>
+                          {selectedTemplate === t.id && <Check size={10} strokeWidth={3} className="text-white" />}
+                        </div>
                       </div>
                     );
                   })}
@@ -563,12 +579,12 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
             </div>
 
             <div className="flex justify-end border-t border-zinc-100 pt-5">
-              <button 
-                onClick={() => setShowSuggestionsDrawer(false)}
-                className="px-6 py-3.5 bg-zinc-950 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
-              >
-                Close Drawer
-              </button>
+               <button 
+                 onClick={() => setShowSuggestionsDrawer(false)}
+                 className="px-6 py-3.5 bg-zinc-950 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
+               >
+                 Close Drawer
+               </button>
             </div>
           </div>
         </div>
