@@ -101,7 +101,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
       {/* Backdrop */}
-      <motion.div
+      <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -109,11 +109,11 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
       />
 
       {/* Modal Content */}
-      <motion.div
+      <motion.div 
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="relative w-full max-w-3xl bg-white border border-border rounded-[40px] shadow-2xl overflow-hidden"
+        className="relative w-full max-w-xl bg-white border border-border rounded-[40px] shadow-2xl overflow-hidden"
       >
         {/* Confetti shows up ONLY in Step 4 (Celebration) */}
         {step === 4 && <Confetti />}
@@ -125,12 +125,12 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
         <div className="relative p-8 md:p-12 z-10">
           <AnimatePresence mode="wait">
             {step !== 4 && (
-              <motion.div
+              <motion.div 
                 key="connect"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="flex flex-col md:flex-row items-center gap-8 md:gap-12 text-center md:text-left py-4"
+                className="space-y-8 text-center py-6"
               >
                 {isConnecting ? (
                   <div className="flex flex-col items-center justify-center space-y-6 py-8 w-full">
@@ -142,48 +142,47 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                   </div>
                 ) : (
                   <>
-                    <div className="shrink-0 w-32 h-32 md:w-40 md:h-40 flex items-center justify-center overflow-hidden rounded-[32px]">
+                    <div className="flex items-center justify-center gap-3 mb-2">
                       <img
                         src="/logo.png"
                         alt="Automixa Logo"
-                        className="w-full h-full object-cover scale-110"
+                        className="w-12 h-12 object-contain"
                       />
+                      <span className="text-3xl font-bold tracking-tight text-zinc-900">automixa</span>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Connect with Facebook</h2>
+                      <p className="text-zinc-muted font-normal text-md max-w-sm mx-auto">
+                        Link your Facebook account to grant Automixa access to manage your connected Instagram professional profiles.
+                      </p>
                     </div>
 
-                    <div className="flex-1 space-y-6">
-                      <div className="space-y-3">
-                        <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">Connect with Facebook</h2>
-                        <p className="text-zinc-muted font-normal text-md">
-                          Link your Facebook account to grant Automixa access to manage your connected Instagram professional profiles.
-                        </p>
-                      </div>
-
-                      <div className="flex flex-col items-center md:items-start gap-3">
-                        <button
-                          onClick={handleConnectClick}
-                          className="w-full sm:w-auto px-10 py-3.5 bg-[#1877F2] text-white rounded-xl text-sm font-bold shadow-[0_8px_30px_-8px_rgba(24,119,242,0.5)] hover:shadow-[0_10px_40px_-10px_rgba(24,119,242,0.7)] transition-all flex items-center justify-center gap-3 hover:scale-[1.02]"
-                        >
-                          Login with Facebook <ArrowRight size={20} />
-                        </button>
-
-                        <div className="flex flex-col gap-2 items-center md:items-start mt-1">
-                          <div className="flex items-center gap-2 text-xs text-zinc-500 font-semibold px-3 py-2">
-                            <svg className="w-4 h-4 text-[#0064E0] shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                              <path d="M6.915 4.03c-1.968 0-3.683 1.28-4.871 3.113C.704 9.208 0 11.883 0 14.449c0 .706.07 1.369.21 1.973a6.624 6.624 0 0 0 .265.86 5.297 5.297 0 0 0 .371.761c.696 1.159 1.818 1.927 3.593 1.927 1.497 0 2.633-.671 3.965-2.444.76-1.012 1.144-1.626 2.663-4.32l.756-1.339.186-.325c.061.1.121.196.183.3l2.152 3.595c.724 1.21 1.665 2.556 2.47 3.314 1.046.987 1.992 1.22 3.06 1.22 1.075 0 1.876-.355 2.455-.843a3.743 3.743 0 0 0 .81-.973c.542-.939.861-2.127.861-3.745 0-2.72-.681-5.357-2.084-7.45-1.282-1.912-2.957-2.93-4.716-2.93-1.047 0-2.088.467-3.053 1.308-.652.57-1.257 1.29-1.82 2.05-.69-.875-1.335-1.547-1.958-2.056-1.182-.966-2.315-1.303-3.454-1.303zm10.16 2.053c1.147 0 2.188.758 2.992 1.999 1.132 1.748 1.647 4.195 1.647 6.4 0 1.548-.368 2.9-1.839 2.9-.58 0-1.027-.23-1.664-1.004-.496-.601-1.343-1.878-2.832-4.358l-.617-1.028a44.908 44.908 0 0 0-1.255-1.98c.07-.109.141-.224.211-.327 1.12-1.667 2.118-2.602 3.358-2.602zm-10.201.553c1.265 0 2.058.791 2.675 1.446.307.327.737.871 1.234 1.579l-1.02 1.566c-.757 1.163-1.882 3.017-2.837 4.338-1.191 1.649-1.81 1.817-2.486 1.817-.524 0-1.038-.237-1.383-.794-.263-.426-.464-1.13-.464-2.046 0-2.221.63-4.535 1.66-6.088.454-.687.964-1.226 1.533-1.533a2.264 2.264 0 0 1 1.088-.285z" />
-                            </svg>
-                            Meta Verified Business Partner
-                          </div>
-                          <div className="text-[10px] text-zinc-400 font-medium px-2">
-                            By continuing, you agree to our <a href="/terms" target="_blank" className="underline hover:text-zinc-600">Terms of Service</a> and <a href="/privacy" target="_blank" className="underline hover:text-zinc-600">Privacy Policy</a>.
-                          </div>
+                    <div className="pt-6 flex flex-col items-center gap-3">
+                      <button 
+                        onClick={handleConnectClick}
+                        className="w-full sm:w-auto px-12 py-4 bg-[#6366F1] text-white rounded-xl text-sm font-bold shadow-[0_8px_30px_-8px_rgba(99,102,241,0.5)] hover:shadow-[0_10px_40px_-10px_rgba(99,102,241,0.7)] transition-all flex items-center justify-center gap-3 hover:scale-[1.02]"
+                      >
+                        Login with Facebook <ArrowRight size={20} />
+                      </button>
+                      
+                      <div className="flex flex-col gap-2 items-center mt-2">
+                        <div className="flex items-center gap-2 text-xs text-zinc-500 font-semibold px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-full shadow-sm">
+                          <svg className="w-4 h-4 text-[#0064E0] shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.915 4.03c-1.968 0-3.683 1.28-4.871 3.113C.704 9.208 0 11.883 0 14.449c0 .706.07 1.369.21 1.973a6.624 6.624 0 0 0 .265.86 5.297 5.297 0 0 0 .371.761c.696 1.159 1.818 1.927 3.593 1.927 1.497 0 2.633-.671 3.965-2.444.76-1.012 1.144-1.626 2.663-4.32l.756-1.339.186-.325c.061.1.121.196.183.3l2.152 3.595c.724 1.21 1.665 2.556 2.47 3.314 1.046.987 1.992 1.22 3.06 1.22 1.075 0 1.876-.355 2.455-.843a3.743 3.743 0 0 0 .81-.973c.542-.939.861-2.127.861-3.745 0-2.72-.681-5.357-2.084-7.45-1.282-1.912-2.957-2.93-4.716-2.93-1.047 0-2.088.467-3.053 1.308-.652.57-1.257 1.29-1.82 2.05-.69-.875-1.335-1.547-1.958-2.056-1.182-.966-2.315-1.303-3.454-1.303zm10.16 2.053c1.147 0 2.188.758 2.992 1.999 1.132 1.748 1.647 4.195 1.647 6.4 0 1.548-.368 2.9-1.839 2.9-.58 0-1.027-.23-1.664-1.004-.496-.601-1.343-1.878-2.832-4.358l-.617-1.028a44.908 44.908 0 0 0-1.255-1.98c.07-.109.141-.224.211-.327 1.12-1.667 2.118-2.602 3.358-2.602zm-10.201.553c1.265 0 2.058.791 2.675 1.446.307.327.737.871 1.234 1.579l-1.02 1.566c-.757 1.163-1.882 3.017-2.837 4.338-1.191 1.649-1.81 1.817-2.486 1.817-.524 0-1.038-.237-1.383-.794-.263-.426-.464-1.13-.464-2.046 0-2.221.63-4.535 1.66-6.088.454-.687.964-1.226 1.533-1.533a2.264 2.264 0 0 1 1.088-.285z" />
+                          </svg>
+                          Meta Verified Business Partner
+                        </div>
+                        <div className="text-[10px] text-zinc-400 font-medium px-2 mt-2">
+                          By continuing, you agree to our <a href="/terms" target="_blank" className="underline hover:text-zinc-600">Terms of Service</a> and <a href="/privacy" target="_blank" className="underline hover:text-zinc-600">Privacy Policy</a>.
                         </div>
                       </div>
-
-                      <div className="pt-2 md:pt-4">
-                        <button onClick={handleSkipOrClose} className="text-sm text-zinc-400 hover:text-zinc-700 transition-colors underline underline-offset-4 font-medium">
-                          Cancel, I'll do this later
-                        </button>
-                      </div>
+                    </div>
+                    
+                    <div className="pt-4">
+                      <button onClick={handleSkipOrClose} className="text-sm text-zinc-400 hover:text-zinc-700 transition-colors underline underline-offset-4 font-medium">
+                        Cancel, I'll do this later
+                      </button>
                     </div>
                   </>
                 )}
