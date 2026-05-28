@@ -13,8 +13,8 @@ function getGraphBaseUrl(token) {
 
 
 function getAppAccessToken() {
-  const appId = process.env.INSTAGRAM_APP_ID?.trim();
-  const appSecret = process.env.INSTAGRAM_APP_SECRET?.trim();
+  const appId = process.env.FACEBOOK_APP_ID?.trim() || process.env.INSTAGRAM_APP_ID?.trim();
+  const appSecret = process.env.FACEBOOK_APP_SECRET?.trim() || process.env.INSTAGRAM_APP_SECRET?.trim();
   if (!appId || !appSecret) return null;
   return `${appId}|${appSecret}`;
 }
@@ -130,8 +130,8 @@ export const MetaService = {
   exchangeCodeForToken: async (code, redirectUri) => {
     try {
       const params = new URLSearchParams({
-        client_id: process.env.INSTAGRAM_APP_ID?.trim(),
-        client_secret: process.env.INSTAGRAM_APP_SECRET?.trim(),
+        client_id: process.env.FACEBOOK_APP_ID?.trim() || process.env.INSTAGRAM_APP_ID?.trim(),
+        client_secret: process.env.FACEBOOK_APP_SECRET?.trim() || process.env.INSTAGRAM_APP_SECRET?.trim(),
         redirect_uri: redirectUri,
         code: code,
       });
@@ -153,8 +153,8 @@ export const MetaService = {
     try {
       const params = new URLSearchParams({
         grant_type: 'fb_exchange_token',
-        client_id: process.env.INSTAGRAM_APP_ID?.trim(),
-        client_secret: process.env.INSTAGRAM_APP_SECRET?.trim(),
+        client_id: process.env.FACEBOOK_APP_ID?.trim() || process.env.INSTAGRAM_APP_ID?.trim(),
+        client_secret: process.env.FACEBOOK_APP_SECRET?.trim() || process.env.INSTAGRAM_APP_SECRET?.trim(),
         fb_exchange_token: shortToken,
       });
 
