@@ -194,36 +194,36 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
-                className="space-y-8 text-center py-8 z-20 relative"
+                className="space-y-5 sm:space-y-6 text-center py-2 sm:py-6 z-20 relative"
               >
                 {/* Glowing Success Checkmark */}
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 12 }}
-                  className="w-24 h-24 bg-emerald-500 text-white rounded-full mx-auto flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.4)]"
+                  className="w-20 h-20 sm:w-24 sm:h-24 bg-emerald-500 text-white rounded-full mx-auto flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.4)]"
                 >
-                  <CheckCircle2 size={56} className="stroke-[2.5]" />
+                  <CheckCircle2 className="w-10 h-10 sm:w-14 sm:h-14 stroke-[2.5]" />
                 </motion.div>
 
-                <div className="space-y-3">
-                  <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
+                <div className="space-y-2 sm:space-y-3">
+                  <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
                     Instagram Connected!
                   </h2>
-                  <p className="text-zinc-muted font-medium text-lg max-w-md mx-auto">
+                  <p className="text-zinc-muted font-normal text-sm sm:text-base max-w-sm mx-auto px-2">
                     Account <strong className="font-semibold text-foreground">@{connectedAccount?.username || "instagram"}</strong> has been successfully linked to Automixa.
                     {connectedAccount?.igBusinessId && (
-                      <span className="block text-xs text-zinc-400 mt-2">Connected ID: {connectedAccount.igBusinessId}</span>
+                      <span className="block text-[10px] sm:text-xs text-zinc-400 mt-1.5 sm:mt-2">Connected ID: {connectedAccount.igBusinessId}</span>
                     )}
                   </p>
                 </div>
 
-                <div className="pt-6">
+                <div className="pt-4 sm:pt-6">
                   <button
                     onClick={onClose}
-                    className="px-12 py-4 bg-zinc-900 text-white rounded-xl text-sm font-bold shadow-2xl hover:bg-zinc-800 transition-all flex items-center justify-center gap-3 hover:scale-[1.02] mx-auto"
+                    className="w-full sm:w-auto px-8 sm:px-12 py-3.5 sm:py-4 bg-[#6366F1] text-white rounded-xl text-sm font-bold shadow-[0_8px_30px_-8px_rgba(99,102,241,0.5)] hover:shadow-[0_10px_40px_-10px_rgba(99,102,241,0.7)] transition-all flex items-center justify-center gap-3 hover:scale-[1.02] mx-auto"
                   >
-                    Go to Dashboard <ArrowRight size={20} />
+                    Go to Dashboard <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                 </div>
               </motion.div>
