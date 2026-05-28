@@ -66,7 +66,7 @@ export async function POST(req) {
           const supabaseAdmin = createAdminClient();
           const { data: promoData, error: promoError } = await supabaseAdmin
             .from("promo_codes")
-            .select("*, partner_id")
+            .select("*, partner_id, clicks_count")
             .eq("code", code)
             .eq("status", "active")
             .single();
@@ -74,6 +74,13 @@ export async function POST(req) {
           if (!promoError && promoData) {
             discountPercent = promoData.customer_discount_percent || 10;
             partnerId = promoData.partner_id;
+            // Track click (fire-and-forget, non-blocking)
+            supabaseAdmin
+              .from("promo_codes")
+              .update({ clicks_count: (promoData.clicks_count || 0) + 1 })
+              .eq("code", code)
+              .then(() => {})
+              .catch((e) => console.warn("clicks_count update failed:", e.message));
           }
         } catch (dbErr) {
           console.warn("DB Promo code verification failed, ignoring dynamic code:", dbErr.message);

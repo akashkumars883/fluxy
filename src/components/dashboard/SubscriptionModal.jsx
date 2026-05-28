@@ -3,7 +3,7 @@
 import { useDashboard } from "@/context/DashboardContext";
 import { createClient } from "@/lib/supabase";
 import { AnimatePresence,motion } from "framer-motion";
-import { ArrowRight,BarChart3,CheckCircle2,CreditCard,Sparkles,X,Zap } from "lucide-react";
+import { ArrowRight, BarChart3, CheckCircle2, CreditCard, Sparkles, Tag, X, Zap } from "lucide-react";
 import { useEffect,useState } from "react";
 
 export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free", realtimeStats }) {
@@ -12,6 +12,12 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
   const [isAnnual, setIsAnnual] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState(currentPlan);
   const [activeTab, setActiveTab] = useState('plans'); // 'plans', 'billing', 'invoices'
+
+  // Promo code state
+  const [promoInput, setPromoInput] = useState("");
+  const [promoApplied, setPromoApplied] = useState(null); // { code, discountPercent }
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [promoError, setPromoError] = useState("");
 
   const [invoices, setInvoices] = useState([]);
   const [loadingInvoices, setLoadingInvoices] = useState(false);
@@ -89,11 +95,53 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
     let rawPrice = isIndia ? plan.price_inr : plan.price_usd;
     let numeric = parseInt(rawPrice.replace(',', ''));
     if (isAnnual) {
-      // Annual discount: 20% off monthly price, billed yearly (x12)
       numeric = Math.round((numeric * 0.8) * 12);
+    }
+    if (promoApplied && plan.id !== 'free') {
+      numeric = Math.round(numeric * ((100 - promoApplied.discountPercent) / 100));
       return isIndia ? numeric.toLocaleString('en-IN') : numeric.toLocaleString();
     }
-    return rawPrice;
+    return isAnnual ? (isIndia ? numeric.toLocaleString('en-IN') : numeric.toLocaleString()) : rawPrice;
+  };
+
+  const handleApplyPromo = async () => {
+    const code = promoInput.trim().toUpperCase();
+    if (!code) return;
+    setPromoLoading(true);
+    setPromoError("");
+    setPromoApplied(null);
+    try {
+      const { createClient: getClient } = await import("@/lib/supabase");
+      const supabase = getClient();
+      const { data, error } = await supabase
+        .from("promo_codes")
+        .select("code, customer_discount_percent, status")
+        .eq("code", code)
+        .eq("status", "active")
+        .maybeSingle();
+
+      // Also check hardcoded codes
+      if (!data && code === "AUTOMIXA30") {
+        setPromoApplied({ code, discountPercent: 30 });
+      } else if (!data && code === "CREATORVIP") {
+        setPromoApplied({ code, discountPercent: 20 });
+      } else if (data) {
+        setPromoApplied({ code: data.code, discountPercent: data.customer_discount_percent || 10 });
+      } else {
+        setPromoError("Invalid or expired promo code.");
+      }
+    } catch (e) {
+      console.error("Promo validation error:", e);
+      setPromoError("Could not verify promo code. Try again.");
+    } finally {
+      setPromoLoading(false);
+    }
+  };
+
+  const handleRemovePromo = () => {
+    setPromoApplied(null);
+    setPromoInput("");
+    setPromoError("");
   };
 
   const handleCheckout = async () => {
@@ -107,6 +155,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
         body: JSON.stringify({
           planId: selectedPlanId,
           isAnnual,
+          promoCode: promoApplied?.code || null,
           ref: storedRef
         }),
       });
@@ -296,12 +345,50 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                       ))}
                    </div>
 
+                   {/* Promo Code Input */}
+                   {selectedPlanId !== 'free' && selectedPlanId !== currentPlan && (
+                     <div className="space-y-2">
+                       {promoApplied ? (
+                         <div className="flex items-center justify-between px-4 py-2.5 bg-emerald-50 border border-emerald-200 rounded-2xl">
+                           <div className="flex items-center gap-2">
+                             <Tag size={13} className="text-emerald-600" />
+                             <span className="text-xs font-semibold text-emerald-700">{promoApplied.code}</span>
+                             <span className="text-xs text-emerald-600">— {promoApplied.discountPercent}% off applied!</span>
+                           </div>
+                           <button onClick={handleRemovePromo} className="text-xs text-emerald-600 hover:text-emerald-800 font-semibold underline underline-offset-2">Remove</button>
+                         </div>
+                       ) : (
+                         <div className="flex gap-2">
+                           <div className="relative flex-1">
+                             <Tag size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
+                             <input
+                               type="text"
+                               placeholder="Have a promo code?"
+                               value={promoInput}
+                               onChange={(e) => { setPromoInput(e.target.value); setPromoError(""); }}
+                               onKeyDown={(e) => e.key === 'Enter' && handleApplyPromo()}
+                               className="w-full pl-8 pr-3 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-xs font-medium text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white transition-colors"
+                             />
+                           </div>
+                           <button
+                             onClick={handleApplyPromo}
+                             disabled={promoLoading || !promoInput.trim()}
+                             className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-xs rounded-xl transition-all disabled:opacity-50 whitespace-nowrap"
+                           >
+                             {promoLoading ? "Checking…" : "Apply"}
+                           </button>
+                         </div>
+                       )}
+                       {promoError && <p className="text-xs text-rose-500 font-medium px-1">{promoError}</p>}
+                     </div>
+                   )}
+
                    <button 
                      onClick={handleCheckout}
                      disabled={selectedPlanId === currentPlan}
                      className="w-full py-4 bg-zinc-950 text-white rounded-2xl font-medium text-xs shadow-xl flex items-center justify-center gap-2 hover:bg-zinc-800 disabled:opacity-50 hover:scale-[1.01] transition-all active:scale-[0.98]"
                    >
-                      <span>{selectedPlanId === currentPlan ? "Current Active Plan" : `Upgrade to ${selectedPlanId.replace('_', ' ')}`}</span>
+                      <span>{selectedPlanId === currentPlan ? "Current Active Plan" : `Upgrade to ${selectedPlanId.replace('_', ' ')}${promoApplied ? ` (${promoApplied.discountPercent}% off)` : ''}`}</span>
                       <ArrowRight size={14} />
                    </button>
                    
