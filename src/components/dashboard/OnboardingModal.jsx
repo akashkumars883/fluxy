@@ -142,11 +142,11 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                   </div>
                 ) : (
                   <>
-                    <div className="shrink-0 w-32 h-32 md:w-40 md:h-40 bg-gradient-to-tr from-zinc-50 to-white border border-zinc-100 rounded-[40px] flex items-center justify-center shadow-2xl shadow-black/5 animate-pulse">
+                    <div className="shrink-0 w-32 h-32 md:w-40 md:h-40 flex items-center justify-center overflow-hidden rounded-[32px] animate-pulse">
                       <img
                         src="/logo.png"
                         alt="Automixa Logo"
-                        className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-xl"
+                        className="w-full h-full object-cover scale-110"
                       />
                     </div>
                     
