@@ -142,17 +142,16 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                   </div>
                 ) : (
                   <>
-                    <div className="flex items-center justify-center gap-3 mb-2">
+                    <div className="mx-auto w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center overflow-hidden rounded-[24px] mb-6">
                       <img
                         src="/logo.png"
                         alt="Automixa Logo"
-                        className="w-12 h-12 object-contain"
+                        className="w-full h-full object-cover scale-110"
                       />
-                      <span className="text-3xl font-bold tracking-tight text-zinc-900">automixa</span>
                     </div>
                     
                     <div className="space-y-3">
-                      <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Connect with Facebook</h2>
+                      <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">Connect with Facebook</h2>
                       <p className="text-zinc-muted font-normal text-md max-w-sm mx-auto">
                         Link your Facebook account to grant Automixa access to manage your connected Instagram professional profiles.
                       </p>
