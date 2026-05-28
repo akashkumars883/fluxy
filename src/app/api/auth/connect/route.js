@@ -24,54 +24,33 @@ export async function GET(request) {
   }
   const role = searchParams.get('role') || 'business';
 
-  const appId = process.env.FACEBOOK_APP_ID?.trim() || process.env.INSTAGRAM_APP_ID?.trim();
+  const appId = process.env.INSTAGRAM_APP_ID?.trim() || process.env.FACEBOOK_APP_ID?.trim();
   if (!appId) {
-    return NextResponse.json({ error: "Missing FACEBOOK_APP_ID or INSTAGRAM_APP_ID" }, { status: 500 });
+    return NextResponse.json({ error: "Missing INSTAGRAM_APP_ID or FACEBOOK_APP_ID" }, { status: 500 });
   }
   const isLocal = origin.includes('localhost') || origin.includes('127.0.0.1');
+  
+  // Use the new instagram callback URI
   const redirectUri = isLocal 
-    ? `${origin}/api/auth/callback/facebook`
-    : "https://www.automixa.in/api/auth/callback/facebook";
+    ? `${origin}/api/auth/callback/instagram`
+    : "https://www.automixa.in/api/auth/callback/instagram";
   
   // Pass a nonce-bound state to retrieve persona and prevent callback CSRF.
   const nonce = crypto.randomUUID();
   const state = JSON.stringify({ nonce, persona: role, provider: "instagram" });
   
-  // 2. Facebook Login for Business requires a Configuration ID
-  const configId = (
-    process.env.FACEBOOK_LOGIN_CONFIG_ID ||
-    process.env.FB_CONFIG_ID ||
-    process.env.NEXT_PUBLIC_FB_CONFIG_ID ||
-    ""
-  ).trim();
-
   const authParams = new URLSearchParams({
     client_id: appId,
     redirect_uri: redirectUri,
     state,
     response_type: "code",
-    auth_type: "rerequest",
+    scope: ["instagram_business_basic", "instagram_business_manage_messages"].join(",")
   });
 
-  if (configId) {
-    authParams.set("config_id", configId);
-    authParams.set("override_default_response_type", "true");
-  } else {
-    const facebookScopes = [
-      "instagram_basic",
-      "instagram_manage_comments",
-      "instagram_manage_messages",
-      "pages_show_list",
-      "pages_read_engagement",
-      "pages_manage_metadata",
-      "public_profile"
-    ].join(",");
-    authParams.set("scope", facebookScopes);
-  }
+  // Direct Instagram Login for Business Endpoint
+  const igAuthUrl = `https://www.instagram.com/oauth/authorize?${authParams.toString()}`;
 
-  const fbAuthUrl = `https://www.facebook.com/v21.0/dialog/oauth?${authParams.toString()}`;
-
-  const response = NextResponse.redirect(fbAuthUrl);
+  const response = NextResponse.redirect(igAuthUrl);
   response.cookies.set("automixa_meta_oauth_state", nonce, {
     httpOnly: true,
     sameSite: "lax",
