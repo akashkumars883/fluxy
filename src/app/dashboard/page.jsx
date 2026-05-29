@@ -469,7 +469,7 @@ export default function Dashboard() {
     const userPlanLevel = planHierarchy[currentPlan] || 0;
     const reqPlanLevel = planHierarchy[item.reqPlan] || 0;
     
-    const isLockedByPlan = userPlanLevel < reqPlanLevel;
+    const isLockedByPlan = false; // Temp unlocked for testing: userPlanLevel < reqPlanLevel;
     
     return {
       ...item,

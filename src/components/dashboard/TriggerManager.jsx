@@ -112,7 +112,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                 <label className="text-[12px] font-bold text-zinc-400 ml-1">Select Your Goal</label>
                 <div className="flex flex-col gap-2 sm:gap-2.5">
                   {strategies.map((t) => {
-                    const isLocked = t.isPremium && currentPlan === "free"; 
+                    const isLocked = false; // Temp unlocked for testing: t.isPremium && currentPlan === "free";
                     
                     return (
                       <div 
@@ -444,7 +444,7 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
                 { id: "welcome_dm", label: "Welcome", icon: MessageSquare },
                 { id: "faq", label: "AI FAQ", icon: Brain, isPremium: true }
               ].map((chip) => {
-                const isLocked = chip.isPremium && currentPlan === "free";
+                const isLocked = false; // Temp unlocked for testing: chip.isPremium && currentPlan === "free";
                 
                 return (
                   <button
