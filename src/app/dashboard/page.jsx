@@ -3,17 +3,18 @@
 import { createClient } from "@/lib/supabase";
 import { motion } from "framer-motion";
 import {
-BarChart2,
-CheckCircle2,
-Cpu,
-Download,
-Home,
-Link2,
-Lock as LucideLock,
-Plus,
-Settings,
-Sparkles,
-Users
+  AlertCircle,
+  BarChart2,
+  CheckCircle2,
+  Cpu,
+  Download,
+  Home,
+  Link2,
+  Lock as LucideLock,
+  Plus,
+  Settings,
+  Sparkles,
+  Users
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect,useState } from "react";
