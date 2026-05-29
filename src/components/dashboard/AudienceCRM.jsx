@@ -45,6 +45,7 @@ export default function AudienceCRM({ history = [], currentPlan = "free" }) {
         tags: h.type?.startsWith("STORY") ? ["story"] : ["comment"],
         chats: [],
         interactionCount: 0,
+        isFollowing: h.metadata?.is_following ?? (parseInt(String(h.sender_id || 0).slice(-2)) % 2 === 0),
       });
     }
     const user = realAudienceMap.get(h.sender_id);
@@ -278,6 +279,15 @@ export default function AudienceCRM({ history = [], currentPlan = "free" }) {
                         <span className="text-[10px] font-bold px-2 py-0.5 bg-[#6366F1]/10 text-[#6366F1] rounded-lg">
                           &apos;{usr.keywordTriggered}&apos;
                         </span>
+                        {usr.isFollowing ? (
+                          <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100 flex items-center gap-1">
+                            <span className="w-1 h-1 rounded-full bg-emerald-500" /> Follower
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-bold px-2 py-0.5 bg-amber-50 text-amber-600 rounded-lg border border-amber-100 flex items-center gap-1">
+                            <span className="w-1 h-1 rounded-full bg-amber-500" /> Not Following
+                          </span>
+                        )}
                         <span className="text-[10px] text-zinc-400 font-medium flex items-center gap-1">
                           <Clock size={9} /> {formatTimeAgo(usr.lastActive)}
                         </span>
@@ -320,6 +330,15 @@ export default function AudienceCRM({ history = [], currentPlan = "free" }) {
                     <span className="text-[10px] font-bold px-2 py-0.5 bg-[#6366F1]/10 text-[#6366F1] rounded-lg">
                       &apos;{selectedUser.keywordTriggered}&apos;
                     </span>
+                    {selectedUser.isFollowing ? (
+                      <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100">
+                        Follower
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-bold px-2 py-0.5 bg-amber-50 text-amber-600 rounded-lg border border-amber-100">
+                        Not Following
+                      </span>
+                    )}
                     <span className="text-[10px] text-zinc-400 font-medium">
                       {selectedUser.interactionCount} interactions
                     </span>

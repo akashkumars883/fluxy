@@ -14,7 +14,7 @@ Zap
 import { useEffect,useState } from "react";
 import { createPortal } from "react-dom";
 
-export default function CreatorOverview({ stats = {}, history = [], topTriggers = [], automationId, hideHeader = false, onSimulateLocal, isActive = true, onViewAudience, onCreateAutoReply }) {
+export default function CreatorOverview({ stats = {}, history = [], topTriggers = [], automationId, hideHeader = false, onSimulateLocal, isActive = true, onViewAudience, onCreateAutoReply, onToggleTriggerActive }) {
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncReport, setSyncReport] = useState(null);
   const [mounted, setMounted] = useState(false);
@@ -116,9 +116,10 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
     ? topTriggers.map((t, idx) => {
         const triggerTypes = ["Post Comment", "Reel Comment", "Direct Inbox", "Story Reply"];
         return {
+          id: t.id,
           keyword: (t.keyword || "AUTO").toUpperCase(),
           triggerType: triggerTypes[idx % triggerTypes.length],
-          status: "Active",
+          isActive: t.metadata?.is_active !== false,
           comments: t.count
         };
       })
@@ -203,14 +204,25 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
                     <div>
                       <div className="flex items-center gap-2.5 mb-1.5">
                         <span className="font-bold text-[15px] text-zinc-900">{item.keyword}</span>
-                        <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[9px] font-bold uppercase rounded-md border border-emerald-100">Active</span>
+                        {item.isActive ? (
+                          <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[9px] font-bold uppercase rounded-md border border-emerald-100">Active</span>
+                        ) : (
+                          <span className="px-2 py-0.5 bg-zinc-100 text-zinc-500 text-[9px] font-bold uppercase rounded-md border border-zinc-200">Paused</span>
+                        )}
                       </div>
                       <span className="text-[13px] text-zinc-500 font-medium">{item.triggerType} <span className="mx-1.5 text-zinc-300">•</span> <span className="text-zinc-900 font-semibold">{item.comments}</span> replies sent</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-6 bg-[#6366F1] rounded-full relative cursor-pointer shadow-inner hover:opacity-90 transition-opacity">
-                      <div className="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 shadow-sm" />
+                    <div 
+                      onClick={() => onToggleTriggerActive && onToggleTriggerActive(item.id, item.isActive)}
+                      className={`w-10 h-6 rounded-full relative cursor-pointer shadow-inner hover:opacity-90 transition-all duration-300 ${
+                        item.isActive ? "bg-[#6366F1]" : "bg-zinc-300"
+                      }`}
+                    >
+                      <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-sm transition-all duration-300 ${
+                        item.isActive ? "right-0.5" : "left-0.5"
+                      }`} />
                     </div>
                   </div>
                 </div>
@@ -248,9 +260,11 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
               history.map((log) => (
                 <div key={log.id} className="flex items-start justify-between group cursor-default">
                   <div className="flex items-start gap-3.5">
-                    <div className="w-10 h-10 bg-zinc-100 rounded-xl flex items-center justify-center text-[11px] font-bold text-zinc-600 shrink-0 border border-zinc-200/50 group-hover:border-zinc-300 transition-colors">
-                      {log.sender_name?.slice(0, 2).toUpperCase() || "??"}
-                    </div>
+                    <img 
+                      src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${log.sender_id || log.id}`} 
+                      alt={log.sender_name} 
+                      className="w-10 h-10 rounded-xl object-cover border border-zinc-200/50 shadow-sm shrink-0 group-hover:border-zinc-300 transition-colors"
+                    />
                     <div className="space-y-1 mt-0.5">
                       <span className="text-[13px] font-bold text-zinc-900 block leading-none">@{log.sender_name || "unknown"}</span>
                       <span className="text-[11px] text-zinc-500 font-medium block">

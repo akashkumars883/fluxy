@@ -593,7 +593,7 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
   );
 }
 
-export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, isMasterActive = true, error = null }) {
+export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, isMasterActive = true, error = null, onToggleActive }) {
   if (error) {
     return (
       <div className="bg-rose-50/80 border border-rose-200 rounded-xl p-8 text-center text-rose-800 font-semibold text-xs sm:text-sm">
@@ -629,7 +629,7 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
     <div className="space-y-4 animate-in fade-in duration-500">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-2">
         <div>
-          <h3 className="text-2xl sm:text-3xl font-bold text-zinc-950 tracking-tighter">Active Messaging Rules</h3>
+          <h3 className="text-2xl sm:text-3xl font-bold text-zinc-950 tracking-tighter">Active Rules</h3>
           <p className="text-[10px] font-semibold text-zinc-400 mt-1">Manage your auto-reply keywords and messages</p>
         </div>
 
@@ -644,11 +644,9 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
         {triggers.map((t) => (
           <div 
             key={t.id} 
-            className={`bg-white border-y border-x sm:border-x border-zinc-200/70 hover:border-[#6366F1]/40 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-4 group relative overflow-hidden border-l-4 ${
-              isMasterActive ? 'border-l-emerald-500' : 'border-l-zinc-300'
-            }`}
+            className="bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-4 group relative overflow-hidden"
           >
-            <div className="absolute top-0 right-0 w-24 h-24 bg-[#6366F1]/5 rounded-full -mr-12 -mt-12 group-hover:scale-125 transition-transform duration-500 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#6366F1]/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
             
             <div className="space-y-3 flex-1 min-w-0 relative z-10">
               {/* Top Row: Keyword and Badges */}
@@ -695,13 +693,18 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
 
             {/* Status & Actions Column */}
             <div className="flex items-center justify-between md:justify-end gap-3.5 self-stretch md:self-center shrink-0 border-t border-zinc-100 md:border-t-0 pt-3 md:pt-0 relative z-10">
-              <div className={`px-2.5 py-1 rounded-full font-bold text-[9px] border shadow-xs flex items-center gap-1.5 transition-all duration-300 ${
-                isMasterActive 
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
-                  : 'bg-zinc-50 text-zinc-400 border-zinc-100'
-              }`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${isMasterActive ? 'bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-zinc-300'}`} />
-                {isMasterActive ? 'Active' : 'Paused'}
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold text-zinc-400">Rule Active:</span>
+                <div 
+                  onClick={() => onToggleActive && onToggleActive(t.id, t.metadata?.is_active !== false)}
+                  className={`w-10 h-6 rounded-full relative cursor-pointer shadow-inner hover:opacity-90 transition-all duration-300 ${
+                    t.metadata?.is_active !== false ? "bg-[#6366F1]" : "bg-zinc-300"
+                  }`}
+                >
+                  <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-sm transition-all duration-300 ${
+                    t.metadata?.is_active !== false ? "right-0.5" : "left-0.5"
+                  }`} />
+                </div>
               </div>
               <div className="hidden md:block h-6 w-[1px] bg-zinc-200" />
               <div className="flex items-center gap-1.5">

@@ -386,6 +386,19 @@ export default function Dashboard() {
     }
   };
 
+  const handleToggleTriggerActive = async (triggerId, currentIsActive) => {
+    const trigger = triggersList.find(t => t.id === triggerId);
+    if (!trigger) return;
+    
+    const updatedMetadata = {
+      ...(trigger.metadata || {}),
+      is_active: !currentIsActive
+    };
+    
+    await handleSaveTrigger(triggerId, { metadata: updatedMetadata });
+  };
+
+
   const handleExportAnalytics = () => {
     const campaigns = (triggersList || []).map(trigger => {
       const triggerHistory = (realtimeHistory || []).filter(h => h.keyword === trigger.keyword || h.trigger_id === trigger.id);
@@ -579,21 +592,6 @@ export default function Dashboard() {
                   {activeTab === "automations" && !builderActive && (
                     <>
                       <button
-                        onClick={() => updateSelectedAccount({ is_active: !selectedAccount.is_active })}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold transition-all ${
-                          selectedAccount.is_active
-                            ? "bg-emerald-50 border-emerald-200 text-emerald-700"
-                            : "bg-zinc-50 border-zinc-200 text-zinc-500"
-                        }`}
-                      >
-                        <div className={`w-1.5 h-1.5 rounded-full ${selectedAccount.is_active ? "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)] animate-pulse" : "bg-zinc-300"}`} />
-                        {selectedAccount.is_active ? "Active" : "Paused"}
-                        <div className={`w-7 h-3.5 rounded-full flex items-center px-0.5 transition-all ${selectedAccount.is_active ? "bg-emerald-500 justify-end" : "bg-zinc-300 justify-start"}`}>
-                          <motion.div layout className="w-2.5 h-2.5 bg-white rounded-full shadow-sm" />
-                        </div>
-                      </button>
-
-                      <button
                         onClick={() => setIsCreateModalOpen(true)}
                         className="flex items-center gap-1.5 px-4 py-2 bg-[#6366F1] hover:bg-[#4f46e5] text-white rounded-xl text-xs font-semibold shadow-sm transition-all hover:scale-[1.02] shadow-[#6366F1]/10"
                       >
@@ -631,6 +629,7 @@ export default function Dashboard() {
                     topTriggers={realtimeTriggers} 
                     automationId={selectedAccount?.id}
                     isActive={selectedAccount?.is_active}
+                    onToggleTriggerActive={handleToggleTriggerActive}
                     onViewAudience={() => setActiveTab("audience")}
                     onCreateAutoReply={() => {
                       setActiveTab("automations");
@@ -668,6 +667,7 @@ export default function Dashboard() {
                         setIsEditModalOpen(true);
                       }}
                       onDelete={handleDeleteTrigger}
+                      onToggleActive={handleToggleTriggerActive}
                     />
                   )}
                 </div>

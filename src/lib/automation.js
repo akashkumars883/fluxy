@@ -307,6 +307,16 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       userName = profileResult.success ? (profileResult.data.username || profileResult.data.name) : "there";
     }
 
+    let isFollowing = null;
+    try {
+      const followData = await MetaService.checkFollowStatus(senderId, pageAccessToken);
+      if (followData.success) {
+        isFollowing = followData.isFollowing === true;
+      }
+    } catch (followErr) {
+      console.error("⚠️ Follow status check failed in orchestrator:", followErr.message);
+    }
+
     // --- AUTOMIXA SHIELD: ACCOUNT-WIDE DELAY + HEAVY TRAFFIC COOLDOWN ---
     const shieldKeyword = text ? text.substring(0, 100) : (payload || type || "AUTOMIXA_SHIELD");
     const shieldCanContinue = await enforceAutomixaShieldTrafficGate(automation, senderId, userName, shieldKeyword, type);
@@ -329,10 +339,12 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     }
 
     // 2. Resolve Triggers for this automation
-    let { data: triggers } = await supabaseAdmin
+    let { data: rawTriggers } = await supabaseAdmin
       .from("triggers")
       .select("*")
       .eq("automation_id", automation.id);
+
+    const triggers = (rawTriggers || []).filter(t => t.metadata?.is_active !== false);
 
     let match = null;
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -456,7 +468,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         type: type,
         keyword: match.keyword,
         status: "INTERACTED",
-        metadata: { funnel_complete: false, event_key: eventKey, comment_id: commentId, message_id: messageId, media_id: mediaId }
+        metadata: { funnel_complete: false, event_key: eventKey, comment_id: commentId, message_id: messageId, media_id: mediaId, is_following: isFollowing }
       }).select().single();
 
       if (logError) {
@@ -530,11 +542,10 @@ export async function processAutomation(senderId, text, type, recipientId, comme
 
     if (isVerificationStep && needsFollow) {
       console.log(`🛡️ Phase 2/3: Checking Follow Gate for ${userName}`);
-      const followData = await MetaService.checkFollowStatus(senderId, pageAccessToken);
       
       // LOGIC: Only lock if we are POSITIVE they are not following.
-      // If the API fails or doesn't return the field, we let them through to avoid a broken funnel.
-      const shouldLock = followData.success && followData.exists && followData.isFollowing === false;
+      // We use the pre-fetched isFollowing status
+      const shouldLock = isFollowing === false;
 
       if (shouldLock) {
         console.log(`🚫 User ${userName} is NOT following. Showing Gate.`);
@@ -634,7 +645,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       await supabaseAdmin.from("automation_history")
         .update({ 
           status: "SUCCESS", 
-          metadata: { funnel_complete: true, scraped: true, event_key: eventKey, comment_id: commentId, message_id: messageId, media_id: mediaId } 
+          metadata: { funnel_complete: true, scraped: true, event_key: eventKey, comment_id: commentId, message_id: messageId, media_id: mediaId, is_following: isFollowing } 
         })
         .eq("automation_id", automation.id)
         .eq("sender_id", senderId)
@@ -643,7 +654,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     } else {
       // Check if there is an existing 'INTERACTED' log for this sender to update
       const { data: existingLogs } = await supabaseAdmin.from("automation_history")
-        .select("id, status")
+        .select("id, status, metadata")
         .eq("automation_id", automation.id)
         .eq("sender_id", senderId)
         .order('created_at', { ascending: false })
@@ -653,7 +664,16 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         await supabaseAdmin.from("automation_history")
           .update({ 
             status: "SUCCESS", 
-            metadata: { funnel_complete: true, scraped: true, event_key: eventKey, comment_id: commentId, message_id: messageId, media_id: mediaId } 
+            metadata: { 
+              ...(existingLogs[0].metadata || {}),
+              funnel_complete: true, 
+              scraped: true, 
+              event_key: eventKey, 
+              comment_id: commentId, 
+              message_id: messageId, 
+              media_id: mediaId,
+              is_following: isFollowing
+            } 
           })
           .eq("id", existingLogs[0].id);
       } else {
@@ -664,7 +684,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
           type: type || "DM",
           keyword: match.keyword,
           status: "SUCCESS",
-          metadata: { funnel_complete: true, scraped: true, event_key: eventKey, comment_id: commentId, message_id: messageId, media_id: mediaId }
+          metadata: { funnel_complete: true, scraped: true, event_key: eventKey, comment_id: commentId, message_id: messageId, media_id: mediaId, is_following: isFollowing }
         });
       }
     }
