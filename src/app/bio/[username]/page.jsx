@@ -16,7 +16,7 @@ const getSocialIcon = (url) => {
 };
 
 export default async function BioPage({ params }) {
-  const { username } = params;
+  const { username } = await params;
 
   if (!username) {
     return notFound();
