@@ -131,14 +131,17 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
                 <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">2. Setup Trigger</h3>
                 <p className="text-[10px] font-semibold text-zinc-400 mt-1 uppercase tracking-wider">What keyword should activate the bot?</p>
               </div>
-              <div className="space-y-6">
+              <div className="space-y-2">
                 <input
                   type="text"
                   value={keyword}
                   onChange={(e) => onChange({ keyword: e.target.value })}
-                  placeholder="Enter trigger keyword (e.g. hello)"
+                  placeholder="Enter trigger keyword (e.g. hello, 🔥, or *)"
                   className="w-full bg-white/60 border-2 border-zinc-100 rounded-xl px-8 py-4 outline-none text-lg font-semibold text-zinc-950 focus:border-[#6366F1] shadow-sm text-left"
                 />
+                <p className="text-[11px] text-zinc-500 font-medium px-2">
+                  <span className="font-bold text-zinc-700">Pro Tip:</span> You can use exact emojis (like 🔥) as your keyword, or type <span className="font-bold text-[#6366F1] px-1.5 py-0.5 bg-indigo-50 rounded">*</span> to reply to <span className="underline decoration-[#6366F1]/30">any</span> message.
+                </p>
               </div>
               <div className="flex justify-end items-center pt-4">
                 <button onClick={() => handleStepChange(3)} disabled={!keyword} className="px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-[#6366F1] transition-all flex items-center gap-2 disabled:opacity-50">
@@ -415,15 +418,18 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
                 </div>
 
                 {values.storyCondition === 'KEYWORD' && (
-                  <div className="space-y-3 animate-in fade-in slide-in-from-top-2">
+                  <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
                     <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Target Keyword</label>
                     <input
                       type="text"
                       value={values.keyword}
                       onChange={(e) => onChange({ keyword: e.target.value })}
-                      placeholder="e.g. VIP, DEALS, YES"
+                      placeholder="e.g. VIP, DEALS, 🔥, or *"
                       className="w-full bg-zinc-50 border border-zinc-100 rounded-xl p-4 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1]"
                     />
+                    <p className="text-[11px] text-zinc-500 font-medium px-2">
+                      <span className="font-bold text-zinc-700">Pro Tip:</span> Use <span className="font-bold text-[#6366F1] px-1.5 py-0.5 bg-indigo-50 rounded">*</span> to reply to <span className="underline decoration-[#6366F1]/30">any</span> message, or use emojis!
+                    </p>
                   </div>
                 )}
 
