@@ -449,7 +449,7 @@ export default function Dashboard() {
     { id: "store", label: "Mini Store", icon: Package, reqPlan: "creator_pro" },
     { id: "smart_bio", label: "Smart Bio", icon: Link2, reqPlan: "creator_pro" },
     { id: "analytics", label: "Analytics", icon: BarChart2, reqPlan: "free" },
-    { id: "partner", label: "Partner Program", icon: Sparkles, reqPlan: "creator_pro" },
+    { id: "partner", label: "Partner Program", icon: Sparkles, reqPlan: "free" },
     { id: "settings", label: "Settings", icon: Settings, reqPlan: "free" },
   ].map(item => {
     // Agar account connected nahi hai, toh Home ke alawa sab lock
