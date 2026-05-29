@@ -110,7 +110,7 @@ export default function CheckoutPage() {
   return (
     <>
       <script src="https://checkout.razorpay.com/v1/checkout.js" async></script>
-      <div className="min-h-screen bg-zinc-50 flex items-center justify-center p-4 selection:bg-indigo-100 selection:text-indigo-900">
+      <div className="min-h-screen bg-zinc-50 flex items-start sm:items-center justify-center p-4 py-8 sm:p-8 selection:bg-indigo-100 selection:text-indigo-900">
         <div className="w-full max-w-[900px] bg-white rounded-3xl shadow-xl border border-zinc-200 overflow-hidden flex flex-col md:flex-row animate-in fade-in slide-in-from-bottom-4 duration-700">
           
           {/* Left: Product Info */}
