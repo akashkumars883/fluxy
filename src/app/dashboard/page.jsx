@@ -489,12 +489,12 @@ export default function Dashboard() {
 
         <main 
           onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-          className="flex-1 p-2 sm:p-4 lg:p-5 max-w-8xl mx-auto w-full overflow-y-auto pb-24 md:pb-10"
+          className="flex-1 p-2 sm:p-4 lg:p-5 max-w-8xl mx-auto w-full flex flex-col min-h-0 overflow-hidden pb-24 md:pb-10"
         >
           {selectedAccount ? (
-            <div className="space-y-4">
+            <div className="flex flex-col flex-1 min-h-0 space-y-4 overflow-hidden">
               {/* === COMPACT PAGE HEADER === */}
-              <div className="flex items-center justify-between gap-4 pb-4 border-b border-zinc-200/60">
+              <div className="flex items-center justify-between gap-4 pb-4 border-b border-zinc-200/60 shrink-0">
                 
                 {/* Left: Title + inline account badge */}
                 <div className="flex items-center gap-3 min-w-0">
@@ -621,58 +621,113 @@ export default function Dashboard() {
               </div>
 
               {activeTab === "home" && (
-                <CreatorOverview 
-                  stats={realtimeStats} 
-                  history={realtimeHistory} 
-                  topTriggers={realtimeTriggers} 
-                  automationId={selectedAccount?.id}
-                  isActive={selectedAccount?.is_active}
-                  onViewAudience={() => setActiveTab("audience")}
-                  onCreateAutoReply={() => {
-                    setActiveTab("automations");
-                    setIsCreateModalOpen(true);
-                  }}
-                />
+                <div 
+                  onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
+                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                >
+                  <CreatorOverview 
+                    stats={realtimeStats} 
+                    history={realtimeHistory} 
+                    topTriggers={realtimeTriggers} 
+                    automationId={selectedAccount?.id}
+                    isActive={selectedAccount?.is_active}
+                    onViewAudience={() => setActiveTab("audience")}
+                    onCreateAutoReply={() => {
+                      setActiveTab("automations");
+                      setIsCreateModalOpen(true);
+                    }}
+                  />
+                </div>
               )}
               
               {activeTab === "automations" && (
-                builderActive ? (
-                  <div className="animate-in slide-in-from-bottom-4 duration-500">
-                    <CampaignBuilderWorkspace 
-                      stories={instagramStories}
-                      automation={selectedAccount}
-                      templateKey={builderTemplateKey} 
-                      campaignName={builderCampaignName}
-                      currentPlan={currentPlan}
-                      media={instagramMedia}
-                      onPublish={handleAddTrigger} 
-                      onClose={() => setBuilderActive(false)} 
+                <div 
+                  onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
+                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                >
+                  {builderActive ? (
+                    <div className="animate-in slide-in-from-bottom-4 duration-500">
+                      <CampaignBuilderWorkspace 
+                        stories={instagramStories}
+                        automation={selectedAccount}
+                        templateKey={builderTemplateKey} 
+                        campaignName={builderCampaignName}
+                        currentPlan={currentPlan}
+                        media={instagramMedia}
+                        onPublish={handleAddTrigger} 
+                        onClose={() => setBuilderActive(false)} 
+                      />
+                    </div>
+                  ) : (
+                    <TriggerList 
+                      triggers={triggersList} 
+                      isMasterActive={selectedAccount?.is_active}
+                      onCreateNew={() => setIsCreateModalOpen(true)} 
+                      onEdit={(t) => {
+                        setEditingTrigger(t);
+                        setIsEditModalOpen(true);
+                      }}
+                      onDelete={handleDeleteTrigger}
                     />
-                  </div>
-                ) : (
-                  <TriggerList 
-                    triggers={triggersList} 
-                    isMasterActive={selectedAccount?.is_active}
-                    onCreateNew={() => setIsCreateModalOpen(true)} 
-                    onEdit={(t) => {
-                      setEditingTrigger(t);
-                      setIsEditModalOpen(true);
-                    }}
-                    onDelete={handleDeleteTrigger}
-                  />
-                )
+                  )}
+                </div>
               )}
 
-              {activeTab === "audience" && <AudienceCRM accountId={selectedAccount.id} history={realtimeHistory} currentPlan={currentPlan} />}
-              {activeTab === "smart_bio" && <SmartBio accountId={selectedAccount.id} />}
-              {activeTab === "crm" && <AudienceCRM accountId={selectedAccount.id} history={realtimeHistory} currentPlan={currentPlan} />}
-              {activeTab === "analytics" && <AnalyticsDashboard account={selectedAccount} realtimeStats={realtimeStats} history={realtimeHistory} triggers={triggersList} />}
-              {activeTab === "settings" && <SettingsDashboard account={selectedAccount} currentPlan={currentPlan} realtimeStats={realtimeStats} onSubscriptionClick={() => setIsSubscriptionOpen(true)} />}
+              {activeTab === "audience" && (
+                <div 
+                  onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
+                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                >
+                  <AudienceCRM accountId={selectedAccount.id} history={realtimeHistory} currentPlan={currentPlan} />
+                </div>
+              )}
+              {activeTab === "smart_bio" && (
+                <div 
+                  onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
+                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                >
+                  <SmartBio accountId={selectedAccount.id} />
+                </div>
+              )}
+              {activeTab === "crm" && (
+                <div 
+                  onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
+                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                >
+                  <AudienceCRM accountId={selectedAccount.id} history={realtimeHistory} currentPlan={currentPlan} />
+                </div>
+              )}
+              {activeTab === "analytics" && (
+                <div 
+                  onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
+                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                >
+                  <AnalyticsDashboard account={selectedAccount} realtimeStats={realtimeStats} history={realtimeHistory} triggers={triggersList} />
+                </div>
+              )}
+              {activeTab === "settings" && (
+                <div 
+                  onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
+                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                >
+                  <SettingsDashboard account={selectedAccount} currentPlan={currentPlan} realtimeStats={realtimeStats} onSubscriptionClick={() => setIsSubscriptionOpen(true)} />
+                </div>
+              )}
 
-              {activeTab === "partner" && <PartnerDashboard currentPlan={currentPlan} />}
+              {activeTab === "partner" && (
+                <div 
+                  onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
+                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                >
+                  <PartnerDashboard currentPlan={currentPlan} />
+                </div>
+              )}
             </div>
           ) : (
-            <div className="flex flex-col h-[calc(100vh-140px)] sm:h-[calc(100vh-160px)]">
+            <div 
+              onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
+              className="flex flex-col h-[calc(100vh-140px)] sm:h-[calc(100vh-160px)] overflow-y-auto"
+            >
               {(!currentPlan || currentPlan === "free" || currentPlan?.name?.toLowerCase() === "free") && (
                 <div className="relative rounded-2xl p-4 sm:p-5 text-white shadow-xl mb-4 sm:mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0 overflow-hidden group">
                   <div className="absolute inset-0 z-0">

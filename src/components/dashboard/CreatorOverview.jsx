@@ -182,7 +182,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
             </button>
           </div>
 
-          <div className="space-y-3 flex-1 relative z-10 max-h-[360px] overflow-y-auto no-scrollbar pr-1">
+          <div className="space-y-3 flex-1 min-h-0 relative z-10 overflow-y-auto no-scrollbar pr-1">
             {!activeKeywords || activeKeywords.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full py-12 text-center space-y-4 bg-zinc-50/50 rounded-2xl border border-zinc-200 border-dashed">
                 <div className="w-14 h-14 rounded-2xl bg-white border border-zinc-100 shadow-sm flex items-center justify-center">
@@ -220,7 +220,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
         </div>
 
         {/* Right Column: Live Feed */}
-        <div className="bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-100/40 hover:shadow-2xl transition-all duration-500 flex flex-col relative h-[480px]">
+        <div className="bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-100/40 hover:shadow-2xl transition-all duration-500 flex flex-col relative h-[380px]">
           <div className="flex items-center justify-between mb-6 border-b border-zinc-100 pb-6 shrink-0">
             <div className="space-y-1.5">
               <h3 className="font-bold text-xl sm:text-2xl text-zinc-950 tracking-tight flex items-center gap-2">
