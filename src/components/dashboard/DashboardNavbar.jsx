@@ -68,11 +68,13 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
       <div className="flex items-center gap-1.5 sm:gap-3 overflow-hidden">
         {/* Mobile menu button removed from here as it's now in BottomNav */}
         
-        <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => window.location.href = '/?home=true'}>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center overflow-hidden rounded-[10px] shrink-0">
-            <img src="/logo.png" alt="Automixa Logo" className="w-full h-full object-cover scale-110" />
-          </div>
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 truncate">
+        <div className="flex items-center gap-2.5 cursor-pointer group" onClick={() => window.location.href = '/?home=true'}>
+          <img 
+            src="/logo.png" 
+            alt="Automixa Logo" 
+            className="w-8 h-8 mt-[2px] object-contain transition-all duration-300 shrink-0 group-hover:scale-110" 
+          />
+          <h2 className="text-xl font-semibold tracking-normal text-zinc-900 truncate">
             automixa
           </h2>
         </div>
