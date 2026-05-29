@@ -244,7 +244,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
     <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm space-y-4">
       <div>
         <h4 className="text-sm font-semibold text-zinc-900">Payout details</h4>
-        <p className="text-xs text-zinc-400 mt-0.5">Your Partner Program commissions will be sent here every month.</p>
+        <p className="text-xs text-zinc-400 mt-0.5">Your Mini Store sales and Partner Program commissions will be sent to this account.</p>
       </div>
 
       <form onSubmit={handleSavePayout} className="space-y-4 max-w-md">
