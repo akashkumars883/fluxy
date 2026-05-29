@@ -77,16 +77,17 @@ export async function GET(request) {
     const profileResult = await MetaService.getInstagramProfile(userToken);
     if (!profileResult.success) throw new Error(profileResult.error);
     const profile = profileResult.data;
-    const username = profile.username || `instagram_${instagramId}`;
+    const finalInstagramId = profile.user_id || instagramId; // Use actual Business Account ID (starts with 1784...)
+    const username = profile.username || `instagram_${finalInstagramId}`;
     const accountType = profile.account_type || "BUSINESS";
 
     // 5. Subscribe the Instagram account to Webhooks
-    console.log(`Subscribing Instagram Account ID: ${instagramId} to Webhooks...`);
+    console.log(`Subscribing Instagram Account ID: ${finalInstagramId} to Webhooks...`);
     const subscriptionResult = await MetaService.subscribeAccount(userToken);
     if (!subscriptionResult.success) {
       console.warn(`⚠️ Webhook Subscription Warning for ${username}:`, subscriptionResult.error);
     } else {
-      console.log(`✅ Webhook Subscription Successful for ${username} (${instagramId})`);
+      console.log(`✅ Webhook Subscription Successful for ${username} (${finalInstagramId})`);
     }
 
     const encryptedToken = encryptToken(userToken);
@@ -95,10 +96,10 @@ export async function GET(request) {
       .from('automations')
       .upsert({
         user_id: user.id,
-        page_id: instagramId, // In direct IG auth, page_id is essentially the IG Business ID
+        page_id: finalInstagramId, // Store correct 17-digit Business ID
         page_name: username,
         access_token: encryptedToken,
-        ig_business_id: instagramId,
+        ig_business_id: finalInstagramId,
         is_active: true,
         persona,
         metadata: {
@@ -120,7 +121,7 @@ export async function GET(request) {
     }
 
     return NextResponse.redirect(
-      `${origin}/dashboard?success=instagram_connected&account=${encodeURIComponent(username)}&ig=${encodeURIComponent(instagramId)}&automation=${encodeURIComponent(savedAutomation?.id || "")}`
+      `${origin}/dashboard?success=instagram_connected&account=${encodeURIComponent(username)}&ig=${encodeURIComponent(finalInstagramId)}&automation=${encodeURIComponent(savedAutomation?.id || "")}`
     );
 
   } catch (err) {
