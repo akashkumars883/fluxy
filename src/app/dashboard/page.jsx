@@ -758,7 +758,7 @@ export default function Dashboard() {
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                   className="flex-1 min-h-0 overflow-y-auto pr-1"
                 >
-                  <SmartBio accountId={selectedAccount.id} />
+                  <SmartBio accountId={selectedAccount.id} account={selectedAccount} />
                 </div>
               )}
               {activeTab === "crm" && (
