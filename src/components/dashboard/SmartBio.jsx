@@ -200,6 +200,28 @@ export default function SmartBio({ accountId, account }) {
   const socialLinks = links.filter(l => getSocialMeta(l.url));
   const standardLinks = links.filter(l => !getSocialMeta(l.url));
 
+  const isComingSoon = true;
+
+  if (isComingSoon) {
+    return (
+      <div className="flex flex-col items-center justify-center py-32 gap-5 text-center animate-in fade-in zoom-in-95 duration-500">
+        <div className="w-20 h-20 rounded-3xl bg-[#6366F1]/10 flex items-center justify-center border border-[#6366F1]/20 shadow-xl shadow-[#6366F1]/5">
+          <Globe size={32} className="text-[#6366F1]" />
+        </div>
+        <div>
+          <h3 className="text-2xl font-black text-zinc-900 tracking-tight mb-2">Smart Bio is Coming Soon!</h3>
+          <p className="text-sm text-zinc-500 max-w-sm mx-auto leading-relaxed">
+            We are putting the final touches on our Next-Gen Bio Builder. 
+            You'll be able to create stunning link-in-bio pages very soon!
+          </p>
+        </div>
+        <div className="mt-4 px-4 py-1.5 bg-zinc-100 text-zinc-500 text-xs font-bold uppercase tracking-widest rounded-full">
+          In Development
+        </div>
+      </div>
+    );
+  }
+
   if (!accountId) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
