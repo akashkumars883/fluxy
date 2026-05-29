@@ -105,7 +105,7 @@ export default function PublicNavigation() {
     <>
       <nav
         className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 border-b ${isScrolled || isMenuOpen
-          ? "bg-white/40 backdrop-blur-2xl border-zinc-200/40 py-4"
+          ? "bg-white/90 backdrop-blur-2xl border-zinc-200/40 py-4 shadow-sm"
           : "bg-transparent border-transparent py-6"
           }`}
         style={{
@@ -115,9 +115,13 @@ export default function PublicNavigation() {
         <div className="max-w-8xl mx-auto px-6 md:px-10 flex items-center justify-between">
 
           {/* Left Side: Logo */}
-          <Link href="/" className="flex items-center group">
-            <img src="/logo.png" alt="Automixa Logo" className="w-14 h-14 object-contain" />
-            <span className="text-xl font-semibold tracking-normal text-foreground">automixa</span>
+          <Link href="/" className="flex items-center group gap-2.5">
+            <img 
+              src="/logo.png" 
+              alt="Automixa Logo" 
+              className={`w-8 h-8 mt-[2px] object-contain transition-all duration-300 shrink-0 ${isScrolled || isMenuOpen ? "" : "brightness-0 invert"}`}
+            />
+            <span className={`text-xl font-bold tracking-normal transition-colors ${isScrolled || isMenuOpen ? "text-foreground" : "text-white"}`}>automixa</span>
           </Link>
 
           {/* Center: Desktop Navigation Links with Hover Megamenus */}
@@ -125,9 +129,9 @@ export default function PublicNavigation() {
 
             {/* Features Hover Dropdown */}
             <div className="relative group/menu py-2">
-              <button className="flex items-center gap-1.5 text-sm font-semibold text-zinc-600 hover:text-zinc-950 transition-colors cursor-pointer">
+              <button className={`flex items-center gap-1.5 text-sm font-semibold transition-colors cursor-pointer ${isScrolled || isMenuOpen ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
                 Features
-                <ChevronDown size={14} className="group-hover/menu:rotate-180 transition-transform duration-300 text-zinc-400" />
+                <ChevronDown size={14} className={`group-hover/menu:rotate-180 transition-transform duration-300 ${isScrolled || isMenuOpen ? "text-zinc-400" : "text-white/70"}`} />
               </button>
 
               {/* Dropdown panel container */}
@@ -162,9 +166,9 @@ export default function PublicNavigation() {
 
             {/* Solutions Hover Dropdown */}
             <div className="relative group/menu py-2">
-              <button className="flex items-center gap-1.5 text-sm font-semibold text-zinc-600 hover:text-zinc-950 transition-colors cursor-pointer">
+              <button className={`flex items-center gap-1.5 text-sm font-semibold transition-colors cursor-pointer ${isScrolled || isMenuOpen ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
                 Solutions
-                <ChevronDown size={14} className="group-hover/menu:rotate-180 transition-transform duration-300 text-zinc-400" />
+                <ChevronDown size={14} className={`group-hover/menu:rotate-180 transition-transform duration-300 ${isScrolled || isMenuOpen ? "text-zinc-400" : "text-white/70"}`} />
               </button>
 
               {/* Dropdown panel container */}
@@ -198,17 +202,17 @@ export default function PublicNavigation() {
             </div>
 
             {/* Pricing Direct Link */}
-            <Link href="/pricing" className="text-sm font-semibold text-zinc-600 hover:text-zinc-950 transition-colors cursor-pointer">
+            <Link href="/pricing" className={`text-sm font-semibold transition-colors cursor-pointer ${isScrolled || isMenuOpen ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
               Pricing
             </Link>
 
             {/* Blog Direct Link */}
-            <Link href="/blog" className="text-sm font-semibold text-zinc-600 hover:text-zinc-950 transition-colors cursor-pointer">
+            <Link href="/blog" className={`text-sm font-semibold transition-colors cursor-pointer ${isScrolled || isMenuOpen ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
               Blog
             </Link>
 
             {/* Contact Direct Link */}
-            <Link href="/contact" className="text-sm font-semibold text-zinc-600 hover:text-zinc-950 transition-colors cursor-pointer">
+            <Link href="/contact" className={`text-sm font-semibold transition-colors cursor-pointer ${isScrolled || isMenuOpen ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
               Contact
             </Link>
 
@@ -219,7 +223,7 @@ export default function PublicNavigation() {
             {/* CTA Button: Visible on Tablet/Desktop, Hidden on Mobile */}
             <Link
               href={session ? "/dashboard" : "/login"}
-              className="hidden sm:flex bg-foreground text-background text-sm font-normal px-6 py-3 rounded-full hover:scale-[1.05] active:scale-[0.98] transition-all tracking-normal items-center gap-2 group"
+              className={`hidden sm:flex text-sm font-semibold px-6 py-3 rounded-full hover:scale-[1.05] active:scale-[0.98] transition-all tracking-normal items-center gap-2 group ${isScrolled || isMenuOpen ? "bg-foreground text-background" : "bg-white text-zinc-950 shadow-lg"}`}
             >
               {session ? "Dashboard" : "Get Started"}
               <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-rotate-45" />
@@ -228,13 +232,13 @@ export default function PublicNavigation() {
             {/* Custom Interactive Morphing Hamburger Button (Mobile Only) */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-3 text-foreground hover:bg-[#09090B]/5 rounded-full transition-all flex items-center justify-center cursor-pointer relative z-50 group lg:hidden"
+              className={`p-3 rounded-full transition-all flex items-center justify-center cursor-pointer relative z-50 group lg:hidden ${isScrolled || isMenuOpen ? "hover:bg-[#09090B]/5" : "hover:bg-white/10"}`}
             >
               <div className="w-5 h-5 flex items-center justify-center relative">
                 {/* Custom morphing lines centered mathematically */}
-                <span className={`absolute h-0.5 bg-foreground rounded-full transition-all duration-300 ${isMenuOpen ? "rotate-45 w-5" : "w-5 -translate-y-1.5"}`} />
-                <span className={`absolute h-0.5 bg-foreground rounded-full transition-all duration-300 ${isMenuOpen ? "opacity-0 w-0" : "w-5"}`} />
-                <span className={`absolute h-0.5 bg-foreground rounded-full transition-all duration-300 ${isMenuOpen ? "-rotate-45 w-5" : "w-5 translate-y-1.5"}`} />
+                <span className={`absolute h-0.5 rounded-full transition-all duration-300 ${isMenuOpen ? "rotate-45 w-5" : "w-5 -translate-y-1.5"} ${isScrolled || isMenuOpen ? "bg-foreground" : "bg-white"}`} />
+                <span className={`absolute h-0.5 rounded-full transition-all duration-300 ${isMenuOpen ? "opacity-0 w-0" : "w-5"} ${isScrolled || isMenuOpen ? "bg-foreground" : "bg-white"}`} />
+                <span className={`absolute h-0.5 rounded-full transition-all duration-300 ${isMenuOpen ? "-rotate-45 w-5" : "w-5 translate-y-1.5"} ${isScrolled || isMenuOpen ? "bg-foreground" : "bg-white"}`} />
               </div>
             </button>
           </div>

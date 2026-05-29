@@ -60,7 +60,7 @@ export default function SocialProof() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
@@ -70,31 +70,31 @@ export default function SocialProof() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="group relative bg-white/40 backdrop-blur-xl border border-white/60 hover:border-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-zinc-100/40 hover:shadow-2xl hover:shadow-zinc-200/40 hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center"
+                className="group relative bg-white/40 backdrop-blur-xl border border-white/60 hover:border-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-xl shadow-zinc-100/40 hover:shadow-2xl hover:shadow-zinc-200/40 hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center"
               >
                 {/* Subtle soft glowing aura on hover */}
                 <div
-                  className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none blur-2xl"
+                  className="absolute inset-0 rounded-2xl sm:rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none blur-2xl"
                   style={{ background: `radial-gradient(circle at center, ${stat.glowColor} 0%, transparent 70%)` }}
                 />
 
                 {/* Glassmorphic Icon Badge */}
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 shadow-sm transition-transform duration-300 group-hover:scale-110 ${stat.iconBg}`}>
-                  <Icon size={22} className="shrink-0" />
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-6 shadow-sm transition-transform duration-300 group-hover:scale-110 ${stat.iconBg}`}>
+                  <Icon className="w-5 h-5 sm:w-[22px] sm:h-[22px] shrink-0" />
                 </div>
 
                 {/* Value Stat */}
-                <span className="text-4xl sm:text-5xl font-extrabold text-foreground tracking-tight mb-2">
+                <span className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-foreground tracking-tight mb-1 sm:mb-2">
                   {stat.value}
                 </span>
 
                 {/* Label */}
-                <h3 className="text-base font-bold text-zinc-800 mb-2">
+                <h3 className="text-xs sm:text-sm md:text-base font-bold text-zinc-800 mb-1 sm:mb-2 leading-tight">
                   {stat.label}
                 </h3>
 
                 {/* Description */}
-                <p className="text-xs sm:text-sm text-zinc-500 font-medium leading-relaxed">
+                <p className="text-[10px] sm:text-xs md:text-sm text-zinc-500 font-medium leading-relaxed hidden sm:block">
                   {stat.description}
                 </p>
               </motion.div>

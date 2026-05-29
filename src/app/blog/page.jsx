@@ -132,12 +132,6 @@ export default function BlogPage() {
 
   return (
     <main className="min-h-screen text-foreground overflow-x-clip relative font-sans pt-24 pb-16 selection:bg-sage/20">
-      
-      {/* Background ambient glowing orbs */}
-      <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/3 left-0 w-[400px] h-[400px] bg-pink-500/3 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute top-2/3 right-1/4 w-[450px] h-[450px] bg-emerald-500/4 rounded-full blur-[110px] pointer-events-none" />
-
       {/* Reading Progress Bar for Article detail view */}
       {selectedPost && (
         <div className="fixed top-0 left-0 right-0 h-1 z-[110] bg-zinc-100">
@@ -149,7 +143,7 @@ export default function BlogPage() {
       )}
 
       <PageTransition>
-        <div className="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 mt-16 relative z-10">
           
           <AnimatePresence mode="wait">
             {!selectedPost && (
@@ -175,14 +169,11 @@ export default function BlogPage() {
                       <span className="text-sage font-normal">Playbook</span>
                     </h1>
                   </div>
-                  <p className="text-zinc-500 text-base sm:text-lg max-w-sm font-normal leading-relaxed">
-                    Guides, insights, and marketing funnels to help you automate your Instagram engagement and convert followers into customers.
-                  </p>
                 </div>
 
                 {/* Featured Post Card (Visible only when 'All' category or first tab) */}
                 {isLoading ? (
-                  <div className="mb-20 animate-pulse bg-white/20 border border-white/40 rounded-[32px] p-6 md:p-8 lg:p-10 h-[400px] flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
+                  <div className="mb-10 animate-pulse bg-white/20 border border-white/40 rounded-[32px] p-6 md:p-8 lg:p-10 h-[400px] flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
                     <div className="w-full lg:w-7/12 bg-zinc-200/40 rounded-[24px] aspect-[16/10] md:aspect-[16/9] h-[250px] lg:h-[320px]" />
                     <div className="w-full lg:w-5/12 space-y-4">
                       <div className="h-6 bg-zinc-200/40 rounded w-1/4" />
