@@ -233,16 +233,10 @@ export default function SmartBio({ accountId, account }) {
           </div>
 
           <button
-            onClick={handlePublish}
-            disabled={publishing}
-            className="px-5 py-2 bg-zinc-950 text-white rounded-xl text-xs font-bold shadow-sm hover:bg-zinc-800 transition-all flex items-center gap-2 disabled:opacity-60"
+            disabled={true}
+            className="px-5 py-2 bg-zinc-200 text-zinc-500 rounded-xl text-xs font-bold shadow-sm cursor-not-allowed flex items-center gap-2"
           >
-            {publishing ? (
-              <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            ) : (
-              <Globe size={13} />
-            )}
-            {published ? "Update & Publish" : "Publish"}
+            Coming Soon
           </button>
         </div>
 

@@ -179,8 +179,8 @@ export default function Features() {
             <div className="p-6 lg:p-8 flex flex-col justify-center flex-1">
               <div className="max-w-xl">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="px-2 py-1 bg-[#6366F1]/10 text-[#6366F1] rounded-lg text-[10px] font-black uppercase tracking-wider">
-                    New Feature
+                  <div className="px-2 py-1 bg-zinc-200/50 text-zinc-500 rounded-lg text-[10px] font-black uppercase tracking-wider">
+                    Coming Soon
                   </div>
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-[#6366F1] transition-colors duration-300 tracking-tight mb-2">
@@ -200,13 +200,11 @@ export default function Features() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <Link
-                    href="/login"
-                    className="w-full sm:w-auto px-6 flex items-center justify-center gap-2 bg-zinc-950 text-white py-2.5 rounded-3xl font-bold text-xs hover:bg-[#6366F1] transition-all duration-300 shadow-lg shadow-zinc-200"
+                  <div
+                    className="w-full sm:w-auto px-6 flex items-center justify-center gap-2 bg-zinc-200 text-zinc-500 py-2.5 rounded-3xl font-bold text-xs cursor-not-allowed shadow-none"
                   >
-                    Build Your Smart Bio
-                    <ArrowRight size={14} />
-                  </Link>
+                    Coming Soon
+                  </div>
                 </div>
               </div>
             </div>
