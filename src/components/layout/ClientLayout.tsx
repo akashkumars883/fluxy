@@ -24,8 +24,8 @@ function RefTracker() {
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   
-  // Dashboard aur Auth pages par marketing nav/footer nahi dikhana hai
-  const hideGlobalElements = pathname?.startsWith('/dashboard') || pathname?.startsWith('/login');
+  // Dashboard, Auth, and Checkout pages par marketing nav/footer nahi dikhana hai
+  const hideGlobalElements = pathname?.startsWith('/dashboard') || pathname?.startsWith('/login') || pathname?.startsWith('/pay');
 
   return (
     <>
