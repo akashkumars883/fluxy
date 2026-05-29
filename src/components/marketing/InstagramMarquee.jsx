@@ -116,8 +116,8 @@ export default function InstagramMarquee() {
       <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-16 relative z-10">
         
         {/* Title */}
-        <div className="flex flex-col items-center text-center mb-12">
-          <span className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] mb-4 block">
+        <div className="flex flex-col items-center text-center mb-10">
+          <span className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] mb-3 block">
             Social Proof
           </span>
           <h2 className="text-3xl sm:text-5xl font-semibold text-zinc-950 tracking-tight mb-4">

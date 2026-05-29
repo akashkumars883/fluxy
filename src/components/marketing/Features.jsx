@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight,CheckCircle2,Layout,MessageSquare,Target,Zap } from "lucide-react";
+import { ArrowRight,CheckCircle2,Layout,MessageSquare,Target,Zap,ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
 const features = [
@@ -51,16 +51,30 @@ const features = [
 
 const smartBio = {
   title: "Next-Gen Smart Bio Link",
-  desc: "One link to rule them all. Replace your boring Linktree with a high-converting, branded Smart Bio. Track clicks, collect leads, and showcase your best content in a beautiful, mobile-first interface.",
+  desc: "Replace your boring Linktree with a high-converting, branded Smart Bio. Showcase your best content and sell products directly.",
   bullets: [
-    "Unlimited customizable buttons & links",
-    "Real-time analytics & click tracking",
-    "Email & Lead collection forms",
-    "Deep-integration with Instagram Automations"
+    "Beautiful Custom Themes & Presets",
+    "Direct Store & Product Checkout",
+    "Unlimited Custom Links & Socials",
+    "Linked with Instagram Automations"
   ],
   image: "/images/smart-bio-solid.png",
   color: "text-rose-500 bg-rose-500/10 border-rose-500/20",
   icon: Layout
+};
+
+const miniStore = {
+  title: "Integrated Mini Store",
+  desc: "Sell E-books, templates, and digital courses directly from your profile. Collect payments effortlessly without third-party commission fees.",
+  bullets: [
+    "Zero transaction fees (excl. gateway)",
+    "Instant payout to your bank account",
+    "Automated delivery on Instagram",
+    "Beautiful custom checkout pages"
+  ],
+  image: "/images/mini-store.png",
+  color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
+  icon: ShoppingBag
 };
 
 export default function Features() {
@@ -69,14 +83,13 @@ export default function Features() {
       <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-16 relative z-10">
 
         {/* Header Title Block */}
-        <div className="flex flex-col items-center text-center mb-10 md:mb-14">
-          <div className="max-w-2xl">
-            <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] mb-4 block">
+        <div className="flex flex-col items-center text-center mb-10 md:mb-12">
+          <div className="max-w-3xl">
+            <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] mb-3 block">
               Core Capabilities
             </p>
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-semibold text-foreground tracking-tight leading-[1.1] mb-8">
-              Precision automation <br />
-              <span className="text-sage font-normal">at scale.</span>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground tracking-tight leading-[1.1] mb-4">
+              Precision automation <span className="text-sage font-normal">at scale.</span>
             </h2>
           </div>
           <p className="text-zinc-500 text-sm md:text-lg max-w-sm font-normal leading-relaxed">
@@ -143,45 +156,44 @@ export default function Features() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="group col-span-full relative flex flex-col lg:flex-row items-stretch rounded-[48px] bg-white/40 backdrop-blur-3xl border border-white/60 hover:border-[#6366F1]/30 transition-all duration-500 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 overflow-hidden"
+            className="group col-span-full relative flex flex-col lg:flex-row items-stretch rounded-[36px] lg:h-[350px] bg-white/40 backdrop-blur-3xl border border-white/60 hover:border-[#6366F1]/30 transition-all duration-500 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 overflow-hidden"
           >
             {/* Visual Area (Left/Top) - Full Bleed */}
-            <div className="relative h-72 sm:h-80 lg:h-auto lg:w-[45%] flex items-center justify-center bg-transparent overflow-hidden border-b lg:border-b-0 lg:border-r border-white/60">
+            <div className="relative h-56 lg:h-full lg:w-[38%] shrink-0 flex items-center justify-center bg-zinc-50/50 overflow-hidden border-b lg:border-b-0 lg:border-r border-white/60">
               <motion.img
                 src={smartBio.image}
                 alt={smartBio.title}
-                className="w-full h-full object-cover z-10 transition-transform duration-700 group-hover:scale-105 mix-blend-multiply"
+                className="w-full h-full object-cover object-top z-10 transition-transform duration-700 group-hover:scale-105"
               />
               
-              {/* More Noticeable 3-Side Fades */}
-              <div className="absolute inset-0 bg-gradient-to-b from-white via-white/5 to-transparent z-20 pointer-events-none" />
-              <div className="absolute inset-0 bg-gradient-to-t from-white via-white/5 to-transparent z-20 pointer-events-none" />
-              <div className="absolute inset-0 bg-gradient-to-l from-white via-white/40 to-transparent z-20 pointer-events-none" />
+              {/* Smooth Blend to Right Content */}
+              <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white/40 to-transparent z-20 pointer-events-none hidden lg:block" />
+              <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white/40 to-transparent z-20 pointer-events-none lg:hidden" />
               
-              <div className={`absolute top-6 left-6 w-12 h-12 rounded-2xl flex items-center justify-center border shadow-xl z-30 backdrop-blur-md ${smartBio.color}`}>
-                <smartBio.icon size={20} />
+              <div className={`absolute top-5 left-5 w-10 h-10 rounded-2xl flex items-center justify-center border shadow-xl z-30 backdrop-blur-md ${smartBio.color}`}>
+                <smartBio.icon size={18} />
               </div>
             </div>
 
             {/* Content Area (Right/Bottom) */}
-            <div className="p-8 md:p-12 flex flex-col justify-center flex-1">
+            <div className="p-6 lg:p-8 flex flex-col justify-center flex-1">
               <div className="max-w-xl">
-                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center gap-2 mb-2">
                   <div className="px-2 py-1 bg-[#6366F1]/10 text-[#6366F1] rounded-lg text-[10px] font-black uppercase tracking-wider">
                     New Feature
                   </div>
                 </div>
-                <h3 className="text-3xl md:text-4xl font-bold text-foreground group-hover:text-[#6366F1] transition-colors duration-300 tracking-tight mb-6">
+                <h3 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-[#6366F1] transition-colors duration-300 tracking-tight mb-2">
                   {smartBio.title}
                 </h3>
-                <p className="text-sm md:text-lg text-zinc-500 font-normal leading-relaxed mb-8">
+                <p className="text-sm text-zinc-500 font-normal leading-relaxed mb-4">
                   {smartBio.desc}
                 </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-5">
                   {smartBio.bullets.map((bullet, bIdx) => (
-                    <div key={bIdx} className="flex items-center gap-3 text-zinc-600 font-medium text-xs md:text-sm">
-                      <CheckCircle2 size={16} className="text-[#6366F1] shrink-0" />
+                    <div key={bIdx} className="flex items-center gap-2 text-zinc-600 font-medium text-[11px] md:text-xs">
+                      <CheckCircle2 size={14} className="text-[#6366F1] shrink-0" />
                       {bullet}
                     </div>
                   ))}
@@ -190,12 +202,73 @@ export default function Features() {
                 <div className="flex flex-col sm:flex-row items-center gap-4">
                   <Link
                     href="/login"
-                    className="w-full sm:w-auto px-10 flex items-center justify-center gap-2.5 bg-zinc-950 text-white py-4 rounded-3xl font-bold text-xs hover:bg-[#6366F1] transition-all duration-300 shadow-lg shadow-zinc-200"
+                    className="w-full sm:w-auto px-6 flex items-center justify-center gap-2 bg-zinc-950 text-white py-2.5 rounded-3xl font-bold text-xs hover:bg-[#6366F1] transition-all duration-300 shadow-lg shadow-zinc-200"
                   >
                     Build Your Smart Bio
-                    <ArrowRight size={16} />
+                    <ArrowRight size={14} />
                   </Link>
-                  <p className="text-[11px] text-zinc-400 font-medium">Included in all plans</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Full Width Horizontal Card - Mini Store */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="group col-span-full relative flex flex-col lg:flex-row-reverse items-stretch rounded-[36px] lg:h-[350px] bg-white/40 backdrop-blur-3xl border border-white/60 hover:border-[#6366F1]/30 transition-all duration-500 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 overflow-hidden mt-2"
+          >
+            {/* Visual Area (Right/Top) - Full Bleed */}
+            <div className="relative h-56 lg:h-full lg:w-[38%] shrink-0 flex items-center justify-center bg-zinc-50/50 overflow-hidden border-b lg:border-b-0 lg:border-l border-zinc-200/50">
+              <motion.img
+                src={miniStore.image}
+                alt={miniStore.title}
+                className="w-full h-full object-cover object-center z-10 transition-transform duration-700 group-hover:scale-105"
+              />
+              
+              {/* Smooth Blend to Left Content */}
+              <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white/80 to-transparent z-20 pointer-events-none hidden lg:block" />
+              <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white/40 to-transparent z-20 pointer-events-none lg:hidden" />
+              
+              <div className={`absolute top-5 right-5 w-10 h-10 rounded-2xl flex items-center justify-center border shadow-xl z-30 backdrop-blur-md ${miniStore.color}`}>
+                <miniStore.icon size={18} />
+              </div>
+            </div>
+
+            {/* Content Area (Left/Bottom) */}
+            <div className="p-6 lg:p-8 flex flex-col justify-center flex-1">
+              <div className="max-w-xl">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="px-2 py-1 bg-amber-500/10 text-amber-600 rounded-lg text-[10px] font-black uppercase tracking-wider">
+                    Most Requested
+                  </div>
+                </div>
+                <h3 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-amber-500 transition-colors duration-300 tracking-tight mb-2">
+                  {miniStore.title}
+                </h3>
+                <p className="text-sm text-zinc-500 font-normal leading-relaxed mb-4">
+                  {miniStore.desc}
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-5">
+                  {miniStore.bullets.map((bullet, bIdx) => (
+                    <div key={bIdx} className="flex items-center gap-2 text-zinc-600 font-medium text-[11px] md:text-xs">
+                      <CheckCircle2 size={14} className="text-amber-500 shrink-0" />
+                      {bullet}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <Link
+                    href="/login"
+                    className="w-full sm:w-auto px-6 flex items-center justify-center gap-2 bg-zinc-950 text-white py-2.5 rounded-3xl font-bold text-xs hover:bg-amber-500 transition-all duration-300 shadow-lg shadow-zinc-200"
+                  >
+                    Start Selling Now
+                    <ArrowRight size={14} />
+                  </Link>
                 </div>
               </div>
             </div>

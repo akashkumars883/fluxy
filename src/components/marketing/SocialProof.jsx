@@ -50,8 +50,8 @@ export default function SocialProof() {
       <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-16 relative z-10">
 
         {/* Header Title */}
-        <div className="text-center mb-16 max-w-2xl mx-auto">
-          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#6366F1] mb-4">
+        <div className="text-center mb-10 md:mb-14 max-w-3xl mx-auto">
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#6366F1] mb-3">
             Real Numbers. Real Growth.
           </p>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground tracking-tight leading-[1.1]">

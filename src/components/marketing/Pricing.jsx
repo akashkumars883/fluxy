@@ -62,6 +62,7 @@ export default function Pricing({ isModal = false } = {}) {
         "AI Intent & Smart AI Mode",
         "AI Human Mimicry Mode",
         "Story Mention Responder",
+        "Smart Bio & Mini Store Access",
         "CRM Unlimited + CSV Leads Export",
         "Ambassador Split Access (20%)"
       ],
@@ -295,11 +296,10 @@ export default function Pricing({ isModal = false } = {}) {
           <div className="flex flex-col items-center text-center mb-12 md:mb-16">
             <div className="max-w-2xl">
               <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] mb-4 block">
-                Market Beating Value
+                Transparent Pricing
               </p>
-              <h2 className="text-4xl md:text-6xl lg:text-7xl font-semibold text-foreground tracking-tight leading-[1.1] mb-8">
-                Built for every <br />
-                <span className="text-sage font-normal">scale.</span>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground tracking-tight leading-[1.1] mb-4">
+                Simple pricing. <span className="text-sage font-normal">No surprises.</span>
               </h2>
             </div>
             <p className="text-zinc-500 text-sm md:text-lg max-w-sm font-normal leading-relaxed">

@@ -95,19 +95,18 @@ export default function Testimonials() {
       {/* Background Ambient Lights */}
       <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-rose-500/5 rounded-full blur-[130px] pointer-events-none -translate-x-1/2 -translate-y-1/2" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 relative z-10 mb-12 sm:mb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 relative z-10 mb-10 sm:mb-14">
         {/* Header Title Block (Symmetrical with HowItWorks, Features and Pricing) */}
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
-          <div className="max-w-2xl">
-            <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] mb-3 block">
+        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
+          <div className="max-w-3xl">
+            <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] mb-2 block">
               Testimonials
             </p>
             <h2 className="text-4xl md:text-6xl font-semibold text-foreground tracking-normal leading-[1.1]">
-              Loved by modern <br />
-              <span className="text-sage font-normal">creators.</span>
+              Loved by modern <span className="text-sage font-normal">creators.</span>
             </h2>
           </div>
-          <p className="text-zinc-500 text-base sm:text-lg max-w-sm font-normal leading-relaxed">
+          <p className="text-zinc-500 text-base sm:text-lg max-w-md font-normal leading-relaxed">
             See how creators and brands are scaling their engagement and automating workflows with Automixa.
           </p>
         </div>

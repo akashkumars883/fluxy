@@ -40,16 +40,15 @@ export default function FAQ({ customFaqs = null }) {
 
         {/* Header Title Block */}
         <div className="flex flex-col items-center text-center mb-10 md:mb-14">
-          <div className="max-w-2xl">
-            <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] mb-4 block">
+          <div className="max-w-3xl">
+            <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] mb-3 block">
               Help Center
             </p>
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-semibold text-foreground tracking-tight leading-[1.1] mb-6">
-              Frequently asked <br />
-              <span className="text-sage font-normal">questions.</span>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground tracking-tight leading-[1.1] mb-4">
+              Frequently asked <span className="text-sage font-normal">questions.</span>
             </h2>
           </div>
-          <p className="text-zinc-500 text-sm md:text-lg max-w-sm font-normal leading-relaxed">
+          <p className="text-zinc-500 text-sm md:text-lg max-w-lg font-normal leading-relaxed">
             Can&apos;t find what you are looking for? Reach out to our 24/7 team.
           </p>
         </div>

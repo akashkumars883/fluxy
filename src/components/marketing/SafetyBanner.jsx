@@ -17,9 +17,6 @@ export default function SafetyBanner() {
         >
           {/* Left Side: Text and Compliance Badge */}
           <div className="flex flex-col items-center md:items-start text-center md:text-left flex-1">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-extrabold uppercase tracking-wider mb-3">
-              <ShieldCheck size={12} className="fill-emerald-100/10" /> 100% Meta Compliant
-            </span>
             <h3 className="text-xl sm:text-2xl font-bold text-zinc-950 tracking-tight">
               Protected by automixa Shield™
             </h3>

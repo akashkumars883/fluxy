@@ -9,17 +9,16 @@ export default function Safety() {
       <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-16 relative z-10">
         
         {/* Header Title Block - Simple, Clean, and Premium */}
-        <div className="flex flex-col items-center text-center mb-12 md:mb-20">
+        <div className="flex flex-col items-center text-center mb-10 md:mb-14">
           <div className="max-w-3xl">
-            <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] mb-4 block">
-              100% Safe & Secure
+            <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] mb-3 block">
+              100% Meta Approved
             </p>
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-semibold text-foreground tracking-tight leading-[1.1] mb-8">
-              Meet Automixa Shield. <br />
-              <span className="text-sage font-normal">Built to keep your account safe.</span>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground tracking-tight leading-[1.1] mb-4">
+              Meet Automixa Shield. <span className="text-sage font-normal">Built to keep your account safe.</span>
             </h2>
           </div>
-          <p className="text-zinc-500 text-sm md:text-lg max-w-xl font-normal leading-relaxed">
+          <p className="text-zinc-500 text-sm md:text-lg max-w-2xl font-normal leading-relaxed">
             Most automation tools send quick replies all at once, which can get your account blocked. Automixa Shield works slowly and naturally, just like a real human, to keep your Instagram account 100% safe.
           </p>
         </div>

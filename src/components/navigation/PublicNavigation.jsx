@@ -116,12 +116,12 @@ export default function PublicNavigation() {
 
           {/* Left Side: Logo */}
           <Link href="/" className="flex items-center group gap-2.5">
-            <img 
-              src="/logo.png" 
-              alt="Automixa Logo" 
+            <img
+              src="/logo.png"
+              alt="Automixa Logo"
               className={`w-8 h-8 mt-[2px] object-contain transition-all duration-300 shrink-0 ${isScrolled || isMenuOpen ? "" : "brightness-0 invert"}`}
             />
-            <span className={`text-xl font-bold tracking-normal transition-colors ${isScrolled || isMenuOpen ? "text-foreground" : "text-white"}`}>automixa</span>
+            <span className={`text-xl font-semibold tracking-normal transition-colors ${isScrolled || isMenuOpen ? "text-foreground" : "text-white"}`}>automixa</span>
           </Link>
 
           {/* Center: Desktop Navigation Links with Hover Megamenus */}
