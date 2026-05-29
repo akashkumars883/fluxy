@@ -130,7 +130,8 @@ export default function SmartBio({ accountId, account }) {
           setThemeId(settingsRes.data.theme_preset || "ivory");
           if (settingsRes.data.is_published) {
             setPublished(true);
-            setPublishedLink(`https://${igUsername}.automixa.in`);
+            const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+            setPublishedLink(isLocal ? `http://localhost:3000/bio/${igUsername}` : `https://${igUsername}.automixa.in`);
           }
         } else {
           // Pre-fill from account
@@ -178,7 +179,8 @@ export default function SmartBio({ accountId, account }) {
         );
       }
 
-      const link = `https://${igUsername}.automixa.in`;
+      const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+      const link = isLocal ? `http://localhost:3000/bio/${igUsername}` : `https://${igUsername}.automixa.in`;
       setPublishedLink(link);
       setPublished(true);
       toast.success("Smart Bio published successfully!");
