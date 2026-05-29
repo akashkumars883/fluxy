@@ -1,17 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Plus, Save, User, Instagram, Youtube, Twitter, Facebook, Link2 as LinkIcon, ExternalLink } from "lucide-react";
+import { Plus, Save, User, Globe, Play, AtSign, Users2, ExternalLink } from "lucide-react";
 import toast from "react-hot-toast";
 
 // Helper to detect social icons
 const getSocialIcon = (url) => {
   if (!url) return null;
   const l = url.toLowerCase();
-  if (l.includes("instagram.com")) return <Instagram size={20} />;
-  if (l.includes("youtube.com") || l.includes("youtu.be")) return <Youtube size={20} />;
-  if (l.includes("twitter.com") || l.includes("x.com")) return <Twitter size={20} />;
-  if (l.includes("facebook.com")) return <Facebook size={20} />;
+  if (l.includes("instagram.com")) return <AtSign size={20} />;
+  if (l.includes("youtube.com") || l.includes("youtu.be")) return <Play size={20} />;
+  if (l.includes("twitter.com") || l.includes("x.com")) return <Globe size={20} />;
+  if (l.includes("facebook.com")) return <Users2 size={20} />;
   return null;
 };
 
@@ -45,13 +45,18 @@ export default function SmartBio({ accountId }) {
         bio_text: "Welcome to my official Smart Bio!",
         theme_preset: "gradient-sunset"
       });
-      // Fetch active products
+      // Fetch active products - handle gracefully if table doesn't exist
       fetch(`/api/store/products?automationId=${accountId}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) setProducts(data.products.filter(p => p.is_active));
+        .then(res => {
+          if (!res.ok) return null;
+          return res.json();
         })
-        .catch(console.error);
+        .then(data => {
+          if (data?.success && Array.isArray(data.products)) {
+            setProducts(data.products.filter(p => p.is_active));
+          }
+        })
+        .catch(() => {}); // silently ignore if table not created yet
     }
   }, [accountId]);
 

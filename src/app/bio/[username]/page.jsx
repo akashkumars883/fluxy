@@ -1,17 +1,17 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
-import { User, Download, ExternalLink, Instagram, Youtube, Twitter, Facebook } from 'lucide-react';
+import { User, Download, ExternalLink, AtSign, Play, Globe, Users2 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
 const getSocialIcon = (url) => {
   if (!url) return null;
   const l = url.toLowerCase();
-  if (l.includes("instagram.com")) return <Instagram size={20} />;
-  if (l.includes("youtube.com") || l.includes("youtu.be")) return <Youtube size={20} />;
-  if (l.includes("twitter.com") || l.includes("x.com")) return <Twitter size={20} />;
-  if (l.includes("facebook.com")) return <Facebook size={20} />;
+  if (l.includes("instagram.com")) return <AtSign size={20} />;
+  if (l.includes("youtube.com") || l.includes("youtu.be")) return <Play size={20} />;
+  if (l.includes("twitter.com") || l.includes("x.com")) return <Globe size={20} />;
+  if (l.includes("facebook.com")) return <Users2 size={20} />;
   return null;
 };
 
