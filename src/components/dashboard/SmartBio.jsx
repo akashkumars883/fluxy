@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { Plus, Save, User, Instagram, Youtube, Twitter, Facebook, Link2 as LinkIcon, ExternalLink } from "lucide-react";
 import toast from "react-hot-toast";
