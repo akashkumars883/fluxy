@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase';
+import { createAdminClient } from '@/lib/supabase';
 import Razorpay from 'razorpay';
 
 export async function POST(request) {
@@ -11,7 +11,7 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const supabase = createClient();
+    const supabase = createAdminClient();
     
     // 1. Fetch product details
     const { data: product, error: productError } = await supabase
