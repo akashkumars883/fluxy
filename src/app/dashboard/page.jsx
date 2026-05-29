@@ -621,6 +621,53 @@ export default function Dashboard() {
                 </div>
               </div>
 
+              {/* === DYNAMIC ERROR / WARNING BANNER === */}
+              {(!selectedAccount?.is_active || usedQuota >= maxQuota) && (
+                <div className="shrink-0 animate-in slide-in-from-top-4 duration-300">
+                  {!selectedAccount?.is_active ? (
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-amber-50 border border-amber-200/60 rounded-2xl shadow-sm text-amber-800">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+                          <AlertCircle size={18} className="animate-pulse" />
+                        </div>
+                        <div>
+                          <p className="text-xs sm:text-sm font-bold leading-snug">System Paused</p>
+                          <p className="text-[11px] sm:text-xs text-amber-600/90 mt-0.5 font-medium leading-relaxed">
+                            Your automation shield is currently paused. No auto-replies or direct messages are being processed.
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => updateSelectedAccount({ is_active: true })}
+                        className="w-full sm:w-auto px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold shadow-md transition-all hover:scale-[1.02] shrink-0"
+                      >
+                        Activate Shield
+                      </button>
+                    </div>
+                  ) : usedQuota >= maxQuota ? (
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-rose-50 border border-rose-200/60 rounded-2xl shadow-sm text-rose-800">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0">
+                          <AlertCircle size={18} className="animate-pulse" />
+                        </div>
+                        <div>
+                          <p className="text-xs sm:text-sm font-bold leading-snug">Quota Limit Exceeded</p>
+                          <p className="text-[11px] sm:text-xs text-rose-600/90 mt-0.5 font-medium leading-relaxed">
+                            You have reached your Free plan limit of {maxQuota.toLocaleString()} monthly replies. Automations will remain blocked until you upgrade.
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setIsSubscriptionOpen(true)}
+                        className="w-full sm:w-auto px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-semibold shadow-md transition-all hover:scale-[1.02] shrink-0"
+                      >
+                        Upgrade Now
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
+              )}
+
               {activeTab === "home" && (
                 <div 
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
