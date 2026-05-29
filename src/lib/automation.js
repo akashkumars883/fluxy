@@ -361,10 +361,12 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     if (!match) {
       const lowerText = (text || "").toLowerCase().trim();
       const eventTriggers = triggers.filter(t => {
+        // If it's a STORY event, allow STORY triggers and universal COMMENT/DM triggers
         if (type && type.startsWith("STORY")) {
-          return t.type === "STORY" || t.type === "STORY_REPLY" || t.type === "STORY_MENTION";
+          return t.type === "STORY" || t.type === "STORY_REPLY" || t.type === "STORY_MENTION" || t.type === "COMMENT" || t.type === "DM";
         }
-        return t.type === type || (!t.type && type === "DM");
+        // If it's a DM or COMMENT, allow COMMENT (which acts as Comment & DM) and specific types
+        return t.type === type || t.type === "COMMENT" || (!t.type && type === "DM") || t.type === "STORY_REPLY";
       });
 
       let activePool = eventTriggers;
