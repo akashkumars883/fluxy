@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
 import { Package, ShieldCheck, Mail, User, CreditCard } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-export default function CheckoutPage({ params }) {
-  const { productId } = params;
+export default function CheckoutPage() {
+  const { productId } = useParams();
   
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,12 +28,13 @@ export default function CheckoutPage({ params }) {
           .single();
 
         if (error || !data || !data.is_active) {
-          notFound();
+          console.error("Product fetch error:", error);
+          setProduct(null);
         } else {
           setProduct(data);
         }
       } catch (err) {
-        console.error(err);
+        console.error("Unexpected error:", err);
       } finally {
         setLoading(false);
       }
@@ -98,7 +99,13 @@ export default function CheckoutPage({ params }) {
   };
 
   if (loading) return <div className="h-screen flex items-center justify-center bg-zinc-50"><div className="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div></div>;
-  if (!product) return null;
+  if (!product) return (
+    <div className="h-screen flex flex-col items-center justify-center bg-zinc-50 p-4 text-center">
+      <Package size={48} className="text-zinc-300 mb-4" />
+      <h2 className="text-xl font-bold text-zinc-900">Product not found</h2>
+      <p className="text-sm text-zinc-500 mt-2">The link you followed might be broken or expired.</p>
+    </div>
+  );
 
   return (
     <>
