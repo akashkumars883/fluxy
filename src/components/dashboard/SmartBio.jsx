@@ -131,7 +131,7 @@ export default function SmartBio({ accountId, account }) {
           if (settingsRes.data.is_published) {
             setPublished(true);
             const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-            setPublishedLink(isLocal ? `http://localhost:3000/bio/${igUsername}` : `https://${igUsername}.automixa.in`);
+            setPublishedLink(isLocal ? `${window.location.origin}/bio/${igUsername}` : `https://${igUsername}.automixa.in`);
           }
         } else {
           // Pre-fill from account
@@ -180,7 +180,7 @@ export default function SmartBio({ accountId, account }) {
       }
 
       const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-      const link = isLocal ? `http://localhost:3000/bio/${igUsername}` : `https://${igUsername}.automixa.in`;
+      const link = isLocal ? `${window.location.origin}/bio/${igUsername}` : `https://${igUsername}.automixa.in`;
       setPublishedLink(link);
       setPublished(true);
       toast.success("Smart Bio published successfully!");
