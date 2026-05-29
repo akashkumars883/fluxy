@@ -104,7 +104,16 @@ export async function POST(req) {
           if (message.is_echo) {
             continue;
           }
-          const text = message.text || "";
+          let text = message.text || "";
+          
+          // Detect shared reel/post (e.g. "Send this reel in DM to get the link")
+          if (message.attachments && message.attachments.length > 0) {
+            const attachment = message.attachments[0];
+            if (attachment.type === "share" && attachment.payload?.url) {
+              text = (text + " " + attachment.payload.url).trim();
+            }
+          }
+          
           const mid = message.mid;
           const quickReplyPayload = message.quick_reply?.payload;
           let type = "DM";
