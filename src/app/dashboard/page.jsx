@@ -580,13 +580,16 @@ export default function Dashboard() {
                   )}
 
                   {activeTab === "home" && (
-                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all ${selectedAccount?.is_active ? "bg-emerald-50 border-emerald-200/80 text-emerald-700" : "bg-rose-50 border-rose-200/80 text-rose-600"}`}>
+                    <button
+                      onClick={() => updateSelectedAccount({ is_active: !selectedAccount.is_active })}
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer hover:scale-[1.02] active:scale-95 ${selectedAccount?.is_active ? "bg-emerald-50 border-emerald-200/80 text-emerald-700 hover:bg-emerald-100/30" : "bg-rose-50 border-rose-200/80 text-rose-600 hover:bg-rose-100/30"}`}
+                    >
                       <span className="relative flex h-1.5 w-1.5">
                         <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${selectedAccount?.is_active ? "bg-emerald-400" : "bg-rose-400"}`} />
                         <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${selectedAccount?.is_active ? "bg-emerald-600" : "bg-rose-600"}`} />
                       </span>
                       {selectedAccount?.is_active ? "Shield Active" : "System Paused"}
-                    </div>
+                    </button>
                   )}
 
                   {activeTab === "automations" && !builderActive && (
