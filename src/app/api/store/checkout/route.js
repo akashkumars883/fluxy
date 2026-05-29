@@ -28,9 +28,9 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Product is no longer available' }, { status: 400 });
     }
 
-    // 2. Fetch Creator's Linked Razorpay Account via ig_accounts -> partner_profiles
+    // 2. Fetch Creator's Linked Razorpay Account via automations -> partner_profiles
     const { data: igAccount, error: igError } = await supabase
-      .from("ig_accounts")
+      .from("automations")
       .select("user_id")
       .eq("id", product.automation_id)
       .single();
