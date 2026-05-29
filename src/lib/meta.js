@@ -597,7 +597,8 @@ export const MetaService = {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            access_token: accessToken
+            access_token: accessToken,
+            subscribed_fields: "comments,messages,messaging_postbacks,message_reactions"
           })
         }
       );
