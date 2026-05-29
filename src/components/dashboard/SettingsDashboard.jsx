@@ -176,7 +176,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
 
   // ─── Section renderers ────────────────────────────────────────────────────
 
-  const SectionAccount = () => (
+  const renderAccount = () => (
     <div className="space-y-4">
       {/* Connected account */}
       <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm space-y-3">
@@ -240,7 +240,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
     </div>
   );
 
-  const SectionPayout = () => (
+  const renderPayout = () => (
     <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm space-y-4">
       <div>
         <h4 className="text-sm font-semibold text-zinc-900">Payout details</h4>
@@ -302,7 +302,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
     </div>
   );
 
-  const SectionNotifications = () => (
+  const renderNotifications = () => (
     <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm space-y-3">
       <div>
         <h4 className="text-sm font-semibold text-zinc-900">Email notifications</h4>
@@ -325,7 +325,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
     </div>
   );
 
-  const SectionTeam = () => (
+  const renderTeam = () => (
     <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-100">
         <div>
@@ -416,7 +416,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
     </div>
   );
 
-  const SectionIntegrations = () => (
+  const renderIntegrations = () => (
     <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm space-y-4">
       <div className="flex items-center justify-between pb-3 border-b border-zinc-100">
         <div>
@@ -459,11 +459,11 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   );
 
   const sections = {
-    account:       <SectionAccount />,
-    payout:        <SectionPayout />,
-    notifications: <SectionNotifications />,
-    team:          <SectionTeam />,
-    integrations:  <SectionIntegrations />,
+    account:       renderAccount(),
+    payout:        renderPayout(),
+    notifications: renderNotifications(),
+    team:          renderTeam(),
+    integrations:  renderIntegrations(),
   };
 
   return (
