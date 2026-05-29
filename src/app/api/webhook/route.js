@@ -78,7 +78,8 @@ export async function POST(req) {
   let body;
   try {
     const rawBody = rawBodyBuffer.toString("utf8");
-    body = JSON.parse(rawBody || "{}");
+    const sanitizedBody = rawBody.replace(/(:\s*)(\d{15,})/g, '$1"$2"');
+    body = JSON.parse(sanitizedBody || "{}");
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }

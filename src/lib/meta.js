@@ -26,13 +26,29 @@ function getAppAccessToken() {
   return `${appId}|${appSecret}`;
 }
 
+export function safeJsonParse(text) {
+  if (!text) return null;
+  // Wrap any 15+ digit integers in quotes to prevent JS precision loss
+  const sanitized = text.replace(/(:\s*)(\d{15,})/g, '$1"$2"');
+  try {
+    return JSON.parse(sanitized);
+  } catch {
+    try {
+      return JSON.parse(text);
+    } catch {
+      return null;
+    }
+  }
+}
+
 async function fetchJson(url, init = {}, { timeoutMs = DEFAULT_TIMEOUT_MS } = {}) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const response = await fetch(url, { ...init, signal: controller.signal });
-    const data = await response.json().catch(() => null);
+    const rawText = await response.text().catch(() => null);
+    const data = rawText ? safeJsonParse(rawText) : null;
     return { response, data };
   } finally {
     clearTimeout(timeout);
@@ -144,9 +160,9 @@ export const MetaService = {
       });
 
       const response = await fetch(`${BASE_URL}/oauth/access_token?${params.toString()}`);
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Code exchange failed");
-      return { success: true, accessToken: data.access_token };
+      const data = safeJsonParse(await response.text().catch(() => ""));
+      if (!response.ok) throw new Error(data?.error?.message || "Code exchange failed");
+      return { success: true, accessToken: data?.access_token };
     } catch (error) {
       console.error("Meta API - exchangeCodeForToken Error:", error.message);
       return { success: false, error: error.message };
@@ -166,9 +182,9 @@ export const MetaService = {
       });
 
       const response = await fetch(`${BASE_URL}/oauth/access_token?${params.toString()}`);
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Long-lived token exchange failed");
-      return { success: true, accessToken: data.access_token };
+      const data = safeJsonParse(await response.text().catch(() => ""));
+      if (!response.ok) throw new Error(data?.error?.message || "Long-lived token exchange failed");
+      return { success: true, accessToken: data?.access_token };
     } catch (error) {
       console.error("Meta API - getLongLivedToken Error:", error.message);
       return { success: false, error: error.message };
@@ -277,8 +293,8 @@ export const MetaService = {
   getUserProfile: async (userId, accessToken) => {
     try {
       const response = await fetch(`${getGraphBaseUrl(accessToken)}/${userId}?fields=name,profile_pic&access_token=${accessToken}`);
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Failed to fetch user profile");
+      const data = safeJsonParse(await response.text().catch(() => ""));
+      if (!response.ok) throw new Error(data?.error?.message || "Failed to fetch user profile");
       return { success: true, data };
     } catch (error) {
       // Silence Error #230 (Consent required) as it's expected for new commenters
@@ -303,10 +319,10 @@ export const MetaService = {
           message: { text: text },
         }),
       });
-      const data = await response.json();
+      const data = safeJsonParse(await response.text().catch(() => ""));
       if (!response.ok) {
-        console.error(`Meta API sendDM Error [${response.status}]:`, data.error?.message || "Unknown error");
-        throw new Error(data.error?.message || "Failed to send DM");
+        console.error(`Meta API sendDM Error [${response.status}]:`, data?.error?.message || "Unknown error");
+        throw new Error(data?.error?.message || "Failed to send DM");
       }
       return { success: true, data };
     } catch (error) {
@@ -329,10 +345,10 @@ export const MetaService = {
           message: messageBody 
         }),
       });
-      const data = await response.json();
+      const data = safeJsonParse(await response.text().catch(() => ""));
       if (!response.ok) {
-         console.error("Meta API PrivateReply Error:", data.error?.message);
-         throw new Error(data.error?.message || "Failed to send private reply");
+         console.error("Meta API PrivateReply Error:", data?.error?.message);
+         throw new Error(data?.error?.message || "Failed to send private reply");
       }
       return { success: true, data };
     } catch (error) {
@@ -347,8 +363,8 @@ export const MetaService = {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text }),
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Failed to reply to comment");
+      const data = safeJsonParse(await response.text().catch(() => ""));
+      if (!response.ok) throw new Error(data?.error?.message || "Failed to reply to comment");
       return { success: true, data };
     } catch (error) {
       console.error("Meta API - sendCommentReply Error:", error.message);
@@ -359,18 +375,18 @@ export const MetaService = {
   checkFollowStatus: async (userId, accessToken) => {
     try {
       const response = await fetch(`${getGraphBaseUrl(accessToken)}/${userId}?fields=is_user_follow_business&access_token=${accessToken}`);
-      const data = await response.json();
+      const data = safeJsonParse(await response.text().catch(() => ""));
       
       if (!response.ok) {
-        console.error("Meta API - checkFollowStatus API Error:", data.error?.message);
-        throw new Error(data.error?.message || "Failed to check follow status");
+        console.error("Meta API - checkFollowStatus API Error:", data?.error?.message);
+        throw new Error(data?.error?.message || "Failed to check follow status");
       }
 
       // Explicitly return success and the boolean value
       return { 
         success: true, 
-        isFollowing: data.is_user_follow_business === true,
-        exists: data.is_user_follow_business !== undefined
+        isFollowing: data?.is_user_follow_business === true,
+        exists: data?.is_user_follow_business !== undefined
       };
     } catch (error) {
       console.error("Meta API - checkFollowStatus Throwable Error:", error.message);
@@ -392,7 +408,7 @@ export const MetaService = {
           }
         })
       });
-      const data = await response.json();
+      const data = safeJsonParse(await response.text().catch(() => ""));
       return { success: true, data };
     } catch (error) {
       console.error("Meta API - sendReaction Error:", error.message);
@@ -403,9 +419,9 @@ export const MetaService = {
   getMediaContext: async (mediaId, accessToken) => {
     try {
       const response = await fetch(`${getGraphBaseUrl(accessToken)}/${mediaId}?fields=caption&access_token=${accessToken}`);
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Failed to fetch caption");
-      return { success: true, caption: data.caption };
+      const data = safeJsonParse(await response.text().catch(() => ""));
+      if (!response.ok) throw new Error(data?.error?.message || "Failed to fetch caption");
+      return { success: true, caption: data?.caption };
     } catch (error) {
       console.error("Meta API - getMediaContext Error:", error.message);
       return { success: false, caption: "" };
@@ -450,10 +466,10 @@ export const MetaService = {
         body: JSON.stringify(payload),
       });
 
-      const data = await response.json();
+      const data = safeJsonParse(await response.text().catch(() => ""));
       if (!response.ok) {
-        console.error(`Meta API FollowGate Error [${response.status}]:`, data.error?.message);
-        throw new Error(data.error?.message || "Failed to send Follow-Gate card");
+        console.error(`Meta API FollowGate Error [${response.status}]:`, data?.error?.message);
+        throw new Error(data?.error?.message || "Failed to send Follow-Gate card");
       }
       return { success: true };
     } catch {
@@ -493,8 +509,8 @@ export const MetaService = {
         body: JSON.stringify(payload),
       });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Failed to send generic card");
+      const data = safeJsonParse(await response.text().catch(() => ""));
+      if (!response.ok) throw new Error(data?.error?.message || "Failed to send generic card");
       return { success: true, data };
     } catch (error) {
       console.error("Meta API - sendGenericCard Error:", error.message);
@@ -561,9 +577,9 @@ export const MetaService = {
   getCommentSenderUsername: async (commentId, accessToken) => {
     try {
       const response = await fetch(`${getGraphBaseUrl(accessToken)}/${commentId}?fields=from&access_token=${accessToken}`);
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Failed to fetch comment sender");
-      return { success: true, username: data.from?.username };
+      const data = safeJsonParse(await response.text().catch(() => ""));
+      if (!response.ok) throw new Error(data?.error?.message || "Failed to fetch comment sender");
+      return { success: true, username: data?.from?.username };
     } catch (error) {
       console.error("Meta API - getCommentSenderUsername Error:", error.message);
       return { success: false, error: error.message };
