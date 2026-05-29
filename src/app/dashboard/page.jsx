@@ -14,7 +14,8 @@ import {
   Plus,
   Settings,
   Sparkles,
-  Users
+  Users,
+  Package
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -36,6 +37,7 @@ import PartnerDashboard from "@/components/dashboard/PartnerDashboard";
 import PwaInstallBanner from "@/components/dashboard/PwaInstallBanner";
 import SettingsDashboard from "@/components/dashboard/SettingsDashboard";
 import SmartBio from "@/components/dashboard/SmartBio";
+import StoreManager from "@/components/dashboard/StoreManager";
 import SubscriptionModal from "@/components/dashboard/SubscriptionModal";
 import { CampaignBuilderWorkspace,TriggerInputModal,TriggerList } from "@/components/dashboard/TriggerManager";
 import Loader from "@/components/ui/Loader";
@@ -444,6 +446,7 @@ export default function Dashboard() {
     { id: "home", label: selectedAccount ? "Overview" : "Home", icon: Home, reqPlan: "free" },
     { id: "automations", label: "Automations", icon: Cpu, reqPlan: "free" },
     { id: "audience", label: "Audience", icon: Users, reqPlan: "free" },
+    { id: "store", label: "Mini Store", icon: Package, reqPlan: "free" },
     { id: "smart_bio", label: "Smart Bio", icon: Link2, reqPlan: "free" },
     { id: "analytics", label: "Analytics", icon: BarChart2, reqPlan: "free" },
     { id: "partner", label: "Partner Program", icon: Sparkles, reqPlan: "creator_pro" },
@@ -519,6 +522,7 @@ export default function Dashboard() {
                         {activeTab === "home" ? "Overview"
                           : activeTab === "automations" ? "Automations"
                           : activeTab === "audience" ? "Audience"
+                          : activeTab === "store" ? "Mini Store"
                           : activeTab === "smart_bio" ? "Smart Bio"
                           : activeTab === "crm" ? "CRM"
                           : activeTab === "analytics" ? "Analytics"
@@ -731,6 +735,14 @@ export default function Dashboard() {
                   className="flex-1 min-h-0 overflow-y-auto pr-1"
                 >
                   <AudienceCRM accountId={selectedAccount.id} history={realtimeHistory} currentPlan={currentPlan} />
+                </div>
+              )}
+              {activeTab === "store" && (
+                <div 
+                  onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
+                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                >
+                  <StoreManager accountId={selectedAccount.id} currentPlan={currentPlan} />
                 </div>
               )}
               {activeTab === "smart_bio" && (

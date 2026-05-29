@@ -163,7 +163,10 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
                   <textarea value={response} onChange={(e) => onChange({ response: e.target.value })} rows={3} placeholder="Hey! Here is your link..." className="w-full bg-white/60 border border-zinc-100 rounded-xl p-5 text-sm outline-none focus:border-[#6366F1] resize-none" />
                   <div className="grid grid-cols-2 gap-3">
                     <input type="text" placeholder="Button Text" value={buttonText} onChange={(e) => onChange({ buttonText: e.target.value })} className="bg-white/60 border border-zinc-100 rounded-xl px-4 py-3 text-[10px] font-bold outline-none" />
-                    <input type="text" placeholder="Link URL" value={buttonLink} onChange={(e) => onChange({ buttonLink: e.target.value })} className="bg-white/60 border border-zinc-100 rounded-xl px-4 py-3 text-[10px] font-bold outline-none" />
+                    <div className="flex flex-col gap-1">
+                      <input type="text" placeholder="Link URL" value={buttonLink} onChange={(e) => onChange({ buttonLink: e.target.value })} className="bg-white/60 border border-zinc-100 rounded-xl px-4 py-3 text-[10px] font-bold outline-none" />
+                      <span className="text-[9px] text-zinc-400 font-semibold px-1">Tip: Paste your Mini Store product link here!</span>
+                    </div>
                   </div>
                 </div>
                 <div className="space-y-3">
