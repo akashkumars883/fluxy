@@ -567,7 +567,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         );
         return { success: true, status: "gated" };
       }
-      console.log(`✅ Follow check passed or skipped (Reason: ${followData.exists ? 'Followed' : 'API Missing Field/Error'}).`);
+      console.log(`✅ Follow check passed or skipped (Reason: ${isFollowing === true ? 'Followed' : 'API Missing Field/Error'}).`);
     }
 
     // --- PHASE 4: FINAL FULFILLMENT (Automated Product Card) ---
