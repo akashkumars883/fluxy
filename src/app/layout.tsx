@@ -3,6 +3,7 @@ import ClientLayout from "@/components/layout/ClientLayout";
 import Script from "next/script";
 import type { Metadata, Viewport } from "next";
 import { createClient } from "@/lib/supabase";
+import { Toaster } from "react-hot-toast";
 
 export async function generateMetadata(): Promise<Metadata> {
   const supabase = createClient();
@@ -154,6 +155,7 @@ export default function RootLayout({
         <ClientLayout>
           {children}
         </ClientLayout>
+        <Toaster position="top-right" />
       </body>
     </html>
   );

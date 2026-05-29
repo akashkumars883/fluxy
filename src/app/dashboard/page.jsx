@@ -17,7 +17,8 @@ import {
   Users
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 // Components
 import AccountSettingsModal from "@/components/dashboard/AccountSettingsModal";
@@ -344,7 +345,7 @@ export default function Dashboard() {
       }
     } catch (err) {
       console.error("Error adding trigger:", err);
-      alert(err.message || "Failed to save trigger. Please try again.");
+      toast.error(err.message || "Failed to save trigger. Please try again.");
     }
   };
 
@@ -383,7 +384,7 @@ export default function Dashboard() {
       }
     } catch (err) {
       console.error("Error updating trigger:", err);
-      alert("Failed to update rule: " + err.message);
+      toast.error("Failed to update rule: " + err.message);
     }
   };
 
@@ -466,7 +467,7 @@ export default function Dashboard() {
   });
 
   const maxQuota = currentPlan === "viral_scale" ? 50000 : currentPlan === "creator_pro" ? 15000 : 1000;
-  const usedQuota = realtimeStats?.autoReplies || 1420;
+  const usedQuota = realtimeStats?.autoReplies || 0;
   const quotaPercent = Math.min(100, Math.round((usedQuota / maxQuota) * 100));
 
   return (
