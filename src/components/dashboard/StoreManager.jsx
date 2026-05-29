@@ -154,7 +154,12 @@ export default function StoreManager({ accountId, currentPlan }) {
                 <div className="mt-auto pt-3 flex items-center justify-between border-t border-zinc-100">
                   <p className="text-[11px] font-semibold text-zinc-400">{product.sales_count} Sales</p>
                   <div className="flex gap-1">
-                    <button className="p-1.5 text-zinc-400 hover:text-indigo-600 bg-white border border-zinc-200 hover:border-indigo-200 rounded-lg transition-colors" title="Copy Checkout Link">
+                    <button 
+                      onClick={() => {
+                        navigator.clipboard.writeText(`${window.location.origin}/pay/${product.id}`);
+                        toast.success("Checkout link copied!");
+                      }}
+                      className="p-1.5 text-zinc-400 hover:text-indigo-600 bg-white border border-zinc-200 hover:border-indigo-200 rounded-lg transition-colors" title="Copy Checkout Link">
                       <Link2 size={13} />
                     </button>
                     <button className="p-1.5 text-zinc-400 hover:text-zinc-900 bg-white border border-zinc-200 hover:border-zinc-300 rounded-lg transition-colors" title="Edit">

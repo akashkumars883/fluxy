@@ -153,19 +153,28 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
     e.preventDefault();
     setPayoutSaving(true); setPayoutError(""); setPayoutSaved(false);
     try {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("You must be logged in.");
-      const finalAddress = payoutMethod === "upi"
-        ? upiId.trim()
-        : JSON.stringify({ accountNo: bankAccountNo.trim(), ifsc: bankIfsc.trim().toUpperCase(), holderName: bankHolderName.trim() });
-      if (!finalAddress) throw new Error("Please fill in all payout details.");
-      const { error } = await supabase.from("partner_profiles").upsert({ id: user.id, payout_method: payoutMethod, payout_address: finalAddress }, { onConflict: "id" });
-      if (error) throw error;
+      const res = await fetch("/api/razorpay/link-account", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          method: payoutMethod,
+          upiId: upiId.trim(),
+          accountNo: bankAccountNo.trim(),
+          ifsc: bankIfsc.trim().toUpperCase(),
+          holderName: bankHolderName.trim()
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to link account");
+
       setPayoutSaved(true);
       setTimeout(() => setPayoutSaved(false), 3000);
-    } catch (err) { setPayoutError(err.message || "Failed to save."); }
-    finally { setPayoutSaving(false); }
+    } catch (err) { 
+      setPayoutError(err.message || "Failed to save."); 
+    } finally { 
+      setPayoutSaving(false); 
+    }
   };
 
   useEffect(() => {

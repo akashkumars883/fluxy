@@ -11,8 +11,9 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // 1. Fetch product details
     const supabase = createClient();
+    
+    // 1. Fetch product details
     const { data: product, error: productError } = await supabase
       .from('store_products')
       .select('*')
@@ -27,15 +28,45 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Product is no longer available' }, { status: 400 });
     }
 
-    // 2. Initialize Razorpay (Using platform keys for MVP, later switch to Route/Creator keys)
+    // 2. Fetch Creator's Linked Razorpay Account via ig_accounts -> partner_profiles
+    const { data: igAccount, error: igError } = await supabase
+      .from("ig_accounts")
+      .select("user_id")
+      .eq("id", product.automation_id)
+      .single();
+
+    if (igError || !igAccount) {
+      return NextResponse.json({ error: "Creator account not found" }, { status: 404 });
+    }
+
+    const { data: creatorProfile } = await supabase
+      .from("partner_profiles")
+      .select("razorpay_account_id")
+      .eq("id", igAccount.user_id)
+      .single();
+
+    if (!creatorProfile?.razorpay_account_id) {
+      return NextResponse.json({ 
+        error: "Creator has not linked a payout account yet. Payments cannot be accepted." 
+      }, { status: 400 });
+    }
+
+    // 3. Initialize Razorpay
+    const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID?.trim();
+    const keySecret = process.env.RAZORPAY_KEY_SECRET?.trim();
+    
+    if (!keyId || !keySecret) {
+      return NextResponse.json({ error: "Razorpay keys missing" }, { status: 500 });
+    }
+
     const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET,
+      key_id: keyId,
+      key_secret: keySecret,
     });
 
     const amountInPaise = Math.round(Number(product.price_inr) * 100);
 
-    // 3. Create Razorpay Order
+    // 4. Create Razorpay Order with Transfers
     const rzpOrder = await razorpay.orders.create({
       amount: amountInPaise,
       currency: 'INR',
@@ -45,10 +76,19 @@ export async function POST(request) {
         automation_id: product.automation_id,
         customer_email: customerEmail,
         customer_ig: customerIgHandle || '',
-      }
+      },
+      transfers: [
+        {
+          account: creatorProfile.razorpay_account_id,
+          amount: amountInPaise, // 100% split to creator
+          currency: "INR",
+          notes: { item: product.name },
+          on_hold: false
+        }
+      ]
     });
 
-    // 4. Save Pending Order to Database
+    // 5. Save Pending Order to Database
     const { error: orderError } = await supabase
       .from('store_orders')
       .insert({
@@ -64,15 +104,15 @@ export async function POST(request) {
 
     if (orderError) throw orderError;
 
-    // 5. Return order details to client for Checkout
     return NextResponse.json({
       success: true,
       order: rzpOrder,
-      keyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+      keyId: keyId,
       product: {
         name: product.name,
         description: product.description,
-        price: product.price_inr
+        price: product.price_inr,
+        cover_image: product.cover_image
       }
     });
 
