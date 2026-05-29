@@ -13,7 +13,7 @@ export const config = {
   ],
 };
 
-export function middleware(req) {
+export function proxy(req) {
   const url = req.nextUrl.clone();
   
   // Get hostname from request headers
