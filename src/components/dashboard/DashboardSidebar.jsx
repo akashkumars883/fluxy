@@ -56,7 +56,7 @@ export default function DashboardSidebar({
                   setActiveTab(item.id);
                 }
               }}
-              className={`group relative flex items-center rounded-xl text-sm font-normal transition-all duration-200 h-10 ${
+              className={`group relative flex items-center rounded-xl text-sm font-medium transition-all duration-200 h-10 ${
                 isSidebarCollapsed ? "w-10 justify-center p-0 mx-auto" : "w-full justify-start px-3 gap-3"
               } ${
                 isActive
@@ -88,7 +88,7 @@ export default function DashboardSidebar({
               )}
 
               {!isSidebarCollapsed && (
-                <span className="whitespace-nowrap overflow-hidden flex-1 text-left relative z-10 font-normal animate-in fade-in duration-150">
+                <span className="whitespace-nowrap overflow-hidden flex-1 text-left relative z-10 font-semibold animate-in fade-in duration-150">
                   {item.label}
                 </span>
               )}
@@ -115,7 +115,7 @@ export default function DashboardSidebar({
                 setActiveTab(settingsItem.id);
               }
             }}
-            className={`group relative flex items-center rounded-xl text-sm font-normal transition-all duration-200 h-10 ${
+            className={`group relative flex items-center rounded-xl text-sm font-medium transition-all duration-200 h-10 ${
               isSidebarCollapsed ? "w-10 justify-center p-0 mx-auto" : "w-full justify-start px-3 gap-3"
             } ${
               activeTab === "settings"
@@ -138,7 +138,7 @@ export default function DashboardSidebar({
             )}
 
             {!isSidebarCollapsed && (
-              <span className="whitespace-nowrap overflow-hidden flex-1 text-left relative z-10 font-normal animate-in fade-in duration-150">
+              <span className="whitespace-nowrap overflow-hidden flex-1 text-left relative z-10 font-semibold animate-in fade-in duration-150">
                 {settingsItem.label}
               </span>
             )}
