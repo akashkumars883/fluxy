@@ -446,8 +446,8 @@ export default function Dashboard() {
     { id: "home", label: selectedAccount ? "Overview" : "Home", icon: Home, reqPlan: "free" },
     { id: "automations", label: "Automations", icon: Cpu, reqPlan: "free" },
     { id: "audience", label: "Audience", icon: Users, reqPlan: "free" },
-    { id: "store", label: "Mini Store", icon: Package, reqPlan: "free" },
-    { id: "smart_bio", label: "Smart Bio", icon: Link2, reqPlan: "free" },
+    { id: "store", label: "Mini Store", icon: Package, reqPlan: "creator_pro" },
+    { id: "smart_bio", label: "Smart Bio", icon: Link2, reqPlan: "creator_pro" },
     { id: "analytics", label: "Analytics", icon: BarChart2, reqPlan: "free" },
     { id: "partner", label: "Partner Program", icon: Sparkles, reqPlan: "creator_pro" },
     { id: "settings", label: "Settings", icon: Settings, reqPlan: "free" },
@@ -460,8 +460,16 @@ export default function Dashboard() {
       };
     }
     
-    // TEMP UNLOCK: Everything is available for promotion
-    const isLockedByPlan = false; 
+    const planHierarchy = {
+      "free": 0,
+      "creator_pro": 1,
+      "viral_scale": 2
+    };
+    
+    const userPlanLevel = planHierarchy[currentPlan] || 0;
+    const reqPlanLevel = planHierarchy[item.reqPlan] || 0;
+    
+    const isLockedByPlan = userPlanLevel < reqPlanLevel;
     
     return {
       ...item,

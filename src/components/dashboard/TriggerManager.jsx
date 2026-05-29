@@ -112,14 +112,16 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                 <label className="text-[12px] font-bold text-zinc-400 ml-1">Select Your Goal</label>
                 <div className="flex flex-col gap-2 sm:gap-2.5">
                   {strategies.map((t) => {
-                    // TEMP UNLOCK: isLocked set to false for limited time promotion
-                    const isLocked = false; 
-                    const isPromoFree = t.isPremium;
+                    const isLocked = t.isPremium && currentPlan === "free"; 
                     
                     return (
                       <div 
                         key={t.id} 
                         onClick={() => {
+                          if (isLocked) {
+                            alert("This feature is available on Creator Pro and Viral Scale plans. Please upgrade.");
+                            return;
+                          }
                           setSelectedTemplate(t.id);
                           if (!campaignName.trim()) {
                             setCampaignName(t.title);
@@ -145,6 +147,11 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                             {t.isAI && (
                               <span className="px-1.5 py-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white text-[9px] font-semibold rounded-md shadow-sm">
                                 AI
+                              </span>
+                            )}
+                            {isLocked && (
+                              <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[9px] font-bold rounded-md uppercase tracking-wider">
+                                Pro
                               </span>
                             )}
                           </div>
@@ -437,15 +444,19 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
                 { id: "welcome_dm", label: "Welcome", icon: MessageSquare },
                 { id: "faq", label: "AI FAQ", icon: Brain, isPremium: true }
               ].map((chip) => {
-                // TEMP UNLOCK: isLocked set to false
-                const isLocked = false;
-                const isPromoFree = chip.isPremium;
+                const isLocked = chip.isPremium && currentPlan === "free";
                 
                 return (
                   <button
                     key={chip.id}
                     type="button"
-                    onClick={() => applyQuickPreset(chip.id)}
+                    onClick={() => {
+                      if (isLocked) {
+                        alert("The AI FAQ preset is a Pro feature. Please upgrade.");
+                        return;
+                      }
+                      applyQuickPreset(chip.id);
+                    }}
                     className={`px-4 py-2 border rounded-full text-[12px] font-normal transition-all flex items-center gap-2 group/chip ${
                       activePreset === chip.id 
                         ? 'bg-[#6366F1] border-[#6366F1] text-white shadow-[#6366F1]/20 -translate-y-0.5' 
@@ -454,6 +465,7 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
                   >
                     <chip.icon size={12} className={`${activePreset === chip.id ? 'text-white' : 'text-zinc-400 group-hover/chip:text-[#6366F1]'} transition-colors`} />
                     {chip.label}
+                    {isLocked && <span className="ml-1 text-[8px] bg-amber-100 text-amber-700 px-1 py-0.5 rounded font-bold uppercase tracking-widest">Pro</span>}
                   </button>
                 );
               })}
