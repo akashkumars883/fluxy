@@ -72,33 +72,33 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-zinc-950/40 backdrop-blur-xl" 
+            className="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm" 
           />
           
           <motion.div 
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0, scale: 0.96, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-xl bg-white border border-zinc-200/60 rounded-[28px] sm:rounded-[40px] shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
+            exit={{ opacity: 0, scale: 0.96, y: 10 }}
+            className="relative w-full max-w-xl bg-white border border-zinc-200/80 rounded-[24px] sm:rounded-[32px] shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
           >
             {/* Header */}
-            <div className="px-6 sm:px-8 py-5 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/30 shrink-0">
-               <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-[#6366F1] text-white flex items-center justify-center shadow-lg shadow-[#6366F1]/20">
+            <div className="px-6 sm:px-8 py-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50 shrink-0">
+               <div className="space-y-1.5">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-indigo-50 text-[#6366F1] flex items-center justify-center shadow-sm border border-indigo-100">
                       <Rocket size={16} />
                     </div>
-                    <span className="text-[10px] font-semibold text-[#6366F1]">Step {step} of 2</span>
+                    <span className="text-[13px] font-medium text-[#6366F1]">Step {step} of 2</span>
                   </div>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-zinc-950 tracking-tighter mt-2">
+                  <h2 className="text-xl sm:text-2xl font-semibold text-zinc-900 tracking-tight mt-1">
                     {step === 1 ? "Configure Trigger" : "Design Response"}
                   </h2>
                </div>
                <button 
                  onClick={onClose}
-                 className="p-3 bg-white border border-zinc-100 rounded-2xl text-zinc-400 hover:text-zinc-950 transition-all shadow-sm cursor-pointer"
+                 className="p-2.5 bg-white border border-zinc-200 rounded-xl text-zinc-500 hover:text-zinc-900 transition-all shadow-sm cursor-pointer hover:bg-zinc-50"
                >
-                 <X size={20} />
+                 <X size={18} />
                </button>
             </div>
 
@@ -107,24 +107,24 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
                 {step === 1 ? (
                   <motion.div 
                     key="step1"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="space-y-6"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    className="space-y-7"
                   >
                     <div className="space-y-3">
-                      <label className="text-[10px] font-semibold text-zinc-400 ml-1">Trigger Type</label>
-                      <div className="grid grid-cols-3 gap-3">
+                      <label className="text-sm font-medium text-zinc-700">Trigger Type</label>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         {[
-                          { id: 'COMMENT', label: 'Comment on Post / Reel' },
-                          { id: 'DM', label: 'Inbox DM (Direct Message)' },
-                          { id: 'STORY', label: 'Story Tag / Mention' }
+                          { id: 'COMMENT', label: 'Comment / Reel' },
+                          { id: 'DM', label: 'Inbox DM' },
+                          { id: 'STORY', label: 'Story Tag' }
                         ].map((t) => (
                           <button
                             key={t.id}
                             onClick={() => setType(t.id)}
-                            className={`px-4 py-3 rounded-2xl text-[10px] font-semibold tracking-tight transition-all border ${
-                              type === t.id ? 'bg-zinc-950 text-white border-zinc-950 shadow-lg' : 'bg-zinc-50 text-zinc-500 border-zinc-100 hover:border-zinc-200'
+                            className={`px-4 py-3 rounded-xl text-[14px] font-medium transition-all border ${
+                              type === t.id ? 'bg-[#6366F1] text-white border-[#6366F1] shadow-md shadow-[#6366F1]/20' : 'bg-white text-zinc-600 border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50'
                             }`}
                           >
                             {t.label}
@@ -134,50 +134,50 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
                     </div>
 
                     <div className="space-y-3">
-                      <label className="text-[10px] font-semibold text-zinc-400 ml-1">Target Keyword</label>
+                      <label className="text-sm font-medium text-zinc-700">Target Keyword</label>
                       <input 
                         type="text" 
                         value={keyword}
-                        onChange={(e) => setKeyword(e.target.value.toUpperCase())}
-                        placeholder="e.g. READY"
-                        className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl p-4 text-lg font-bold text-zinc-950 outline-none focus:border-[#6366F1] focus:bg-white transition-all shadow-sm"
+                        onChange={(e) => setKeyword(e.target.value)}
+                        placeholder="e.g. ready"
+                        className="w-full bg-white border border-zinc-200 rounded-xl p-3.5 text-base font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm placeholder:text-zinc-400"
                       />
                     </div>
 
-                    <div className="flex items-center justify-between p-4 bg-zinc-50 rounded-3xl border border-zinc-100">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-white border border-zinc-100 flex items-center justify-center text-zinc-400 shadow-sm">
-                          <ShieldCheck size={18} />
+                    <div className="flex items-center justify-between p-4 bg-zinc-50/80 rounded-2xl border border-zinc-200/80 hover:border-zinc-300 transition-all">
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-zinc-500 shadow-sm">
+                          <ShieldCheck size={20} strokeWidth={1.5} />
                         </div>
                         <div>
-                          <p className="text-xs font-bold text-zinc-950">Follower Gate</p>
-                          <p className="text-[10px] text-zinc-500 font-normal lowercase">only trigger for followers</p>
+                          <p className="text-sm font-semibold text-zinc-900">Follower Gate</p>
+                          <p className="text-[13px] text-zinc-500 font-medium">Only trigger for your followers</p>
                         </div>
                       </div>
                       <button 
                         onClick={() => setFollowerGate(!followerGate)}
-                        className={`w-12 h-6 rounded-full transition-all relative ${followerGate ? 'bg-[#6366F1]' : 'bg-zinc-200'}`}
+                        className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${followerGate ? 'bg-[#6366F1]' : 'bg-zinc-300'}`}
                       >
-                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${followerGate ? 'left-7' : 'left-1'}`} />
+                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-all ${followerGate ? 'left-6' : 'left-1'}`} />
                       </button>
                     </div>
 
                     {type === "STORY" && (
-                      <div className="flex items-center justify-between p-4 bg-zinc-50 rounded-3xl border border-zinc-100 mt-3 animate-in fade-in slide-in-from-top-2">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-2xl bg-white border border-zinc-100 flex items-center justify-center text-zinc-400 shadow-sm">
-                            <Clock size={18} />
+                      <div className="flex items-center justify-between p-4 bg-zinc-50/80 rounded-2xl border border-zinc-200/80 hover:border-zinc-300 transition-all animate-in fade-in slide-in-from-top-2">
+                        <div className="flex items-center gap-3.5">
+                          <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-zinc-500 shadow-sm">
+                            <Clock size={20} strokeWidth={1.5} />
                           </div>
                           <div>
-                            <p className="text-xs font-bold text-zinc-950">24-Hour Cooldown</p>
-                            <p className="text-[10px] text-zinc-500 font-normal lowercase">only reply once every 24h per user</p>
+                            <p className="text-sm font-semibold text-zinc-900">24-Hour Cooldown</p>
+                            <p className="text-[13px] text-zinc-500 font-medium">Reply once per 24h per user</p>
                           </div>
                         </div>
                         <button 
                           onClick={() => setCooldownGate(!cooldownGate)}
-                          className={`w-12 h-6 rounded-full transition-all relative ${cooldownGate ? 'bg-[#6366F1]' : 'bg-zinc-200'}`}
+                          className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${cooldownGate ? 'bg-[#6366F1]' : 'bg-zinc-300'}`}
                         >
-                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${cooldownGate ? 'left-7' : 'left-1'}`} />
+                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-all ${cooldownGate ? 'left-6' : 'left-1'}`} />
                         </button>
                       </div>
                     )}
@@ -185,51 +185,51 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
                 ) : (
                   <motion.div 
                     key="step2"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="space-y-6"
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    className="space-y-7"
                   >
                     {type === 'COMMENT' && (
                       <div className="space-y-3">
-                        <label className="text-[10px] font-semibold text-zinc-400 ml-1">Public Reply</label>
+                        <label className="text-sm font-medium text-zinc-700">Public Reply</label>
                         <input 
                           type="text" 
                           value={publicReply}
                           onChange={(e) => setPublicReply(e.target.value)}
                           placeholder="Check your DMs! 🚀"
-                          className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl p-4 text-sm font-normal text-zinc-500 outline-none focus:border-[#6366F1] focus:bg-white transition-all shadow-sm"
+                          className="w-full bg-white border border-zinc-200 rounded-xl p-3.5 text-[15px] font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm placeholder:text-zinc-400"
                         />
                       </div>
                     )}
 
                     <div className="space-y-3">
-                      <label className="text-[10px] font-semibold text-zinc-400 ml-1">DM Response Message</label>
+                      <label className="text-sm font-medium text-zinc-700">DM Response Message</label>
                       <textarea 
-                        rows={4}
+                        rows={5}
                         value={response}
                         onChange={(e) => setResponse(e.target.value)}
                         placeholder="Type your message here..."
-                        className="w-full bg-zinc-50 border border-zinc-100 rounded-3xl p-5 text-sm font-normal text-zinc-500 outline-none focus:border-[#6366F1] focus:bg-white transition-all shadow-sm no-scrollbar resize-none"
+                        className="w-full bg-white border border-zinc-200 rounded-2xl p-4 text-[15px] font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm resize-none placeholder:text-zinc-400"
                       />
                     </div>
 
-                    <div className="space-y-4 pt-2">
-                       <label className="text-[10px] font-semibold text-zinc-400 ml-1">Call to Action (Optional)</label>
-                       <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-3 pt-2">
+                       <label className="text-sm font-medium text-zinc-700">Call to Action (Optional)</label>
+                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <input 
                             type="text" 
                             placeholder="Button Text"
                             value={buttonText}
                             onChange={(e) => setButtonText(e.target.value)}
-                            className="bg-zinc-50 border border-zinc-100 rounded-2xl p-4 text-[10px] font-semibold outline-none focus:bg-white transition-all"
+                            className="bg-white border border-zinc-200 rounded-xl p-3.5 text-[14px] font-medium outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm placeholder:text-zinc-400"
                           />
                           <input 
                             type="text" 
                             placeholder="Link URL"
                             value={buttonLink}
                             onChange={(e) => setButtonLink(e.target.value)}
-                            className="bg-zinc-50 border border-zinc-100 rounded-2xl p-4 text-[10px] font-semibold outline-none focus:bg-white transition-all lowercase"
+                            className="bg-white border border-zinc-200 rounded-xl p-3.5 text-[14px] font-medium outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm placeholder:text-zinc-400"
                           />
                        </div>
                     </div>
@@ -239,20 +239,20 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
             </div>
 
             {/* Footer */}
-            <div className="px-8 py-5 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between shrink-0">
+            <div className="px-6 sm:px-8 py-5 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between shrink-0 rounded-b-[24px] sm:rounded-b-[32px]">
               <button 
                 onClick={() => step === 1 ? onClose() : setStep(1)}
-                className="px-6 py-3 text-[10px] font-semibold text-zinc-400 hover:text-zinc-600 transition-all cursor-pointer"
+                className="px-5 py-2.5 text-[14px] font-medium text-zinc-500 hover:text-zinc-800 hover:bg-zinc-200/50 rounded-xl transition-all cursor-pointer"
               >
                 {step === 1 ? "Cancel" : "Back"}
               </button>
               
               <button 
                 onClick={() => step === 1 ? setStep(2) : handleSave()}
-                className="px-12 py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-2xl hover:bg-[#6366F1] transition-all flex items-center gap-2 cursor-pointer"
+                className="px-6 py-3 bg-[#6366F1] text-white rounded-xl text-[14px] font-medium shadow-md shadow-[#6366F1]/20 hover:shadow-lg hover:shadow-[#6366F1]/30 hover:bg-[#5356e3] hover:-translate-y-0.5 transition-all flex items-center gap-2 cursor-pointer"
               >
                 {step === 1 ? "Continue" : "Save Automation"}
-                {step === 1 ? <ArrowRight size={14} /> : <Save size={14} />}
+                {step === 1 ? <ArrowRight size={16} /> : <Save size={16} />}
               </button>
             </div>
           </motion.div>
