@@ -35,6 +35,7 @@ import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import EditTriggerModal from "@/components/dashboard/EditTriggerModal";
 import HelpSlider from "@/components/dashboard/HelpSlider";
 import MobileSidebar from "@/components/dashboard/MobileSidebar";
+import MobileBottomNav from "@/components/dashboard/MobileBottomNav";
 import OnboardingModal from "@/components/dashboard/OnboardingModal";
 import PartnerDashboard from "@/components/dashboard/PartnerDashboard";
 import PwaInstallBanner from "@/components/dashboard/PwaInstallBanner";
@@ -42,7 +43,7 @@ import SettingsDashboard from "@/components/dashboard/SettingsDashboard";
 import SmartBio from "@/components/dashboard/SmartBio";
 import StoreManager from "@/components/dashboard/StoreManager";
 import SubscriptionModal from "@/components/dashboard/SubscriptionModal";
-import { CampaignBuilderWorkspace,TriggerInputModal,TriggerList } from "@/components/dashboard/TriggerManager";
+import { CampaignBuilderWorkspace, TriggerInputModal, TriggerList } from "@/components/dashboard/TriggerManager";
 import Loader from "@/components/ui/Loader";
 
 
@@ -241,16 +242,16 @@ export default function Dashboard() {
           }
 
           if (selectedAccount.id) {
-             try {
-               const res = await fetch(`/api/media?automationId=${selectedAccount.id}`);
-               const mediaRes = await res.json();
-               if (mediaRes) {
-                  if (mediaRes.media) setInstagramMedia(mediaRes.media);
-                  if (mediaRes.stories) setInstagramStories(mediaRes.stories);
-                }
-             } catch (err) {
-               console.warn("Dashboard: Media fetch failed ->", err.message);
-             }
+            try {
+              const res = await fetch(`/api/media?automationId=${selectedAccount.id}`);
+              const mediaRes = await res.json();
+              if (mediaRes) {
+                if (mediaRes.media) setInstagramMedia(mediaRes.media);
+                if (mediaRes.stories) setInstagramStories(mediaRes.stories);
+              }
+            } catch (err) {
+              console.warn("Dashboard: Media fetch failed ->", err.message);
+            }
           }
         } catch (e) {
           console.error("Dashboard: Data Sync Error ->", e.message);
@@ -258,38 +259,38 @@ export default function Dashboard() {
       }
       fetchAccountData();
 
-    // Set up real-time listeners for updates
-    const historyChannel = supabase
-      .channel('realtime-updates')
-      .on('postgres_changes', { 
-        event: '*', 
-        schema: 'public', 
-        table: 'automation_history'
-      }, (payload) => {
-        console.log('Realtime History Update:', payload);
-        const autoId = payload.new?.automation_id || payload.old?.automation_id;
-        if (autoId === selectedAccount.id) {
-          fetchAccountData(); // Refresh everything when history changes
-        }
-      })
-      .on('postgres_changes', { 
-        event: '*', 
-        schema: 'public', 
-        table: 'triggers'
-      }, (payload) => {
-        console.log('Realtime Trigger Update:', payload);
-        const autoId = payload.new?.automation_id || payload.old?.automation_id;
-        if (autoId === selectedAccount.id) {
-          fetchAccountData(); // Refresh when triggers change
-        }
-      })
-      .subscribe((status) => {
-        console.log('Supabase Realtime subscription status:', status);
-      });
+      // Set up real-time listeners for updates
+      const historyChannel = supabase
+        .channel('realtime-updates')
+        .on('postgres_changes', {
+          event: '*',
+          schema: 'public',
+          table: 'automation_history'
+        }, (payload) => {
+          console.log('Realtime History Update:', payload);
+          const autoId = payload.new?.automation_id || payload.old?.automation_id;
+          if (autoId === selectedAccount.id) {
+            fetchAccountData(); // Refresh everything when history changes
+          }
+        })
+        .on('postgres_changes', {
+          event: '*',
+          schema: 'public',
+          table: 'triggers'
+        }, (payload) => {
+          console.log('Realtime Trigger Update:', payload);
+          const autoId = payload.new?.automation_id || payload.old?.automation_id;
+          if (autoId === selectedAccount.id) {
+            fetchAccountData(); // Refresh when triggers change
+          }
+        })
+        .subscribe((status) => {
+          console.log('Supabase Realtime subscription status:', status);
+        });
 
-    return () => {
-      supabase.removeChannel(historyChannel);
-    };
+      return () => {
+        supabase.removeChannel(historyChannel);
+      };
     }
   }, [selectedAccount, setRealtimeStats]);
 
@@ -316,7 +317,7 @@ export default function Dashboard() {
       keyword: keyword.trim().toUpperCase(),
       response: response.trim(),
       type: options.type || "COMMENT",
-      metadata: { 
+      metadata: {
         campaign_name: options.campaign_name || "Custom Flow ⚡",
         follower_gate: options.follower_gate || false,
         cooldown_gate: options.cooldownGate || options.cooldown_gate || false,
@@ -398,12 +399,12 @@ export default function Dashboard() {
   const handleToggleTriggerActive = async (triggerId, currentIsActive) => {
     const trigger = triggersList.find(t => t.id === triggerId);
     if (!trigger) return;
-    
+
     const updatedMetadata = {
       ...(trigger.metadata || {}),
       is_active: !currentIsActive
     };
-    
+
     await handleSaveTrigger(triggerId, { metadata: updatedMetadata });
   };
 
@@ -413,7 +414,7 @@ export default function Dashboard() {
       const triggerHistory = (realtimeHistory || []).filter(h => h.keyword === trigger.keyword || h.trigger_id === trigger.id);
       const sentCount = triggerHistory.length;
       const triggerContacts = new Set(triggerHistory.map(h => h.sender_id)).size;
-      
+
       return {
         name: trigger.metadata?.campaign_name || trigger.name || "Custom Flow ⚡",
         keyword: trigger.keyword,
@@ -469,18 +470,18 @@ export default function Dashboard() {
         locked: item.id !== "home"
       };
     }
-    
+
     const planHierarchy = {
       "free": 0,
       "creator_pro": 1,
       "viral_scale": 2
     };
-    
+
     const userPlanLevel = planHierarchy[currentPlan] || 0;
     const reqPlanLevel = planHierarchy[item.reqPlan] || 0;
-    
+
     const isLockedByPlan = userPlanLevel < reqPlanLevel;
-    
+
     return {
       ...item,
       locked: isLockedByPlan
@@ -493,21 +494,22 @@ export default function Dashboard() {
 
   return (
     <div className="h-screen flex flex-col bg-[#F5F5F7] relative overflow-hidden selection:bg-[#6366F1]/10 selection:text-[#6366F1]">
-      <DashboardNavbar 
+      <DashboardNavbar
         isScrolled={isScrolled}
-        onHelpClick={() => setIsHelpOpen(true)} 
-        accounts={accounts} 
+        onHelpClick={() => setIsHelpOpen(true)}
+        accounts={accounts}
         realtimeStats={realtimeStats}
         onAccountSettingsClick={() => setIsAccountSettingsOpen(true)}
         onSubscriptionClick={(reason) => {
           setUpgradeReason(typeof reason === 'string' ? reason : "");
           setIsSubscriptionOpen(true);
         }}
+        onMenuClick={() => setIsMobileSidebarOpen(true)}
       />
 
-      <MobileSidebar 
-        isOpen={isMobileSidebarOpen} 
-        onClose={() => setIsMobileSidebarOpen(false)} 
+      <MobileSidebar
+        isOpen={isMobileSidebarOpen}
+        onClose={() => setIsMobileSidebarOpen(false)}
         navigationItems={navigationItems}
         onPricingClick={(reason) => {
           setUpgradeReason(typeof reason === 'string' ? reason : "");
@@ -519,8 +521,10 @@ export default function Dashboard() {
         maxQuota={maxQuota}
       />
 
+      <MobileBottomNav onMenuClick={() => setIsMobileSidebarOpen(true)} />
+
       <div className="flex flex-1 relative overflow-hidden">
-        <DashboardSidebar 
+        <DashboardSidebar
           navigationItems={navigationItems}
           onPricingClick={(reason) => {
             setUpgradeReason(typeof reason === 'string' ? reason : "");
@@ -532,15 +536,15 @@ export default function Dashboard() {
           maxQuota={maxQuota}
         />
 
-        <main 
+        <main
           onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-          className="flex-1 p-2 sm:p-4 lg:p-5 max-w-8xl mx-auto w-full flex flex-col min-h-0 overflow-hidden pb-24 md:pb-10"
+          className="flex-1 p-3 sm:p-4 lg:p-5 max-w-8xl mx-auto w-full flex flex-col min-h-0 overflow-hidden pb-20 md:pb-6"
         >
           {selectedAccount ? (
             <div className="flex flex-col flex-1 min-h-0 space-y-4 overflow-hidden">
               {/* === COMPACT PAGE HEADER === */}
               <div className="flex items-center justify-between gap-4 pb-4 border-b border-zinc-200/60 shrink-0">
-                
+
                 {/* Left: Title + inline account badge */}
                 <div className="flex items-center gap-3 min-w-0">
                   <div>
@@ -548,20 +552,19 @@ export default function Dashboard() {
                       <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 leading-tight">
                         {activeTab === "home" ? "Overview"
                           : activeTab === "automations" ? "Automations"
-                          : activeTab === "audience" ? "Audience"
-                          : activeTab === "store" ? "Mini Store"
-                          : activeTab === "smart_bio" ? "Smart Bio"
-                          : activeTab === "crm" ? "CRM"
-                          : activeTab === "analytics" ? "Analytics"
-                          : activeTab === "settings" ? "Settings"
-                          : activeTab === "partner" ? "Partner Program"
-                          : activeTab}
+                            : activeTab === "audience" ? "Audience"
+                              : activeTab === "store" ? "Mini Store"
+                                : activeTab === "smart_bio" ? "Smart Bio"
+                                  : activeTab === "crm" ? "CRM"
+                                    : activeTab === "analytics" ? "Analytics"
+                                      : activeTab === "settings" ? "Settings"
+                                        : activeTab === "partner" ? "Partner Program"
+                                          : activeTab}
                       </h1>
-                      <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border ${
-                        (selectedAccount.persona || "content_creator") === "content_creator"
+                      <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border ${(selectedAccount.persona || "content_creator") === "content_creator"
                           ? "bg-purple-50 text-purple-600 border-purple-200"
                           : "bg-blue-50 text-blue-600 border-blue-200"
-                      }`}>
+                        }`}>
                         {(selectedAccount.persona || "content_creator") === "content_creator" ? "Creator" : "Business"}
                       </span>
                     </div>
@@ -595,9 +598,8 @@ export default function Dashboard() {
                           <button
                             key={t.id}
                             onClick={() => setTimeRange(t.id)}
-                            className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all ${
-                              timeRange === t.id ? "bg-zinc-950 text-white shadow-sm" : "text-zinc-400 hover:text-zinc-800"
-                            }`}
+                            className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all ${timeRange === t.id ? "bg-zinc-950 text-white shadow-sm" : "text-zinc-400 hover:text-zinc-800"
+                              }`}
                           >
                             {t.label}
                           </button>
@@ -705,14 +707,14 @@ export default function Dashboard() {
               )}
 
               {activeTab === "home" && (
-                <div 
+                <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                   className="flex-1 min-h-0 overflow-y-auto pr-1"
                 >
-                  <CreatorOverview 
-                    stats={realtimeStats} 
-                    history={realtimeHistory} 
-                    topTriggers={realtimeTriggers} 
+                  <CreatorOverview
+                    stats={realtimeStats}
+                    history={realtimeHistory}
+                    topTriggers={realtimeTriggers}
                     automationId={selectedAccount?.id}
                     currentPlan={currentPlan}
                     onUpgradeClick={(reason) => {
@@ -729,18 +731,18 @@ export default function Dashboard() {
                   />
                 </div>
               )}
-              
+
               {activeTab === "automations" && (
-                <div 
+                <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                   className="flex-1 min-h-0 overflow-y-auto pr-1"
                 >
                   {builderActive ? (
                     <div className="animate-in slide-in-from-bottom-4 duration-500">
-                      <CampaignBuilderWorkspace 
+                      <CampaignBuilderWorkspace
                         stories={instagramStories}
                         automation={selectedAccount}
-                        templateKey={builderTemplateKey} 
+                        templateKey={builderTemplateKey}
                         campaignName={builderCampaignName}
                         currentPlan={currentPlan}
                         onUpgradeClick={(reason) => {
@@ -748,15 +750,15 @@ export default function Dashboard() {
                           setIsSubscriptionOpen(true);
                         }}
                         media={instagramMedia}
-                        onPublish={handleAddTrigger} 
-                        onClose={() => setBuilderActive(false)} 
+                        onPublish={handleAddTrigger}
+                        onClose={() => setBuilderActive(false)}
                       />
                     </div>
                   ) : (
-                    <TriggerList 
-                      triggers={triggersList} 
+                    <TriggerList
+                      triggers={triggersList}
                       isMasterActive={selectedAccount?.is_active}
-                      onCreateNew={() => setIsCreateModalOpen(true)} 
+                      onCreateNew={() => setIsCreateModalOpen(true)}
                       onEdit={(t) => {
                         setEditingTrigger(t);
                         setIsEditModalOpen(true);
@@ -769,7 +771,7 @@ export default function Dashboard() {
               )}
 
               {activeTab === "audience" && (
-                <div 
+                <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                   className="flex-1 min-h-0 overflow-y-auto pr-1"
                 >
@@ -777,7 +779,7 @@ export default function Dashboard() {
                 </div>
               )}
               {activeTab === "store" && (
-                <div 
+                <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                   className="flex-1 min-h-0 overflow-y-auto pr-1"
                 >
@@ -788,7 +790,7 @@ export default function Dashboard() {
                 </div>
               )}
               {activeTab === "smart_bio" && (
-                <div 
+                <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                   className="flex-1 min-h-0 overflow-y-auto pr-1"
                 >
@@ -799,7 +801,7 @@ export default function Dashboard() {
                 </div>
               )}
               {activeTab === "crm" && (
-                <div 
+                <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                   className="flex-1 min-h-0 overflow-y-auto pr-1"
                 >
@@ -807,7 +809,7 @@ export default function Dashboard() {
                 </div>
               )}
               {activeTab === "analytics" && (
-                <div 
+                <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                   className="flex-1 min-h-0 overflow-y-auto pr-1"
                 >
@@ -815,7 +817,7 @@ export default function Dashboard() {
                 </div>
               )}
               {activeTab === "settings" && (
-                <div 
+                <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                   className="flex-1 min-h-0 overflow-y-auto pr-1"
                 >
@@ -827,7 +829,7 @@ export default function Dashboard() {
               )}
 
               {activeTab === "partner" && (
-                <div 
+                <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                   className="flex-1 min-h-0 overflow-y-auto pr-1"
                 >
@@ -836,61 +838,96 @@ export default function Dashboard() {
               )}
             </div>
           ) : (
-            <div className="flex flex-col h-[calc(100vh-120px)] sm:h-[calc(100vh-140px)] overflow-y-auto overflow-x-hidden pb-4 sm:pb-0">
+            <div className="flex flex-col flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-2 sm:pb-0">
               {/* Optional Upgrade Banner */}
               {(!currentPlan || currentPlan === "free" || currentPlan?.name?.toLowerCase() === "free") && (
-                <div className="relative rounded-2xl p-4 sm:p-5 text-white shadow-sm mb-3 sm:mb-4 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0 overflow-hidden group">
-                  <div className="absolute inset-0 z-0">
-                    <img src="/images/upgrade_banner_bg.png" alt="Premium Background" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#6366F1]/80 via-purple-900/40 to-transparent mix-blend-overlay" />
-                    <div className="absolute inset-0 bg-black/40" />
-                  </div>
-                  <div className="flex items-center gap-3 relative z-10">
-                    <div className="p-2.5 bg-white/20 rounded-xl backdrop-blur-sm"><Sparkles size={20} /></div>
+                <div className="relative bg-white border border-indigo-100 rounded-2xl p-4 sm:px-6 sm:py-4 mb-4 sm:mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-[0_8px_30px_rgba(99,102,241,0.06)] shrink-0 overflow-hidden group">
+                  {/* Soft animated gradient background */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-50/50 via-indigo-50/30 to-purple-50/50 opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#1877F2]/10 to-purple-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                  
+                  <div className="relative z-10 flex items-center gap-4 w-full sm:w-auto">
+                    {/* Glowing Icon */}
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-[#1877F2] to-indigo-500 flex items-center justify-center shadow-[0_4px_20px_rgba(24,119,242,0.25)] shrink-0 group-hover:scale-105 transition-transform">
+                      <Sparkles size={20} className="text-white" />
+                    </div>
                     <div>
-                      <h3 className="text-base sm:text-lg font-bold leading-tight drop-shadow-md">Upgrade to Automixa Pro</h3>
-                      <p className="text-white/90 text-[11px] sm:text-xs mt-0.5 font-medium drop-shadow-sm">Unlock unlimited automations and advanced features.</p>
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <h3 className="text-lg sm:text-xl font-bold text-zinc-900 tracking-tight">
+                          Upgrade to Automixa Pro
+                        </h3>
+                        <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-[9px] font-bold uppercase tracking-wider">
+                          <LucideLock size={10} /> Premium
+                        </span>
+                      </div>
+                      <p className="text-zinc-500 text-[13px] font-medium leading-snug">
+                        {upgradeReason === "smart_bio" ? "Unlock Smart Bio and build unlimited tracking links." : "Unlock advanced features and scale your automations effortlessly."}
+                      </p>
                     </div>
                   </div>
-                  <button onClick={() => {
-                    setUpgradeReason("");
-                    setIsSubscriptionOpen(true);
-                  }} className="w-full sm:w-auto px-5 py-2.5 bg-white text-[#6366F1] text-xs font-bold rounded-xl shadow-lg hover:scale-105 transition-all relative z-10">
+                  <button
+                    onClick={() => {
+                      setUpgradeReason("");
+                      setIsSubscriptionOpen(true);
+                    }}
+                    className="relative z-10 w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-[#1877F2] to-indigo-600 text-white rounded-xl font-bold text-[14px] shadow-[0_4px_15px_rgba(99,102,241,0.3)] hover:shadow-[0_6px_25px_rgba(99,102,241,0.4)] hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center shrink-0"
+                  >
                     Upgrade Now
                   </button>
                 </div>
               )}
 
-              {/* Onboarding Timeline Container */}
-              <div className="flex-1 bg-white border border-zinc-200/60 rounded-2xl flex flex-col items-center justify-center p-6 sm:p-12 relative overflow-hidden min-h-[450px] shrink-0">
-                {/* Soft background glow */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] sm:w-[800px] sm:h-[800px] bg-gradient-to-tr from-indigo-50/60 via-white to-pink-50/40 rounded-full blur-3xl -z-10 pointer-events-none" />
-                
-                <div className="relative z-10 flex flex-col items-center text-center max-w-lg mx-auto">
-                  {/* Glowing Icon */}
-                  <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-white border-[4px] border-[#6366F1] shadow-[0_0_0_8px_rgba(99,102,241,0.05)] sm:shadow-[0_0_0_12px_rgba(99,102,241,0.05)] flex items-center justify-center mb-8 relative shrink-0">
-                    <div className="absolute inset-0 rounded-full border-2 border-dashed border-[#6366F1]/50 animate-[spin_10s_linear_infinite]" />
-                    <Link2 size={40} className="text-[#6366F1] relative z-10 sm:w-12 sm:h-12" />
+              {/* Bento Grid Empty State */}
+              <div className="flex-1 flex flex-col md:grid md:grid-cols-3 md:grid-rows-2 gap-4 sm:gap-4 min-h-0 mb-4 sm:mb-0 w-full md:min-h-[500px]">
+                {/* Main Connect Card (Spans 2 cols, 2 rows) */}
+                <div className="flex-1 min-h-0 w-full md:col-span-2 md:row-span-2 md:h-full bg-white border border-zinc-200/60 rounded-[32px] flex flex-col items-center justify-center p-4 sm:p-12 relative overflow-hidden group shadow-[0_2px_20px_rgba(0,0,0,0.02)]">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-blue-50/60 via-white to-indigo-50/40 rounded-full blur-3xl -z-10 pointer-events-none transition-transform duration-1000 group-hover:scale-110" />
+
+                  <div className="relative z-10 flex flex-col items-center text-center max-w-lg mx-auto h-full justify-center">
+                    <div className="w-16 h-16 sm:w-28 sm:h-28 rounded-full bg-white border-[3px] sm:border-[4px] border-[#1877F2] shadow-[0_0_0_6px_rgba(24,119,242,0.05)] sm:shadow-[0_0_0_8px_rgba(24,119,242,0.05)] flex items-center justify-center mb-4 sm:mb-8 relative shrink-0 transition-transform duration-500 group-hover:scale-105 group-hover:shadow-[0_0_0_12px_rgba(24,119,242,0.08)]">
+                      <div className="absolute inset-0 rounded-full border-2 border-dashed border-[#1877F2]/40 animate-[spin_10s_linear_infinite]" />
+                      <Link2 size={28} className="text-[#1877F2] relative z-10 sm:w-9 sm:h-9" />
+                    </div>
+
+                    <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-full bg-[#1877F2]/10 text-[#1877F2] text-[9px] sm:text-[11px] font-bold mb-2 sm:mb-4 border border-[#1877F2]/20 uppercase tracking-wider">
+                      <Sparkles size={12} /> Step 1
+                    </div>
+                    <h1 className="text-2xl sm:text-4xl font-extrabold text-zinc-900 mb-2 sm:mb-4 tracking-tight leading-tight">
+                      Connect Your Account
+                    </h1>
+                    <p className="text-zinc-500 text-[12px] sm:text-[15px] font-medium mb-5 sm:mb-10 leading-relaxed px-4 max-w-[280px] sm:max-w-none">
+                      Link your Facebook Page and Instagram profile to unlock your personalized automation dashboard.
+                    </p>
+
+                    <button
+                      onClick={handleConnectClick}
+                      className="px-8 py-3 bg-[#1877F2] hover:bg-[#166fe5] text-white rounded-2xl text-[14px] sm:text-base font-bold shadow-[0_8px_30px_-8px_rgba(24,119,242,0.5)] transition-all hover:-translate-y-1 active:translate-y-0 flex items-center gap-2.5 hover:scale-105 shrink-0"
+                    >
+                      <Plus size={18} strokeWidth={3} /> Connect Now
+                    </button>
                   </div>
-                  
-                  {/* Text Content */}
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50/80 text-indigo-600 text-[10px] sm:text-[11px] font-bold mb-4 border border-indigo-100/50 uppercase tracking-wider">
-                    <Sparkles size={12} /> Getting Started
+                </div>
+
+                {/* Feature Highlight 1: Comment Auto-Reply */}
+                <div className="hidden md:flex md:col-span-1 md:row-span-1 border border-zinc-200/60 rounded-[32px] relative overflow-hidden flex-col group">
+                  <div className="absolute inset-0 z-0">
+                    <img src="/images/feature_comment_real.png" alt="Comment Automation Feature" className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105" />
                   </div>
-                  <h1 className="text-[28px] sm:text-4xl lg:text-5xl font-extrabold text-zinc-900 mb-4 tracking-tight leading-tight">
-                    Connect Your Account
-                  </h1>
-                  <p className="text-zinc-500 text-[13px] sm:text-[15px] font-medium mb-10 leading-relaxed px-4">
-                    Link your Instagram or Facebook profile to unlock powerful automation features and put your engagement on autopilot.
-                  </p>
-                  
-                  {/* Action Button */}
-                  <button
-                    onClick={handleConnectClick}
-                    className="px-8 py-3.5 bg-[#6366F1] hover:bg-[#4f46e5] text-white rounded-2xl text-[14px] sm:text-base font-bold shadow-[0_8px_30px_-8px_rgba(99,102,241,0.6)] transition-all hover:-translate-y-1 active:translate-y-0 flex items-center gap-2.5 hover:scale-105"
-                  >
-                    <Plus size={18} strokeWidth={3} /> Connect Now
-                  </button>
+                  <div className="absolute bottom-0 left-0 w-full pt-28 pb-6 px-6 bg-gradient-to-t from-white via-white/90 to-transparent z-10">
+                    <div className="text-lg font-bold text-zinc-900 mb-1">Comment to DM</div>
+                    <div className="text-sm font-medium text-zinc-700 leading-snug">Auto-reply to Instagram comments with a direct message instantly.</div>
+                  </div>
+                </div>
+
+                {/* Feature Highlight 2: Lead Gen CRM */}
+                <div className="hidden md:flex md:col-span-1 md:row-span-1 border border-zinc-200/60 rounded-[32px] relative overflow-hidden flex-col group">
+                  <div className="absolute inset-0 z-0">
+                    <img src="/images/feature_crm_real.png" alt="Lead Generation CRM Feature" className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105" />
+                  </div>
+                  <div className="absolute bottom-0 left-0 w-full pt-28 pb-6 px-6 bg-gradient-to-t from-white via-white/90 to-transparent z-10">
+                    <div className="text-lg font-bold text-zinc-900 mb-1">Lead Generation</div>
+                    <div className="text-sm font-medium text-zinc-700 leading-snug">Automatically collect emails & phone numbers from DMs.</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -898,27 +935,15 @@ export default function Dashboard() {
         </main>
       </div>
 
-      <BottomNav 
-        onMoreClick={() => setIsMobileSidebarOpen(true)}
-        onCreateClick={() => {
-          if (!selectedAccount) {
-            handleConnectClick();
-          } else {
-            setActiveTab("automations");
-            setIsCreateModalOpen(true);
-          }
-        }} 
-      />
-
       <PwaInstallBanner />
 
       {/* Modals and HelpSlider */}
       <HelpSlider isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
-      
-      <TriggerInputModal 
-        isOpen={isCreateModalOpen} 
-        onClose={() => setIsCreateModalOpen(false)} 
-        onSelect={handleCreateTriggerStart} 
+
+      <TriggerInputModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSelect={handleCreateTriggerStart}
         currentPlan={currentPlan}
         onUpgradeClick={(reason) => {
           setUpgradeReason(reason || "general");
@@ -941,10 +966,10 @@ export default function Dashboard() {
           setIsSubscriptionOpen(true);
         }}
       />
-      
-      <AccountSettingsModal 
-        isOpen={isAccountSettingsOpen} 
-        onClose={() => setIsAccountSettingsOpen(false)} 
+
+      <AccountSettingsModal
+        isOpen={isAccountSettingsOpen}
+        onClose={() => setIsAccountSettingsOpen(false)}
         user={user}
       />
       <SubscriptionModal

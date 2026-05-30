@@ -119,9 +119,9 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
               >
                 {isConnecting ? (
                   <div className="flex flex-col items-center justify-center space-y-6 py-6 sm:py-8 w-full">
-                    <Loader2 size={56} className="text-[#E1306C] animate-spin" />
+                    <Loader2 size={56} className="text-[#1877F2] animate-spin" />
                     <div className="space-y-1 text-center">
-                      <h3 className="text-xl sm:text-2xl font-semibold text-foreground">Opening Instagram Login...</h3>
+                      <h3 className="text-xl sm:text-2xl font-semibold text-foreground">Opening Facebook Login...</h3>
                       <p className="text-zinc-muted text-xs sm:text-sm font-medium">Please do not close this window</p>
                     </div>
                   </div>
@@ -131,23 +131,23 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                       <img
                         src="/logo.png"
                         alt="Automixa Logo"
-                        className="w-full h-full object-cover scale-110"
+                        className="w-full h-full object-contain"
                       />
                     </div>
                     
                     <div className="space-y-1 sm:space-y-2">
-                      <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Connect with Instagram</h2>
+                      <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Connect with Facebook</h2>
                       <p className="text-zinc-muted font-normal text-sm sm:text-base max-w-sm mx-auto px-2">
-                        Link your Instagram Professional account to grant Automixa access to manage your messages and comments.
+                        Log in with Facebook to link your Facebook Page and Instagram Professional account to Automixa.
                       </p>
                     </div>
 
                     <div className="pt-1 sm:pt-2 flex flex-col items-center gap-2">
                       <button 
                         onClick={handleConnectClick}
-                        className="w-full sm:w-auto px-8 sm:px-12 py-3 sm:py-3.5 bg-[#6366F1] text-white rounded-xl text-sm font-bold shadow-[0_8px_30px_-8px_rgba(99,102,241,0.5)] hover:shadow-[0_10px_40px_-10px_rgba(99,102,241,0.7)] transition-all flex items-center justify-center gap-3 hover:scale-[1.02]"
+                        className="w-full sm:w-auto px-8 sm:px-12 py-3 sm:py-3.5 bg-[#1877F2] text-white rounded-xl text-sm font-bold shadow-[0_8px_30px_-8px_rgba(24,119,242,0.5)] hover:shadow-[0_10px_40px_-10px_rgba(24,119,242,0.7)] transition-all flex items-center justify-center gap-3 hover:scale-[1.02]"
                       >
-                        Login with Instagram <ArrowRight size={18} className="sm:w-5 sm:h-5" />
+                        Login with Facebook <ArrowRight size={18} className="sm:w-5 sm:h-5" />
                       </button>
                       
                       <div className="flex flex-col gap-1.5 sm:gap-2 items-center mt-1 sm:mt-2">

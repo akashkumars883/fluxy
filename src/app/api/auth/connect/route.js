@@ -30,27 +30,26 @@ export async function GET(request) {
   }
   const isLocal = origin.includes('localhost') || origin.includes('127.0.0.1');
   
-  // Use the new instagram callback URI
   const redirectUri = isLocal 
-    ? `${origin}/api/auth/callback/instagram`
-    : "https://www.automixa.in/api/auth/callback/instagram";
+    ? `${origin}/api/auth/callback/facebook`
+    : "https://www.automixa.in/api/auth/callback/facebook";
   
   // Pass a nonce-bound state to retrieve persona and prevent callback CSRF.
   const nonce = crypto.randomUUID();
-  const state = JSON.stringify({ nonce, persona: role, provider: "instagram" });
+  const state = JSON.stringify({ nonce, persona: role, provider: "facebook" });
   
   const authParams = new URLSearchParams({
     client_id: appId,
     redirect_uri: redirectUri,
     state,
     response_type: "code",
-    scope: ["instagram_business_basic", "instagram_business_manage_messages", "instagram_business_manage_comments"].join(",")
+    scope: ["pages_show_list", "instagram_basic", "instagram_manage_messages", "instagram_manage_comments", "pages_manage_metadata"].join(",")
   });
 
-  // Direct Instagram Login for Business Endpoint
-  const igAuthUrl = `https://www.instagram.com/oauth/authorize?${authParams.toString()}`;
+  // Use traditional Facebook Login flow matching the approved Meta Developer permissions
+  const fbAuthUrl = `https://www.facebook.com/v19.0/dialog/oauth?${authParams.toString()}`;
 
-  const response = NextResponse.redirect(igAuthUrl);
+  const response = NextResponse.redirect(fbAuthUrl);
   response.cookies.set("automixa_meta_oauth_state", nonce, {
     httpOnly: true,
     sameSite: "lax",

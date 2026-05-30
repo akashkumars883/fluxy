@@ -9,7 +9,7 @@ import { useDashboard } from "@/context/DashboardContext";
 import WorkspaceSwitcher from "@/components/dashboard/WorkspaceSwitcher";
 
 
-export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, realtimeStats, onAccountSettingsClick, onSubscriptionClick }) {
+export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, realtimeStats, onAccountSettingsClick, onSubscriptionClick, onMenuClick }) {
   const { user, setActiveTab } = useDashboard();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -66,8 +66,7 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
         : "bg-white border-transparent shadow-none"
     }`}>
       <div className="flex items-center gap-1.5 sm:gap-3 overflow-hidden">
-        {/* Mobile menu button removed from here as it's now in BottomNav */}
-        
+
         <div className="flex items-center gap-2.5 cursor-pointer group" onClick={() => window.location.href = '/?home=true'}>
           <img 
             src="/logo.png" 
