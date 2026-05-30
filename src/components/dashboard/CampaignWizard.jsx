@@ -86,137 +86,219 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
   };
 
   // --- FLOW 1: COMMENT & DM AUTOMATOR ---
-  // --- FLOW 1: COMMENT & DM AUTOMATOR ---
+  // Internal chat state for Chat-to-Build flow
+  const [chatStep, setChatStep] = useState(1);
+  const [chatHistory, setChatHistory] = useState([
+    { id: '1', role: 'ai', text: "Hi there! 👋 Let's build your automation. First, select the Instagram post(s) you want to monitor from the list above, then click Continue." }
+  ]);
+  const chatEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatHistory, chatStep]);
+
+  const [tempKeyword, setTempKeyword] = useState(keyword || "");
+  const [tempResponse, setTempResponse] = useState(response || "");
+  const [tempBtnText, setTempBtnText] = useState(buttonText || "");
+  const [tempBtnLink, setTempBtnLink] = useState(buttonLink || "");
+  const [tempPublicReply, setTempPublicReply] = useState(publicReply || "");
+
+  const handleConfirmPosts = () => {
+    setChatHistory(prev => [
+      ...prev,
+      { id: Date.now().toString(), role: 'user', text: selectedPosts.length > 0 ? `I selected ${selectedPosts.length} post(s).` : `I selected All Posts.` },
+      { id: (Date.now() + 1).toString(), role: 'ai', text: "Awesome! What keyword should users comment to trigger this automation? You can choose a suggestion or type your own." }
+    ]);
+    setChatStep(2);
+  };
+
+  const handleConfirmKeyword = (kw) => {
+    const finalKw = kw || tempKeyword;
+    if (!finalKw) return;
+    onChange({ keyword: finalKw });
+    setChatHistory(prev => [
+      ...prev,
+      { id: Date.now().toString(), role: 'user', text: `Keyword: "${finalKw}"` },
+      { id: (Date.now() + 1).toString(), role: 'ai', text: "Got it! Now, what message should I DM them when they comment this keyword?" }
+    ]);
+    setChatStep(3);
+  };
+
+  const handleConfirmResponse = () => {
+    if (!tempResponse) return;
+    onChange({ 
+      response: tempResponse, 
+      buttonText: tempBtnText, 
+      buttonLink: tempBtnLink,
+      publicReply: tempPublicReply 
+    });
+    setChatHistory(prev => [
+      ...prev,
+      { id: Date.now().toString(), role: 'user', text: `DM: "${tempResponse}"\nCTA: ${tempBtnText} (${tempBtnLink})` },
+      { id: (Date.now() + 1).toString(), role: 'ai', text: "All set! Please review your automation preview on the left. If it looks good, click Confirm below to set it live! 🚀" }
+    ]);
+    setChatStep(4);
+  };
+
   const renderCommentDMFlow = () => {
     return (
-      <AnimatePresence mode="wait">
-        {step === 1 && (
-          <motion.div key="step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
-            <div className="bg-white border border-zinc-200/60 rounded-[20px] sm:rounded-[24px] p-4 sm:p-8 shadow-xl shadow-zinc-200/20">
-              {renderStepHeader()}
-              <div className="text-left mb-8 px-2">
-                <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">1. Select Target Posts</h3>
-                <p className="text-[13px] font-medium text-zinc-500 mt-1.5">Which posts should trigger this automation?</p>
-              </div>
-              <div className="grid grid-cols-4 sm:grid-cols-6 gap-3 max-h-[300px] overflow-y-auto p-1 no-scrollbar">
-                <button onClick={() => onSelectPosts([])} className={`aspect-square rounded-[18px] border-2 transition-all flex flex-col items-center justify-center gap-2 ${selectedPosts.length === 0 ? 'border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1] shadow-sm' : 'border-zinc-100 bg-white hover:border-zinc-200 text-zinc-500'}`}>
-                  <Globe size={20} />
-                  <span className="text-[11px] font-bold">All Posts</span>
-                </button>
-                {media.map((item) => {
-                  const displayUrl = (item.media_type === "VIDEO" || item.media_product_type === "REELS")
-                    ? (item.thumbnail_url || item.media_url)
-                    : item.media_url;
-                  return (
-                    <button key={item.id} onClick={() => onSelectPosts(selectedPosts.includes(item.id) ? selectedPosts.filter(id => id !== item.id) : [...selectedPosts, item.id])} className={`relative aspect-square rounded-[18px] overflow-hidden border-2 transition-all ${selectedPosts.includes(item.id) ? 'border-[#6366F1] shadow-md scale-95' : 'border-white hover:border-zinc-200 hover:scale-[0.98]'}`}>
-                      <img src={displayUrl} alt="post" className="w-full h-full object-cover" />
-                      {selectedPosts.includes(item.id) && (
-                        <div className="absolute top-2 right-2 w-5 h-5 bg-[#6366F1] rounded-full flex items-center justify-center shadow-lg">
-                          <Check size={12} className="text-white" />
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-              <div className="mt-8 flex justify-end">
-                <button onClick={() => handleStepChange(2)} className="px-10 py-3.5 bg-zinc-950 text-white rounded-[14px] text-sm font-semibold shadow-xl hover:bg-[#6366F1] transition-all flex items-center gap-2">
-                  Next: Setup Trigger <ArrowRight size={16} />
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
+      <div className="flex flex-col bg-white border border-zinc-200/60 rounded-[20px] sm:rounded-[24px] shadow-xl shadow-zinc-200/20 overflow-hidden h-[750px] sm:h-[800px] max-h-[85vh]">
+        {/* Header */}
+        <div className="flex items-center gap-4 p-4 sm:p-5 border-b border-zinc-100 bg-zinc-50/50 shrink-0">
+          <button onClick={onBack} className="p-2 bg-white border border-zinc-200 hover:bg-zinc-50 rounded-xl text-zinc-500 hover:text-zinc-950 transition-all shadow-sm">
+            <ArrowLeft size={18} />
+          </button>
+          <div>
+            <h3 className="text-lg font-bold text-zinc-950 leading-tight">Chat to Build</h3>
+            <p className="text-[12px] font-medium text-zinc-500">AI Assistant</p>
+          </div>
+        </div>
 
-        {step === 2 && (
-          <motion.div key="step2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
-            <div className="bg-white border border-zinc-200/60 rounded-[20px] sm:rounded-[24px] p-4 sm:p-8 shadow-xl shadow-zinc-200/20 space-y-8">
-              {renderStepHeader()}
-              <div className="text-left px-2">
-                <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">2. Setup Trigger</h3>
-                <p className="text-[13px] font-medium text-zinc-500 mt-1.5">What keyword should activate the bot?</p>
-              </div>
-              <div className="space-y-4">
-                <input
-                  type="text"
-                  value={keyword}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    onChange({ keyword: val });
-                  }}
-                  placeholder="Enter trigger keyword (e.g. price, 🔥, or *)"
-                  className="w-full bg-white border-2 border-zinc-100 rounded-[18px] px-8 py-5 outline-none text-xl font-bold text-zinc-950 focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 shadow-sm text-left transition-all"
-                />
-                <div className="p-4 bg-[#6366F1]/5 border border-[#6366F1]/20 rounded-[16px] flex items-start gap-3 mx-2">
-                  <div className="mt-0.5 bg-white p-1.5 rounded-lg shadow-sm border border-[#6366F1]/10 text-[#6366F1]">
-                    <Zap size={16} />
+        {/* Top Post Picker */}
+        <div className="p-4 border-b border-zinc-100 bg-white shrink-0">
+          <div className="flex items-center justify-between mb-3">
+            <label className="text-[13px] font-bold text-zinc-900">Select Target Posts</label>
+            <button onClick={() => onSelectPosts([])} className={`text-[11px] font-bold px-3 py-1.5 rounded-lg transition-all ${selectedPosts.length === 0 ? 'bg-[#6366F1] text-white' : 'bg-zinc-100 text-zinc-600'}`}>
+              All Posts
+            </button>
+          </div>
+          <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
+            {media.map((item) => {
+               const displayUrl = (item.media_type === "VIDEO" || item.media_product_type === "REELS") ? (item.thumbnail_url || item.media_url) : item.media_url;
+               const isSelected = selectedPosts.includes(item.id);
+               return (
+                 <button 
+                   key={item.id} 
+                   onClick={() => {
+                     onSelectPosts(isSelected ? selectedPosts.filter(id => id !== item.id) : [...selectedPosts, item.id]);
+                   }} 
+                   className={`relative flex-shrink-0 w-20 aspect-square rounded-[14px] overflow-hidden border-2 transition-all ${isSelected ? 'border-[#6366F1] scale-95 shadow-md' : 'border-zinc-200 opacity-80 hover:opacity-100'}`}
+                 >
+                   <img src={displayUrl} alt="post" className="w-full h-full object-cover" />
+                   {isSelected && (
+                     <div className="absolute top-1 right-1 w-4 h-4 bg-[#6366F1] rounded-full flex items-center justify-center">
+                       <Check size={10} className="text-white" />
+                     </div>
+                   )}
+                 </button>
+               );
+            })}
+          </div>
+        </div>
+
+        {/* Chat History Area */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 bg-zinc-50/30">
+          <AnimatePresence initial={false}>
+            {chatHistory.map((msg) => (
+              <motion.div
+                key={msg.id}
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                className={`flex items-start gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
+              >
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'ai' ? 'bg-[#6366F1] text-white shadow-md' : 'bg-zinc-900 text-white'}`}>
+                  {msg.role === 'ai' ? <Brain size={16} /> : <span className="text-xs font-bold">ME</span>}
+                </div>
+                <div className={`max-w-[85%] rounded-[18px] p-4 text-[14px] font-medium leading-relaxed shadow-sm ${msg.role === 'user' ? 'bg-zinc-900 text-white rounded-tr-[4px]' : 'bg-white border border-zinc-200/60 text-zinc-800 rounded-tl-[4px]'}`}>
+                  {msg.text.split('\n').map((line, i) => (
+                    <p key={i} className="mb-1 last:mb-0">{line}</p>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+            
+            {chatStep === 4 && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center pt-4">
+                <div className="bg-white border-2 border-emerald-100 rounded-[20px] p-6 shadow-xl text-center max-w-sm w-full space-y-4">
+                  <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <Rocket size={32} />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-[#6366F1] mb-1">Wildcard & Emojis Supported!</h4>
-                    <p className="text-[13px] text-zinc-600 font-medium leading-relaxed">
-                      You can use exact emojis (like 🔥) as your keyword, or type <span className="font-bold text-[#6366F1] px-2 py-0.5 bg-white rounded-md border border-[#6366F1]/20 shadow-sm mx-0.5">*</span> to reply to <span className="underline decoration-[#6366F1]/40 decoration-2">any</span> incoming comment or message automatically.
-                    </p>
+                    <h3 className="text-lg font-bold text-zinc-950">Ready to Launch!</h3>
+                    <p className="text-[13px] text-zinc-500 mt-1">Review the preview on the left and confirm.</p>
                   </div>
+                  <button
+                    onClick={() => onPublish(keyword, response, { public_reply: tempPublicReply, follower_gate: followerGate, button_text: tempBtnText, button_link: tempBtnLink })}
+                    className="w-full py-4 bg-[#6366F1] text-white rounded-[14px] font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                  >
+                    Confirm & Launch <Rocket size={18} />
+                  </button>
                 </div>
-              </div>
-              <div className="flex justify-end items-center pt-4">
-                <button onClick={() => handleStepChange(3)} disabled={!keyword} className="px-10 py-3.5 bg-zinc-950 text-white rounded-[14px] text-sm font-semibold shadow-xl hover:bg-[#6366F1] transition-all flex items-center gap-2 disabled:opacity-50">
-                  Next: Design Responses <ArrowRight size={16} />
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <div ref={chatEndRef} />
+        </div>
 
-        {step === 3 && (
-          <motion.div key="step3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
-            <div className="bg-white border border-zinc-200/60 rounded-[20px] sm:rounded-[24px] p-4 sm:p-8 shadow-xl shadow-zinc-200/20 space-y-8">
-              {renderStepHeader()}
-              <div className="text-left px-2">
-                <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">3. Design Responses</h3>
-                <p className="text-[13px] font-medium text-zinc-500 mt-1.5">First the DM, then the Comment Reply</p>
-              </div>
-              <div className="space-y-6">
-                <div className="space-y-3">
-                  <label className="block text-[13px] font-bold text-zinc-900 ml-1">Action 1: Private DM</label>
-                  <textarea value={response} onChange={(e) => onChange({ response: e.target.value })} rows={3} placeholder="Hey! Here is your link..." className="w-full bg-white border-2 border-zinc-100 rounded-[18px] p-5 text-[15px] font-medium outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all resize-none shadow-sm" />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input type="text" placeholder="Button Text (e.g. View Store)" value={buttonText} onChange={(e) => onChange({ buttonText: e.target.value })} className="bg-white border-2 border-zinc-100 rounded-[14px] px-4 py-3 text-[13px] font-semibold outline-none focus:border-[#6366F1] transition-all" />
-                    <div className="flex flex-col gap-1">
-                      <input type="text" placeholder="Link URL (https://...)" value={buttonLink} onChange={(e) => onChange({ buttonLink: e.target.value })} className="bg-white border-2 border-zinc-100 rounded-[14px] px-4 py-3 text-[13px] font-semibold outline-none focus:border-[#6366F1] transition-all" />
-                      <span className="text-[11px] text-zinc-500 font-medium px-1">Optional: Paste a product link here!</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <label className="block text-[13px] font-bold text-zinc-900 ml-1">Action 2: Public Comment Reply</label>
-                  <input type="text" value={publicReply} onChange={(e) => onChange({ publicReply: e.target.value })} placeholder="Check your DMs! 🚀" className="w-full bg-white border-2 border-zinc-100 rounded-[16px] px-5 py-4 text-[15px] font-medium outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm" />
-                </div>
-                <div className="pt-2">
-                  <div className="flex items-center justify-between p-5 bg-zinc-50/80 rounded-[18px] border border-zinc-100 hover:border-zinc-200 transition-colors group">
-                    <div className="flex flex-col text-left">
-                      <span className="text-sm font-bold text-zinc-900">Follower Gate (Growth Mode)</span>
-                      <span className="text-[13px] font-medium text-zinc-500 mt-0.5">Require users to follow your page before receiving the DM.</span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => onChange({ followerGate: !followerGate })}
-                      className={`w-12 h-6 rounded-full relative transition-all duration-300 ${followerGate ? 'bg-[#6366F1] shadow-lg shadow-[#6366F1]/30' : 'bg-zinc-200'} cursor-pointer shrink-0`}
-                    >
-                      <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${followerGate ? 'left-7' : 'left-1'}`} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-end items-center pt-4">
-                <button onClick={() => onPublish(keyword, response, { public_reply: publicReply, follower_gate: followerGate, sync_story: false, button_text: buttonText, button_link: buttonLink })} className="px-10 py-3.5 bg-[#6366F1] text-white rounded-[14px] text-sm font-bold shadow-xl shadow-[#6366F1]/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all flex items-center gap-2">
-                  Launch Automation <Rocket size={18} />
+        {/* Input Area (Bottom Sticky) */}
+        <div className="p-4 sm:p-5 border-t border-zinc-100 bg-white shrink-0">
+          <AnimatePresence mode="wait">
+            {chatStep === 1 && (
+              <motion.div key="step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex flex-col gap-3">
+                <p className="text-[13px] font-medium text-zinc-500 text-center">Select posts from the top grid to continue.</p>
+                <button onClick={handleConfirmPosts} className="w-full py-3.5 bg-zinc-950 text-white rounded-xl font-bold transition-all flex items-center justify-center gap-2 hover:bg-[#6366F1]">
+                  Continue <ArrowRight size={16} />
                 </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              </motion.div>
+            )}
+
+            {chatStep === 2 && (
+              <motion.div key="step2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
+                <div className="flex flex-wrap gap-2">
+                  {['PRICE', 'LINK', 'GUIDE', 'YES', 'VIP'].map(sg => (
+                    <button key={sg} onClick={() => { setTempKeyword(sg); handleConfirmKeyword(sg); }} className="px-4 py-2 bg-zinc-50 border border-zinc-200 hover:border-[#6366F1] hover:bg-[#6366F1]/5 hover:text-[#6366F1] rounded-full text-[13px] font-bold text-zinc-600 transition-all">
+                      {sg}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex gap-2 w-full">
+                  <input 
+                    type="text" 
+                    value={tempKeyword} 
+                    onChange={(e) => setTempKeyword(e.target.value)} 
+                    placeholder="Or type custom keyword..." 
+                    className="flex-1 min-w-0 bg-zinc-50 border border-zinc-200 rounded-[14px] px-3 sm:px-4 py-3 text-[14px] font-bold outline-none focus:border-[#6366F1] transition-all"
+                    onKeyDown={(e) => e.key === 'Enter' && tempKeyword && handleConfirmKeyword()}
+                  />
+                  <button onClick={() => handleConfirmKeyword()} disabled={!tempKeyword} className="w-12 h-12 shrink-0 bg-[#6366F1] text-white rounded-[14px] flex items-center justify-center disabled:opacity-50 hover:bg-[#5255e0] transition-all">
+                    <Check size={18} />
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {chatStep === 3 && (
+              <motion.div key="step3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-3">
+                <textarea 
+                  value={tempResponse} 
+                  onChange={(e) => setTempResponse(e.target.value)} 
+                  placeholder="Type the DM reply here..." 
+                  rows={2} 
+                  className="w-full bg-zinc-50 border border-zinc-200 rounded-[14px] p-4 text-[14px] font-medium outline-none focus:border-[#6366F1] resize-none transition-all"
+                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <input type="text" placeholder="Button Text (Optional)" value={tempBtnText} onChange={(e) => setTempBtnText(e.target.value)} className="bg-zinc-50 border border-zinc-200 rounded-[12px] px-3 py-2.5 text-[13px] outline-none focus:border-[#6366F1] transition-all" />
+                  <input type="text" placeholder="Link URL (Optional)" value={tempBtnLink} onChange={(e) => setTempBtnLink(e.target.value)} className="bg-zinc-50 border border-zinc-200 rounded-[12px] px-3 py-2.5 text-[13px] outline-none focus:border-[#6366F1] transition-all" />
+                </div>
+                <input type="text" placeholder="Public Comment Reply (e.g. Check DMs!)" value={tempPublicReply} onChange={(e) => setTempPublicReply(e.target.value)} className="w-full bg-zinc-50 border border-zinc-200 rounded-[12px] px-3 py-2.5 text-[13px] outline-none focus:border-[#6366F1] transition-all" />
+                <button onClick={handleConfirmResponse} disabled={!tempResponse} className="w-full py-3.5 bg-[#6366F1] text-white rounded-xl font-bold disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-[#5255e0] transition-all">
+                  Save Response <Check size={16} />
+                </button>
+              </motion.div>
+            )}
+
+            {chatStep === 4 && (
+              <motion.div key="step4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex justify-center">
+                <p className="text-[13px] font-medium text-zinc-500">Automation is ready to be launched! ✨</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
     );
   };
 
