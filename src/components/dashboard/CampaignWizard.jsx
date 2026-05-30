@@ -186,7 +186,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
                 animate={{ opacity: 1, y: 0 }}
                 className={`flex gap-4 sm:gap-6 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <div className={`max-w-[85%] sm:max-w-[75%] text-[15px] sm:text-[16px] leading-relaxed ${msg.role === 'user' ? 'bg-[#6366F1] text-white px-5 py-3.5 rounded-[24px] rounded-br-[4px] shadow-sm' : 'text-zinc-800 pt-2'}`}>
+                <div className={`max-w-[85%] sm:max-w-[75%] text-[14px] leading-relaxed ${msg.role === 'user' ? 'bg-[#6366F1] text-white px-5 py-3.5 rounded-[24px] shadow-sm' : 'text-zinc-800 pt-2'}`}>
                   {msg.text.split('\n').map((line, i) => (
                     <p key={i} className="mb-2 last:mb-0">{line}</p>
                   ))}
@@ -194,8 +194,8 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
                   {/* Step 1: Render Post Picker directly in AI's first message if active */}
                   {msg.id === '1' && chatStep === 1 && (
                     <div className="mt-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                      <div className="flex gap-3 overflow-x-auto pb-3 no-scrollbar pr-4">
-                        <button onClick={() => onSelectPosts([])} className={`relative flex-shrink-0 w-24 sm:w-32 aspect-square rounded-[16px] border-2 transition-all flex flex-col items-center justify-center gap-2 ${selectedPosts.length === 0 ? 'border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1] shadow-sm' : 'border-zinc-200 bg-white hover:border-zinc-300 text-zinc-500'}`}>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 overflow-y-auto max-h-[300px] no-scrollbar pr-2">
+                        <button onClick={() => onSelectPosts([])} className={`relative flex flex-col items-center justify-center aspect-square rounded-[16px] border-2 transition-all gap-2 ${selectedPosts.length === 0 ? 'border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1] shadow-sm' : 'border-zinc-200 bg-white hover:border-zinc-300 text-zinc-500'}`}>
                           <Globe size={24} />
                           <span className="text-[12px] font-bold">All Posts</span>
                         </button>
@@ -206,7 +206,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
                              <button 
                                key={item.id} 
                                onClick={() => onSelectPosts(isSelected ? selectedPosts.filter(id => id !== item.id) : [...selectedPosts, item.id])} 
-                               className={`relative flex-shrink-0 w-24 sm:w-32 aspect-square rounded-[16px] overflow-hidden border-2 transition-all ${isSelected ? 'border-[#6366F1] scale-95 shadow-md' : 'border-zinc-200 opacity-80 hover:opacity-100 hover:border-zinc-300'}`}
+                               className={`relative flex flex-col aspect-square rounded-[16px] overflow-hidden border-2 transition-all ${isSelected ? 'border-[#6366F1] scale-95 shadow-md' : 'border-zinc-200 opacity-80 hover:opacity-100 hover:border-zinc-300'}`}
                              >
                                <img src={displayUrl} alt="post" className="w-full h-full object-cover" />
                                {isSelected && (
@@ -218,36 +218,6 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
                            );
                         })}
                       </div>
-                    </div>
-                  )}
-
-                  {/* Step 7: Final Preview injected in the last AI message */}
-                  {msg.id === chatHistory[chatHistory.length - 1].id && chatStep === 7 && (
-                    <div className="mt-8 mb-4 max-w-sm w-full mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-                      <div className="scale-[0.85] origin-top">
-                        <AutomationPreview 
-                          keyword={keyword}
-                          response={response}
-                          type={values.type || "COMMENT"}
-                          buttonText={buttonText}
-                          buttonLink={buttonLink}
-                          publicReply={publicReply}
-                          postUrl={values.type === "COMMENT" ? null : null}
-                          aiName={campaignName || "Automixa AI"}
-                          strategy="comment_dm"
-                          faqs={faqs}
-                          aiPersona={aiPersona}
-                          aiUseEmojis={aiUseEmojis}
-                          aiGoal={aiGoal}
-                          aiKnowledge={values.aiKnowledge}
-                        />
-                      </div>
-                      <button
-                        onClick={() => onPublish(keyword, response, { public_reply: publicReply, follower_gate: followerGate, button_text: buttonText, button_link: buttonLink })}
-                        className="w-full mt-4 py-4 bg-[#6366F1] text-white rounded-[16px] text-[16px] font-bold shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
-                      >
-                        Confirm & Launch <Rocket size={20} />
-                      </button>
                     </div>
                   )}
                 </div>
@@ -264,6 +234,32 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
               </motion.div>
             )}
           </AnimatePresence>
+          
+          {chatStep === 7 && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center w-full mt-8 pb-10">
+              <div className="max-w-sm w-full">
+                <div className="scale-[0.85] origin-top">
+                  <AutomationPreview 
+                    keyword={keyword}
+                    response={response}
+                    type={values.type || "COMMENT"}
+                    buttonText={buttonText}
+                    buttonLink={buttonLink}
+                    publicReply={publicReply}
+                    postUrl={selectedPosts.length > 0 ? (media.find(m => m.id === selectedPosts[0])?.thumbnail_url || media.find(m => m.id === selectedPosts[0])?.media_url) : null}
+                    aiName={campaignName || "Automixa AI"}
+                    strategy="comment_dm"
+                    faqs={faqs}
+                    aiPersona={aiPersona}
+                    aiUseEmojis={aiUseEmojis}
+                    aiGoal={aiGoal}
+                    aiKnowledge={values.aiKnowledge}
+                  />
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           <div ref={chatEndRef} />
         </div>
 
@@ -305,18 +301,27 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
               )}
 
               {chatStep === 3 && (
-                <motion.div key="input3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="relative flex items-end w-full bg-white border border-zinc-300 rounded-[24px] shadow-lg focus-within:border-[#6366F1] focus-within:ring-2 focus-within:ring-[#6366F1]/20 transition-all p-2">
-                  <textarea 
-                    value={tempResponse} 
-                    onChange={(e) => setTempResponse(e.target.value)} 
-                    placeholder="Type DM message..." 
-                    rows={1}
-                    className="flex-1 w-full px-4 py-3 text-[16px] outline-none bg-transparent resize-none max-h-32 min-h-[48px]"
-                    onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleConfirmResponse(); } }}
-                  />
-                  <button onClick={handleConfirmResponse} disabled={!tempResponse} className="shrink-0 mb-1 w-10 h-10 bg-zinc-900 text-white rounded-full flex items-center justify-center disabled:opacity-50 disabled:bg-zinc-300 transition-all">
-                    <ArrowRight size={18} />
-                  </button>
+                <motion.div key="input3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="space-y-3">
+                  <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+                    {['Here is the link! 🔗', 'Sent it to you 📬', 'Check your messages!', 'Happy to help!'].map(sg => (
+                      <button key={sg} onClick={() => setTempResponse(sg)} className="shrink-0 px-4 py-2 bg-white border border-zinc-200 hover:border-[#6366F1] rounded-full text-[14px] font-semibold text-zinc-700 shadow-sm transition-all">
+                        {sg}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="relative flex items-end w-full bg-white border border-zinc-300 rounded-[24px] shadow-lg focus-within:border-[#6366F1] focus-within:ring-2 focus-within:ring-[#6366F1]/20 transition-all p-2">
+                    <textarea 
+                      value={tempResponse} 
+                      onChange={(e) => setTempResponse(e.target.value)} 
+                      placeholder="Type DM message..." 
+                      rows={1}
+                      className="flex-1 w-full px-4 py-3 text-[16px] outline-none bg-transparent resize-none max-h-32 min-h-[48px]"
+                      onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleConfirmResponse(); } }}
+                    />
+                    <button onClick={handleConfirmResponse} disabled={!tempResponse} className="shrink-0 mb-1 w-10 h-10 bg-zinc-900 text-white rounded-full flex items-center justify-center disabled:opacity-50 disabled:bg-zinc-300 transition-all">
+                      <ArrowRight size={18} />
+                    </button>
+                  </div>
                 </motion.div>
               )}
 
@@ -334,25 +339,45 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
               )}
 
               {chatStep === 5 && (
-                <motion.div key="input5" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="relative flex items-end w-full bg-white border border-zinc-300 rounded-[24px] shadow-lg p-2 focus-within:border-[#6366F1] focus-within:ring-2 focus-within:ring-[#6366F1]/20 transition-all">
-                  <textarea 
-                    value={tempPublicReply} 
-                    onChange={(e) => setTempPublicReply(e.target.value)} 
-                    placeholder="Type public comment reply..." 
-                    rows={1}
-                    className="flex-1 w-full px-4 py-3 text-[16px] outline-none bg-transparent resize-none max-h-32 min-h-[48px]"
-                    onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleConfirmPublicReply(); } }}
-                  />
-                  <button onClick={handleConfirmPublicReply} disabled={!tempPublicReply} className="shrink-0 mb-1 w-10 h-10 bg-zinc-900 text-white rounded-full flex items-center justify-center disabled:opacity-50 disabled:bg-zinc-300 transition-all">
-                    <ArrowRight size={18} />
-                  </button>
+                <motion.div key="input5" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="space-y-3">
+                  <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+                    {['Sent! Check DMs 📬', 'Done! ✅', 'Just messaged you!', 'Check your request!'].map(sg => (
+                      <button key={sg} onClick={() => setTempPublicReply(sg)} className="shrink-0 px-4 py-2 bg-white border border-zinc-200 hover:border-[#6366F1] rounded-full text-[14px] font-semibold text-zinc-700 shadow-sm transition-all">
+                        {sg}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="relative flex items-end w-full bg-white border border-zinc-300 rounded-[24px] shadow-lg p-2 focus-within:border-[#6366F1] focus-within:ring-2 focus-within:ring-[#6366F1]/20 transition-all">
+                    <textarea 
+                      value={tempPublicReply} 
+                      onChange={(e) => setTempPublicReply(e.target.value)} 
+                      placeholder="Type public comment reply..." 
+                      rows={1}
+                      className="flex-1 w-full px-4 py-3 text-[16px] outline-none bg-transparent resize-none max-h-32 min-h-[48px]"
+                      onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleConfirmPublicReply(); } }}
+                    />
+                    <button onClick={handleConfirmPublicReply} disabled={!tempPublicReply} className="shrink-0 mb-1 w-10 h-10 bg-zinc-900 text-white rounded-full flex items-center justify-center disabled:opacity-50 disabled:bg-zinc-300 transition-all">
+                      <ArrowRight size={18} />
+                    </button>
+                  </div>
                 </motion.div>
               )}
 
               {chatStep === 6 && (
                 <motion.div key="input6" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="flex justify-center gap-3">
-                  <button onClick={() => handleConfirmFollowGate(false)} className="px-8 py-3.5 bg-white border border-zinc-200 text-zinc-700 rounded-full font-bold shadow-md hover:bg-zinc-50 transition-all">No, Skip</button>
-                  <button onClick={() => handleConfirmFollowGate(true)} className="px-8 py-3.5 bg-zinc-900 text-white rounded-full font-bold shadow-md hover:bg-zinc-800 transition-all">Yes, Enable</button>
+                  <button onClick={() => handleConfirmFollowGate(false)} className="flex-1 px-8 py-3.5 bg-white border border-zinc-200 text-zinc-700 rounded-full font-bold shadow-md hover:bg-zinc-50 transition-all">No, Skip</button>
+                  <button onClick={() => handleConfirmFollowGate(true)} className="flex-1 px-8 py-3.5 bg-zinc-900 text-white rounded-full font-bold shadow-md hover:bg-zinc-800 transition-all">Yes, Enable</button>
+                </motion.div>
+              )}
+
+              {chatStep === 7 && (
+                <motion.div key="input7" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}>
+                  <button
+                    onClick={() => onPublish(keyword, response, { public_reply: publicReply, follower_gate: followerGate, button_text: buttonText, button_link: buttonLink })}
+                    className="w-full py-4 bg-zinc-900 text-white rounded-[24px] text-[16px] font-bold shadow-lg hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                  >
+                    Confirm & Launch <Rocket size={20} />
+                  </button>
                 </motion.div>
               )}
             </AnimatePresence>
