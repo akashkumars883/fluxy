@@ -377,12 +377,13 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
             <button onClick={onClose} className="p-2.5 cursor-pointer text-zinc-500 hover:text-zinc-950 transition-all shrink-0">
               <CircleChevronLeft size={20} />
             </button>
-            <h1 className="text-lg font-bold text-zinc-950 truncate">
-              {wizardValues.campaignStrategy === 'comment_dm' ? 'Automation' : (campaignName || "Create")}
-            </h1>
+            {wizardValues.campaignStrategy !== 'comment_dm' && (
+              <h1 className="text-lg font-bold text-zinc-950 truncate">
+                {campaignName || "Create"}
+              </h1>
+            )}
           </div>
         </div>
-      </div>
       </div>
 
       <div className={`grid grid-cols-1 lg:grid-cols-12 gap-6 items-start ${wizardValues.campaignStrategy === 'comment_dm' ? 'max-w-4xl mx-auto' : ''}`}>
