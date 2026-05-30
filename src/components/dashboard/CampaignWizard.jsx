@@ -165,7 +165,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
 
   const renderCommentDMFlow = () => {
     return (
-      <div className="flex flex-col overflow-hidden h-[calc(100vh-130px)] w-full max-w-4xl mx-auto relative">
+      <div className="flex flex-col overflow-hidden h-full w-full max-w-4xl mx-auto relative pb-2">
         
         {/* Chat History Area */}
         <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-8 space-y-8 no-scrollbar pb-40">
@@ -268,7 +268,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
         </div>
 
         {/* Floating Input Area (ChatGPT Style) */}
-        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-white via-white to-transparent pt-10 pb-6 px-4 sm:px-8 pointer-events-none">
+        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-[#fafafa] via-[#fafafa] to-transparent pt-10 pb-6 px-4 sm:px-8 pointer-events-none">
           <div className="max-w-3xl mx-auto w-full pointer-events-auto">
             <AnimatePresence mode="wait">
               {chatStep === 1 && (

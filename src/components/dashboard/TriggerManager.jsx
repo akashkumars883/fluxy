@@ -369,9 +369,16 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
   };
 
   return (
-    <div className="animate-in fade-in duration-500 space-y-2 pb-4">
+    <div className={`animate-in fade-in duration-500 ${wizardValues.campaignStrategy === 'comment_dm' ? 'fixed inset-0 z-[100] bg-[#fafafa] flex flex-col' : 'space-y-2 pb-4'}`}>
       
-      <div className="p-3 sm:p-4 space-y-3">
+      {wizardValues.campaignStrategy === 'comment_dm' && (
+        <button onClick={onClose} className="absolute top-4 left-4 z-50 p-2.5 cursor-pointer text-zinc-500 hover:text-zinc-950 transition-all bg-white/50 backdrop-blur-md rounded-full shadow-sm">
+          <CircleChevronLeft size={24} />
+        </button>
+      )}
+
+      {wizardValues.campaignStrategy !== 'comment_dm' && (
+        <div className="p-3 sm:p-4 space-y-3">
         <div className="flex items-center justify-between gap-6">
           <div className="flex items-center gap-4 min-w-0">
             <button onClick={onClose} className="p-2.5 cursor-pointer text-zinc-500 hover:text-zinc-950 transition-all shrink-0">
@@ -472,8 +479,9 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
           </div>
         )}
       </div>
+      )}
 
-      <div className={`grid grid-cols-1 lg:grid-cols-12 gap-6 items-start ${wizardValues.campaignStrategy === 'comment_dm' ? 'max-w-4xl mx-auto' : ''}`}>
+      <div className={`grid grid-cols-1 lg:grid-cols-12 gap-6 items-start ${wizardValues.campaignStrategy === 'comment_dm' ? 'max-w-4xl mx-auto w-full h-screen overflow-hidden flex-1 pt-6 sm:pt-10' : ''}`}>
         {/* Sticky Sidebar Column */}
         {wizardValues.campaignStrategy !== 'comment_dm' && (
           <div className="lg:col-span-4 lg:sticky lg:top-4 self-start z-20 h-fit">
