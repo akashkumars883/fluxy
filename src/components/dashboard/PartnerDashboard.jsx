@@ -303,220 +303,225 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
             </div>
           </div>
 
-          {/* Metrics Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-sm flex items-center justify-between hover:border-emerald-200 transition-colors">
-              <div>
-                <p className="text-xs font-semibold text-zinc-500">Monthly Revenue</p>
-                <p className="text-2xl font-bold text-zinc-900 mt-1">
-                  ₹{partnerProfile.monthly_recurring_revenue.toLocaleString("en-IN")}
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                <DollarSign size={20} />
-              </div>
-            </div>
-            
-            <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-sm flex items-center justify-between hover:border-blue-200 transition-colors">
-              <div>
-                <p className="text-xs font-semibold text-zinc-500">Total Referrals</p>
-                <p className="text-2xl font-bold text-zinc-900 mt-1">
-                  {partnerProfile.total_referrals_count}
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                <Users size={20} />
-              </div>
-            </div>
-            
-            <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-sm flex items-center justify-between hover:border-indigo-200 transition-colors">
-              <div>
-                <p className="text-xs font-semibold text-zinc-500">Active Tier</p>
-                <div className="flex items-center gap-2 mt-1">
-                  <p className="text-2xl font-bold text-zinc-900 tracking-tight capitalize">
-                    {partnerProfile.active_tier}
-                  </p>
-                  <span className={`px-2 py-0.5 text-[10px] uppercase tracking-wider font-bold rounded-lg border ${tierColors[partnerProfile.active_tier] || tierColors.silver}`}>
-                    {Math.round(partnerProfile.commission_rate * 100)}% CUT
-                  </span>
+          {/* Metrics Row (Overview Style) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="bg-white rounded-[24px] p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-500/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
+              <div className="flex items-center justify-between mb-4 relative z-10">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-emerald-200 shadow-sm transition-all duration-500 group-hover:scale-110 text-emerald-600 bg-emerald-50">
+                  <DollarSign size={18} />
                 </div>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
-                <Award size={20} />
+              <div className="space-y-1 relative z-10">
+                <span className="text-3xl sm:text-4xl font-bold text-zinc-950 tracking-tighter leading-none block group-hover:text-emerald-600 transition-colors duration-300">
+                  ₹{partnerProfile.monthly_recurring_revenue.toLocaleString("en-IN")}
+                </span>
+                <span className="text-[12px] font-semibold text-zinc-500 tracking-wide block mt-1">
+                  Monthly Revenue
+                </span>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-[24px] p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-500/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
+              <div className="flex items-center justify-between mb-4 relative z-10">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-blue-200 shadow-sm transition-all duration-500 group-hover:scale-110 text-blue-600 bg-blue-50">
+                  <Users size={18} />
+                </div>
+              </div>
+              <div className="space-y-1 relative z-10">
+                <span className="text-3xl sm:text-4xl font-bold text-zinc-950 tracking-tighter leading-none block group-hover:text-blue-600 transition-colors duration-300">
+                  {partnerProfile.total_referrals_count}
+                </span>
+                <span className="text-[12px] font-semibold text-zinc-500 tracking-wide block mt-1">
+                  Total Referrals
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Main 2-col layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-
-            {/* Left: 2 cols */}
-            <div className="lg:col-span-2 space-y-4">
-
-              {/* Tracking Link */}
-              <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm">
-                <div className="flex items-center gap-2 mb-3">
-                  <LinkIcon size={15} className="text-zinc-400" />
-                  <h3 className="text-sm font-semibold text-zinc-900">Master tracking link</h3>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 bg-zinc-50 border border-zinc-200 rounded-xl px-3 py-2.5 flex items-center justify-between overflow-hidden min-w-0">
-                    <span className="text-sm text-zinc-700 truncate">{displayTrackingLink}</span>
-                    <a href={displayTrackingLink} target="_blank" rel="noreferrer" className="text-zinc-400 hover:text-indigo-600 transition-colors shrink-0 ml-2">
-                      <ExternalLink size={14} />
-                    </a>
-                  </div>
-                  <button
-                    onClick={handleCopyLink}
-                    className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-xl transition-all flex items-center gap-1.5 shrink-0"
-                  >
-                    {copied ? <Check size={14} /> : <Copy size={14} />}
-                    {copied ? "Copied" : "Copy"}
-                  </button>
-                </div>
-              </div>
-
-              {/* Promo Codes */}
-              <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm space-y-3">
-                <div>
-                  <h3 className="text-sm font-semibold text-zinc-900">Custom promo codes</h3>
-                  <p className="text-xs text-zinc-500 mt-0.5">Create unique codes to share with your audience.</p>
-                </div>
-
-                <form onSubmit={handleGenerateCode} className="flex gap-2">
-                  <div className="relative flex-1">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-sm">#</span>
-                    <input
-                      type="text"
-                      required
-                      placeholder="code name"
-                      value={newCodeInput}
-                      onChange={(e) => setNewCodeInput(e.target.value.replace(/\s+/g, "").toLowerCase())}
-                      className="w-full pl-7 pr-3 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-sm text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white transition-colors"
-                    />
-                  </div>
-                  <select
-                    value={newSplit}
-                    onChange={(e) => setNewSplit(e.target.value)}
-                    className="sm:w-52 px-2 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-sm text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white transition-colors appearance-none"
-                  >
-                    <option value="10_20">10% Off / 20% Commission</option>
-                    <option value="15_15">15% Off / 15% Commission</option>
-                    <option value="10_15">10% Off / 15% Commission</option>
-                  </select>
-                  <button
-                    type="submit"
-                    disabled={generating}
-                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-xl transition-all whitespace-nowrap disabled:opacity-60"
-                  >
-                    {generating ? "Adding…" : "Add code"}
-                  </button>
-                </form>
-
-                {genSuccess && (
-                  <div className="flex items-center gap-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2">
-                    <Check size={13} /> Promo code created successfully.
-                  </div>
-                )}
-
-                <div className="border border-zinc-100 rounded-xl overflow-hidden">
-                  <table className="w-full text-left">
-                    <thead>
-                      <tr className="bg-zinc-50 border-b border-zinc-100 text-zinc-500 text-xs font-medium">
-                        <th className="px-3 py-2.5">Code</th>
-                        <th className="px-3 py-2.5 hidden sm:table-cell">Split</th>
-                        <th className="px-3 py-2.5 text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-100">
-                      {promoCodes.length === 0 ? (
-                        <tr>
-                          <td colSpan={3} className="px-3 py-6 text-center text-zinc-400 text-sm">No promo codes yet.</td>
-                        </tr>
-                      ) : (
-                        promoCodes.map((item, idx) => (
-                          <tr key={idx} className="hover:bg-zinc-50/50 transition-colors">
-                            <td className="px-3 py-2.5">
-                              <span className="font-semibold text-zinc-900 uppercase text-sm">{item.code}</span>
-                              <div className="text-xs text-zinc-500 sm:hidden mt-0.5">{item.discount}</div>
-                            </td>
-                            <td className="px-3 py-2.5 hidden sm:table-cell text-xs text-zinc-500">{item.split}</td>
-                            <td className="px-3 py-2.5 text-right">
-                              <div className="flex items-center justify-end gap-1.5">
-                                <button
-                                  onClick={() => handleCopyCode(item.code)}
-                                  className="p-1.5 text-zinc-400 hover:text-indigo-600 bg-zinc-50 hover:bg-indigo-50 rounded-lg transition-colors"
-                                >
-                                  {copiedCode === item.code ? <Check size={13} /> : <Copy size={13} />}
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteCode(item.code)}
-                                  className="p-1.5 text-zinc-400 hover:text-rose-600 bg-zinc-50 hover:bg-rose-50 rounded-lg transition-colors"
-                                >
-                                  <Trash2 size={13} />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: 1 col */}
-            <div className="space-y-4">
-
-              {/* Recent Payouts */}
-              <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm">
-                <h3 className="text-sm font-semibold text-zinc-900 mb-3">Recent payouts</h3>
-                <div className="space-y-2">
-                  {payouts.length === 0 ? (
-                    <p className="text-xs text-zinc-400 text-center py-4">No payouts yet.</p>
-                  ) : (
-                    payouts.slice(0, 6).map((item, idx) => (
-                      <div key={idx} className="flex items-center justify-between py-1.5 border-b border-zinc-50 last:border-0">
-                        <div>
-                          <p className="text-sm font-medium text-zinc-900">{item.period_month}</p>
-                          <p className="text-xs text-zinc-500 capitalize">{item.status}</p>
-                        </div>
-                        <p className="text-sm font-semibold text-zinc-900">₹{item.amount.toLocaleString("en-IN")}</p>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-
-              {/* Commission Tiers Info */}
-              <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm">
-                <h3 className="text-sm font-semibold text-zinc-900 mb-3">Commission tiers</h3>
-                <div className="space-y-2">
-                  {[
-                    { tier: "Silver", range: "0–9 referrals", rate: "15%", active: partnerProfile.active_tier === "silver" },
-                    { tier: "Gold", range: "10–49 referrals", rate: "20%", active: partnerProfile.active_tier === "gold" },
-                    { tier: "Platinum", range: "50+ referrals", rate: "25%", active: partnerProfile.active_tier === "platinum" },
-                  ].map((t) => (
-                    <div
-                      key={t.tier}
-                      className={`flex items-center justify-between rounded-xl px-3 py-2 border text-sm transition-all ${
-                        t.active
-                          ? "bg-indigo-50 border-indigo-200 text-indigo-900"
-                          : "bg-zinc-50 border-zinc-100 text-zinc-500"
-                      }`}
-                    >
-                      <div>
-                        <span className={`font-semibold ${t.active ? "text-indigo-700" : "text-zinc-700"}`}>{t.tier}</span>
-                        <span className="text-xs ml-1.5 opacity-70">{t.range}</span>
-                      </div>
-                      <span className={`text-xs font-bold ${t.active ? "text-indigo-600" : "text-zinc-400"}`}>{t.rate}</span>
+          {/* Main Grouped Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
+            
+            {/* Left Card: Promotion & Links */}
+            <div className="bg-white rounded-[24px] p-5 sm:p-6 shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-transparent">
+              <h3 className="font-bold text-xl text-zinc-950 tracking-tight flex items-center gap-2 mb-6 border-b border-zinc-100 pb-4">
+                <LinkIcon size={20} className="text-[#6366F1]" /> Promotion & Links
+              </h3>
+              
+              <div className="space-y-6 flex-1 flex flex-col">
+                {/* Tracking Link */}
+                <div className="space-y-3">
+                  <h4 className="text-sm font-semibold text-zinc-900">Master tracking link</h4>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 bg-zinc-50 border border-zinc-200 rounded-xl px-3 py-2.5 flex items-center justify-between overflow-hidden min-w-0">
+                      <span className="text-sm text-zinc-700 truncate">{displayTrackingLink}</span>
+                      <a href={displayTrackingLink} target="_blank" rel="noreferrer" className="text-zinc-400 hover:text-indigo-600 transition-colors shrink-0 ml-2">
+                        <ExternalLink size={14} />
+                      </a>
                     </div>
-                  ))}
+                    <button
+                      onClick={handleCopyLink}
+                      className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-xl transition-all flex items-center gap-1.5 shrink-0"
+                    >
+                      {copied ? <Check size={14} /> : <Copy size={14} />}
+                      {copied ? "Copied" : "Copy"}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Promo Codes */}
+                <div className="flex-1 flex flex-col">
+                  <div className="mb-3">
+                    <h4 className="text-sm font-semibold text-zinc-900">Custom promo codes</h4>
+                    <p className="text-xs text-zinc-500 mt-0.5">Create unique codes to share with your audience.</p>
+                  </div>
+
+                  <form onSubmit={handleGenerateCode} className="flex gap-2 mb-4">
+                    <div className="relative flex-1">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-sm">#</span>
+                      <input
+                        type="text"
+                        required
+                        placeholder="code name"
+                        value={newCodeInput}
+                        onChange={(e) => setNewCodeInput(e.target.value.replace(/\s+/g, "").toLowerCase())}
+                        className="w-full pl-7 pr-3 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-sm text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white transition-colors"
+                      />
+                    </div>
+                    <select
+                      value={newSplit}
+                      onChange={(e) => setNewSplit(e.target.value)}
+                      className="w-24 sm:w-auto px-2 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-xs sm:text-sm text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white transition-colors appearance-none"
+                    >
+                      <option value="10_20">10% Off / 20% Comm.</option>
+                      <option value="15_15">15% Off / 15% Comm.</option>
+                      <option value="10_15">10% Off / 15% Comm.</option>
+                    </select>
+                    <button
+                      type="submit"
+                      disabled={generating}
+                      className="px-3 sm:px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm rounded-xl transition-all whitespace-nowrap disabled:opacity-60"
+                    >
+                      {generating ? "Adding…" : "Add code"}
+                    </button>
+                  </form>
+
+                  {genSuccess && (
+                    <div className="flex items-center gap-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 mb-4">
+                      <Check size={13} /> Promo code created successfully.
+                    </div>
+                  )}
+
+                  <div className="border border-zinc-100 rounded-xl overflow-hidden flex-1">
+                    <table className="w-full text-left">
+                      <thead>
+                        <tr className="bg-zinc-50 border-b border-zinc-100 text-zinc-500 text-xs font-medium">
+                          <th className="px-3 py-2.5">Code</th>
+                          <th className="px-3 py-2.5 hidden sm:table-cell">Split</th>
+                          <th className="px-3 py-2.5 text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-100">
+                        {promoCodes.length === 0 ? (
+                          <tr>
+                            <td colSpan={3} className="px-3 py-6 text-center text-zinc-400 text-sm">No promo codes yet.</td>
+                          </tr>
+                        ) : (
+                          promoCodes.map((item, idx) => (
+                            <tr key={idx} className="hover:bg-zinc-50/50 transition-colors">
+                              <td className="px-3 py-2.5">
+                                <span className="font-semibold text-zinc-900 uppercase text-sm">{item.code}</span>
+                                <div className="text-xs text-zinc-500 sm:hidden mt-0.5">{item.discount}</div>
+                              </td>
+                              <td className="px-3 py-2.5 hidden sm:table-cell text-xs text-zinc-500">{item.split}</td>
+                              <td className="px-3 py-2.5 text-right">
+                                <div className="flex items-center justify-end gap-1.5">
+                                  <button
+                                    onClick={() => handleCopyCode(item.code)}
+                                    className="p-1.5 text-zinc-400 hover:text-indigo-600 bg-white border border-zinc-200 hover:border-indigo-200 rounded-lg transition-colors shadow-sm"
+                                  >
+                                    {copiedCode === item.code ? <Check size={13} /> : <Copy size={13} />}
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteCode(item.code)}
+                                    className="p-1.5 text-zinc-400 hover:text-rose-600 bg-white border border-zinc-200 hover:border-rose-200 rounded-lg transition-colors shadow-sm"
+                                  >
+                                    <Trash2 size={13} />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-
             </div>
+
+            {/* Right Card: Earnings & Tiers */}
+            <div className="bg-white rounded-[24px] p-5 sm:p-6 shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-transparent">
+              <h3 className="font-bold text-xl text-zinc-950 tracking-tight flex items-center justify-between gap-2 mb-6 border-b border-zinc-100 pb-4">
+                <div className="flex items-center gap-2">
+                  <Award size={20} className="text-emerald-500" /> Earnings & Tiers
+                </div>
+                <span className={`px-2.5 py-1 text-[10px] font-bold uppercase rounded-lg border ${tierColors[partnerProfile.active_tier] || tierColors.silver}`}>
+                  {partnerProfile.active_tier} Tier
+                </span>
+              </h3>
+
+              <div className="space-y-6 flex-1 flex flex-col">
+                {/* Commission tiers */}
+                <div>
+                  <h4 className="text-sm font-semibold text-zinc-900 mb-3">Commission tiers</h4>
+                  <div className="space-y-2">
+                    {[
+                      { tier: "Silver", range: "0–9 referrals", rate: "15%", active: partnerProfile.active_tier === "silver" },
+                      { tier: "Gold", range: "10–49 referrals", rate: "20%", active: partnerProfile.active_tier === "gold" },
+                      { tier: "Platinum", range: "50+ referrals", rate: "25%", active: partnerProfile.active_tier === "platinum" },
+                    ].map((t) => (
+                      <div
+                        key={t.tier}
+                        className={`flex items-center justify-between rounded-xl px-4 py-3 border text-sm transition-all shadow-sm ${
+                          t.active
+                            ? "bg-indigo-50 border-indigo-200 text-indigo-900 scale-[1.02]"
+                            : "bg-white border-zinc-100 text-zinc-500"
+                        }`}
+                      >
+                        <div>
+                          <span className={`font-semibold ${t.active ? "text-indigo-700" : "text-zinc-700"}`}>{t.tier}</span>
+                          <span className="text-xs ml-2 opacity-70">{t.range}</span>
+                        </div>
+                        <span className={`text-sm font-bold ${t.active ? "text-indigo-600" : "text-zinc-400"}`}>{t.rate}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Recent Payouts */}
+                <div className="flex-1 flex flex-col">
+                  <h4 className="text-sm font-semibold text-zinc-900 mb-3">Recent payouts</h4>
+                  <div className="space-y-2 flex-1 border border-zinc-100 rounded-xl p-4 bg-zinc-50/50">
+                    {payouts.length === 0 ? (
+                      <p className="text-xs text-zinc-400 text-center py-6">No payouts yet.</p>
+                    ) : (
+                      payouts.slice(0, 6).map((item, idx) => (
+                        <div key={idx} className="flex items-center justify-between py-2 border-b border-zinc-100 last:border-0">
+                          <div>
+                            <p className="text-sm font-medium text-zinc-900">{item.period_month}</p>
+                            <p className="text-xs text-zinc-500 capitalize">{item.status}</p>
+                          </div>
+                          <p className="text-sm font-bold text-zinc-900">₹{item.amount.toLocaleString("en-IN")}</p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       )}
