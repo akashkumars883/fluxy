@@ -15,7 +15,10 @@ import {
   Settings,
   Sparkles,
   Users,
-  Package
+  Package,
+  MessageSquare,
+  AtSign,
+  Bot
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -432,7 +435,7 @@ export default function Dashboard() {
   };
 
   const handleConnectClick = () => {
-    if (currentPlan === "free" && allAccounts.length >= 1) {
+    if (currentPlan === "free" && accounts && accounts.length >= 1) {
       setUpgradeReason("multiple_accounts");
       setIsSubscriptionOpen(true);
       return;
@@ -833,12 +836,10 @@ export default function Dashboard() {
               )}
             </div>
           ) : (
-            <div 
-              onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-              className="flex flex-col h-[calc(100vh-140px)] sm:h-[calc(100vh-160px)] overflow-y-auto"
-            >
+            <div className="flex flex-col h-[calc(100vh-120px)] sm:h-[calc(100vh-140px)] overflow-y-auto overflow-x-hidden pb-4 sm:pb-0">
+              {/* Optional Upgrade Banner */}
               {(!currentPlan || currentPlan === "free" || currentPlan?.name?.toLowerCase() === "free") && (
-                <div className="relative rounded-2xl p-4 sm:p-5 text-white shadow-xl mb-4 sm:mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0 overflow-hidden group">
+                <div className="relative rounded-2xl p-4 sm:p-5 text-white shadow-sm mb-3 sm:mb-4 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0 overflow-hidden group">
                   <div className="absolute inset-0 z-0">
                     <img src="/images/upgrade_banner_bg.png" alt="Premium Background" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
                     <div className="absolute inset-0 bg-gradient-to-r from-[#6366F1]/80 via-purple-900/40 to-transparent mix-blend-overlay" />
@@ -848,71 +849,48 @@ export default function Dashboard() {
                     <div className="p-2.5 bg-white/20 rounded-xl backdrop-blur-sm"><Sparkles size={20} /></div>
                     <div>
                       <h3 className="text-base sm:text-lg font-bold leading-tight drop-shadow-md">Upgrade to Automixa Pro</h3>
-                      <p className="text-white/90 text-xs sm:text-sm mt-0.5 font-medium drop-shadow-sm">Unlock unlimited automations and advanced features.</p>
+                      <p className="text-white/90 text-[11px] sm:text-xs mt-0.5 font-medium drop-shadow-sm">Unlock unlimited automations and advanced features.</p>
                     </div>
                   </div>
                   <button onClick={() => {
                     setUpgradeReason("");
                     setIsSubscriptionOpen(true);
-                  }} className="w-full sm:w-auto px-6 py-2.5 bg-white text-[#6366F1] text-sm font-bold rounded-xl shadow-[0_8px_30px_-8px_rgba(0,0,0,0.5)] hover:scale-105 transition-all relative z-10">
+                  }} className="w-full sm:w-auto px-5 py-2.5 bg-white text-[#6366F1] text-xs font-bold rounded-xl shadow-lg hover:scale-105 transition-all relative z-10">
                     Upgrade Now
                   </button>
                 </div>
               )}
 
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200/50 pb-4 sm:pb-6 shrink-0">
-                <div>
-                  <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-1 sm:mb-2 text-zinc-950">
-                    Welcome to Automixa
+              {/* Onboarding Timeline Container */}
+              <div className="flex-1 bg-white border border-zinc-200/60 rounded-2xl flex flex-col items-center justify-center p-6 sm:p-12 relative overflow-hidden min-h-[450px] shrink-0">
+                {/* Soft background glow */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] sm:w-[800px] sm:h-[800px] bg-gradient-to-tr from-indigo-50/60 via-white to-pink-50/40 rounded-full blur-3xl -z-10 pointer-events-none" />
+                
+                <div className="relative z-10 flex flex-col items-center text-center max-w-lg mx-auto">
+                  {/* Glowing Icon */}
+                  <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-white border-[4px] border-[#6366F1] shadow-[0_0_0_8px_rgba(99,102,241,0.05)] sm:shadow-[0_0_0_12px_rgba(99,102,241,0.05)] flex items-center justify-center mb-8 relative shrink-0">
+                    <div className="absolute inset-0 rounded-full border-2 border-dashed border-[#6366F1]/50 animate-[spin_10s_linear_infinite]" />
+                    <Link2 size={40} className="text-[#6366F1] relative z-10 sm:w-12 sm:h-12" />
+                  </div>
+                  
+                  {/* Text Content */}
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50/80 text-indigo-600 text-[10px] sm:text-[11px] font-bold mb-4 border border-indigo-100/50 uppercase tracking-wider">
+                    <Sparkles size={12} /> Getting Started
+                  </div>
+                  <h1 className="text-[28px] sm:text-4xl lg:text-5xl font-extrabold text-zinc-900 mb-4 tracking-tight leading-tight">
+                    Connect Your Account
                   </h1>
-                  <p className="text-zinc-500 text-xs sm:text-sm font-normal">
-                    Connect your Facebook or Instagram account to activate features.
+                  <p className="text-zinc-500 text-[13px] sm:text-[15px] font-medium mb-10 leading-relaxed px-4">
+                    Link your Instagram or Facebook profile to unlock powerful automation features and put your engagement on autopilot.
                   </p>
-                </div>
-                <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
+                  
+                  {/* Action Button */}
                   <button
                     onClick={handleConnectClick}
-                    className="w-full sm:w-auto px-6 py-3 bg-[#6366F1] text-white rounded-xl text-sm font-bold shadow-[0_8px_30px_-8px_rgba(99,102,241,0.5)] transition-all flex items-center justify-center gap-2 hover:scale-[1.02]"
+                    className="px-8 py-3.5 bg-[#6366F1] hover:bg-[#4f46e5] text-white rounded-2xl text-[14px] sm:text-base font-bold shadow-[0_8px_30px_-8px_rgba(99,102,241,0.6)] transition-all hover:-translate-y-1 active:translate-y-0 flex items-center gap-2.5 hover:scale-105"
                   >
-                    <Plus size={16} strokeWidth={2.5} /> Connect Account
+                    <Plus size={18} strokeWidth={3} /> Connect Now
                   </button>
-                </div>
-              </div>
-
-              <div className="flex-1 flex flex-col justify-center min-h-0 pt-4 sm:pt-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 h-full">
-                  {[
-                    { image: "comment-to-dm", title: "Comment-to-DM", desc: "Auto-reply to comments with custom DMs.", color: "indigo" },
-                    { image: "story-mentions", title: "Story Mentions", desc: "Instantly DM followers when they mention you.", color: "pink" },
-                    { image: "faq-chatbot", title: "Smart Chatbot", desc: "Resolve common user questions automatically 24/7.", color: "emerald" },
-                    { image: "smart-bio", title: "Smart Bio", desc: "Create a beautiful page to aggregate all your links.", color: "amber" },
-                  ].map(({ image, title, desc }) => (
-                    <div key={title} className="bg-white border border-zinc-200/80 rounded-[24px] overflow-hidden flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 group h-full">
-                      <div className="p-5 pb-0 relative z-10">
-                        <h3 className="text-[15px] sm:text-base font-bold text-zinc-900 mb-1 leading-snug tracking-tight">{title}</h3>
-                        <p className="text-[11px] sm:text-xs text-zinc-500 font-normal leading-relaxed line-clamp-2">{desc}</p>
-                      </div>
-                      
-                      <div className="flex-1 w-full h-24 sm:h-[110px] lg:h-[120px] mt-2 bg-white flex items-end justify-center overflow-hidden shrink-0">
-                        <img 
-                          src={`/images/features/${image}.png`} 
-                          alt={title} 
-                          className="w-[95%] h-[95%] object-contain object-bottom mix-blend-multiply mb-1" 
-                        />
-                      </div>
-                      
-                      <div className="px-4 pb-4 pt-1 bg-white relative z-10">
-                        <div className="pt-2 border-t border-zinc-100">
-                          <button
-                            onClick={handleConnectClick}
-                            className="w-full text-zinc-400 font-semibold text-xs py-2 rounded-lg flex items-center justify-center gap-1.5 group-hover:text-[#6366F1] group-hover:bg-indigo-50/50 transition-all duration-300"
-                          >
-                            <LucideLock size={12} /> Connect to Unlock
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
                 </div>
               </div>
             </div>
