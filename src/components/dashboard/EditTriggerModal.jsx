@@ -66,7 +66,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4">
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -79,10 +79,10 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
             initial={{ opacity: 0, scale: 0.96, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 10 }}
-            className="relative w-full max-w-xl bg-white border border-zinc-200/80 rounded-[24px] sm:rounded-[32px] shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
+            className="relative w-full max-w-xl bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-[32px] shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
           >
             {/* Header */}
-            <div className="px-6 sm:px-8 py-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50 shrink-0">
+            <div className="px-5 sm:px-8 py-5 sm:py-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50 shrink-0">
                <div className="space-y-1.5">
                   <div className="flex items-center gap-2.5">
                     <div className="w-8 h-8 rounded-xl bg-indigo-50 text-[#6366F1] flex items-center justify-center shadow-sm border border-indigo-100">
@@ -102,7 +102,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
                </button>
             </div>
 
-            <div className="p-6 sm:p-8 space-y-6 sm:space-y-8 overflow-y-auto flex-1 min-h-0 no-scrollbar">
+            <div className="p-4 sm:p-8 space-y-6 sm:space-y-8 overflow-y-auto flex-1 min-h-0 no-scrollbar">
               <AnimatePresence mode="wait">
                 {step === 1 ? (
                   <motion.div 
@@ -261,7 +261,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
             </div>
 
             {/* Footer */}
-            <div className="px-6 sm:px-8 py-5 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between shrink-0 rounded-b-[24px] sm:rounded-b-[32px]">
+            <div className="px-5 sm:px-8 py-4 sm:py-5 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between shrink-0 rounded-b-[20px] sm:rounded-b-[32px]">
               <button 
                 onClick={() => step === 1 ? onClose() : setStep(1)}
                 className="px-5 py-2.5 text-[14px] font-medium text-zinc-500 hover:text-zinc-800 hover:bg-zinc-200/50 rounded-xl transition-all cursor-pointer"

@@ -262,7 +262,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-2 sm:p-4">
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -275,13 +275,13 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative bg-white/95 backdrop-blur-3xl w-full max-w-2xl max-h-[90vh] rounded-[24px] sm:rounded-[32px] shadow-2xl border border-zinc-200/80 overflow-hidden flex flex-col z-10"
+            className="relative bg-white/95 backdrop-blur-3xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] rounded-[20px] sm:rounded-[32px] shadow-2xl border border-zinc-200/80 overflow-hidden flex flex-col z-10"
           >
  
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col min-w-0 bg-white min-h-0">
           {/* Header */}
-          <div className="px-5 sm:px-6 py-4 sm:py-5 flex items-center justify-between border-b border-zinc-200/50 shrink-0">
+          <div className="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between border-b border-zinc-200/50 shrink-0">
              <div>
                 <h3 className="text-xl sm:text-2xl font-semibold text-zinc-950 tracking-tight leading-none">
                    {activeTab === 'plans' ? "Available Plans" : "Invoice History"}
@@ -307,7 +307,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
           )}
  
           {/* Tab Content */}
-          <div className="flex-1 overflow-y-auto no-scrollbar p-5 sm:p-6">
+          <div className="flex-1 overflow-y-auto no-scrollbar p-4 sm:p-6">
              
              {/* Section: Plans */}
              {activeTab === 'plans' && (

@@ -160,7 +160,7 @@ export default function MobileSidebar({
                         ? "text-[#6366F1] font-semibold"
                         : item.locked
                           ? "text-zinc-400 font-medium hover:bg-zinc-100"
-                          : "text-zinc-600 hover:text-zinc-950 hover:bg-white/60 shadow-xs"
+                          : "text-zinc-600 hover:text-zinc-950 hover:bg-zinc-50"
                     }`}
                   >
                     {isActive && (

@@ -84,7 +84,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-6">
       {/* Backdrop */}
       <motion.div 
         initial={{ opacity: 0 }}
@@ -98,7 +98,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="relative w-full max-w-xl bg-white border border-border rounded-[32px] sm:rounded-[40px] shadow-2xl overflow-hidden"
+        className="relative w-full max-w-xl bg-white border border-border rounded-[20px] sm:rounded-[40px] shadow-2xl overflow-hidden"
       >
         {/* Confetti shows up ONLY in Step 4 (Celebration) */}
         {step === 4 && <Confetti />}

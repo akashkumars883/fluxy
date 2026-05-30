@@ -68,7 +68,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4">
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -81,7 +81,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-xl bg-white border border-zinc-200/60 rounded-[24px] sm:rounded-[28px] shadow-2xl p-4 sm:p-8 flex flex-col gap-4 sm:gap-6"
+            className="relative w-full max-w-xl bg-white border border-zinc-200/60 rounded-[20px] sm:rounded-[28px] shadow-2xl p-4 sm:p-8 flex flex-col gap-4 sm:gap-6"
           >
             <div className="flex items-center justify-between border-b border-zinc-100 pb-4 shrink-0">
               <div>
@@ -531,10 +531,10 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
       </div>
 
       {showSuggestionsDrawer && suggestedCampaigns && (
-        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-2 sm:p-6 overflow-y-auto">
           <div className="fixed inset-0 bg-zinc-950/40 backdrop-blur-xl" onClick={() => setShowSuggestionsDrawer(false)} />
           
-          <div className="relative w-full max-w-2xl bg-white border border-zinc-200/60 rounded-xl shadow-2xl p-6 sm:p-10 flex flex-col gap-6 z-10 animate-in zoom-in-95 duration-300">
+          <div className="relative w-full max-w-2xl bg-white border border-zinc-200/60 rounded-[20px] sm:rounded-xl shadow-2xl p-4 sm:p-10 flex flex-col gap-6 z-10 animate-in zoom-in-95 duration-300">
             <div className="flex items-center justify-between border-b border-zinc-100 pb-5">
               <div className="flex items-center gap-2.5">
                 <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center shadow-sm shrink-0">
