@@ -188,7 +188,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   const renderAccount = () => (
     <div className="space-y-4">
       {/* Connected account */}
-      <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm space-y-3">
+      <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-2xl p-3 sm:p-4 shadow-sm space-y-2 sm:space-y-3">
         <h4 className="text-sm font-semibold text-zinc-900">Connected Instagram account</h4>
         <div className="flex items-center gap-3 p-3 bg-zinc-50 rounded-xl border border-zinc-100">
           <img
@@ -223,7 +223,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
       </div>
 
       {/* API Quota */}
-      <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm space-y-3">
+      <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-2xl p-3 sm:p-4 shadow-sm space-y-2 sm:space-y-3">
         <div className="flex items-center justify-between">
           <h4 className="text-sm font-semibold text-zinc-900">API quota usage</h4>
           <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-full text-[10px] font-bold">
@@ -250,7 +250,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   );
 
   const renderPayout = () => (
-    <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm space-y-4">
+    <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-2xl p-3 sm:p-4 shadow-sm space-y-3 sm:space-y-4">
       <div>
         <h4 className="text-sm font-semibold text-zinc-900">Payout details</h4>
         <p className="text-xs text-zinc-400 mt-0.5">Your Mini Store sales and Partner Program commissions will be sent to this account.</p>
@@ -312,7 +312,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   );
 
   const renderNotifications = () => (
-    <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm space-y-3">
+    <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-2xl p-3 sm:p-4 shadow-sm space-y-2 sm:space-y-3">
       <div>
         <h4 className="text-sm font-semibold text-zinc-900">Email notifications</h4>
         <p className="text-xs text-zinc-400 mt-0.5">Choose what updates you want to receive by email.</p>
@@ -335,7 +335,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   );
 
   const renderTeam = () => (
-    <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm space-y-4">
+    <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-2xl p-3 sm:p-4 shadow-sm space-y-3 sm:space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-100">
         <div>
           <h4 className="text-sm font-semibold text-zinc-900">Team & Collaboration</h4>
@@ -426,7 +426,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   );
 
   const renderIntegrations = () => (
-    <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm space-y-4">
+    <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-2xl p-3 sm:p-4 shadow-sm space-y-3 sm:space-y-4">
       <div className="flex items-center justify-between pb-3 border-b border-zinc-100">
         <div>
           <h4 className="text-sm font-semibold text-zinc-900">Outbound Webhooks</h4>

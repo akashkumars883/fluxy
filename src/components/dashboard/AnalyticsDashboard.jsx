@@ -37,7 +37,7 @@ export default function AnalyticsDashboard({ realtimeStats, history = [], trigge
     <div className="space-y-4 animate-in fade-in duration-500 w-full max-w-[1400px] mx-auto pb-8">
       
       {/* 3 Simple Clean Metrics (ManyChat style) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
         {[
           { title: "Triggers Found", value: currentData.triggers, desc: currentData.descTriggers, icon: MessageSquare, color: "text-[#6366F1] bg-[#6366F1]/10 border-[#6366F1]/20", bgClass: "bg-[#6366F1]/5 border-[#6366F1]/20 hover:border-[#6366F1]/40 hover:shadow-[#6366F1]/5" },
           { title: "DMs Delivered", value: currentData.dms, desc: currentData.descDms, icon: Send, color: "text-purple-600 bg-purple-50 border-purple-200", bgClass: "bg-purple-500/5 border-purple-500/20 hover:border-purple-500/40 hover:shadow-purple-500/5" },
@@ -47,7 +47,7 @@ export default function AnalyticsDashboard({ realtimeStats, history = [], trigge
           return (
             <div 
               key={idx} 
-              className={`bg-white rounded-[24px] p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5`}
+              className={`bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5`}
             >
               <div className="absolute top-0 right-0 w-24 h-24 bg-[#6366F1]/5 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
               
@@ -59,7 +59,7 @@ export default function AnalyticsDashboard({ realtimeStats, history = [], trigge
               </div>
               
               <div className="space-y-0.5 relative z-10">
-                <span className="text-3xl sm:text-4xl font-bold text-zinc-950 tracking-tighter block group-hover:text-[#6366F1] transition-colors duration-300">
+                <span className="text-2xl sm:text-4xl font-bold text-zinc-950 tracking-tighter block group-hover:text-[#6366F1] transition-colors duration-300">
                   {card.value}
                 </span>
                 <span className="text-[12px] font-semibold text-zinc-500 tracking-wide block mt-1">
@@ -72,7 +72,7 @@ export default function AnalyticsDashboard({ realtimeStats, history = [], trigge
       </div>
 
       {/* Simple Active Campaigns Breakdown */}
-      <div className="bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col relative overflow-hidden space-y-4">
+      <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col relative overflow-hidden space-y-3 sm:space-y-4">
         <div className="flex items-center justify-between border-b border-zinc-200/50 pb-4">
           <h3 className="text-lg font-bold text-zinc-950 tracking-tight">Campaign Breakdown</h3>
           <span className="text-xs font-semibold text-[#6366F1] bg-[#6366F1]/10 px-3 py-1 rounded-full shadow-sm">Live</span>
@@ -112,11 +112,11 @@ export default function AnalyticsDashboard({ realtimeStats, history = [], trigge
           </table>
 
           {/* Mobile Card List View */}
-          <div className="md:hidden flex flex-col gap-4">
+          <div className="md:hidden flex flex-col gap-3">
             {currentData.campaigns.map((c, i) => (
               <div 
                 key={i} 
-                className="bg-white border border-zinc-200 rounded-xl p-5 space-y-4 hover:border-[#6366F1]/40 transition-all"
+                className="bg-white border border-zinc-200 rounded-xl p-4 space-y-3 hover:border-[#6366F1]/40 transition-all"
               >
                 <div className="flex items-center justify-between gap-4">
                   <h4 className="text-sm font-bold text-zinc-950 truncate">{c.name}</h4>
@@ -125,7 +125,7 @@ export default function AnalyticsDashboard({ realtimeStats, history = [], trigge
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 border-t border-zinc-100 pt-3 text-[11px]">
+                <div className="grid grid-cols-2 gap-3 border-t border-zinc-100 pt-3 text-[11px]">
                   <div>
                     <span className="text-zinc-400 block font-semibold uppercase tracking-wider text-[8px] mb-1">Messages Sent</span>
                     <span className="text-sm font-bold text-zinc-800">{c.sent}</span>

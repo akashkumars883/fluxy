@@ -165,13 +165,13 @@ export default function AudienceCRM({ history = [], currentPlan = "free" }) {
     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700 w-full max-w-[1400px] mx-auto pb-8">
 
       {/* Stats Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {statCards.map((card) => {
           const Icon = card.icon;
           return (
             <div
               key={card.label}
-              className="bg-white rounded-[24px] p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5"
+              className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5"
             >
               <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#6366F1]/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
               <div className="flex items-center justify-between mb-4 relative z-10">
@@ -180,7 +180,7 @@ export default function AudienceCRM({ history = [], currentPlan = "free" }) {
                 </div>
               </div>
               <div className="space-y-1 relative z-10">
-                <span className="text-3xl sm:text-4xl font-bold text-zinc-950 tracking-tighter leading-none block group-hover:text-[#6366F1] transition-colors duration-300">
+                <span className="text-2xl sm:text-4xl font-bold text-zinc-950 tracking-tighter leading-none block group-hover:text-[#6366F1] transition-colors duration-300">
                   {card.value}
                 </span>
                 <span className="text-[12px] font-semibold text-zinc-500 tracking-wide block mt-1">
@@ -193,11 +193,11 @@ export default function AudienceCRM({ history = [], currentPlan = "free" }) {
       </div>
 
       {/* Main Content: Full width user list */}
-      <div className="bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col relative overflow-hidden">
+      <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#6366F1]/3 to-transparent rounded-full -mr-32 -mt-32 pointer-events-none" />
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-6 border-b border-zinc-100 pb-6 shrink-0 relative z-10">
+        <div className="flex items-center justify-between mb-4 sm:mb-6 border-b border-zinc-100 pb-4 sm:pb-6 shrink-0 relative z-10">
           <div className="space-y-1">
             <h3 className="font-bold text-2xl sm:text-3xl text-zinc-950 tracking-tight flex items-center gap-2">
               Audience <Users size={24} className="text-[#6366F1]" />
@@ -209,7 +209,7 @@ export default function AudienceCRM({ history = [], currentPlan = "free" }) {
         </div>
 
         {/* Search + Filter */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-5 relative z-10">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-4 sm:mb-5 relative z-10">
           <div className="relative flex-1 group">
             <Search size={14} strokeWidth={2.5} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[#6366F1] transition-colors pointer-events-none" />
               <input
@@ -242,7 +242,7 @@ export default function AudienceCRM({ history = [], currentPlan = "free" }) {
           </div>
 
           {/* User List */}
-          <div className="space-y-2 flex-1 max-h-[420px] overflow-y-auto no-scrollbar relative z-10">
+          <div className="space-y-1.5 sm:space-y-2 flex-1 max-h-[420px] overflow-y-auto no-scrollbar relative z-10">
             {filteredAudience.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-center space-y-3 bg-zinc-50/50 rounded-2xl border border-zinc-200 border-dashed">
                 <div className="w-14 h-14 rounded-2xl bg-white border border-zinc-100 shadow-sm flex items-center justify-center">
@@ -260,7 +260,7 @@ export default function AudienceCRM({ history = [], currentPlan = "free" }) {
                 <button
                   key={usr.id}
                   onClick={() => setSelectedUser(usr)}
-                  className="w-full flex items-center justify-between p-3.5 bg-zinc-50/80 hover:bg-white border border-zinc-100 hover:border-[#6366F1]/20 hover:shadow-md rounded-2xl transition-all duration-200 group text-left"
+                  className="w-full flex items-center justify-between p-3 sm:p-3.5 bg-zinc-50/80 hover:bg-white border border-zinc-100 hover:border-[#6366F1]/20 hover:shadow-md rounded-2xl transition-all duration-200 group text-left"
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <img

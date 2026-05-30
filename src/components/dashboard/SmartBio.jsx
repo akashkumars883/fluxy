@@ -241,7 +241,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
       <div className="w-full md:w-[55%] flex flex-col gap-4">
 
         {/* Header */}
-        <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3">
+        <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-2xl p-3 sm:p-4 shadow-sm flex items-center justify-between gap-2 sm:gap-3">
           <div className="flex bg-zinc-100 rounded-xl p-1 gap-1">
             {["links", "profile", "theme"].map(tab => (
               <button
@@ -264,7 +264,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
 
         {/* Published Link Banner */}
         {published && (
-          <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between gap-3 animate-in slide-in-from-top-2">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-[20px] sm:rounded-2xl p-3 sm:p-4 flex items-center justify-between gap-2 sm:gap-3 animate-in slide-in-from-top-2">
             <div className="min-w-0">
               <p className="text-xs font-bold text-emerald-700 mb-0.5">🎉 Your Smart Bio is Live!</p>
               <p className="text-xs text-emerald-600 truncate font-medium">{publishedLink}</p>
@@ -276,7 +276,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
         )}
 
         {/* Editor Area */}
-        <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-sm flex-1">
+        <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 shadow-sm flex-1">
 
           {/* LINKS TAB */}
           {activeTab === "links" && (

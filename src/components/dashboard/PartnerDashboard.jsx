@@ -277,7 +277,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
         <div className="space-y-4">
 
           {/* Hero Banner */}
-          <div className="relative rounded-2xl p-6 sm:p-8 text-white shadow-md flex flex-col justify-center overflow-hidden group mb-2">
+          <div className="relative rounded-[20px] sm:rounded-[24px] p-4 sm:p-8 text-white shadow-md flex flex-col justify-center overflow-hidden group mb-2">
             <div className="absolute inset-0 z-0">
               <div className="absolute inset-0 bg-gradient-to-r from-[#6366F1] via-indigo-800 to-purple-900" />
               <div className="absolute inset-0 bg-black/10 mix-blend-overlay" />
@@ -304,8 +304,8 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
           </div>
 
           {/* Metrics Row (Overview Style) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-white rounded-[24px] p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
               <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-500/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
               <div className="flex items-center justify-between mb-4 relative z-10">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-emerald-200 shadow-sm transition-all duration-500 group-hover:scale-110 text-emerald-600 bg-emerald-50">
@@ -322,7 +322,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
               </div>
             </div>
 
-            <div className="bg-white rounded-[24px] p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
+            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
               <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-500/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
               <div className="flex items-center justify-between mb-4 relative z-10">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-blue-200 shadow-sm transition-all duration-500 group-hover:scale-110 text-blue-600 bg-blue-50">
@@ -341,10 +341,10 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
           </div>
 
           {/* Main Grouped Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 items-stretch">
             
             {/* Left Card: Promotion & Links */}
-            <div className="bg-white rounded-[24px] p-5 sm:p-6 shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-transparent">
+            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-transparent">
               <h3 className="font-bold text-xl text-zinc-950 tracking-tight flex items-center gap-2 mb-6 border-b border-zinc-100 pb-4">
                 <LinkIcon size={20} className="text-[#6366F1]" /> Promotion & Links
               </h3>
@@ -462,7 +462,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
             </div>
 
             {/* Right Card: Earnings & Tiers */}
-            <div className="bg-white rounded-[24px] p-5 sm:p-6 shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-transparent">
+            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-transparent">
               <h3 className="font-bold text-xl text-zinc-950 tracking-tight flex items-center justify-between gap-2 mb-6 border-b border-zinc-100 pb-4">
                 <div className="flex items-center gap-2">
                   <Award size={20} className="text-emerald-500" /> Earnings & Tiers

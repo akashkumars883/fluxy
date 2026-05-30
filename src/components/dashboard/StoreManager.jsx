@@ -93,8 +93,8 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
     <div className="w-full space-y-4 animate-in fade-in duration-500">
       
       {/* Header Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-sm flex items-center justify-between">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+        <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold text-zinc-500">Total Revenue</p>
             <p className="text-2xl font-bold text-zinc-900 mt-1">₹0</p>
@@ -103,7 +103,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
             <DollarSign size={20} />
           </div>
         </div>
-        <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-sm flex items-center justify-between">
+        <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold text-zinc-500">Sales</p>
             <p className="text-2xl font-bold text-zinc-900 mt-1">0</p>
@@ -112,7 +112,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
             <ShoppingBag size={20} />
           </div>
         </div>
-        <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-sm flex items-center justify-between">
+        <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold text-zinc-500">Active Products</p>
             <p className="text-2xl font-bold text-zinc-900 mt-1">{products.length}</p>
@@ -124,7 +124,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
       </div>
 
       {/* Main Content Area */}
-      <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-sm space-y-4">
+      <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 shadow-sm space-y-3 sm:space-y-4">
         <div className="flex items-center justify-between pb-4 border-b border-zinc-100">
           <div>
             <h3 className="text-lg font-bold text-zinc-900">Your Products</h3>
@@ -153,9 +153,9 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {products.map(product => (
-              <div key={product.id} className="border border-zinc-200/80 rounded-2xl p-4 flex flex-col hover:border-indigo-200 transition-colors bg-zinc-50/30">
+              <div key={product.id} className="border border-zinc-200/80 rounded-[20px] sm:rounded-2xl p-3 sm:p-4 flex flex-col hover:border-indigo-200 transition-colors bg-zinc-50/30">
                 <div className="w-full aspect-video bg-zinc-100 rounded-xl mb-3 flex items-center justify-center overflow-hidden border border-zinc-200/50">
                   {product.cover_image ? (
                     <img src={product.cover_image} alt={product.name} className="w-full h-full object-cover" />

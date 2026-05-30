@@ -92,7 +92,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
       <AnimatePresence mode="wait">
         {step === 1 && (
           <motion.div key="step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
-            <div className="bg-white border border-zinc-200/60 rounded-[24px] p-6 sm:p-8 shadow-xl shadow-zinc-200/20">
+            <div className="bg-white border border-zinc-200/60 rounded-[20px] sm:rounded-[24px] p-4 sm:p-8 shadow-xl shadow-zinc-200/20">
               {renderStepHeader()}
               <div className="text-left mb-8 px-2">
                 <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">1. Select Target Posts</h3>
@@ -130,7 +130,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
 
         {step === 2 && (
           <motion.div key="step2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
-            <div className="bg-white border border-zinc-200/60 rounded-[24px] p-6 sm:p-8 shadow-xl shadow-zinc-200/20 space-y-8">
+            <div className="bg-white border border-zinc-200/60 rounded-[20px] sm:rounded-[24px] p-4 sm:p-8 shadow-xl shadow-zinc-200/20 space-y-8">
               {renderStepHeader()}
               <div className="text-left px-2">
                 <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">2. Setup Trigger</h3>
@@ -170,7 +170,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
 
         {step === 3 && (
           <motion.div key="step3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
-            <div className="bg-white border border-zinc-200/60 rounded-[24px] p-6 sm:p-8 shadow-xl shadow-zinc-200/20 space-y-8">
+            <div className="bg-white border border-zinc-200/60 rounded-[20px] sm:rounded-[24px] p-4 sm:p-8 shadow-xl shadow-zinc-200/20 space-y-8">
               {renderStepHeader()}
               <div className="text-left px-2">
                 <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">3. Design Responses</h3>
@@ -224,7 +224,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
   const renderFAQFlow = () => {
     return (
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 relative">
-        <div className={`bg-white border border-zinc-200/60 rounded-[24px] p-6 sm:p-8 shadow-xl shadow-zinc-200/20 space-y-8`}>
+        <div className={`bg-white border border-zinc-200/60 rounded-[20px] sm:rounded-[24px] p-4 sm:p-8 shadow-xl shadow-zinc-200/20 space-y-8`}>
           {renderStepHeader()}
           <div className="text-start">
             <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">Train Your AI Assistant</h3>
@@ -330,7 +330,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
       <AnimatePresence mode="wait">
         {step === 1 && (
           <motion.div key="story-step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6 relative">
-            <div className={`bg-white border border-zinc-200/60 rounded-[24px] p-6 sm:p-8 shadow-xl shadow-zinc-200/20 space-y-8`}>
+            <div className={`bg-white border border-zinc-200/60 rounded-[20px] sm:rounded-[24px] p-4 sm:p-8 shadow-xl shadow-zinc-200/20 space-y-8`}>
               {renderStepHeader()}
               <div className="text-start">
                 <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">1. Select Source</h3>
@@ -410,7 +410,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
 
         {step === 2 && (
           <motion.div key="story-step2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
-            <div className={`bg-white border border-zinc-200/60 rounded-[24px] p-6 sm:p-8 shadow-xl shadow-zinc-200/20 space-y-8`}>
+            <div className={`bg-white border border-zinc-200/60 rounded-[20px] sm:rounded-[24px] p-4 sm:p-8 shadow-xl shadow-zinc-200/20 space-y-8`}>
               {renderStepHeader()}
               <div className="text-start">
                 <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">2. Design Response</h3>
@@ -546,7 +546,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
   const renderSalesFlow = () => {
     return (
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 relative">
-        <div className={`bg-white border border-zinc-200/60 rounded-[24px] p-6 sm:p-8 shadow-xl shadow-zinc-200/20 space-y-8`}>
+        <div className={`bg-white border border-zinc-200/60 rounded-[20px] sm:rounded-[24px] p-4 sm:p-8 shadow-xl shadow-zinc-200/20 space-y-8`}>
           {renderStepHeader()}
           <div className="text-start">
             <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter">AI Sales Agent</h3>
