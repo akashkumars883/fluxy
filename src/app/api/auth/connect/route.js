@@ -24,7 +24,7 @@ export async function GET(request) {
   }
   const role = searchParams.get('role') || 'business';
 
-  const appId = process.env.INSTAGRAM_APP_ID?.trim() || process.env.FACEBOOK_APP_ID?.trim();
+  const appId = process.env.FACEBOOK_APP_ID?.trim() || process.env.INSTAGRAM_APP_ID?.trim();
   if (!appId) {
     return NextResponse.json({ error: "Missing INSTAGRAM_APP_ID or FACEBOOK_APP_ID" }, { status: 500 });
   }
