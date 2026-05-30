@@ -378,99 +378,11 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
               <CircleChevronLeft size={20} />
             </button>
             <h1 className="text-lg font-bold text-zinc-950 truncate">
-              {campaignName || "Create"}
+              {wizardValues.campaignStrategy === 'comment_dm' ? 'Automation' : (campaignName || "Create")}
             </h1>
           </div>
-
-          {wizardValues.campaignStrategy !== "faq_bot" && wizardValues.campaignStrategy !== "sales_closer" && wizardValues.campaignStrategy !== "comment_dm" && (
-            <form onSubmit={handleAiAutofillSubmit} className="flex items-center max-w-xl w-full justify-end">
-              <div className="relative flex-1 max-w-[420px] group">
-                <div className="relative flex items-center">
-                  <input
-                    type="text"
-                    disabled={isGenerating}
-                    placeholder={isGenerating ? "AI is copywriting your campaign... ✨" : "Describe your automation goal..."}
-                    value={aiPrompt}
-                    onChange={(e) => setAiPrompt(e.target.value)}
-                    className={`w-full bg-zinc-50/80 hover:bg-white border border-zinc-200 hover:border-zinc-300 rounded-[14px] px-4 py-2.5 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 outline-none ${isGenerating ? 'opacity-85 animate-pulse bg-indigo-50/20 border-[#6366F1]/20' : ''}`}
-                  />
-                  <button
-                    type="submit"
-                    disabled={isGenerating || !aiPrompt.trim()}
-                    className="absolute right-1.5 w-16 h-9 bg-[#6366F1] hover:bg-[#5255e0] text-white rounded-xl shadow-lg shadow-[#6366F1]/30 transition-all flex items-center justify-center group/btn disabled:opacity-40"
-                  >
-                    {isGenerating ? (
-                      <Loader2 size={16} className="animate-spin text-white" />
-                    ) : (
-                      <Send size={16} />
-                    )}
-                  </button>
-                </div>
-              </div>
-            </form>
-          )}
         </div>
-
-        {wizardValues.campaignStrategy !== "faq_assistant" && wizardValues.campaignStrategy !== "sales_closer" && wizardValues.campaignStrategy !== "story_automator" && wizardValues.campaignStrategy !== "comment_dm" && (
-          <div className="flex items-center gap-2 flex-wrap pt-2">
-              <button
-                type="button"
-                onClick={handleScanProfileSuggestions}
-                disabled={scanningProfile}
-                className="px-4 py-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:from-[#5255e0] hover:to-[#7c4df2] text-white rounded-full text-[12px] font-normal shadow-md hover:-translate-y-0.5 active:scale-95 transition-all flex items-center gap-1.5 disabled:opacity-50 shrink-0"
-              >
-                {scanningProfile ? (
-                  <>
-                    <Loader2 size={12} className="animate-spin text-white" />
-                    <span>Scanning Profile...</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles size={12} className="animate-pulse" />
-                    <span>AI Suggest from Profile</span>
-                  </>
-                )}
-              </button>
-
-              {[
-                { id: "auto_reply", label: "Auto Reply", icon: Zap },
-                { id: "lead_capture", label: "Lead Capture", icon: Users },
-                { id: "discount", label: "Discount", icon: Rocket },
-                { id: "giveaway", label: "Giveaway", icon: Gift },
-                { id: "appointment", label: "Booking", icon: Calendar },
-                { id: "waitlist", label: "Waitlist", icon: Clock },
-                { id: "webinar", label: "Webinar", icon: Video },
-                { id: "review", label: "Reviews", icon: Star },
-                { id: "welcome_dm", label: "Welcome", icon: MessageSquare },
-                { id: "faq", label: "AI FAQ", icon: Brain, isPremium: true }
-              ].map((chip) => {
-                const isLocked = chip.isPremium && currentPlan === "free";
-                
-                return (
-                  <button
-                    key={chip.id}
-                    type="button"
-                    onClick={() => {
-                      if (isLocked) {
-                        alert("The AI FAQ preset is a Pro feature. Please upgrade.");
-                        return;
-                      }
-                      applyQuickPreset(chip.id);
-                    }}
-                    className={`px-4 py-2 border rounded-full text-[12px] font-normal transition-all flex items-center gap-2 group/chip ${
-                      activePreset === chip.id 
-                        ? 'bg-[#6366F1] border-[#6366F1] text-white shadow-[#6366F1]/20 -translate-y-0.5' 
-                        : 'bg-white border-zinc-200/60 hover:border-[#6366F1]/30 hover:bg-[#6366F1]/5 text-zinc-500 hover:text-[#6366F1] hover:-translate-y-0.5'
-                    }`}
-                  >
-                    <chip.icon size={12} className={`${activePreset === chip.id ? 'text-white' : 'text-zinc-400 group-hover/chip:text-[#6366F1]'} transition-colors`} />
-                    {chip.label}
-                    {isLocked && <span className="ml-1 text-[8px] bg-amber-100 text-amber-700 px-1 py-0.5 rounded font-bold uppercase tracking-widest">Pro</span>}
-                  </button>
-                );
-              })}
-          </div>
-        )}
+      </div>
       </div>
 
       <div className={`grid grid-cols-1 lg:grid-cols-12 gap-6 items-start ${wizardValues.campaignStrategy === 'comment_dm' ? 'max-w-4xl mx-auto' : ''}`}>
