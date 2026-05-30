@@ -473,32 +473,34 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
         )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className={`grid grid-cols-1 lg:grid-cols-12 gap-6 items-start ${wizardValues.campaignStrategy === 'comment_dm' ? 'max-w-4xl mx-auto' : ''}`}>
         {/* Sticky Sidebar Column */}
-        <div className="lg:col-span-4 lg:sticky lg:top-4 self-start z-20 h-fit">
-          <div className="bg-white border border-zinc-200/60 rounded-xl p-4 shadow-xl shadow-zinc-200/20">
-            <AutomationPreview 
-              keyword={wizardValues.keyword}
-              response={wizardValues.response}
-              type={wizardValues.type}
-              buttonText={wizardValues.buttonText}
-              buttonLink={wizardValues.buttonLink}
-              publicReply={wizardValues.publicReply}
-              postUrl={wizardValues.type === "COMMENT" ? activePost : null}
-              aiName={campaignName || "Automixa AI"}
-              strategy={wizardValues.campaignStrategy}
-              faqs={wizardValues.faqs}
-              aiPersona={wizardValues.aiPersona}
-              aiUseEmojis={wizardValues.aiUseEmojis}
-              aiGoal={wizardValues.aiGoal}
-              aiKnowledge={wizardValues.aiKnowledge}
-            />
-            
+        {wizardValues.campaignStrategy !== 'comment_dm' && (
+          <div className="lg:col-span-4 lg:sticky lg:top-4 self-start z-20 h-fit">
+            <div className="bg-white border border-zinc-200/60 rounded-xl p-4 shadow-xl shadow-zinc-200/20">
+              <AutomationPreview 
+                keyword={wizardValues.keyword}
+                response={wizardValues.response}
+                type={wizardValues.type}
+                buttonText={wizardValues.buttonText}
+                buttonLink={wizardValues.buttonLink}
+                publicReply={wizardValues.publicReply}
+                postUrl={wizardValues.type === "COMMENT" ? activePost : null}
+                aiName={campaignName || "Automixa AI"}
+                strategy={wizardValues.campaignStrategy}
+                faqs={wizardValues.faqs}
+                aiPersona={wizardValues.aiPersona}
+                aiUseEmojis={wizardValues.aiUseEmojis}
+                aiGoal={wizardValues.aiGoal}
+                aiKnowledge={wizardValues.aiKnowledge}
+              />
+              
 
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="lg:col-span-8">
+        <div className={wizardValues.campaignStrategy === 'comment_dm' ? "lg:col-span-12" : "lg:col-span-8"}>
           <CampaignWizard 
             step={activeStep}
             onStepChange={setActiveStep}
