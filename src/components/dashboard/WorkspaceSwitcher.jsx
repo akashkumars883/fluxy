@@ -216,10 +216,13 @@ export default function WorkspaceSwitcher({ variant = "sidebar", onUpgradeClick 
                   }
                   setIsOpen(false);
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-zinc-50 text-zinc-800 rounded-xl text-xs font-bold transition-all"
+                className="w-full flex items-center justify-between px-3 py-2 hover:bg-zinc-50 text-zinc-800 rounded-xl text-xs font-bold transition-all"
               >
-                <Plus size={14} className="text-indigo-600 shrink-0" />
-                <span>Create Workspace</span>
+                <div className="flex items-center gap-2.5">
+                  <Plus size={14} className="text-indigo-600 shrink-0" />
+                  <span>Create Workspace</span>
+                </div>
+                {currentPlan === "free" && <span className="text-[10px]">👑</span>}
               </button>
             </div>
           </motion.div>

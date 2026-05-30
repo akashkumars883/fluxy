@@ -82,7 +82,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
             Sell digital products directly through Instagram DMs automatically. Upgrade to start monetizing!
           </p>
         </div>
-        <button onClick={onUpgradeClick} className="mt-4 px-8 py-3.5 bg-zinc-950 hover:bg-[#6366F1] text-white text-sm font-bold rounded-xl shadow-lg transition-all flex items-center gap-2">
+        <button onClick={() => onUpgradeClick?.("mini_store")} className="mt-4 px-8 py-3.5 bg-zinc-950 hover:bg-[#6366F1] text-white text-sm font-bold rounded-xl shadow-lg transition-all flex items-center gap-2">
           Upgrade Plan
         </button>
       </div>
