@@ -1,7 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase";
-import { ArrowRight, Check, Clock, Copy, ExternalLink, Trash2, Users, Link as LinkIcon } from "lucide-react";
+import { ArrowRight, Check, Clock, Copy, ExternalLink, Trash2, Users, Link as LinkIcon, DollarSign, Award, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function PartnerDashboard({ currentPlan = "free" }) {
@@ -276,29 +276,73 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
       {appStatus === "approved" && (
         <div className="space-y-4">
 
+          {/* Hero Banner */}
+          <div className="relative rounded-2xl p-6 sm:p-8 text-white shadow-md flex flex-col justify-center overflow-hidden group mb-2">
+            <div className="absolute inset-0 z-0">
+              <div className="absolute inset-0 bg-gradient-to-r from-[#6366F1] via-indigo-800 to-purple-900" />
+              <div className="absolute inset-0 bg-black/10 mix-blend-overlay" />
+            </div>
+            <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner">
+                  <Sparkles size={28} className="text-white drop-shadow-sm" />
+                </div>
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-bold tracking-tight drop-shadow-md">
+                    Automixa Partner Program
+                  </h2>
+                  <p className="text-white/90 text-sm mt-1 font-medium drop-shadow-sm max-w-md">
+                    Earn up to 25% recurring commission on every user you refer to our platform.
+                  </p>
+                </div>
+              </div>
+              <div className="shrink-0 flex items-center gap-2 bg-black/20 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10">
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-sm font-bold tracking-wide">Active Partner</span>
+              </div>
+            </div>
+          </div>
+
           {/* Metrics Row */}
-          <div className="grid grid-cols-3 gap-4">
-            <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm">
-              <p className="text-xs font-medium text-zinc-500">Monthly revenue</p>
-              <p className="text-2xl font-semibold text-zinc-900 tracking-tight mt-1">
-                ₹{partnerProfile.monthly_recurring_revenue.toLocaleString("en-IN")}
-              </p>
-            </div>
-            <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm">
-              <p className="text-xs font-medium text-zinc-500">Total referrals</p>
-              <p className="text-2xl font-semibold text-zinc-900 tracking-tight mt-1">
-                {partnerProfile.total_referrals_count}
-              </p>
-            </div>
-            <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm">
-              <p className="text-xs font-medium text-zinc-500">Active tier</p>
-              <div className="flex items-center gap-2 mt-1">
-                <p className="text-2xl font-semibold text-zinc-900 tracking-tight capitalize">
-                  {partnerProfile.active_tier}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-sm flex items-center justify-between hover:border-emerald-200 transition-colors">
+              <div>
+                <p className="text-xs font-semibold text-zinc-500">Monthly Revenue</p>
+                <p className="text-2xl font-bold text-zinc-900 mt-1">
+                  ₹{partnerProfile.monthly_recurring_revenue.toLocaleString("en-IN")}
                 </p>
-                <span className={`px-2 py-0.5 text-xs font-semibold rounded-lg border capitalize ${tierColors[partnerProfile.active_tier] || tierColors.silver}`}>
-                  {Math.round(partnerProfile.commission_rate * 100)}% cut
-                </span>
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                <DollarSign size={20} />
+              </div>
+            </div>
+            
+            <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-sm flex items-center justify-between hover:border-blue-200 transition-colors">
+              <div>
+                <p className="text-xs font-semibold text-zinc-500">Total Referrals</p>
+                <p className="text-2xl font-bold text-zinc-900 mt-1">
+                  {partnerProfile.total_referrals_count}
+                </p>
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                <Users size={20} />
+              </div>
+            </div>
+            
+            <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-sm flex items-center justify-between hover:border-indigo-200 transition-colors">
+              <div>
+                <p className="text-xs font-semibold text-zinc-500">Active Tier</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <p className="text-2xl font-bold text-zinc-900 tracking-tight capitalize">
+                    {partnerProfile.active_tier}
+                  </p>
+                  <span className={`px-2 py-0.5 text-[10px] uppercase tracking-wider font-bold rounded-lg border ${tierColors[partnerProfile.active_tier] || tierColors.silver}`}>
+                    {Math.round(partnerProfile.commission_rate * 100)}% CUT
+                  </span>
+                </div>
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                <Award size={20} />
               </div>
             </div>
           </div>
