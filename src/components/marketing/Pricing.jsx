@@ -39,6 +39,8 @@ export default function Pricing({ isModal = false } = {}) {
       raw_usd: 0,
       desc: "Perfect to test automated chat flows.",
       features: [
+        "1 Instagram Account",
+        "1 Personal Workspace",
         "25,000 AI Credits/mo",
         "5 Active Automations",
         "1,000 Auto-Replies/mo",
@@ -57,6 +59,8 @@ export default function Pricing({ isModal = false } = {}) {
       raw_usd: 14,
       desc: "The sweet spot for Indian creators.",
       features: [
+        "Multiple Connected Accounts",
+        "Multiple Workspaces",
         "250,000 AI Credits (10X)",
         "Unlimited Automations",
         "AI Intent & Smart AI Mode",

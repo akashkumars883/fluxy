@@ -98,7 +98,7 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
 
         {/* Workspace Switcher next to search bar on the right */}
         <div className="hidden md:block mr-1">
-          <WorkspaceSwitcher variant="minimal" />
+          <WorkspaceSwitcher variant="minimal" onUpgradeClick={onSubscriptionClick} />
         </div>
 
 

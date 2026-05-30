@@ -6,7 +6,7 @@ import { AnimatePresence,motion } from "framer-motion";
 import { ArrowRight, BarChart3, CheckCircle2, CreditCard, Sparkles, Tag, X, Zap } from "lucide-react";
 import { useEffect,useState } from "react";
 
-export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free", realtimeStats }) {
+export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free", realtimeStats, upgradeReason = "" }) {
   const { user, setCurrentPlan } = useDashboard();
   const [isIndia, setIsIndia] = useState(true);
   const [isAnnual, setIsAnnual] = useState(false);
@@ -102,6 +102,20 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
       return isIndia ? numeric.toLocaleString('en-IN') : numeric.toLocaleString();
     }
     return isAnnual ? (isIndia ? numeric.toLocaleString('en-IN') : numeric.toLocaleString()) : rawPrice;
+  };
+
+  const getReasonMessage = () => {
+    switch (upgradeReason) {
+      case "multiple_accounts": return "Upgrade to Creator Pro to connect multiple Instagram accounts.";
+      case "multiple_workspaces": return "Upgrade to Creator Pro to create multiple workspaces.";
+      case "wildcard_keyword": return "Upgrade to unlock Wildcard (*) auto-replies.";
+      case "cooldown": return "Upgrade to unlock 24-Hour Cooldown gates.";
+      case "story_automator": return "Upgrade to unlock Story Mention automations.";
+      case "automation_limit": return "You've reached your limit! Upgrade to create unlimited automations.";
+      case "mini_store": return "Upgrade to unlock the Mini Store feature.";
+      case "smart_bio": return "Upgrade to unlock the Smart Bio feature.";
+      default: return "";
+    }
   };
 
   const handleApplyPromo = async () => {
@@ -278,6 +292,19 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                 <X size={16} className="text-zinc-500 hover:text-zinc-900" />
              </button>
           </div>
+          
+          {/* Upgrade Reason Banner */}
+          {upgradeReason && upgradeReason !== "general" && activeTab === 'plans' && (
+            <div className="bg-indigo-50 border-b border-indigo-100 px-5 sm:px-6 py-3 flex items-start sm:items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="bg-indigo-100 text-indigo-600 p-1.5 rounded-lg shrink-0 mt-0.5 sm:mt-0">
+                <Sparkles size={16} />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-indigo-900 leading-tight">Creator Pro Feature</h4>
+                <p className="text-xs font-medium text-indigo-700 mt-0.5">{getReasonMessage()}</p>
+              </div>
+            </div>
+          )}
  
           {/* Tab Content */}
           <div className="flex-1 overflow-y-auto no-scrollbar p-5 sm:p-6">

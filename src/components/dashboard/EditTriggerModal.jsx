@@ -126,7 +126,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
                               key={t.id}
                               onClick={() => {
                                 if (isLocked) {
-                                  onUpgradeClick?.();
+                                  onUpgradeClick?.("story_automator");
                                   return;
                                 }
                                 setType(t.id);
@@ -153,7 +153,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
                         onChange={(e) => {
                           const val = e.target.value;
                           if (val.includes('*') && currentPlan === 'free') {
-                            onUpgradeClick?.();
+                            onUpgradeClick?.("wildcard_keyword");
                             return;
                           }
                           setKeyword(val);
@@ -196,7 +196,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
                         <button 
                           onClick={() => {
                             if (currentPlan === 'free') {
-                              onUpgradeClick?.();
+                              onUpgradeClick?.("cooldown");
                               return;
                             }
                             setCooldownGate(!cooldownGate);

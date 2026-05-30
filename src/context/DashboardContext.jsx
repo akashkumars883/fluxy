@@ -93,6 +93,7 @@ export function DashboardProvider({ children }) {
   const [activeTab, setActiveTab] = useState("home");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const [currentPlan, setCurrentPlan] = useState("free");
+  const [upgradeReason, setUpgradeReason] = useState("");
   
   // Workspaces State
   const [workspaces, setWorkspaces] = useState([]);
@@ -483,6 +484,8 @@ export function DashboardProvider({ children }) {
     setIsSidebarCollapsed,
     currentPlan,
     setCurrentPlan,
+    upgradeReason,
+    setUpgradeReason,
     realtimeStats,
     setRealtimeStats,
     

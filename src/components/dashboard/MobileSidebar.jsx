@@ -59,7 +59,7 @@ export default function MobileSidebar({
 
             {/* Workspace Switcher */}
             <div className="shrink-0 relative">
-              <WorkspaceSwitcher variant="sidebar" />
+              <WorkspaceSwitcher variant="sidebar" onUpgradeClick={onPricingClick} />
             </div>
 
             {/* Main Menu Links */}

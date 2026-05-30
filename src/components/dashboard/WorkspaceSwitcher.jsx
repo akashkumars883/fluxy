@@ -14,7 +14,7 @@ const AVATAR_COLORS = [
   "bg-sky-500",
 ];
 
-export default function WorkspaceSwitcher({ variant = "sidebar" }) {
+export default function WorkspaceSwitcher({ variant = "sidebar", onUpgradeClick }) {
   const {
     workspaces,
     selectedWorkspace,
@@ -29,7 +29,9 @@ export default function WorkspaceSwitcher({ variant = "sidebar" }) {
     workspaceMembersLoading,
     inviteMember,
     removeMember,
-    updateMemberRole
+    updateMemberRole,
+    currentPlan,
+    setUpgradeReason
   } = useDashboard();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -206,7 +208,12 @@ export default function WorkspaceSwitcher({ variant = "sidebar" }) {
             <div className="pt-2 border-t border-zinc-100/60 mt-1">
               <button
                 onClick={() => {
-                  setShowCreateModal(true);
+                  if (currentPlan === "free") {
+                    setUpgradeReason("multiple_workspaces");
+                    if (onUpgradeClick) onUpgradeClick("multiple_workspaces");
+                  } else {
+                    setShowCreateModal(true);
+                  }
                   setIsOpen(false);
                 }}
                 className="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-zinc-50 text-zinc-800 rounded-xl text-xs font-bold transition-all"

@@ -3,6 +3,7 @@
 import { useDashboard } from "@/context/DashboardContext";
 import { motion } from "framer-motion";
 import { ChevronDown,Lock as LucideLock,PanelTopOpen,Plus } from "lucide-react";
+import WorkspaceSwitcher from "@/components/dashboard/WorkspaceSwitcher";
 import { useState } from "react";
 
 export default function DashboardSidebar({ 
@@ -32,6 +33,11 @@ export default function DashboardSidebar({
 
       {/* Top Nav */}
       <div className="space-y-1 w-full">
+        {/* Workspace Switcher */}
+        <div className="shrink-0 relative mb-4">
+          <WorkspaceSwitcher variant="sidebar" onUpgradeClick={onPricingClick} />
+        </div>
+
         {/* Collapse Toggle */}
         <div className={`flex items-center mb-3 ${isSidebarCollapsed ? "justify-center" : "justify-end"}`}>
           <button

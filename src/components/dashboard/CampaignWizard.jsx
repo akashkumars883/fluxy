@@ -143,7 +143,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
                   onChange={(e) => {
                     const val = e.target.value;
                     if (val.includes('*') && currentPlan === 'free') {
-                      onUpgradeClick?.();
+                      onUpgradeClick?.("wildcard_keyword");
                       return;
                     }
                     onChange({ keyword: val });
@@ -508,7 +508,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
                       type="button"
                       onClick={() => {
                         if (currentPlan === 'free') {
-                          onUpgradeClick?.();
+                          onUpgradeClick?.("cooldown");
                           return;
                         }
                         onChange({ cooldownGate: !values.cooldownGate });

@@ -80,6 +80,8 @@ export default function Dashboard() {
     realtimeStats,
     setRealtimeStats,
     updateSelectedAccount,
+    upgradeReason,
+    setUpgradeReason,
   } = useDashboard();
 
   const router = useRouter();
@@ -430,6 +432,11 @@ export default function Dashboard() {
   };
 
   const handleConnectClick = () => {
+    if (currentPlan === "free" && allAccounts.length >= 1) {
+      setUpgradeReason("multiple_accounts");
+      setIsSubscriptionOpen(true);
+      return;
+    }
     setOnboardingStep(user?.user_metadata?.onboarding_completed ? 3 : 1);
     setShowOnboarding(true);
   };
@@ -489,14 +496,20 @@ export default function Dashboard() {
         accounts={accounts} 
         realtimeStats={realtimeStats}
         onAccountSettingsClick={() => setIsAccountSettingsOpen(true)}
-        onSubscriptionClick={() => setIsSubscriptionOpen(true)}
+        onSubscriptionClick={() => {
+          setUpgradeReason("");
+          setIsSubscriptionOpen(true);
+        }}
       />
 
       <MobileSidebar 
         isOpen={isMobileSidebarOpen} 
         onClose={() => setIsMobileSidebarOpen(false)} 
         navigationItems={navigationItems}
-        onPricingClick={() => setIsSubscriptionOpen(true)}
+        onPricingClick={() => {
+          setUpgradeReason("");
+          setIsSubscriptionOpen(true);
+        }}
         onConnectClick={handleConnectClick}
         quotaPercent={quotaPercent}
         usedQuota={usedQuota}
@@ -506,7 +519,10 @@ export default function Dashboard() {
       <div className="flex flex-1 relative overflow-hidden">
         <DashboardSidebar 
           navigationItems={navigationItems}
-          onPricingClick={() => setIsSubscriptionOpen(true)}
+          onPricingClick={() => {
+            setUpgradeReason("");
+            setIsSubscriptionOpen(true);
+          }}
           onConnectClick={handleConnectClick}
           quotaPercent={quotaPercent}
           usedQuota={usedQuota}
@@ -672,7 +688,10 @@ export default function Dashboard() {
                         </div>
                       </div>
                       <button
-                        onClick={() => setIsSubscriptionOpen(true)}
+                        onClick={() => {
+                          setUpgradeReason("automation_limit");
+                          setIsSubscriptionOpen(true);
+                        }}
                         className="w-full sm:w-auto px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-semibold shadow-md transition-all hover:scale-[1.02] shrink-0"
                       >
                         Upgrade Now
@@ -693,7 +712,10 @@ export default function Dashboard() {
                     topTriggers={realtimeTriggers} 
                     automationId={selectedAccount?.id}
                     currentPlan={currentPlan}
-                    onUpgradeClick={() => setIsSubscriptionOpen(true)}
+                    onUpgradeClick={(reason) => {
+                      setUpgradeReason(reason || "general");
+                      setIsSubscriptionOpen(true);
+                    }}
                     isActive={selectedAccount?.is_active}
                     onToggleTriggerActive={handleToggleTriggerActive}
                     onViewAudience={() => setActiveTab("audience")}
@@ -718,7 +740,10 @@ export default function Dashboard() {
                         templateKey={builderTemplateKey} 
                         campaignName={builderCampaignName}
                         currentPlan={currentPlan}
-                        onUpgradeClick={() => setIsSubscriptionOpen(true)}
+                        onUpgradeClick={(reason) => {
+                          setUpgradeReason(reason || "general");
+                          setIsSubscriptionOpen(true);
+                        }}
                         media={instagramMedia}
                         onPublish={handleAddTrigger} 
                         onClose={() => setBuilderActive(false)} 
@@ -753,7 +778,10 @@ export default function Dashboard() {
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                   className="flex-1 min-h-0 overflow-y-auto pr-1"
                 >
-                  <StoreManager accountId={selectedAccount.id} currentPlan={currentPlan} onUpgradeClick={() => setIsSubscriptionOpen(true)} />
+                  <StoreManager accountId={selectedAccount.id} currentPlan={currentPlan} onUpgradeClick={() => {
+                    setUpgradeReason("mini_store");
+                    setIsSubscriptionOpen(true);
+                  }} />
                 </div>
               )}
               {activeTab === "smart_bio" && (
@@ -761,7 +789,10 @@ export default function Dashboard() {
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                   className="flex-1 min-h-0 overflow-y-auto pr-1"
                 >
-                  <SmartBio accountId={selectedAccount.id} account={selectedAccount} currentPlan={currentPlan} onUpgradeClick={() => setIsSubscriptionOpen(true)} />
+                  <SmartBio accountId={selectedAccount.id} account={selectedAccount} currentPlan={currentPlan} onUpgradeClick={() => {
+                    setUpgradeReason("smart_bio");
+                    setIsSubscriptionOpen(true);
+                  }} />
                 </div>
               )}
               {activeTab === "crm" && (
@@ -785,7 +816,10 @@ export default function Dashboard() {
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                   className="flex-1 min-h-0 overflow-y-auto pr-1"
                 >
-                  <SettingsDashboard account={selectedAccount} currentPlan={currentPlan} realtimeStats={realtimeStats} onSubscriptionClick={() => setIsSubscriptionOpen(true)} />
+                  <SettingsDashboard account={selectedAccount} currentPlan={currentPlan} realtimeStats={realtimeStats} onSubscriptionClick={() => {
+                    setUpgradeReason("");
+                    setIsSubscriptionOpen(true);
+                  }} />
                 </div>
               )}
 
@@ -817,7 +851,10 @@ export default function Dashboard() {
                       <p className="text-white/90 text-xs sm:text-sm mt-0.5 font-medium drop-shadow-sm">Unlock unlimited automations and advanced features.</p>
                     </div>
                   </div>
-                  <button onClick={() => setIsSubscriptionOpen(true)} className="w-full sm:w-auto px-6 py-2.5 bg-white text-[#6366F1] text-sm font-bold rounded-xl shadow-[0_8px_30px_-8px_rgba(0,0,0,0.5)] hover:scale-105 transition-all relative z-10">
+                  <button onClick={() => {
+                    setUpgradeReason("");
+                    setIsSubscriptionOpen(true);
+                  }} className="w-full sm:w-auto px-6 py-2.5 bg-white text-[#6366F1] text-sm font-bold rounded-xl shadow-[0_8px_30px_-8px_rgba(0,0,0,0.5)] hover:scale-105 transition-all relative z-10">
                     Upgrade Now
                   </button>
                 </div>
@@ -905,7 +942,10 @@ export default function Dashboard() {
         onClose={() => setIsCreateModalOpen(false)} 
         onSelect={handleCreateTriggerStart} 
         currentPlan={currentPlan}
-        onUpgradeClick={() => setIsSubscriptionOpen(true)}
+        onUpgradeClick={(reason) => {
+          setUpgradeReason(reason || "general");
+          setIsSubscriptionOpen(true);
+        }}
       />
 
       <EditTriggerModal
@@ -918,7 +958,10 @@ export default function Dashboard() {
         onSave={handleSaveTrigger}
         onDelete={handleDeleteTrigger}
         currentPlan={currentPlan}
-        onUpgradeClick={() => setIsSubscriptionOpen(true)}
+        onUpgradeClick={(reason) => {
+          setUpgradeReason(reason || "general");
+          setIsSubscriptionOpen(true);
+        }}
       />
       
       <AccountSettingsModal 
@@ -928,9 +971,13 @@ export default function Dashboard() {
       />
       <SubscriptionModal
         isOpen={isSubscriptionOpen}
-        onClose={() => setIsSubscriptionOpen(false)}
+        onClose={() => {
+          setIsSubscriptionOpen(false);
+          setUpgradeReason("");
+        }}
         currentPlan={currentPlan}
         realtimeStats={realtimeStats}
+        upgradeReason={upgradeReason}
       />
       <OnboardingModal
         isOpen={showOnboarding}

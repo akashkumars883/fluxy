@@ -119,7 +119,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                         key={t.id} 
                         onClick={() => {
                           if (isLocked) {
-                            onUpgradeClick?.();
+                            onUpgradeClick?.(t.id);
                             return;
                           }
                           setSelectedTemplate(t.id);
