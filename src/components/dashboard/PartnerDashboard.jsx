@@ -413,7 +413,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
                     </div>
                   )}
 
-                  <div className="border border-zinc-100 rounded-xl overflow-hidden flex-1">
+                  <div className="border border-zinc-100 rounded-xl overflow-x-auto flex-1">
                     <table className="w-full text-left">
                       <thead>
                         <tr className="bg-zinc-50 border-b border-zinc-100 text-zinc-500 text-xs font-medium">

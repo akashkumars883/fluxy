@@ -286,7 +286,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
               <input type="text" required placeholder="Full name as per bank" value={bankHolderName} onChange={(e) => setBankHolderName(e.target.value)}
                 className="w-full px-3 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white transition-colors" />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-zinc-700">Account number</label>
                 <input type="text" required placeholder="012345678901" value={bankAccountNo} onChange={(e) => setBankAccountNo(e.target.value.replace(/\D/g, ""))}
@@ -370,7 +370,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
           <p className="text-xs text-zinc-400 mt-1">Invite team members above to get started.</p>
         </div>
       ) : (
-        <div className="border border-zinc-100 rounded-xl overflow-hidden">
+        <div className="border border-zinc-100 rounded-xl overflow-x-auto">
           <table className="w-full text-left">
             <thead>
               <tr className="bg-zinc-50 border-b border-zinc-100 text-zinc-500 text-xs font-medium">

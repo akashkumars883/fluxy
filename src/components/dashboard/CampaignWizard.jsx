@@ -180,7 +180,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
                 <div className="space-y-3">
                   <label className="block text-[13px] font-bold text-zinc-900 ml-1">Action 1: Private DM</label>
                   <textarea value={response} onChange={(e) => onChange({ response: e.target.value })} rows={3} placeholder="Hey! Here is your link..." className="w-full bg-white border-2 border-zinc-100 rounded-[18px] p-5 text-[15px] font-medium outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all resize-none shadow-sm" />
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input type="text" placeholder="Button Text (e.g. View Store)" value={buttonText} onChange={(e) => onChange({ buttonText: e.target.value })} className="bg-white border-2 border-zinc-100 rounded-[14px] px-4 py-3 text-[13px] font-semibold outline-none focus:border-[#6366F1] transition-all" />
                     <div className="flex flex-col gap-1">
                       <input type="text" placeholder="Link URL (https://...)" value={buttonLink} onChange={(e) => onChange({ buttonLink: e.target.value })} className="bg-white border-2 border-zinc-100 rounded-[14px] px-4 py-3 text-[13px] font-semibold outline-none focus:border-[#6366F1] transition-all" />
@@ -468,7 +468,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 pt-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                   <div className="space-y-3">
                     <label className="block text-[13px] font-bold text-zinc-900 ml-1">Button Text</label>
                     <input
