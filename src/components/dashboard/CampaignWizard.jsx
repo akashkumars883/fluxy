@@ -165,17 +165,14 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
 
   const renderCommentDMFlow = () => {
     return (
-      <div className="flex flex-col bg-white border border-zinc-200/60 rounded-[20px] sm:rounded-[24px] shadow-2xl overflow-hidden h-[80vh] max-h-[900px] w-full max-w-4xl mx-auto relative">
+      <div className="flex flex-col overflow-hidden h-[calc(100vh-130px)] w-full max-w-4xl mx-auto relative">
         
         {/* Chat History Area */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-8 space-y-8 bg-white no-scrollbar pb-40">
+        <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-8 space-y-8 no-scrollbar pb-40">
           
           {/* ChatGPT Style Initial Header */}
           {chatHistory.length === 1 && !isTyping && (
             <div className="flex flex-col items-center justify-center pt-10 pb-6 text-center animate-in fade-in zoom-in duration-500">
-              <div className="w-16 h-16 bg-[#6366F1] text-white rounded-full flex items-center justify-center mb-4 shadow-xl shadow-[#6366F1]/20">
-                <Brain size={32} />
-              </div>
               <h2 className="text-2xl font-bold text-zinc-900 mb-2">Automixa AI Assistant</h2>
               <p className="text-[15px] text-zinc-500 max-w-md">I will guide you step-by-step to build your perfect automation.</p>
             </div>
@@ -189,12 +186,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
                 animate={{ opacity: 1, y: 0 }}
                 className={`flex gap-4 sm:gap-6 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                {msg.role === 'ai' && (
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 border border-zinc-200 rounded-full flex items-center justify-center shrink-0 bg-white shadow-sm mt-1">
-                    <Brain size={18} className="text-[#6366F1]" />
-                  </div>
-                )}
-                <div className={`max-w-[85%] sm:max-w-[75%] text-[15px] sm:text-[16px] leading-relaxed ${msg.role === 'user' ? 'bg-zinc-100 text-zinc-900 px-5 py-3.5 rounded-3xl rounded-tr-sm' : 'text-zinc-800 pt-2'}`}>
+                <div className={`max-w-[85%] sm:max-w-[75%] text-[15px] sm:text-[16px] leading-relaxed ${msg.role === 'user' ? 'bg-[#6366F1] text-white px-5 py-3.5 rounded-[24px] rounded-br-[4px] shadow-sm' : 'text-zinc-800 pt-2'}`}>
                   {msg.text.split('\n').map((line, i) => (
                     <p key={i} className="mb-2 last:mb-0">{line}</p>
                   ))}
@@ -264,10 +256,7 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
 
             {isTyping && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-4 sm:gap-6 justify-start">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 border border-zinc-200 rounded-full flex items-center justify-center shrink-0 bg-white shadow-sm mt-1">
-                  <Brain size={18} className="text-[#6366F1]" />
-                </div>
-                <div className="pt-4 flex items-center gap-1.5">
+                <div className="pt-2 flex items-center gap-1.5">
                   <div className="w-2 h-2 bg-zinc-300 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
                   <div className="w-2 h-2 bg-zinc-300 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
                   <div className="w-2 h-2 bg-zinc-300 rounded-full animate-bounce"></div>

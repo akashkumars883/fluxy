@@ -382,7 +382,7 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
             </h1>
           </div>
 
-          {wizardValues.campaignStrategy !== "faq_bot" && wizardValues.campaignStrategy !== "sales_closer" && (
+          {wizardValues.campaignStrategy !== "faq_bot" && wizardValues.campaignStrategy !== "sales_closer" && wizardValues.campaignStrategy !== "comment_dm" && (
             <form onSubmit={handleAiAutofillSubmit} className="flex items-center max-w-xl w-full justify-end">
               <div className="relative flex-1 max-w-[420px] group">
                 <div className="relative flex items-center">
@@ -411,7 +411,7 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
           )}
         </div>
 
-        {wizardValues.campaignStrategy !== "faq_assistant" && wizardValues.campaignStrategy !== "sales_closer" && wizardValues.campaignStrategy !== "story_automator" && (
+        {wizardValues.campaignStrategy !== "faq_assistant" && wizardValues.campaignStrategy !== "sales_closer" && wizardValues.campaignStrategy !== "story_automator" && wizardValues.campaignStrategy !== "comment_dm" && (
           <div className="flex items-center gap-2 flex-wrap pt-2">
               <button
                 type="button"
