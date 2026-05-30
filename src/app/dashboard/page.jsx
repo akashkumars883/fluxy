@@ -496,8 +496,8 @@ export default function Dashboard() {
         accounts={accounts} 
         realtimeStats={realtimeStats}
         onAccountSettingsClick={() => setIsAccountSettingsOpen(true)}
-        onSubscriptionClick={() => {
-          setUpgradeReason("");
+        onSubscriptionClick={(reason) => {
+          setUpgradeReason(typeof reason === 'string' ? reason : "");
           setIsSubscriptionOpen(true);
         }}
       />
@@ -506,8 +506,8 @@ export default function Dashboard() {
         isOpen={isMobileSidebarOpen} 
         onClose={() => setIsMobileSidebarOpen(false)} 
         navigationItems={navigationItems}
-        onPricingClick={() => {
-          setUpgradeReason("");
+        onPricingClick={(reason) => {
+          setUpgradeReason(typeof reason === 'string' ? reason : "");
           setIsSubscriptionOpen(true);
         }}
         onConnectClick={handleConnectClick}
@@ -519,8 +519,8 @@ export default function Dashboard() {
       <div className="flex flex-1 relative overflow-hidden">
         <DashboardSidebar 
           navigationItems={navigationItems}
-          onPricingClick={() => {
-            setUpgradeReason("");
+          onPricingClick={(reason) => {
+            setUpgradeReason(typeof reason === 'string' ? reason : "");
             setIsSubscriptionOpen(true);
           }}
           onConnectClick={handleConnectClick}

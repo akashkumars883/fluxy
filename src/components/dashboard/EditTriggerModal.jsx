@@ -152,10 +152,6 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
                         value={keyword}
                         onChange={(e) => {
                           const val = e.target.value;
-                          if (val.includes('*') && currentPlan === 'free') {
-                            onUpgradeClick?.("wildcard_keyword");
-                            return;
-                          }
                           setKeyword(val);
                         }}
                         placeholder="e.g. ready"

@@ -142,10 +142,6 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
                   value={keyword}
                   onChange={(e) => {
                     const val = e.target.value;
-                    if (val.includes('*') && currentPlan === 'free') {
-                      onUpgradeClick?.("wildcard_keyword");
-                      return;
-                    }
                     onChange({ keyword: val });
                   }}
                   placeholder="Enter trigger keyword (e.g. price, 🔥, or *)"
