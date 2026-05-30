@@ -134,13 +134,13 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
 
   return (
     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700 w-full max-w-[1400px] mx-auto pb-8">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {metricCards.map((card) => {
           const Icon = card.icon;
           return (
             <div 
               key={card.label}
-              className="bg-white rounded-[24px] p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5"
+              className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5"
             >
               <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#6366F1]/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
               
@@ -151,7 +151,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
               </div>
               
               <div className="space-y-1 relative z-10">
-                <span className="text-3xl sm:text-4xl font-bold text-zinc-950 tracking-tighter leading-none block group-hover:text-[#6366F1] transition-colors duration-300">
+                <span className="text-2xl sm:text-4xl font-bold text-zinc-950 tracking-tighter leading-none block group-hover:text-[#6366F1] transition-colors duration-300">
                   {card.value}
                 </span>
                 <span className="text-[12px] font-semibold text-zinc-500 tracking-wide block mt-1">
@@ -186,7 +186,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 items-stretch">
         
         {/* Left Column: Active Automations */}
         <div className="lg:col-span-2 bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col relative overflow-hidden h-[380px]">
@@ -206,7 +206,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
             </button>
           </div>
 
-          <div className="space-y-3 flex-1 min-h-0 relative z-10 overflow-y-auto no-scrollbar pr-1">
+          <div className="space-y-2 sm:space-y-3 flex-1 min-h-0 relative z-10 overflow-y-auto no-scrollbar pr-1">
             {!activeKeywords || activeKeywords.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full py-12 text-center space-y-4 bg-zinc-50/50 rounded-2xl border border-zinc-200 border-dashed">
                 <div className="w-14 h-14 rounded-2xl bg-white border border-zinc-100 shadow-sm flex items-center justify-center">
@@ -219,7 +219,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
               </div>
             ) : (
               activeKeywords.map((item, index) => (
-                <div key={index} className="flex items-center justify-between p-4 bg-zinc-50/80 hover:bg-white border border-zinc-100 hover:border-zinc-200 rounded-2xl transition-all duration-200 group">
+                <div key={index} className="flex items-center justify-between p-3 sm:p-4 bg-zinc-50/80 hover:bg-white border border-zinc-100 hover:border-zinc-200 rounded-2xl transition-all duration-200 group">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-indigo-50 border border-indigo-100/50 text-[#6366F1] rounded-xl flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
                       <MessageSquare size={20} />

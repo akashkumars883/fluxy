@@ -709,7 +709,7 @@ export default function Dashboard() {
               {activeTab === "home" && (
                 <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                  className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                 >
                   <CreatorOverview
                     stats={realtimeStats}
@@ -735,7 +735,7 @@ export default function Dashboard() {
               {activeTab === "automations" && (
                 <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                  className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                 >
                   {builderActive ? (
                     <div className="animate-in slide-in-from-bottom-4 duration-500">
@@ -773,7 +773,7 @@ export default function Dashboard() {
               {activeTab === "audience" && (
                 <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                  className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                 >
                   <AudienceCRM accountId={selectedAccount.id} history={realtimeHistory} currentPlan={currentPlan} />
                 </div>
@@ -781,7 +781,7 @@ export default function Dashboard() {
               {activeTab === "store" && (
                 <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                  className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                 >
                   <StoreManager accountId={selectedAccount.id} currentPlan={currentPlan} onUpgradeClick={() => {
                     setUpgradeReason("mini_store");
@@ -792,7 +792,7 @@ export default function Dashboard() {
               {activeTab === "smart_bio" && (
                 <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                  className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                 >
                   <SmartBio accountId={selectedAccount.id} account={selectedAccount} currentPlan={currentPlan} onUpgradeClick={() => {
                     setUpgradeReason("smart_bio");
@@ -803,7 +803,7 @@ export default function Dashboard() {
               {activeTab === "crm" && (
                 <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                  className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                 >
                   <AudienceCRM accountId={selectedAccount.id} history={realtimeHistory} currentPlan={currentPlan} />
                 </div>
@@ -811,7 +811,7 @@ export default function Dashboard() {
               {activeTab === "analytics" && (
                 <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                  className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                 >
                   <AnalyticsDashboard account={selectedAccount} realtimeStats={realtimeStats} history={realtimeHistory} triggers={triggersList} />
                 </div>
@@ -819,7 +819,7 @@ export default function Dashboard() {
               {activeTab === "settings" && (
                 <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                  className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                 >
                   <SettingsDashboard account={selectedAccount} currentPlan={currentPlan} realtimeStats={realtimeStats} onSubscriptionClick={() => {
                     setUpgradeReason("");
@@ -831,7 +831,7 @@ export default function Dashboard() {
               {activeTab === "partner" && (
                 <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                  className="flex-1 min-h-0 overflow-y-auto pr-1"
+                  className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                 >
                   <PartnerDashboard currentPlan={currentPlan} />
                 </div>
