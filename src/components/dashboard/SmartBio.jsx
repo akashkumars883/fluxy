@@ -97,7 +97,7 @@ const getSocialMeta = (url) => {
 };
 
 // ─── MAIN COMPONENT ────────────────────────────────────────────────────────
-export default function SmartBio({ accountId, account }) {
+export default function SmartBio({ accountId, account, currentPlan = "free", onUpgradeClick }) {
   const [activeTab, setActiveTab] = useState("links");
   const [links, setLinks] = useState([]);
   const [profileTitle, setProfileTitle] = useState("");
@@ -200,27 +200,27 @@ export default function SmartBio({ accountId, account }) {
   const socialLinks = links.filter(l => getSocialMeta(l.url));
   const standardLinks = links.filter(l => !getSocialMeta(l.url));
 
-  const isComingSoon = true;
-
-  if (isComingSoon) {
+  if (currentPlan === "free") {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-5 text-center animate-in fade-in zoom-in-95 duration-500">
-        <div className="w-20 h-20 rounded-3xl bg-[#6366F1]/10 flex items-center justify-center border border-[#6366F1]/20 shadow-xl shadow-[#6366F1]/5">
+        <div className="w-20 h-20 rounded-3xl bg-[#6366F1]/10 flex items-center justify-center border border-[#6366F1]/20 shadow-xl shadow-[#6366F1]/5 relative">
           <Globe size={32} className="text-[#6366F1]" />
+          <span className="absolute -top-2 -right-2 text-2xl">👑</span>
         </div>
         <div>
-          <h3 className="text-2xl font-black text-zinc-900 tracking-tight mb-2">Smart Bio is Coming Soon!</h3>
+          <h3 className="text-2xl font-black text-zinc-900 tracking-tight mb-2">Unlock Smart Bio with Creator Pro</h3>
           <p className="text-sm text-zinc-500 max-w-sm mx-auto leading-relaxed">
-            We are putting the final touches on our Next-Gen Bio Builder. 
-            You'll be able to create stunning link-in-bio pages very soon!
+            Create stunning, high-converting link-in-bio pages directly from Automixa and supercharge your traffic.
           </p>
         </div>
-        <div className="mt-4 px-4 py-1.5 bg-zinc-100 text-zinc-500 text-xs font-bold uppercase tracking-widest rounded-full">
-          In Development
-        </div>
+        <button onClick={onUpgradeClick} className="mt-4 px-8 py-3.5 bg-zinc-950 hover:bg-[#6366F1] text-white text-sm font-bold rounded-xl shadow-lg transition-all flex items-center gap-2">
+          Upgrade Plan
+        </button>
       </div>
     );
   }
+
+  const isComingSoon = true;
 
   if (!accountId) {
     return (

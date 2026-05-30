@@ -14,7 +14,7 @@ Zap
 import { useEffect,useState } from "react";
 import { createPortal } from "react-dom";
 
-export default function CreatorOverview({ stats = {}, history = [], topTriggers = [], automationId, hideHeader = false, onSimulateLocal, isActive = true, onViewAudience, onCreateAutoReply, onToggleTriggerActive }) {
+export default function CreatorOverview({ stats = {}, history = [], topTriggers = [], automationId, hideHeader = false, onSimulateLocal, isActive = true, onViewAudience, onCreateAutoReply, onToggleTriggerActive, currentPlan = "free", onUpgradeClick }) {
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncReport, setSyncReport] = useState(null);
   const [mounted, setMounted] = useState(false);
@@ -162,6 +162,29 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
           );
         })}
       </div>
+
+      {currentPlan === 'free' && autoReplies >= 800 && (
+        <div className="bg-rose-50 border border-rose-200 rounded-[20px] p-4 sm:p-5 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm relative overflow-hidden animate-in fade-in slide-in-from-top-2">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-full blur-2xl pointer-events-none" />
+          <div className="flex items-start sm:items-center gap-3.5 relative z-10">
+            <div className="w-10 h-10 rounded-xl bg-white border border-rose-200 flex items-center justify-center text-rose-500 shrink-0 shadow-sm">
+              <ShieldAlert size={20} strokeWidth={2} />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-rose-900 tracking-tight mb-0.5">Usage Limit Approaching!</h4>
+              <p className="text-[13px] font-medium text-rose-600/90 leading-snug">
+                You've used <strong>{autoReplies} / 1,000</strong> of your free replies this month. Automations will pause when the limit is reached.
+              </p>
+            </div>
+          </div>
+          <button 
+            onClick={() => onUpgradeClick?.()}
+            className="shrink-0 w-full sm:w-auto px-6 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-[13px] font-bold rounded-xl shadow-lg shadow-rose-500/20 hover:shadow-rose-500/30 transition-all flex items-center justify-center gap-2 group/btn"
+          >
+            Upgrade Plan <ArrowRight size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
         

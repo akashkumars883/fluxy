@@ -18,7 +18,7 @@ Users,
 Zap
 } from "lucide-react";
 
-export default function CampaignWizard({ step = 1, onStepChange, onPublish, onChange, onBack, values, media = [], stories = [], selectedPosts = [], onSelectPosts }) {
+export default function CampaignWizard({ step = 1, onStepChange, onPublish, onChange, onBack, values, media = [], stories = [], selectedPosts = [], onSelectPosts, currentPlan = "free", onUpgradeClick }) {
   const {
     keyword = "",
     response = "",
@@ -140,7 +140,14 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
                 <input
                   type="text"
                   value={keyword}
-                  onChange={(e) => onChange({ keyword: e.target.value })}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val.includes('*') && currentPlan === 'free') {
+                      onUpgradeClick?.();
+                      return;
+                    }
+                    onChange({ keyword: val });
+                  }}
                   placeholder="Enter trigger keyword (e.g. price, 🔥, or *)"
                   className="w-full bg-white border-2 border-zinc-100 rounded-[18px] px-8 py-5 outline-none text-xl font-bold text-zinc-950 focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 shadow-sm text-left transition-all"
                 />
@@ -491,12 +498,21 @@ export default function CampaignWizard({ step = 1, onStepChange, onPublish, onCh
                 <div className="pt-2">
                   <div className="flex items-center justify-between p-5 bg-zinc-50/80 rounded-[18px] border border-zinc-100 hover:border-zinc-200 transition-colors group">
                     <div className="flex flex-col text-left">
-                      <span className="text-sm font-bold text-zinc-900">24-Hour Cooldown (Anti-Spam)</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-bold text-zinc-900">24-Hour Cooldown (Anti-Spam)</span>
+                        {currentPlan === 'free' && <span className="text-[10px]">👑</span>}
+                      </div>
                       <span className="text-[13px] font-medium text-zinc-500 mt-0.5">Only send one automated response per user every 24 hours.</span>
                     </div>
                     <button
                       type="button"
-                      onClick={() => onChange({ cooldownGate: !values.cooldownGate })}
+                      onClick={() => {
+                        if (currentPlan === 'free') {
+                          onUpgradeClick?.();
+                          return;
+                        }
+                        onChange({ cooldownGate: !values.cooldownGate });
+                      }}
                       className={`w-12 h-6 rounded-full relative transition-all duration-300 ${values.cooldownGate ? 'bg-[#6366F1] shadow-lg shadow-[#6366F1]/30' : 'bg-zinc-200'} cursor-pointer shrink-0`}
                     >
                       <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${values.cooldownGate ? 'left-7' : 'left-1'}`} />

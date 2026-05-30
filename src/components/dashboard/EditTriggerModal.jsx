@@ -4,7 +4,7 @@ import { AnimatePresence,motion } from "framer-motion";
 import { ArrowRight,Clock,Rocket,Save,ShieldCheck,X } from "lucide-react";
 import { useEffect,useState } from "react";
 
-export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
+export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, currentPlan = "free", onUpgradeClick }) {
   const [keyword, setKeyword] = useState("");
   const [response, setResponse] = useState("");
   const [type, setType] = useState("DM");
@@ -119,17 +119,29 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
                           { id: 'COMMENT', label: 'Comment / Reel' },
                           { id: 'DM', label: 'Inbox DM' },
                           { id: 'STORY', label: 'Story Tag' }
-                        ].map((t) => (
-                          <button
-                            key={t.id}
-                            onClick={() => setType(t.id)}
-                            className={`px-4 py-3 rounded-xl text-[14px] font-medium transition-all border ${
-                              type === t.id ? 'bg-[#6366F1] text-white border-[#6366F1] shadow-md shadow-[#6366F1]/20' : 'bg-white text-zinc-600 border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50'
-                            }`}
-                          >
-                            {t.label}
-                          </button>
-                        ))}
+                        ].map((t) => {
+                          const isLocked = t.id === 'STORY' && currentPlan === 'free';
+                          return (
+                            <button
+                              key={t.id}
+                              onClick={() => {
+                                if (isLocked) {
+                                  onUpgradeClick?.();
+                                  return;
+                                }
+                                setType(t.id);
+                              }}
+                              className={`relative px-4 py-3 rounded-xl text-[14px] font-medium transition-all border ${
+                                type === t.id ? 'bg-[#6366F1] text-white border-[#6366F1] shadow-md shadow-[#6366F1]/20' : 'bg-white text-zinc-600 border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50'
+                              } ${isLocked ? 'opacity-80' : ''}`}
+                            >
+                              <div className="flex items-center justify-center gap-1.5">
+                                {t.label}
+                                {isLocked && <span className="text-[10px]">👑</span>}
+                              </div>
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
 
@@ -138,7 +150,14 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
                       <input 
                         type="text" 
                         value={keyword}
-                        onChange={(e) => setKeyword(e.target.value)}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val.includes('*') && currentPlan === 'free') {
+                            onUpgradeClick?.();
+                            return;
+                          }
+                          setKeyword(val);
+                        }}
                         placeholder="e.g. ready"
                         className="w-full bg-white border border-zinc-200 rounded-xl p-3.5 text-base font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm placeholder:text-zinc-400"
                       />
@@ -165,8 +184,9 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
                     {type === "STORY" && (
                       <div className="flex items-center justify-between p-4 bg-zinc-50/80 rounded-2xl border border-zinc-200/80 hover:border-zinc-300 transition-all animate-in fade-in slide-in-from-top-2">
                         <div className="flex items-center gap-3.5">
-                          <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-zinc-500 shadow-sm">
+                          <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-zinc-500 shadow-sm relative">
                             <Clock size={20} strokeWidth={1.5} />
+                            {currentPlan === 'free' && <span className="absolute -top-1 -right-1 text-[10px]">👑</span>}
                           </div>
                           <div>
                             <p className="text-sm font-semibold text-zinc-900">24-Hour Cooldown</p>
@@ -174,7 +194,13 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave }) {
                           </div>
                         </div>
                         <button 
-                          onClick={() => setCooldownGate(!cooldownGate)}
+                          onClick={() => {
+                            if (currentPlan === 'free') {
+                              onUpgradeClick?.();
+                              return;
+                            }
+                            setCooldownGate(!cooldownGate);
+                          }}
                           className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${cooldownGate ? 'bg-[#6366F1]' : 'bg-zinc-300'}`}
                         >
                           <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-all ${cooldownGate ? 'left-6' : 'left-1'}`} />

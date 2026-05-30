@@ -692,6 +692,8 @@ export default function Dashboard() {
                     history={realtimeHistory} 
                     topTriggers={realtimeTriggers} 
                     automationId={selectedAccount?.id}
+                    currentPlan={currentPlan}
+                    onUpgradeClick={() => setIsSubscriptionOpen(true)}
                     isActive={selectedAccount?.is_active}
                     onToggleTriggerActive={handleToggleTriggerActive}
                     onViewAudience={() => setActiveTab("audience")}
@@ -716,6 +718,7 @@ export default function Dashboard() {
                         templateKey={builderTemplateKey} 
                         campaignName={builderCampaignName}
                         currentPlan={currentPlan}
+                        onUpgradeClick={() => setIsSubscriptionOpen(true)}
                         media={instagramMedia}
                         onPublish={handleAddTrigger} 
                         onClose={() => setBuilderActive(false)} 
@@ -750,7 +753,7 @@ export default function Dashboard() {
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                   className="flex-1 min-h-0 overflow-y-auto pr-1"
                 >
-                  <StoreManager accountId={selectedAccount.id} currentPlan={currentPlan} />
+                  <StoreManager accountId={selectedAccount.id} currentPlan={currentPlan} onUpgradeClick={() => setIsSubscriptionOpen(true)} />
                 </div>
               )}
               {activeTab === "smart_bio" && (
@@ -758,7 +761,7 @@ export default function Dashboard() {
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                   className="flex-1 min-h-0 overflow-y-auto pr-1"
                 >
-                  <SmartBio accountId={selectedAccount.id} account={selectedAccount} />
+                  <SmartBio accountId={selectedAccount.id} account={selectedAccount} currentPlan={currentPlan} onUpgradeClick={() => setIsSubscriptionOpen(true)} />
                 </div>
               )}
               {activeTab === "crm" && (
@@ -902,6 +905,7 @@ export default function Dashboard() {
         onClose={() => setIsCreateModalOpen(false)} 
         onSelect={handleCreateTriggerStart} 
         currentPlan={currentPlan}
+        onUpgradeClick={() => setIsSubscriptionOpen(true)}
       />
 
       <EditTriggerModal
@@ -913,6 +917,8 @@ export default function Dashboard() {
         trigger={editingTrigger}
         onSave={handleSaveTrigger}
         onDelete={handleDeleteTrigger}
+        currentPlan={currentPlan}
+        onUpgradeClick={() => setIsSubscriptionOpen(true)}
       />
       
       <AccountSettingsModal 

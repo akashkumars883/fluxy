@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Plus, Package, Link2, DollarSign, Download, Image as ImageIcon, Trash2, Edit2, ShoppingBag } from "lucide-react";
 import toast from "react-hot-toast";
 
-export default function StoreManager({ accountId, currentPlan }) {
+export default function StoreManager({ accountId, currentPlan, onUpgradeClick }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -68,6 +68,26 @@ export default function StoreManager({ accountId, currentPlan }) {
       setSaving(false);
     }
   };
+
+  if (currentPlan === "free") {
+    return (
+      <div className="flex flex-col items-center justify-center py-32 gap-5 text-center animate-in fade-in zoom-in-95 duration-500">
+        <div className="w-20 h-20 rounded-3xl bg-[#6366F1]/10 flex items-center justify-center border border-[#6366F1]/20 shadow-xl shadow-[#6366F1]/5 relative">
+          <ShoppingBag size={32} className="text-[#6366F1]" />
+          <span className="absolute -top-2 -right-2 text-2xl">👑</span>
+        </div>
+        <div>
+          <h3 className="text-2xl font-black text-zinc-900 tracking-tight mb-2">Unlock Mini Store with Creator Pro</h3>
+          <p className="text-sm text-zinc-500 max-w-sm mx-auto leading-relaxed">
+            Sell digital products directly through Instagram DMs automatically. Upgrade to start monetizing!
+          </p>
+        </div>
+        <button onClick={onUpgradeClick} className="mt-4 px-8 py-3.5 bg-zinc-950 hover:bg-[#6366F1] text-white text-sm font-bold rounded-xl shadow-lg transition-all flex items-center gap-2">
+          Upgrade Plan
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full space-y-4 animate-in fade-in duration-500">

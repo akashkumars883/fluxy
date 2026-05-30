@@ -14,7 +14,7 @@ export default function TriggerManager({ initialTriggers, media = [] }) {
   );
 }
 
-export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "free" }) {
+export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "free", onUpgradeClick }) {
   const [campaignName, setCampaignName] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState("comment_dm");
 
@@ -119,7 +119,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                         key={t.id} 
                         onClick={() => {
                           if (isLocked) {
-                            alert("This feature is available on Creator Pro and Viral Scale plans. Please upgrade.");
+                            onUpgradeClick?.();
                             return;
                           }
                           setSelectedTemplate(t.id);
@@ -192,7 +192,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
 }
 
 
-export function CampaignBuilderWorkspace({ automation, campaignName, templateKey, accountId, onClose, onPublish, currentPlan = "free", media = [], stories = [] }) {
+export function CampaignBuilderWorkspace({ automation, campaignName, templateKey, accountId, onClose, onPublish, currentPlan = "free", onUpgradeClick, media = [], stories = [] }) {
   const [scanningProfile, setScanningProfile] = useState(false);
   const [suggestedCampaigns, setSuggestedCampaigns] = useState(null);
   const [showSuggestionsDrawer, setShowSuggestionsDrawer] = useState(false);
@@ -518,6 +518,7 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
             selectedPosts={selectedPosts}
             onSelectPosts={(selection) => setSelectedPosts(selection)}
             currentPlan={currentPlan}
+            onUpgradeClick={onUpgradeClick}
             onPublish={(keyword, response, opts) => {
               onPublish(keyword, response, {
                 ...opts,
