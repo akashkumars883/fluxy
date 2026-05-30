@@ -638,64 +638,61 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
   }
 
   return (
-    <div className="space-y-4 animate-in fade-in duration-500">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-2">
+    <div className="space-y-5 animate-in fade-in duration-500">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
         <div>
           <h3 className="text-2xl sm:text-3xl font-bold text-zinc-950 tracking-tighter">Active Rules</h3>
-          <p className="text-[10px] font-semibold text-zinc-400 mt-1">Manage your auto-reply keywords and messages</p>
+          <p className="text-[13px] font-medium text-zinc-500 mt-1">Manage your auto-reply keywords and messages</p>
         </div>
 
         <div className="flex items-center gap-3">
-          <span className={`text-[10px] font-semibold px-4 py-2 rounded-2xl shadow-sm border ${isMasterActive ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-zinc-100 text-zinc-500 border-zinc-200'}`}>
+          <span className={`text-[12px] font-bold px-4 py-2 rounded-xl shadow-sm border ${isMasterActive ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-zinc-100 text-zinc-500 border-zinc-200'}`}>
             {triggers.length} Rules {isMasterActive ? 'Active' : 'Paused'}
           </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-3.5">
         {triggers.map((t) => (
           <div 
             key={t.id} 
-            className="bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-4 group relative overflow-hidden"
+            className="bg-white border border-zinc-200 hover:border-[#6366F1]/30 rounded-[18px] p-4 sm:p-5 shadow-sm hover:shadow-md hover:shadow-[#6366F1]/5 transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-4 group relative"
           >
-            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#6366F1]/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
-            
-            <div className="space-y-3 flex-1 min-w-0 relative z-10">
+            <div className="space-y-2 flex-1 min-w-0 relative z-10">
               {/* Top Row: Keyword and Badges */}
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[10px] text-zinc-400 font-extrabold uppercase tracking-widest shrink-0">Keyword:</span>
-                <span className="bg-[#6366F1]/5 hover:bg-[#6366F1]/10 text-[#6366F1] font-mono text-xs font-bold px-2 py-0.5 rounded-md border border-[#6366F1]/15 transition-all select-all">
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <span className="bg-[#6366F1]/10 text-[#6366F1] font-mono text-[13px] font-bold px-3 py-1 rounded-lg border border-[#6366F1]/20">
                   {t.keyword}
                 </span>
-                <span className="px-2 py-0.5 bg-zinc-900 text-white rounded-md text-[9px] font-bold shadow-xs uppercase tracking-wider shrink-0">
+                <span className="px-2.5 py-1 bg-zinc-100 text-zinc-600 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 border border-zinc-200">
                   {t.type === "COMMENT" ? "Comment" : t.type === "DM" ? "DM" : "Story"}
                 </span>
                 {t.metadata?.campaign_name && (
-                  <span className="px-2 py-0.5 bg-zinc-50 border border-zinc-200 rounded-md text-[9px] font-bold text-zinc-500 max-w-[150px] truncate shrink-0">
+                  <span className="px-2.5 py-1 bg-zinc-50 border border-zinc-200 rounded-lg text-[11px] font-semibold text-zinc-500 max-w-[150px] truncate shrink-0">
                     📁 {t.metadata.campaign_name}
                   </span>
                 )}
               </div>
 
               {/* Response Text Preview */}
-              <div className="text-xs text-zinc-600 bg-zinc-50/50 hover:bg-zinc-50 border border-zinc-100 rounded-xl p-2.5 max-w-2xl transition-all">
-                <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest block mb-0.5">Response:</span>
-                <p className="line-clamp-1 italic font-medium leading-relaxed">&ldquo;{t.response}&rdquo;</p>
+              <div className="text-[14px] text-zinc-700 font-medium flex items-start gap-2">
+                <span className="text-zinc-400 shrink-0 select-none">↳</span>
+                <p className="line-clamp-1 italic">&ldquo;{t.response}&rdquo;</p>
               </div>
 
               {/* Public reply & Buttons */}
               {(t.variants?.public?.[0] || t.metadata?.button_link) && (
-                <div className="flex items-center gap-2.5 flex-wrap text-[10px]">
+                <div className="flex items-center gap-3 flex-wrap text-[11px] pt-1">
                   {t.variants?.public?.[0] && (
-                    <div className="flex items-center gap-1.5 text-zinc-500 bg-white px-2 py-1 rounded-md border border-zinc-100">
-                      <Globe size={11} className="text-[#6366F1]" />
+                    <div className="flex items-center gap-1.5 text-zinc-500">
+                      <Globe size={12} className="text-[#6366F1]" />
                       <span className="font-medium truncate max-w-[200px]">Public: &ldquo;{t.variants.public[0]}&rdquo;</span>
                     </div>
                   )}
 
                   {t.metadata?.button_link && (
-                    <div className="flex items-center gap-1.5 text-zinc-500 bg-white px-2 py-1 rounded-md border border-zinc-100">
-                      <MousePointer2 size={11} className="text-[#6366F1]" />
+                    <div className="flex items-center gap-1.5 text-zinc-500">
+                      <MousePointer2 size={12} className="text-[#6366F1]" />
                       <span className="font-medium">Button: {t.metadata.button_text || "Link"}</span>
                     </div>
                   )}
@@ -704,35 +701,35 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
             </div>
 
             {/* Status & Actions Column */}
-            <div className="flex items-center justify-between md:justify-end gap-3.5 self-stretch md:self-center shrink-0 border-t border-zinc-100 md:border-t-0 pt-3 md:pt-0 relative z-10">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold text-zinc-400">Rule Active:</span>
+            <div className="flex items-center justify-between md:justify-end gap-4 self-stretch md:self-center shrink-0 border-t border-zinc-100 md:border-t-0 pt-3 md:pt-0 relative z-10">
+              <div className="flex items-center gap-2.5 bg-zinc-50 px-3 py-1.5 rounded-xl border border-zinc-100">
+                <span className="text-[11px] font-bold text-zinc-500">Active</span>
                 <div 
                   onClick={() => onToggleActive && onToggleActive(t.id, t.metadata?.is_active !== false)}
-                  className={`w-10 h-6 rounded-full relative cursor-pointer shadow-inner hover:opacity-90 transition-all duration-300 ${
+                  className={`w-9 h-5 rounded-full relative cursor-pointer shadow-inner hover:opacity-90 transition-all duration-300 ${
                     t.metadata?.is_active !== false ? "bg-[#6366F1]" : "bg-zinc-300"
                   }`}
                 >
-                  <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-sm transition-all duration-300 ${
+                  <div className={`w-4 h-4 bg-white rounded-full absolute top-0.5 shadow-sm transition-all duration-300 ${
                     t.metadata?.is_active !== false ? "right-0.5" : "left-0.5"
                   }`} />
                 </div>
               </div>
-              <div className="hidden md:block h-6 w-[1px] bg-zinc-200" />
-              <div className="flex items-center gap-1.5">
+              <div className="hidden md:block h-8 w-[1px] bg-zinc-200" />
+              <div className="flex items-center gap-2">
                 <button 
                   onClick={() => onEdit(t)} 
-                  className="w-9 h-9 bg-white border border-zinc-200 hover:border-[#6366F1]/50 rounded-lg text-zinc-500 hover:text-[#6366F1] hover:shadow-md hover:shadow-[#6366F1]/5 transition-all flex items-center justify-center shadow-xs"
+                  className="w-9 h-9 bg-white border border-zinc-200 hover:border-[#6366F1]/50 rounded-xl text-zinc-500 hover:text-[#6366F1] hover:bg-[#6366F1]/5 transition-all flex items-center justify-center shadow-sm"
                   title="Edit Rule"
                 >
-                  <Edit2 size={14} />
+                  <Edit2 size={15} />
                 </button>
                 <button 
                   onClick={() => onDelete(t.id)} 
-                  className="w-9 h-9 bg-rose-50 border border-rose-100 hover:bg-rose-500 hover:text-white hover:border-transparent rounded-lg text-rose-500 hover:shadow-md hover:shadow-rose-500/10 transition-all flex items-center justify-center shadow-xs"
+                  className="w-9 h-9 bg-white border border-zinc-200 hover:bg-rose-50 hover:text-rose-500 hover:border-rose-200 rounded-xl text-zinc-400 transition-all flex items-center justify-center shadow-sm"
                   title="Delete Rule"
                 >
-                  <Trash2 size={14} />
+                  <Trash2 size={15} />
                 </button>
               </div>
             </div>

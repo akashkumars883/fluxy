@@ -166,7 +166,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
         
         {/* Left Column: Active Automations */}
-        <div className="lg:col-span-2 bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col relative overflow-hidden">
+        <div className="lg:col-span-2 bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col relative overflow-hidden h-[380px]">
           <div className="flex items-center justify-between mb-8 relative z-10 shrink-0 border-b border-zinc-100 pb-6">
             <div className="space-y-1.5">
               <h3 className="font-bold text-2xl sm:text-3xl text-zinc-950 tracking-tight flex items-center gap-2">
