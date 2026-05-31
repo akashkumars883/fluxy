@@ -735,10 +735,10 @@ export default function Dashboard() {
               {activeTab === "automations" && (
                 <div
                   onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                  className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
+                  className={`flex-1 min-h-0 sm:pr-1 no-scrollbar ${builderActive ? 'flex flex-col overflow-hidden' : 'overflow-y-auto'}`}
                 >
                   {builderActive ? (
-                    <div className="animate-in slide-in-from-bottom-4 duration-500">
+                    <div className="flex-1 min-h-0 flex flex-col animate-in slide-in-from-bottom-4 duration-500">
                       <CampaignBuilderWorkspace
                         stories={instagramStories}
                         automation={selectedAccount}

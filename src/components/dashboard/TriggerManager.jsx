@@ -2,8 +2,7 @@
 
 import { AnimatePresence,motion } from "framer-motion";
 import { AlertCircle,ArrowRight,Brain,Calendar,Camera,Check,CircleChevronLeft,Clock,Edit2,Gift,Globe,Loader2,MessageSquare,MousePointer2,Plus,Rocket,Send,Sparkles,Star,Trash2,Users,Video,X,Zap } from "lucide-react";
-import { useEffect,useState } from "react";
-import AutomationPreview from "./AutomationPreview";
+import { useState } from "react";
 import CampaignWizard from "./CampaignWizard";
 
 export default function TriggerManager({ initialTriggers, media = [] }) {
@@ -16,174 +15,81 @@ export default function TriggerManager({ initialTriggers, media = [] }) {
 
 export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "free", onUpgradeClick }) {
   const [campaignName, setCampaignName] = useState("");
-  const [selectedTemplate, setSelectedTemplate] = useState("comment_dm");
 
   if (!isOpen) return null;
+
   const handleCreate = () => {
     if (!campaignName.trim()) return;
-    onSelect(selectedTemplate, campaignName.trim());
+    // Pass 'unified' — the wizard itself will handle automation type selection
+    onSelect("unified", campaignName.trim());
   };
 
-  const strategies = [
-    { 
-      id: "comment_dm", 
-      title: "Comment & DM Automator", 
-      desc: "Send a DM and reply to comments when someone uses a keyword.",
-      icon: MessageSquare,
-      color: "text-blue-600",
-      bg: "bg-blue-50",
-      isPremium: false
-    },
-    { 
-      id: "faq_assistant", 
-      title: "AI FAQ Assistant", 
-      desc: "Let AI automatically answer common questions about your products.",
-      icon: Sparkles,
-      color: "text-purple-600",
-      bg: "bg-purple-50",
-      isPremium: true,
-      isAI: true
-    },
-    { 
-      id: "sales_closer", 
-      title: "AI Sales Closer", 
-      desc: "Advanced AI that understands intent and works to close deals for you.",
-      icon: Rocket,
-      color: "text-emerald-600",
-      bg: "bg-emerald-50",
-      isPremium: true,
-      isAI: true
-    },
-    { 
-      id: "story_automator", 
-      title: "Story Automator", 
-      desc: "Auto-reply to Story mentions & replies with keywords or AI.",
-      icon: Camera,
-      color: "text-orange-600",
-      bg: "bg-orange-50",
-      isPremium: true
-    }
-  ];
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && campaignName.trim()) handleCreate();
+  };
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4">
-          <motion.div 
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-zinc-950/40 backdrop-blur-xl" 
+            className="fixed inset-0 bg-zinc-950/50 backdrop-blur-xl"
           />
-          
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-xl bg-white border border-zinc-200/60 rounded-[20px] sm:rounded-[28px] shadow-2xl p-4 sm:p-8 flex flex-col gap-4 sm:gap-6"
+            exit={{ opacity: 0, scale: 0.96, y: 16 }}
+            className="relative w-full max-w-md bg-white border border-zinc-200/60 rounded-[24px] shadow-2xl p-8 flex flex-col gap-6"
           >
-            <div className="flex items-center justify-between border-b border-zinc-100 pb-4 shrink-0">
-              <div>
-                <h2 className="text-2xl sm:text-3xl font-medium text-zinc-950 tracking-tighter">Create New Campaign</h2>
-                <p className="text-xs font-semibold text-zinc-400 mt-1">Set up automated reply rules</p>
+            {/* Header */}
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[16px] flex items-center justify-center shadow-lg shadow-indigo-200">
+                  <Brain size={24} className="text-white" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-black text-zinc-950 tracking-tight">New Automation</h2>
+                  <p className="text-[12px] font-medium text-zinc-400 mt-0.5">AI will guide you through setup</p>
+                </div>
               </div>
-              <button 
-                onClick={onClose} 
-                className="p-2.5 rounded-xl text-zinc-400 hover:text-zinc-950 transition-all cursor-pointer"
-              >
-                <X size={20} />
+              <button onClick={onClose} className="p-2 text-zinc-400 hover:text-zinc-700 rounded-xl transition-all">
+                <X size={18} />
               </button>
             </div>
 
-            <div className="py-1 flex-1 space-y-4">
-              <div className="space-y-2 sm:space-y-3">
-                <label className="text-[12px] font-medium text-zinc-400 ml-1">Campaign Title</label>
-                <input 
-                  type="text" 
-                  placeholder="e.g. Summer Giveaway Campaign" 
-                  value={campaignName} 
-                  onChange={(e) => setCampaignName(e.target.value)} 
-                  className="w-full bg-zinc-50/80 hover:bg-white border border-zinc-200 hover:border-zinc-300 rounded-[14px] px-4 py-2.5 sm:px-5 sm:py-3 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 outline-none"
-                />
-              </div>
-
-              <div className="space-y-2 sm:space-y-4">
-                <label className="text-[12px] font-bold text-zinc-400 ml-1">Select Your Goal</label>
-                <div className="flex flex-col gap-2 sm:gap-2.5">
-                  {strategies.map((t) => {
-                    const isLocked = t.isPremium && currentPlan === "free";
-                    
-                    return (
-                      <div 
-                        key={t.id} 
-                        onClick={() => {
-                          if (isLocked) {
-                            onUpgradeClick?.(t.id);
-                            return;
-                          }
-                          setSelectedTemplate(t.id);
-                          if (!campaignName.trim()) {
-                            setCampaignName(t.title);
-                          }
-                        }} 
-                        className={`group border rounded-2xl p-3 sm:p-3.5 flex items-center gap-3 sm:gap-4 transition-all duration-200 cursor-pointer overflow-visible ${
-                          selectedTemplate === t.id 
-                            ? 'border-[#6366F1] bg-[#6366F1]/5 shadow-sm shadow-[#6366F1]/10 ring-1 ring-[#6366F1]' 
-                            : 'border-zinc-200/80 bg-white hover:border-zinc-300'
-                        }`}
-                      >
-                        <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 ${
-                          selectedTemplate === t.id ? 'bg-[#6366F1] text-white shadow-lg shadow-[#6366F1]/20' : `${t.bg} ${t.color}`
-                        }`}>
-                          <t.icon size={20} className="sm:w-[22px] sm:h-[22px]" />
-                        </div>
-                        
-                        <div className="flex-1 min-w-0 flex flex-col justify-center">
-                          <div className="flex items-center gap-2">
-                            <h4 className={`text-[13px] sm:text-sm font-bold tracking-tight transition-colors ${selectedTemplate === t.id ? 'text-[#6366F1]' : 'text-zinc-900 group-hover:text-[#6366F1]'}`}>
-                              {t.title}
-                            </h4>
-                            {t.isAI && (
-                              <span className="px-1.5 py-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white text-[9px] font-semibold rounded-md shadow-sm">
-                                AI
-                              </span>
-                            )}
-                            {isLocked && (
-                              <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[9px] font-bold rounded-md uppercase tracking-wider">
-                                Pro
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-[11px] sm:text-xs font-medium text-zinc-500 leading-snug mt-0.5 sm:mt-1 pr-1">
-                            {t.desc}
-                          </p>
-                        </div>
-
-                        <div className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center shrink-0 border-2 transition-all duration-300 ${
-                          selectedTemplate === t.id 
-                            ? 'bg-[#6366F1] border-[#6366F1]' 
-                            : 'bg-zinc-100 border-zinc-200 group-hover:border-zinc-300'
-                        }`}>
-                          {selectedTemplate === t.id && <Check size={10} strokeWidth={3} className="text-white w-2 h-2 sm:w-2.5 sm:h-2.5" />}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+            {/* Campaign name */}
+            <div className="space-y-2">
+              <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Campaign Name</label>
+              <input
+                type="text"
+                placeholder="e.g. Summer Sale Campaign"
+                value={campaignName}
+                onChange={(e) => setCampaignName(e.target.value)}
+                onKeyDown={handleKeyDown}
+                autoFocus
+                className="w-full bg-zinc-50 border-2 border-zinc-200 rounded-[16px] px-5 py-4 text-[15px] font-medium text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all"
+              />
+              <p className="text-[12px] text-zinc-400 font-medium px-1">
+                Don't worry about the type — our AI Copilot will ask you what you want to automate.
+              </p>
             </div>
 
-            <div className="flex flex-col-reverse sm:flex-row items-center gap-3 sm:gap-4 border-t border-zinc-100 pt-4 sm:pt-5 mt-1 sm:mt-2 shrink-0">
-              <button onClick={onClose} className="w-full sm:w-auto px-6 py-3.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-600 transition-all cursor-pointer">Cancel</button>
-                <button 
-                  onClick={handleCreate} 
-                  disabled={!campaignName.trim()} 
-                  className="w-full sm:flex-1 px-12 py-3.5 sm:py-4 bg-zinc-950 text-white rounded-xl text-[12px] font-semibold shadow-xl hover:shadow-2xl hover:bg-[#6366F1] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                >
-                  Continue to Editor <ArrowRight size={18} />
-                </button>
-            </div>
+            {/* Action */}
+            <button
+              onClick={handleCreate}
+              disabled={!campaignName.trim()}
+              className="w-full py-4 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-[16px] text-[14px] font-bold shadow-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Start with AI Copilot <ArrowRight size={18} />
+            </button>
+
+            <button onClick={onClose} className="text-[12px] font-medium text-zinc-400 hover:text-zinc-600 transition-all text-center">
+              Cancel
+            </button>
           </motion.div>
         </div>
       )}
@@ -193,330 +99,79 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
 
 
 export function CampaignBuilderWorkspace({ automation, campaignName, templateKey, accountId, onClose, onPublish, currentPlan = "free", onUpgradeClick, media = [], stories = [] }) {
-  const [scanningProfile, setScanningProfile] = useState(false);
-  const [suggestedCampaigns, setSuggestedCampaigns] = useState(null);
-  const [showSuggestionsDrawer, setShowSuggestionsDrawer] = useState(false);
-
   const [wizardValues, setWizardValues] = useState({
     keyword: "",
     response: "",
-    type: templateKey === "story_mention" ? "STORY_REPLY" : "COMMENT",
+    type: "COMMENT",
     followerGate: false,
     publicReply: "",
     buttonText: "",
     buttonLink: "",
-    syncStory: templateKey === "story_mention",
     faqEnabled: false,
-    faqs: [
-      { q: "What's the price?", a: "Our premium plan starts at $49/mo." },
-      { q: "How to get started?", a: "Just click the link in my bio to sign up!" }
-    ],
+    faqs: [],
     leadCaptureEnabled: false,
-    delaySetting: "instantly",
-    campaignStrategy: templateKey || "comment_dm",
+    campaignStrategy: "comment_dm",
     storyCondition: "ANY",
-    storyTriggerType: "MENTION"
+    storyTriggerType: "REPLY"
   });
 
-  // Sync templateKey to campaignStrategy if it changes
-  useEffect(() => {
-    if (templateKey) {
-      const timer = setTimeout(() => {
-        setWizardValues(prev => ({ ...prev, campaignStrategy: templateKey }));
-      }, 0);
-      return () => clearTimeout(timer);
-    }
-  }, [templateKey]);
 
-  const [activeStep, setActiveStep] = useState(1);
+
   const [selectedPosts, setSelectedPosts] = useState([]);
-  const [aiPrompt, setAiPrompt] = useState("");
-  const [activePreset, setActivePreset] = useState(null);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const activePostItem = media.find(m => selectedPosts.includes(m.id)) || media[0];
-  const activePost = activePostItem ? ((activePostItem.media_type === "VIDEO" || activePostItem.media_product_type === "REELS") ? (activePostItem.thumbnail_url || activePostItem.media_url) : activePostItem.media_url) : null;
+
 
   const handleWizardChange = (newVals) => {
     setWizardValues(prev => ({ ...prev, ...newVals }));
-    // Reset active preset if user manually changes something
-    setActivePreset(null);
   };
 
-  const handleAiAutofillSubmit = async (e) => {
-    e.preventDefault();
-    if (!aiPrompt.trim() || isGenerating) return;
 
-    setIsGenerating(true);
-    try {
-      const res = await fetch("/api/ai/autofill", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: aiPrompt.trim() })
-      });
-      const data = await res.json();
-      
-      if (data.success) {
-        setWizardValues(prev => ({
-          ...prev,
-          keyword: data.keyword || prev.keyword,
-          response: data.response || prev.response,
-          publicReply: data.publicReply || prev.publicReply,
-          campaignStrategy: data.campaignStrategy || prev.campaignStrategy,
-          type: data.campaignStrategy === "story_mention" ? "STORY_REPLY" : "COMMENT",
-          buttonText: data.buttonText || prev.buttonText,
-          buttonLink: data.buttonLink || prev.buttonLink,
-          followerGate: data.followerGate !== undefined ? data.followerGate : prev.followerGate,
-          leadCaptureEnabled: data.campaignStrategy === "lead_capture",
-          syncStory: false
-        }));
-        
-        // Jump to Step 3 so the user sees everything magically filled!
-        setActiveStep(3);
-        setAiPrompt("");
-      }
-    } catch (err) {
-      console.error("AI Generation failed:", err);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const handleScanProfileSuggestions = async () => {
-    const handle = automation?.metadata?.ig_handle || automation?.page_name || "";
-    if (!handle) {
-      alert("Please ensure your connected account has a valid Instagram handle in settings/brand kit first!");
-      return;
-    }
-    
-    setScanningProfile(true);
-    try {
-      const res = await fetch("/api/ai/magic-setup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          ig_handle: handle,
-          brand_name: automation?.brand_name || "" 
-        })
-      });
-      const data = await res.json();
-      if (data.success && data.suggested_faqs?.length > 0) {
-        setSuggestedCampaigns(data.suggested_faqs);
-        setShowSuggestionsDrawer(true);
-      } else {
-        alert("Could not generate custom suggestions. Try using the AI prompt bar instead!");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error generating suggestions.");
-    } finally {
-      setScanningProfile(false);
-    }
-  };
-
-  const applySuggestedCampaign = (faq) => {
-    setWizardValues(prev => ({
-      ...prev,
-      keyword: faq.keyword || prev.keyword,
-      response: faq.response || prev.response,
-      campaignStrategy: "comment_dm",
-      type: faq.type || "COMMENT",
-      buttonText: faq.button_text || "Get Now 🔗",
-      buttonLink: faq.button_link || "https://automixa.in",
-      syncStory: false
-    }));
-    
-    // Jump to Step 3 so the user sees everything magically filled!
-    setActiveStep(3);
-    setShowSuggestionsDrawer(false);
-  };
-
-  const applyQuickPreset = (preset) => {
-    if (preset === "auto_reply") {
-      setWizardValues(prev => ({ ...prev, keyword: "price", response: "Hey! Check your DMs for the full pricing guide and brochure link 📦", publicReply: "Just sent you our complete pricing guide in DMs! 📬", campaignStrategy: "comment_dm", buttonText: "View Pricing", buttonLink: "https://automixa.com/pricing", faqEnabled: true, syncStory: true }));
-    } else if (preset === "lead_capture") {
-      setWizardValues(prev => ({ ...prev, keyword: "guide", response: "Here is your free e-book download link! Happy reading 📖", publicReply: "Check your DMs for the instant download link! 📚", campaignStrategy: "lead_capture", buttonText: "Download PDF", buttonLink: "https://automixa.com/guide", leadCaptureEnabled: true, syncStory: true }));
-    } else if (preset === "discount") {
-      setWizardValues(prev => ({ ...prev, keyword: "offer", response: "Use code VIP25 for 25% off your next order! 🎉 Valid for 48 hours.", publicReply: "Sent you the VIP discount code via DM! 🎁", campaignStrategy: "comment_dm", buttonText: "Shop Sale", buttonLink: "https://automixa.com/sale", syncStory: true }));
-    } else if (preset === "welcome_dm") {
-      setWizardValues(prev => ({ ...prev, keyword: "hello", response: "Thanks for tagging us! Welcome to our VIP community ✨", publicReply: "Thanks for the mention! Sent you a welcome surprise in DMs 🎉", campaignStrategy: "story_mention", buttonText: "VIP Lounge", buttonLink: "https://automixa.com/vip", syncStory: true }));
-    } else if (preset === "faq") {
-      setWizardValues(prev => ({ 
-        ...prev, 
-        keyword: "help", 
-        response: "I'm your AI assistant! ✨ I can help with pricing, services, and support. What would you like to know?", 
-        publicReply: "Sure! Just sent you a DM to help you out. 📬", 
-        campaignStrategy: "faq_assistant", 
-        buttonText: "View FAQs", 
-        buttonLink: "https://automixa.com/faq",
-        faqEnabled: true,
-        syncStory: true
-      }));
-    } else if (preset === "giveaway") {
-      setWizardValues(prev => ({ ...prev, keyword: "win", response: "You're entered! 🎁 Check your DMs for your entry confirmation and extra bonus tasks to increase your chances!", publicReply: "Good luck! 🍀 Just sent you the entry confirmation in DMs!", campaignStrategy: "comment_dm", buttonText: "Entry Status", buttonLink: "https://automixa.com/giveaway", syncStory: true }));
-    } else if (preset === "appointment") {
-      setWizardValues(prev => ({ ...prev, keyword: "book", response: "I'd love to help you get started! 📅 Tap the link below to pick a time that works for you.", publicReply: "Perfect! 🗓️ Sent you my booking calendar link in DMs!", campaignStrategy: "comment_dm", buttonText: "Schedule Now", buttonLink: "https://calendly.com/automixa", syncStory: true }));
-    } else if (preset === "waitlist") {
-      setWizardValues(prev => ({ ...prev, keyword: "join", response: "You're on the list! 🚀 We'll notify you the moment we launch. Check your DMs for your queue position.", publicReply: "Welcome to the inner circle! 💎 Sent you the waitlist details!", campaignStrategy: "lead_capture", buttonText: "View Position", buttonLink: "https://automixa.com/waitlist", leadCaptureEnabled: true, syncStory: true }));
-    } else if (preset === "webinar") {
-      setWizardValues(prev => ({ ...prev, keyword: "training", response: "Awesome! 🎬 You're registered for our live training. I've sent the access link to your DMs.", publicReply: "See you there! 🍿 Sent the private training link to your DMs!", campaignStrategy: "comment_dm", buttonText: "Access Link", buttonLink: "https://automixa.com/webinar", syncStory: true }));
-    } else if (preset === "review") {
-      setWizardValues(prev => ({ ...prev, keyword: "love", response: "So glad you're enjoying it! ❤️ Would you mind leaving a quick review? It helps us a ton!", publicReply: "Thank you for the love! 🙏 Sent you a quick link to share your feedback!", campaignStrategy: "comment_dm", buttonText: "Leave Review", buttonLink: "https://automixa.com/reviews", syncStory: true }));
-    }
-    
-    setActivePreset(preset);
-    // Jump to Step 3 (Response) so the user sees everything magically filled!
-    setActiveStep(3);
-  };
 
   return (
-    <div className="animate-in fade-in duration-500 space-y-2 pb-4">
-      
-      <div className="p-3 sm:p-4 space-y-3">
-        <div className="flex items-center justify-between gap-6">
-          <div className="flex items-center gap-4 min-w-0">
-            <button onClick={onClose} className="p-2.5 cursor-pointer text-zinc-500 hover:text-zinc-950 transition-all shrink-0">
-              <CircleChevronLeft size={20} />
-            </button>
-            {wizardValues.campaignStrategy !== 'comment_dm' && (
-              <h1 className="text-lg font-bold text-zinc-950 truncate">
-                {campaignName || "Create"}
-              </h1>
-            )}
+    <div className="animate-in fade-in duration-500 flex flex-col flex-1 min-h-0">
+
+      {/* Top bar */}
+      <div className="px-4 py-3 shrink-0 flex items-center gap-3 border-b border-zinc-100">
+        <button onClick={onClose} className="p-2 cursor-pointer text-zinc-400 hover:text-zinc-950 transition-all shrink-0 hover:bg-zinc-100 rounded-xl">
+          <CircleChevronLeft size={20} />
+        </button>
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="w-7 h-7 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-sm">
+            <Brain size={14} className="text-white" />
           </div>
+          <h1 className="text-[15px] font-bold text-zinc-900 truncate">{campaignName || "New Automation"}</h1>
         </div>
       </div>
 
-      <div className={`grid grid-cols-1 lg:grid-cols-12 gap-6 items-start ${wizardValues.campaignStrategy === 'comment_dm' ? 'max-w-4xl mx-auto' : ''}`}>
-        {/* Sticky Sidebar Column */}
-        {wizardValues.campaignStrategy !== 'comment_dm' && (
-          <div className="lg:col-span-4 lg:sticky lg:top-4 self-start z-20 h-fit">
-            <div className="bg-white border border-zinc-200/60 rounded-xl p-4 shadow-xl shadow-zinc-200/20">
-              <AutomationPreview 
-                keyword={wizardValues.keyword}
-                response={wizardValues.response}
-                type={wizardValues.type}
-                buttonText={wizardValues.buttonText}
-                buttonLink={wizardValues.buttonLink}
-                publicReply={wizardValues.publicReply}
-                postUrl={wizardValues.type === "COMMENT" ? activePost : null}
-                aiName={campaignName || "Automixa AI"}
-                strategy={wizardValues.campaignStrategy}
-                faqs={wizardValues.faqs}
-                aiPersona={wizardValues.aiPersona}
-                aiUseEmojis={wizardValues.aiUseEmojis}
-                aiGoal={wizardValues.aiGoal}
-                aiKnowledge={wizardValues.aiKnowledge}
-              />
-              
-
-            </div>
-          </div>
-        )}
-
-        <div className={wizardValues.campaignStrategy === 'comment_dm' ? "lg:col-span-12" : "lg:col-span-8"}>
-          <CampaignWizard 
-            step={activeStep}
-            onStepChange={setActiveStep}
-            values={wizardValues}
-            onChange={handleWizardChange}
-            onBack={onClose}
-            media={media}
-            stories={stories && stories.length > 0 
-              ? stories.map(s => ({
-                  id: s.id,
-                  media_url: s.media_url || s.thumbnail_url,
-                  timestamp: s.timestamp 
-                    ? new Date(s.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) 
-                    : 'Active'
-                }))
-              : INSTAGRAM_STORIES_MOCK}
-            selectedPosts={selectedPosts}
-            onSelectPosts={(selection) => setSelectedPosts(selection)}
-            currentPlan={currentPlan}
-            onUpgradeClick={onUpgradeClick}
-            onPublish={(keyword, response, opts) => {
-              onPublish(keyword, response, {
-                ...opts,
-                target_media_ids: selectedPosts.length > 0 ? selectedPosts : null,
-                campaign_name: campaignName
-              });
-            }}
-          />
-        </div>
+      {/* Unified chat wizard — full width */}
+      <div className="flex-1 min-h-0 overflow-hidden">
+        <CampaignWizard
+          values={wizardValues}
+          onChange={handleWizardChange}
+          onBack={onClose}
+          media={media}
+          stories={stories && stories.length > 0
+            ? stories.map(s => ({
+                id: s.id,
+                media_url: s.media_url || s.thumbnail_url,
+                timestamp: s.timestamp
+                  ? new Date(s.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                  : 'Active'
+              }))
+            : INSTAGRAM_STORIES_MOCK}
+          selectedPosts={selectedPosts}
+          onSelectPosts={(selection) => setSelectedPosts(selection)}
+          currentPlan={currentPlan}
+          onUpgradeClick={onUpgradeClick}
+          campaignName={campaignName}
+          onPublish={(keyword, response, opts) => {
+            onPublish(keyword, response, {
+              ...opts,
+              target_media_ids: selectedPosts.length > 0 ? selectedPosts : null,
+              campaign_name: campaignName
+            });
+          }}
+        />
       </div>
-
-      {showSuggestionsDrawer && suggestedCampaigns && (
-        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-2 sm:p-6 overflow-y-auto">
-          <div className="fixed inset-0 bg-zinc-950/40 backdrop-blur-xl" onClick={() => setShowSuggestionsDrawer(false)} />
-          
-          <div className="relative w-full max-w-2xl bg-white border border-zinc-200/60 rounded-[20px] sm:rounded-xl shadow-2xl p-4 sm:p-10 flex flex-col gap-6 z-10 animate-in zoom-in-95 duration-300">
-            <div className="flex items-center justify-between border-b border-zinc-100 pb-5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center shadow-sm shrink-0">
-                  <Sparkles size={20} className="text-[#6366F1] animate-pulse" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold tracking-tight text-zinc-950">AI Profile Suggestions</h2>
-                  <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">
-                    Select a ready-to-use campaign generated from your IG profile
-                  </p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setShowSuggestionsDrawer(false)} 
-                className="p-2.5 bg-zinc-50 border border-zinc-100 rounded-xl text-zinc-400 hover:text-zinc-900 transition-all shadow-sm cursor-pointer"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {suggestedCampaigns.map((faq, idx) => (
-                  <div 
-                    key={idx} 
-                    onClick={() => applySuggestedCampaign(faq)}
-                    className="p-5 bg-zinc-50 hover:bg-[#6366F1]/5 hover:border-[#6366F1]/40 border border-zinc-200/60 rounded-xl space-y-3 cursor-pointer group transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-                  >
-                    <div className="flex justify-between items-start">
-                      <span className="px-2.5 py-0.5 bg-indigo-100/80 text-[#6366F1] font-black text-[9px] rounded uppercase tracking-wider">
-                        Keyword: {faq.keyword}
-                      </span>
-                      <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">
-                        {faq.type || 'DM'} Campaign
-                      </span>
-                    </div>
-
-                    <h4 className="text-sm font-bold text-zinc-900 group-hover:text-[#6366F1] transition-colors">
-                      {faq.campaign_name}
-                    </h4>
-
-                    <p className="text-xs text-zinc-500 font-medium leading-relaxed bg-white border border-zinc-100 p-3 rounded-2xl group-hover:bg-white/60">
-                      &ldquo;{faq.response}&rdquo;
-                    </p>
-
-                    <div className="flex items-center justify-between border-t border-zinc-200/50 pt-2 text-[10px] font-bold text-zinc-400">
-                      <span>CTA Button:</span>
-                      <span className="text-[#6366F1] bg-white border border-zinc-200/60 px-2 py-0.5 rounded-lg group-hover:bg-white">
-                        {faq.button_text || "Get Now 🔗"}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex justify-end border-t border-zinc-100 pt-5">
-               <button 
-                 onClick={() => setShowSuggestionsDrawer(false)}
-                 className="px-6 py-3.5 bg-zinc-950 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
-               >
-                 Close Drawer
-               </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
