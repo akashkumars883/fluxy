@@ -325,7 +325,9 @@ export default function Dashboard() {
         intro_button_text: options.intro_button_text || "",
         cooldown_gate: options.cooldownGate || options.cooldown_gate || false,
         button_text: options.button_text || "",
-        button_link: options.button_link || ""
+        button_link: options.button_link || "",
+        is_draft: options.is_draft || false,
+        is_active: options.is_active !== false,
       },
       variants: {
         dm: [response.trim()],
@@ -409,7 +411,8 @@ export default function Dashboard() {
 
     const updatedMetadata = {
       ...(trigger.metadata || {}),
-      is_active: !currentIsActive
+      is_active: !currentIsActive,
+      is_draft: !currentIsActive ? false : trigger.metadata?.is_draft
     };
 
     await handleSaveTrigger(triggerId, { metadata: updatedMetadata });
@@ -558,21 +561,21 @@ export default function Dashboard() {
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 leading-tight flex items-center gap-2">
-                        <span>
+                        <span className={builderActive ? "hidden sm:inline" : ""}>
                           {activeTab === "home" ? "Overview"
                             : activeTab === "automations" ? "Automations"
-                              : activeTab === "audience" ? "Audience"
-                                : activeTab === "store" ? "Mini Store"
-                                  : activeTab === "smart_bio" ? "Smart Bio"
-                                    : activeTab === "crm" ? "CRM"
-                                      : activeTab === "analytics" ? "Analytics"
-                                        : activeTab === "settings" ? "Settings"
-                                          : activeTab === "partner" ? "Partner Program"
-                                            : activeTab}
+                            : activeTab === "audience" ? "Audience"
+                            : activeTab === "store" ? "Mini Store"
+                            : activeTab === "smart_bio" ? "Smart Bio"
+                            : activeTab === "crm" ? "CRM"
+                            : activeTab === "analytics" ? "Analytics"
+                            : activeTab === "settings" ? "Settings"
+                            : activeTab === "partner" ? "Partner Program"
+                            : activeTab}
                         </span>
                         {activeTab === "automations" && builderActive && (
                           <>
-                            <span className="text-zinc-300 font-medium select-none">/</span>
+                            <span className="text-zinc-300 font-medium select-none hidden sm:inline">/</span>
                             <span className="text-zinc-500 text-lg sm:text-xl font-semibold truncate max-w-[150px] sm:max-w-xs">{builderCampaignName || "New Campaign"}</span>
                           </>
                         )}
@@ -580,11 +583,11 @@ export default function Dashboard() {
                       <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border ${(selectedAccount.persona || "content_creator") === "content_creator"
                           ? "bg-purple-50 text-purple-600 border-purple-200"
                           : "bg-blue-50 text-blue-600 border-blue-200"
-                        }`}>
+                        } ${builderActive ? 'hidden sm:inline-block' : 'inline-block'}`}>
                         {(selectedAccount.persona || "content_creator") === "content_creator" ? "Creator" : "Business"}
                       </span>
                     </div>
-                    <p className="text-xs text-zinc-400 font-medium mt-0.5 truncate">
+                    <p className={`text-xs text-zinc-400 font-medium mt-0.5 truncate ${builderActive ? 'hidden sm:block' : 'block'}`}>
                       @{selectedAccount.ig_username || selectedAccount.name || selectedAccount.page_name || "automixa_user"}
                     </p>
                   </div>
@@ -657,7 +660,7 @@ export default function Dashboard() {
                   {activeTab === "automations" && builderActive && (
                     <button
                       onClick={() => setBuilderActive(false)}
-                      className="flex items-center gap-1.5 px-4 py-2 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-xl text-xs font-semibold shadow-sm transition-all hover:scale-[1.02] cursor-pointer"
+                      className="flex items-center gap-1 px-2.5 py-1.5 sm:px-4 sm:py-2 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-xl text-[11px] sm:text-xs font-semibold shadow-sm transition-all hover:scale-[1.02] cursor-pointer shrink-0"
                     >
                       Exit Builder
                     </button>

@@ -63,7 +63,9 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
         cooldown_gate: cooldownGate,
         button_text: buttonLink ? (buttonText || "Get Access") : null,
         button_link: buttonLink,
-        campaign_name: campaignName || null
+        campaign_name: campaignName || null,
+        is_draft: trigger.metadata?.is_draft || false,
+        is_active: trigger.metadata?.is_active !== false,
       },
       variants: {
         dm: [response],

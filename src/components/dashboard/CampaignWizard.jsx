@@ -392,8 +392,13 @@ export default function CampaignWizard({
   };
 
   // Final Publish
-  const handlePublish = () => {
+  // Final Publish
+  const handlePublish = (isDraft = false) => {
     const strategy = selectedType?.id || values.campaignStrategy;
+    const extraOpts = {
+      is_draft: isDraft,
+      is_active: !isDraft,
+    };
     if (strategy === "comment_dm") {
       onPublish(values.keyword, values.response, {
         public_reply: values.publicReply,
@@ -404,6 +409,7 @@ export default function CampaignWizard({
         button_text: values.buttonText,
         button_link: values.buttonLink,
         campaign_strategy: "comment_dm",
+        ...extraOpts,
       });
     } else if (strategy === "story_automator") {
       const finalType = storyTriggerType === "MENTION" ? "STORY_MENTION" : "STORY_REPLY";
@@ -413,6 +419,7 @@ export default function CampaignWizard({
         follower_gate: values.followerGate,
         follow_gate_message: values.followerGate ? values.followGateMessage : "",
         campaign_name: campaignName || "Story Automator ⚡",
+        ...extraOpts,
       });
     } else if (strategy === "faq_assistant") {
       onPublish("AI_FAQ", "AUTOMATED", {
@@ -420,6 +427,7 @@ export default function CampaignWizard({
         faq_enabled: true,
         ai_persona: aiPersona,
         campaign_strategy: "faq_assistant",
+        ...extraOpts,
       });
     } else if (strategy === "sales_closer") {
       onPublish("AI_SALES", "AUTOMATED", {
@@ -427,6 +435,7 @@ export default function CampaignWizard({
         ai_knowledge: values.aiKnowledge || aiKnowledge,
         ai_persona: aiPersona,
         campaign_strategy: "sales_closer",
+        ...extraOpts,
       });
     }
   };
@@ -1269,13 +1278,19 @@ export default function CampaignWizard({
       // ── Done: Launch button ───────────────────────────────
       case "done":
         return (
-          <motion.div key="done" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mt-2">
+          <motion.div key="done" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mt-2 space-y-2">
             <button
-              onClick={handlePublish}
+              onClick={() => handlePublish(false)}
               className="w-full py-3 bg-gradient-to-r from-[#6366F1] to-purple-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-indigo-100 hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
             >
               <Rocket size={16} />
               Confirm & Launch Automation
+            </button>
+            <button
+              onClick={() => handlePublish(true)}
+              className="w-full py-2.5 bg-white border border-zinc-200 text-zinc-600 rounded-xl text-sm font-semibold shadow-sm hover:bg-zinc-50 transition-all flex items-center justify-center gap-2"
+            >
+              Save as Draft 📝
             </button>
           </motion.div>
         );

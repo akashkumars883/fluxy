@@ -1,50 +1,92 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight,CheckCircle2,Layout,MessageSquare,Target,Zap,ShoppingBag } from "lucide-react";
+import { ArrowRight,CheckCircle2,Layout,MessageSquare,Target,Zap,ShoppingBag,Sparkles,Rocket } from "lucide-react";
 import Link from "next/link";
 
 const features = [
   {
-    id: "dm",
-    title: "Instagram DM Auto-Reply",
-    tagline: "Always On, Always Selling",
-    desc: "Reply to every incoming direct message (DM) instantly without opening your phone. Give automatic answers to pricing questions or deliver links.",
+    id: "ai-builder",
+    title: "One-Shot AI Campaign Builder",
+    tagline: "Type, Build, Launch",
+    desc: "Describe what you want to automate in one sentence and let our AI configure triggers, draft response copy, and build the entire funnel in seconds.",
     bullets: [
-      "Instant keyword-based replies",
-      "Personalized answers",
-      "Approved by Instagram"
+      "Zero manual configuration",
+      "Powered by Llama 3.1 AI",
+      "Instant setup in a single step"
     ],
     image: "/images/instagram-dm.png",
-    color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
-    icon: Zap
+    color: "text-purple-500 bg-purple-500/10 border-purple-500/20",
+    icon: Sparkles
   },
   {
     id: "comments",
-    title: "Comment Auto-Responder",
+    title: "Comment → DM Auto-Responder",
     tagline: "Grow From Comments",
     desc: "Convert public comments on your Reels into private sales. Automixa replies to comments AND sends a DM with your link instantly.",
     bullets: [
       "Auto-reply to public comments",
       "Send links via DM instantly",
-      "Works on specific Reels"
+      "Official Meta Graph API connection"
     ],
     image: "/images/instagram-comments-v2.png",
     color: "text-indigo-500 bg-indigo-500/10 border-indigo-500/20",
     icon: MessageSquare
   },
   {
-    id: "stories",
-    title: "Story Auto-Reply",
-    tagline: "Turn Views Into Customers",
-    desc: "Automatically send a DM to anyone who mentions you in their story. Deliver leads and links when people reply to your stories.",
+    id: "magic-write",
+    title: "Magic Write AI Copywriter",
+    tagline: "Engage Your Fans Automatically",
+    desc: "Stuck on writing copies? Let Magic Write generate 3 highly engaging, conversion-optimized variations for your DMs and comments instantly.",
     bullets: [
-      "Story Mention automation",
-      "Keyword-based story replies",
-      "Official Meta API connection"
+      "3 conversion-ready variants per click",
+      "Adjust tone & personality",
+      "Boost CTR and engagement rate"
+    ],
+    image: "/images/smart-bio-solid.png",
+    color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
+    icon: Zap
+  },
+  {
+    id: "ai-agents",
+    title: "AI FAQ & Sales Closer Agents",
+    tagline: "Your 24/7 Social Sales Team",
+    desc: "Deploy custom AI agents trained on your product info and pricing. Automatically close leads, answer FAQs, and direct users to buy in DMs.",
+    bullets: [
+      "AI Tone customization (Witty, Pro)",
+      "Upload custom FAQ training data",
+      "Intelligent product-led conversations"
+    ],
+    image: "/images/mini-store.png",
+    color: "text-rose-500 bg-rose-500/10 border-rose-500/20",
+    icon: Rocket
+  },
+  {
+    id: "preview",
+    title: "Zero-API Simulation Preview",
+    tagline: "Test-Drive Before Launching",
+    desc: "Interact with your campaign live in a realistic iPhone mockup before deploying. Type comments, click CTAs, and see notifications at 0 credit cost.",
+    bullets: [
+      "Pure client-side state machine",
+      "Simulate push notifications",
+      "100% free sandbox playground"
     ],
     image: "/images/instagram-stories.png",
     color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
+    icon: Layout
+  },
+  {
+    id: "spintax",
+    title: "Spintax Multi-Variant Replies",
+    tagline: "Spam Filter Protection",
+    desc: "Input up to 5 comment reply variations. Automixa rotates replies randomly, protecting your account and complying with Instagram security policies.",
+    bullets: [
+      "Configure up to 5 variations",
+      "Random rotation algorithm",
+      "Prevents spam detection flags"
+    ],
+    image: "/images/instagram-comments-v2.png",
+    color: "text-blue-500 bg-blue-500/10 border-blue-500/20",
     icon: Target
   }
 ];
