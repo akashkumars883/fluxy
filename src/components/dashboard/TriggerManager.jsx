@@ -162,17 +162,17 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
 
 
   return (
-    <div className="animate-in fade-in duration-500 flex flex-col flex-1 min-h-0 rounded-[28px] overflow-hidden border border-white/70 bg-gradient-to-br from-indigo-50/70 via-[#F8FAFC] to-white shadow-[0_22px_70px_rgba(15,23,42,0.08)]">
+    <div className="animate-in fade-in duration-500 flex flex-col flex-1 min-h-0 rounded-[20px] overflow-hidden border border-zinc-200/60 bg-zinc-50/30 shadow-sm">
 
       {/* Top bar */}
-      <div className="px-4 sm:px-5 py-3 shrink-0 flex items-center gap-3 border-b border-white/70 bg-white/65 backdrop-blur-xl">
-        <button onClick={onClose} className="p-2 cursor-pointer text-zinc-400 hover:text-zinc-950 transition-all shrink-0 hover:bg-zinc-200/60 rounded-xl">
+      <div className="px-4 sm:px-5 py-3 shrink-0 flex items-center gap-3 border-b border-zinc-200/60 bg-white">
+        <button onClick={onClose} className="p-2 cursor-pointer text-zinc-400 hover:text-zinc-950 transition-all shrink-0 hover:bg-zinc-100 rounded-xl">
           <CircleChevronLeft size={20} />
         </button>
         <div className="min-w-0 flex-1">
           <h1 className="text-[15px] font-bold text-zinc-900 truncate">{campaignName || "New Automation"}</h1>
           <div className="mt-1 flex items-center gap-2">
-            <div className="h-1.5 flex-1 max-w-sm rounded-full bg-zinc-200/70 overflow-hidden">
+            <div className="h-1.5 flex-1 max-w-sm rounded-full bg-zinc-100 overflow-hidden">
               <div className="h-full rounded-full bg-[#6366F1] transition-all duration-500" style={{ width: `${progressPercent}%` }} />
             </div>
             <span className="hidden sm:inline text-[10px] font-bold uppercase tracking-wider text-zinc-400">
@@ -184,7 +184,7 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
 
       {/* Unified chat wizard — full width */}
       <div className="flex-1 min-h-0 overflow-hidden p-3 sm:p-4">
-        <div className="grid h-full min-h-0 grid-cols-1 xl:grid-cols-[minmax(0,1fr)_390px] gap-4">
+        <div className="grid h-full min-h-0 grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px] gap-4">
         <CampaignWizard
           values={wizardValues}
           onChange={handleWizardChange}
@@ -213,31 +213,20 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
             });
           }}
         />
-          <aside className="hidden xl:flex min-h-0 flex-col rounded-[28px] border border-white/70 bg-white/72 backdrop-blur-xl shadow-[0_18px_60px_rgba(15,23,42,0.08)] overflow-hidden">
-            <div className="shrink-0 border-b border-zinc-200/60 px-5 py-4">
+          <aside className="hidden xl:flex min-h-0 flex-col rounded-[20px] border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+            <div className="shrink-0 border-b border-zinc-200/60 px-5 py-3 bg-zinc-50/50">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#6366F1]">Live Build</p>
-                  <h2 className="mt-1 text-base font-bold text-zinc-950 tracking-tight">Automation preview</h2>
+                  <p className="text-[9px] font-bold uppercase tracking-[0.22em] text-[#6366F1]">Live Build</p>
+                  <h2 className="mt-0.5 text-[14px] font-bold text-zinc-950 tracking-tight">Automation preview</h2>
                 </div>
-                <div className="h-10 w-10 rounded-2xl bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center border border-[#6366F1]/15">
-                  <MessageSquare size={18} />
+                <div className="h-8 w-8 rounded-lg bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center border border-[#6366F1]/15">
+                  <MessageSquare size={14} />
                 </div>
               </div>
             </div>
 
-            <div className="shrink-0 px-5 py-4 border-b border-zinc-200/60 bg-zinc-50/55">
-              <div className="grid grid-cols-2 gap-2">
-                {summaryItems.map((item) => (
-                  <div key={item.label} className="rounded-2xl border border-zinc-200/70 bg-white/85 px-3 py-2.5">
-                    <p className="text-[9px] font-bold uppercase tracking-wider text-zinc-400">{item.label}</p>
-                    <p className="mt-1 line-clamp-2 text-[12px] font-semibold leading-snug text-zinc-800">{item.value}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
+            <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar bg-zinc-50/20">
               <AutomationPreview
                 keyword={wizardValues.keyword}
                 response={wizardValues.response}

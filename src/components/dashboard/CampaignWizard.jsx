@@ -850,15 +850,15 @@ export default function CampaignWizard({
   // Render
   // ─────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col h-full w-full max-w-3xl mx-auto relative rounded-[28px] bg-white/65 border border-white/70 shadow-[0_18px_60px_rgba(15,23,42,0.08)] overflow-hidden backdrop-blur-xl">
+    <div className="flex flex-col h-full w-full max-w-none relative rounded-[20px] bg-white border border-zinc-200/60 shadow-sm overflow-hidden">
       {/* ── Chat messages ──────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-6 no-scrollbar pb-8 bg-gradient-to-b from-white/80 via-white/45 to-transparent">
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-6 no-scrollbar pb-8 bg-white">
         {/* Intro header — shown only at the very start */}
         {messages.length === 1 && !isTyping && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center text-center pt-6 pb-2"
+             initial={{ opacity: 0, y: 10 }}
+             animate={{ opacity: 1, y: 0 }}
+             className="flex flex-col items-center text-center pt-6 pb-2"
           >
             <div className="w-16 h-16 bg-gradient-to-br from-[#6366F1] to-purple-600 rounded-[22px] flex items-center justify-center shadow-xl shadow-indigo-200 mb-4 text-white font-black text-3xl select-none">
               A
@@ -879,9 +879,9 @@ export default function CampaignWizard({
         {/* Typing indicator */}
         {isTyping && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex items-center gap-3"
+             initial={{ opacity: 0 }}
+             animate={{ opacity: 1 }}
+             className="flex items-center gap-3"
           >
             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#6366F1] to-purple-600 flex items-center justify-center shrink-0 shadow-md shadow-indigo-200 text-white font-black text-[13px] select-none">
               A
@@ -898,7 +898,7 @@ export default function CampaignWizard({
       </div>
 
       {/* ── Input panel (contextual) ────────────────────────── */}
-      <div className="shrink-0 px-4 sm:px-6 pb-6 pt-4 border-t border-white/70 bg-gradient-to-t from-indigo-50/90 via-white/92 to-white/20 shadow-[0_-18px_45px_rgba(99,102,241,0.08)]">
+      <div className="shrink-0 px-4 sm:px-6 pb-5 pt-3 border-t border-zinc-200/60 bg-zinc-50/50">
         <AnimatePresence mode="wait">{renderInputPanel()}</AnimatePresence>
       </div>
     </div>
