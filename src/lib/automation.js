@@ -488,7 +488,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       console.log(`🎁 Sending Intro Card to ${userName}`);
       const templates = automation.metadata?.templates || {};
       const introTitle = interpolate(
-        templates.intro_title || "Hey {name}! 👋 Thanks for the comment! Tap the button below and I'll send you the access right away. ⚡",
+        match.metadata?.intro_title || templates.intro_title || "Hey {name}! 👋 Thanks for the comment! Tap the button below and I'll send you the access right away. ⚡",
         userName,
         automation.brand_name
       );
@@ -497,7 +497,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         text: introTitle || "Welcome! Tap below for access.",
         quick_replies: [{
           content_type: "text",
-          title: "Send me the access",
+          title: match.metadata?.intro_button_text || "Send me the access",
           payload: match.id
         }]
       };

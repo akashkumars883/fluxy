@@ -140,6 +140,7 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
     { id: "select_type", label: "Type" },
     { id: "select_post", label: "Post" },
     { id: "keyword", label: "Keyword" },
+    { id: "intro_setup", label: "Intro" },
     { id: "dm_message", label: "DM" },
     { id: "cta", label: "Button" },
     { id: "public_reply", label: "Reply" },
@@ -202,6 +203,8 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
                 response={wizardValues.response}
                 buttonText={wizardValues.buttonText}
                 buttonLink={wizardValues.buttonLink}
+                introTitle={wizardValues.introMessage}
+                introButtonText={wizardValues.introButtonText}
                 publicReply={wizardValues.publicReply}
                 postUrl={selectedPostUrl}
                 strategy={wizardValues.campaignStrategy}

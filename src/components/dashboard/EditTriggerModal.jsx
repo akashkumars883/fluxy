@@ -10,6 +10,8 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
   const [type, setType] = useState("DM");
   const [followerGate, setFollowerGate] = useState(false);
   const [followGateMessage, setFollowGateMessage] = useState("");
+  const [introTitle, setIntroTitle] = useState("");
+  const [introButtonText, setIntroButtonText] = useState("");
   const [cooldownGate, setCooldownGate] = useState(false);
   const [publicReply, setPublicReply] = useState("");
   const [buttonText, setButtonText] = useState("");
@@ -29,6 +31,8 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
         setType(initialType);
         setFollowerGate(trigger.metadata?.follower_gate || false);
         setFollowGateMessage(trigger.metadata?.follow_gate_message || "One final step to unlock! 🎁");
+        setIntroTitle(trigger.metadata?.intro_title || "Hey {name}! 👋 Thanks for the comment! Tap the button below and I'll send you the access right away. ⚡");
+        setIntroButtonText(trigger.metadata?.intro_button_text || "Send me the access");
         setCooldownGate(trigger.metadata?.cooldown_gate || false);
         setPublicReply(trigger.variants?.public?.[0] || "");
         setButtonText(trigger.metadata?.button_text || "");
@@ -54,6 +58,8 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
       metadata: {
         follower_gate: followerGate,
         follow_gate_message: followerGate ? followGateMessage : "",
+        intro_title: type === 'COMMENT' ? introTitle : null,
+        intro_button_text: type === 'COMMENT' ? introButtonText : null,
         cooldown_gate: cooldownGate,
         button_text: buttonLink ? (buttonText || "Get Access") : null,
         button_link: buttonLink,
@@ -233,16 +239,41 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
                     className="space-y-7"
                   >
                     {type === 'COMMENT' && (
-                      <div className="space-y-3">
-                        <label className="text-sm font-medium text-zinc-700">Public Reply</label>
-                        <input 
-                          type="text" 
-                          value={publicReply}
-                          onChange={(e) => setPublicReply(e.target.value)}
-                          placeholder="Check your DMs! 🚀"
-                          className="w-full bg-white border border-zinc-200 rounded-xl p-3.5 text-[15px] font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm placeholder:text-zinc-400"
-                        />
-                      </div>
+                      <>
+                        <div className="space-y-3">
+                          <label className="text-sm font-medium text-zinc-700">Public Comment Reply</label>
+                          <input 
+                            type="text" 
+                            value={publicReply}
+                            onChange={(e) => setPublicReply(e.target.value)}
+                            placeholder="Check your DMs! 🚀"
+                            className="w-full bg-white border border-zinc-200 rounded-xl p-3.5 text-[15px] font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm placeholder:text-zinc-400"
+                          />
+                        </div>
+
+                        <div className="space-y-3">
+                          <label className="text-sm font-medium text-zinc-700">Intro DM Message (Greeting)</label>
+                          <textarea 
+                            rows={2}
+                            value={introTitle}
+                            onChange={(e) => setIntroTitle(e.target.value)}
+                            placeholder="Hey {name}! 👋 Thanks for the comment! Tap the button below..."
+                            className="w-full bg-white border border-zinc-200 rounded-xl p-3.5 text-[15px] font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm resize-none placeholder:text-zinc-400"
+                          />
+                        </div>
+
+                        <div className="space-y-3">
+                          <label className="text-sm font-medium text-zinc-700">Intro Button Text</label>
+                          <input 
+                            type="text" 
+                            maxLength={20}
+                            value={introButtonText}
+                            onChange={(e) => setIntroButtonText(e.target.value)}
+                            placeholder="Send me the access"
+                            className="w-full bg-white border border-zinc-200 rounded-xl p-3.5 text-[15px] font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm placeholder:text-zinc-400"
+                          />
+                        </div>
+                      </>
                     )}
 
                     <div className="space-y-3">

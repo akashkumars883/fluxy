@@ -108,6 +108,8 @@ export default function CampaignWizard({
   const [tempDM, setTempDM] = useState("");
   const [followerGateEnabled, setFollowerGateEnabled] = useState(false);
   const [tempFollowGateMsg, setTempFollowGateMsg] = useState("One final step to unlock! 🎁");
+  const [tempIntroMessage, setTempIntroMessage] = useState(values.introMessage || "Hey {name}! 👋 Thanks for the comment! Tap the button below and I'll send you the access right away. ⚡");
+  const [tempIntroBtnText, setTempIntroBtnText] = useState(values.introButtonText || "Send me the access");
   const [tempBtnText, setTempBtnText] = useState("");
   const [tempBtnLink, setTempBtnLink] = useState("");
   const [tempPublicReply, setTempPublicReply] = useState("");
@@ -192,7 +194,16 @@ export default function CampaignWizard({
     onChange({ keyword: finalKw.trim().toLowerCase() });
     userSay(`Keyword: "${finalKw.trim().toLowerCase()}"`);
     setTempKeyword("");
-    aiSay(`Nice! 🎯 When someone comments **"${finalKw.trim().toLowerCase()}"**, what DM should I send them?`, "dm_message");
+    aiSay("Perfect! Before setting up the final DM, let's configure the first DM (Intro Card) that users get right after commenting. What should it say?", "intro_setup");
+  };
+
+  const handleConfirmIntro = () => {
+    onChange({ 
+      introMessage: tempIntroMessage.trim(),
+      introButtonText: tempIntroBtnText.trim()
+    });
+    userSay(`Intro DM: "${tempIntroMessage.trim()}" | Button: "${tempIntroBtnText.trim()}"`);
+    aiSay(`Got it! After they tap **"${tempIntroBtnText.trim()}"**, what final DM message should I send?`, "dm_message");
   };
 
   const handleConfirmDM = () => {
@@ -274,6 +285,8 @@ export default function CampaignWizard({
         public_reply: values.publicReply,
         follower_gate: values.followerGate,
         follow_gate_message: values.followerGate ? values.followGateMessage : "",
+        intro_title: values.introMessage,
+        intro_button_text: values.introButtonText,
         button_text: values.buttonText,
         button_link: values.buttonLink,
         campaign_strategy: "comment_dm",
@@ -477,6 +490,50 @@ export default function CampaignWizard({
             <p className="text-[11px] text-zinc-400 font-medium px-2 mt-1">
               💡 Tip: Type <span className="font-bold text-zinc-700 font-mono">*</span> to trigger this automation for every comment or message.
             </p>
+          </motion.div>
+        );
+
+      // ── Step 2.5: Intro Setup ─────────────────────────────
+      case "intro_setup":
+        return (
+          <motion.div key="intro_setup" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="bg-white border border-zinc-200 rounded-xl shadow-lg p-4 space-y-3 mt-2 animate-in fade-in duration-200">
+            <div className="space-y-2.5 text-left">
+              <div>
+                <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">
+                  Intro DM Message (Greeting)
+                </label>
+                <textarea
+                  value={tempIntroMessage}
+                  onChange={(e) => setTempIntroMessage(e.target.value)}
+                  placeholder="Hey {name}! Thanks for commenting. Tap the button below for access!"
+                  rows={2}
+                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-[14px] text-sm font-medium outline-none focus:border-[#6366F1] focus:bg-white transition-all resize-none"
+                />
+              </div>
+              <div>
+                <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">
+                  Intro Button Text
+                </label>
+                <input
+                  type="text"
+                  maxLength={20}
+                  value={tempIntroBtnText}
+                  onChange={(e) => setTempIntroBtnText(e.target.value)}
+                  placeholder="Send me the access"
+                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-[14px] text-sm font-medium outline-none focus:border-[#6366F1] focus:bg-white transition-all"
+                />
+                <p className="text-[10px] text-zinc-400 font-medium px-1 mt-1">
+                  * Max 20 characters (Meta API limit)
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={handleConfirmIntro}
+              disabled={!tempIntroMessage.trim() || !tempIntroBtnText.trim()}
+              className="w-full py-3 bg-zinc-950 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow-md hover:bg-[#6366F1] transition-all disabled:opacity-40"
+            >
+              Confirm Intro DM <ArrowRight size={16} />
+            </button>
           </motion.div>
         );
 
@@ -899,7 +956,7 @@ export default function CampaignWizard({
   return (
     <div className="flex flex-col h-full w-full max-w-none relative bg-transparent overflow-hidden">
       {/* ── Chat messages ──────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-6 no-scrollbar pb-8 bg-transparent">
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-4 no-scrollbar pb-8 bg-transparent">
         {/* Intro header — shown only at the very start */}
         {messages.length === 1 && !isTyping && (
           <motion.div
@@ -949,7 +1006,7 @@ export default function CampaignWizard({
       </div>
 
       {/* ── Input panel (contextual) ────────────────────────── */}
-      <div className="shrink-0 px-4 sm:px-6 pb-5 pt-3 bg-transparent">
+      <div className="shrink-0 px-4 sm:px-6 pb-3 pt-2 bg-transparent">
         <AnimatePresence mode="wait">{renderInputPanel()}</AnimatePresence>
       </div>
     </div>

@@ -2,12 +2,15 @@
 
 import { Bookmark, Brain, Camera, Heart, Image as ImageIcon, Layout, MessageCircle, MessageSquare, Mic, MoreHorizontal, Phone, Send, Smile, Users, Video, X } from "lucide-react";
 import { useState } from "react";
+import { useDashboard } from "@/context/DashboardContext";
 
 export default function AutomationPreview({ 
   keyword, 
   response, 
   buttonText, 
   buttonLink, 
+  introTitle = "Hey {name}! 👋 Thanks for the comment! Tap the button below and I'll send you the access right away. ⚡",
+  introButtonText = "Send me the access",
   publicReply, 
   postUrl,
   aiName = "Automixa AI",
@@ -19,19 +22,35 @@ export default function AutomationPreview({
   aiUseEmojis = true,
   storyTriggerType = "REPLY"
 }) {
+  const { selectedAccount } = useDashboard();
+  const activeUsername = selectedAccount?.ig_username || selectedAccount?.page_name || selectedAccount?.name || aiName;
+  const activeProfilePic = selectedAccount?.profile_pic || selectedAccount?.profile_picture_url || selectedAccount?.metadata?.profile_picture_url || selectedAccount?.metadata?.profile_pic || null;
+
   const [view, setView] = useState(strategy === "faq_assistant" || strategy === "sales_closer" ? "faq" : (strategy === "story_automator" ? "story" : "dm"));
   const [chatInput, setChatInput] = useState("");
   const [testMessages, setTestMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [introClicked, setIntroClicked] = useState(false);
 
   const [prevStrategy, setPrevStrategy] = useState(strategy);
   const [prevPostUrl, setPrevPostUrl] = useState(postUrl);
+  const [prevKeyword, setPrevKeyword] = useState(keyword);
 
   if (strategy !== prevStrategy || postUrl !== prevPostUrl) {
     setPrevStrategy(strategy);
     setPrevPostUrl(postUrl);
     setView(strategy === "faq_assistant" || strategy === "sales_closer" ? "faq" : (strategy === "story_automator" ? "story" : (postUrl ? "post" : "dm")));
   }
+
+  if (keyword !== prevKeyword) {
+    setPrevKeyword(keyword);
+    setIntroClicked(false);
+  }
+
+  const formatIntroTitle = (title) => {
+    if (!title) return "";
+    return title.replace(/{name}/g, "John");
+  };
 
   const getPersonaResponse = (baseText, persona, useEmojis, isGreeting = false) => {
     if (!baseText && !isGreeting) return "";
@@ -156,6 +175,8 @@ export default function AutomationPreview({
     }, 1000);
   };
 
+  const isAIStrategy = strategy === "faq_assistant" || strategy === "sales_closer";
+
   return (
     <div className="flex flex-col items-center justify-center p-2 animate-in fade-in zoom-in-95 duration-1000 w-full max-w-[280px] mx-auto">
       
@@ -177,31 +198,31 @@ export default function AutomationPreview({
               </button>
             </>
          ) : (
-           <>
-            <button 
-              onClick={() => setView('post')}
-              className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[10px] font-bold transition-all shrink-0 ${view === 'post' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
-            >
-              <Layout size={11} /> <span>Post</span>
-            </button>
-            <button 
-              onClick={() => setView('dm')}
-              className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[10px] font-bold transition-all shrink-0 ${view === 'dm' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
-            >
-              <MessageSquare size={11} /> <span>DM</span>
-            </button>
-            <button 
-              onClick={() => setView('faq')}
-              className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[10px] font-bold transition-all shrink-0 ${view === 'faq' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
-            >
-              <MoreHorizontal size={11} /> <span>AI Sandbox</span>
-            </button>
-           </>
+            <>
+             <button 
+               onClick={() => setView('post')}
+               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[10px] font-bold transition-all shrink-0 ${view === 'post' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
+             >
+               <Layout size={11} /> <span>Post</span>
+             </button>
+             <button 
+               onClick={() => setView('dm')}
+               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[10px] font-bold transition-all shrink-0 ${view === 'dm' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
+             >
+               <MessageSquare size={11} /> <span>DM</span>
+             </button>
+             <button 
+               onClick={() => setView('faq')}
+               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[10px] font-bold transition-all shrink-0 ${view === 'faq' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
+             >
+               <MoreHorizontal size={11} /> <span>AI Sandbox</span>
+             </button>
+            </>
          )}
       </div>
 
       {/* iPhone Mockup Container */}
-      <div className="relative w-[260px] h-[500px] bg-white border-[6px] border-zinc-950 rounded-[2.5rem] shadow-xl overflow-hidden flex flex-col">
+      <div className="relative w-[260px] h-[525px] bg-white border-[6px] border-zinc-950 rounded-[2.5rem] shadow-xl overflow-hidden flex flex-col">
         
         {/* Dynamic Island Notch */}
         <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-16 h-3 bg-zinc-950 rounded-full z-30 flex items-center justify-center">
@@ -223,12 +244,16 @@ export default function AutomationPreview({
                <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-400 to-indigo-600 p-[1px] items-center justify-center flex shadow-sm">
                   <div className="w-full h-full bg-white rounded-full p-[0.5px]">
                       <div className="w-full h-full bg-zinc-100 rounded-full flex items-center justify-center text-[8px] font-semibold text-zinc-900 overflow-hidden">
-                         {aiName[0]}
+                         {activeProfilePic ? (
+                           <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                         ) : (
+                           activeUsername[0]?.toUpperCase()
+                         )}
                       </div>
                   </div>
                </div>
                <div className="flex-1 truncate">
-                  <p className="text-[10px] font-semibold text-zinc-900 leading-none truncate">{aiName}</p>
+                  <p className="text-[10px] font-semibold text-zinc-900 leading-none truncate">{activeUsername}</p>
                   <p className="text-[8px] text-zinc-500 font-normal leading-none mt-0.5">Active now</p>
                </div>
                <div className="flex items-center gap-3 text-zinc-900">
@@ -240,71 +265,121 @@ export default function AutomationPreview({
             <div className="flex-1 p-3 bg-white flex flex-col gap-3 overflow-y-auto no-scrollbar">
                <div className="text-[9px] text-zinc-400 font-semibold text-center my-2 capitalize">March 21, 9:41 am</div>
 
-               {keyword && (
+               {/* Standard Keyword & Intro Flow for comment_dm */}
+               {!isAIStrategy && keyword && (
                  <div className="flex flex-col items-end animate-in fade-in slide-in-from-right-4 duration-300">
                     <div className="max-w-[70%] bg-[#6366F1] text-white px-3 py-1.5 rounded-[16px] rounded-br-[3px] text-[10px] font-medium shadow-sm">
-                     {keyword}
+                      {keyword}
                     </div>
                     <span className="text-[7px] text-zinc-400 font-semibold mt-0.5 mr-0.5">Seen</span>
                  </div>
                )}
 
-               {response && (
+               {!isAIStrategy && keyword && introTitle && (
                  <div className="flex gap-1.5 animate-in fade-in slide-in-from-left-4 duration-500 items-end">
-                    <div className="w-5 h-5 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[7px] font-semibold text-zinc-900 shrink-0 shadow-sm">
-                      {aiName[0]}
+                    <div className="w-5 h-5 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[7px] font-semibold text-zinc-900 shrink-0 shadow-sm overflow-hidden">
+                      {activeProfilePic ? (
+                        <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                      ) : (
+                        activeUsername[0]?.toUpperCase()
+                      )}
                     </div>
                     <div className="max-w-[75%] space-y-1.5">
-                        {(() => {
-                          const urlRegex = /(https?:\/\/[^\s]+)/g;
-                          const scrapedUrls = (response || "").match(urlRegex);
-                          const activeLink = buttonLink || (scrapedUrls && scrapedUrls[0]);
-                          const buttonLabel = buttonText || "Get Access";
-                          const textWithoutUrl = buttonLink ? response : (scrapedUrls ? response.replace(scrapedUrls[0], "").trim() : response);
-
-                          const isFile = activeLink && (
-                            activeLink.toLowerCase().endsWith('.pdf') || 
-                            activeLink.toLowerCase().endsWith('.zip') || 
-                            activeLink.toLowerCase().endsWith('.rar') ||
-                            activeLink.toLowerCase().endsWith('.docx') ||
-                            activeLink.toLowerCase().endsWith('.xlsx') ||
-                            activeLink.toLowerCase().endsWith('.epub') ||
-                            activeLink.includes('drive.google.com') || 
-                            activeLink.includes('docs.google.com') ||
-                            activeLink.includes('dropbox.com') || 
-                            activeLink.includes('mediafire.com') ||
-                            activeLink.includes('onedrive')
-                          );
-
-                          return (
-                            <>
-                                {activeLink ? (
-                                  <div className="w-full bg-white border border-zinc-200/80 rounded-[18px] overflow-hidden shadow-sm animate-in zoom-in-95 duration-500">
-                                     {!isFile && (
-                                       <div className="aspect-[1.91/1] bg-[#6366F1]/5 flex items-center justify-center border-b border-zinc-100">
-                                          <Send size={20} className="text-[#6366F1]" />
-                                       </div>
-                                     )}
-                                     <div className="p-3 space-y-0.5">
-                                        <h4 className="text-[10px] font-semibold text-zinc-900 leading-tight">{textWithoutUrl || "Exclusive Access! 🎁"}</h4>
-                                        <p className="text-[8px] text-zinc-500 font-normal leading-tight">Tap below to access</p>
-                                     </div>
-                                     <div className="p-2 border-t border-zinc-100 flex items-center justify-center text-[9px] font-bold text-[#6366F1] hover:bg-[#6366F1]/5 transition-all">
-                                        {buttonLabel} 🔗
-                                     </div>
-                                  </div>
-                                ) : (
-                                  <div className="bg-zinc-100 text-zinc-900 px-3 py-1.5 rounded-[16px] rounded-bl-[3px] text-[10px] font-medium leading-relaxed shadow-sm">
-                                    {getPersonaResponse(response, aiPersona, aiUseEmojis)}
-                                  </div>
-                                )}
-                            </>
-                          );
-                        })()}
+                      <div className="bg-zinc-100 text-zinc-900 px-3 py-1.5 rounded-[16px] rounded-bl-[3px] text-[10px] font-medium leading-relaxed shadow-sm">
+                        {formatIntroTitle(introTitle)}
+                      </div>
+                      
+                      {!introClicked && introButtonText && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIntroClicked(true);
+                            setIsTyping(true);
+                            setTimeout(() => {
+                              setIsTyping(false);
+                            }, 800);
+                          }}
+                          className="w-full py-1.5 px-3 bg-white border border-zinc-200 hover:border-[#6366F1] text-[#6366F1] hover:bg-[#6366F1]/5 rounded-xl text-[9px] font-bold transition-all shadow-sm text-center block"
+                        >
+                          {introButtonText}
+                        </button>
+                      )}
                     </div>
                  </div>
                )}
 
+               {!isAIStrategy && introClicked && !isTyping && (
+                 <>
+                   <div className="flex flex-col items-end animate-in fade-in slide-in-from-right-4 duration-300">
+                      <div className="max-w-[70%] bg-[#6366F1] text-white px-3 py-1.5 rounded-[16px] rounded-br-[3px] text-[10px] font-medium shadow-sm">
+                        {introButtonText}
+                      </div>
+                      <span className="text-[7px] text-zinc-400 font-semibold mt-0.5 mr-0.5">Seen</span>
+                   </div>
+
+                   {response && (
+                     <div className="flex gap-1.5 animate-in fade-in slide-in-from-left-4 duration-500 items-end">
+                        <div className="w-5 h-5 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[7px] font-semibold text-zinc-900 shrink-0 shadow-sm overflow-hidden">
+                          {activeProfilePic ? (
+                            <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                          ) : (
+                            activeUsername[0]?.toUpperCase()
+                          )}
+                        </div>
+                        <div className="max-w-[75%] space-y-1.5">
+                             {(() => {
+                               const urlRegex = /(https?:\/\/[^\s]+)/g;
+                               const scrapedUrls = (response || "").match(urlRegex);
+                               const activeLink = buttonLink || (scrapedUrls && scrapedUrls[0]);
+                               const buttonLabel = buttonText || "Get Access";
+                               const textWithoutUrl = buttonLink ? response : (scrapedUrls ? response.replace(scrapedUrls[0], "").trim() : response);
+
+                               const isFile = activeLink && (
+                                 activeLink.toLowerCase().endsWith('.pdf') || 
+                                 activeLink.toLowerCase().endsWith('.zip') || 
+                                 activeLink.toLowerCase().endsWith('.rar') ||
+                                 activeLink.toLowerCase().endsWith('.docx') ||
+                                 activeLink.toLowerCase().endsWith('.xlsx') ||
+                                 activeLink.toLowerCase().endsWith('.epub') ||
+                                 activeLink.includes('drive.google.com') || 
+                                 activeLink.includes('docs.google.com') ||
+                                 activeLink.includes('dropbox.com') || 
+                                 activeLink.includes('mediafire.com') ||
+                                 activeLink.includes('onedrive')
+                               );
+
+                               return (
+                                 <>
+                                     {activeLink ? (
+                                       <div className="w-full bg-white border border-zinc-200/80 rounded-[18px] overflow-hidden shadow-sm animate-in zoom-in-95 duration-500">
+                                          {!isFile && (
+                                            <div className="aspect-[1.91/1] bg-[#6366F1]/5 flex items-center justify-center border-b border-zinc-100">
+                                               <Send size={20} className="text-[#6366F1]" />
+                                            </div>
+                                          )}
+                                          <div className="p-3 space-y-0.5">
+                                             <h4 className="text-[10px] font-semibold text-zinc-900 leading-tight">{textWithoutUrl || "Exclusive Access! 🎁"}</h4>
+                                             <p className="text-[8px] text-zinc-500 font-normal leading-tight">Tap below to access</p>
+                                          </div>
+                                          <div className="p-2 border-t border-zinc-100 flex items-center justify-center text-[9px] font-bold text-[#6366F1] hover:bg-[#6366F1]/5 transition-all">
+                                             {buttonLabel} 🔗
+                                          </div>
+                                       </div>
+                                     ) : (
+                                       <div className="bg-zinc-100 text-zinc-900 px-3 py-1.5 rounded-[16px] rounded-bl-[3px] text-[10px] font-medium leading-relaxed shadow-sm">
+                                         {getPersonaResponse(response, aiPersona, aiUseEmojis)}
+                                       </div>
+                                     )}
+                                 </>
+                               );
+                             })()}
+                        </div>
+                     </div>
+                   )}
+                 </>
+               )}
+
+                {/* Sandbox / AI Chat history */}
                 <div className="space-y-3 mt-1">
                   {testMessages.map((msg, i) => (
                     <div key={i} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
@@ -319,22 +394,31 @@ export default function AutomationPreview({
                   ))}
                   
                   {isTyping && (
-                    <div className="flex gap-1 animate-pulse ml-1.5">
-                       <div className="w-1 h-1 bg-zinc-300 rounded-full" />
-                       <div className="w-1 h-1 bg-zinc-300 rounded-full" style={{ animationDelay: '0.2s' }} />
-                       <div className="w-1 h-1 bg-zinc-300 rounded-full" style={{ animationDelay: '0.4s' }} />
+                    <div className="flex gap-1 animate-pulse ml-1.5 mt-2">
+                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-full" />
+                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-full" style={{ animationDelay: '0.2s' }} />
+                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-full" style={{ animationDelay: '0.4s' }} />
                     </div>
                   )}
                 </div>
 
                 <div className="flex-1" />
                 
-                {!keyword && !response && testMessages.length === 0 && (
+                {isAIStrategy && testMessages.length === 0 && (
                    <div className="flex flex-col items-center justify-center h-full text-center space-y-3 opacity-40">
                       <div className="w-10 h-10 bg-zinc-50 rounded-2xl flex items-center justify-center border border-zinc-200 shadow-sm">
                          <MessageCircle size={20} className="text-[#6366F1]" />
                       </div>
-                      <p className="text-[9px] font-semibold text-zinc-900">Start typing to test DM ✨</p>
+                      <p className="text-[9px] font-semibold text-zinc-900">Start typing to test AI Chat ✨</p>
+                   </div>
+                )}
+
+                {!isAIStrategy && !keyword && !response && testMessages.length === 0 && (
+                   <div className="flex flex-col items-center justify-center h-full text-center space-y-3 opacity-40">
+                      <div className="w-10 h-10 bg-zinc-50 rounded-2xl flex items-center justify-center border border-zinc-200 shadow-sm">
+                         <MessageCircle size={20} className="text-[#6366F1]" />
+                      </div>
+                      <p className="text-[9px] font-semibold text-zinc-900">Configure triggers to test DM ✨</p>
                    </div>
                 )}
             </div>
@@ -372,12 +456,16 @@ export default function AutomationPreview({
                <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-400 to-indigo-600 p-[1px] items-center justify-center flex shadow-sm">
                   <div className="w-full h-full bg-white rounded-full p-[0.5px]">
                       <div className="w-full h-full bg-zinc-100 rounded-full flex items-center justify-center text-[8px] font-semibold text-zinc-900 overflow-hidden">
-                         {aiName[0]}
+                         {activeProfilePic ? (
+                           <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                         ) : (
+                           activeUsername[0]?.toUpperCase()
+                         )}
                       </div>
                   </div>
                </div>
                <div className="flex-1 truncate">
-                  <p className="text-[10px] font-semibold text-zinc-900 leading-none truncate">{aiName}</p>
+                  <p className="text-[10px] font-semibold text-zinc-900 leading-none truncate">{activeUsername}</p>
                   <p className="text-[8px] text-zinc-500 font-normal leading-none mt-0.5">AI Assistant • Active</p>
                </div>
                <div className="flex items-center gap-3 text-zinc-900">
@@ -389,7 +477,7 @@ export default function AutomationPreview({
             <div className="flex-1 p-3 bg-white flex flex-col gap-3 overflow-y-auto no-scrollbar">
                <div className="flex flex-col items-center gap-2 my-4 px-4 text-center">
                   <div className="w-10 h-10 rounded-full bg-zinc-50 flex items-center justify-center border border-zinc-100 mb-0.5">
-                    <Brain size={20} className="text-zinc-400" />
+                     <Brain size={20} className="text-zinc-400" />
                   </div>
                   <p className="text-[9px] text-zinc-400 font-medium leading-relaxed">
                     This is an <span className="text-zinc-900 font-bold">AI Interactive Preview</span>. 
@@ -399,8 +487,12 @@ export default function AutomationPreview({
                </div>
 
                <div className="flex gap-1.5 animate-in fade-in slide-in-from-left-4 duration-500 items-end">
-                  <div className="w-5 h-5 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[7px] font-semibold text-zinc-900 shrink-0 shadow-sm">
-                    {aiName[0]}
+                  <div className="w-5 h-5 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[7px] font-semibold text-zinc-900 shrink-0 shadow-sm overflow-hidden">
+                     {activeProfilePic ? (
+                       <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                     ) : (
+                       activeUsername[0]?.toUpperCase()
+                     )}
                   </div>
                   <div className="max-w-[75%] bg-zinc-100 text-zinc-900 px-3 py-1.5 rounded-[16px] rounded-bl-[3px] text-[10px] font-medium leading-relaxed shadow-sm">
                     {getPersonaResponse("Hi! I'm your AI assistant. Type a question below to test how I talk!", aiPersona, aiUseEmojis)}
@@ -421,10 +513,10 @@ export default function AutomationPreview({
                   ))}
                   
                   {isTyping && (
-                    <div className="flex gap-1 animate-pulse ml-1.5">
-                       <div className="w-1 h-1 bg-zinc-300 rounded-full" />
-                       <div className="w-1 h-1 bg-zinc-300 rounded-full" style={{ animationDelay: '0.2s' }} />
-                       <div className="w-1 h-1 bg-zinc-300 rounded-full" style={{ animationDelay: '0.4s' }} />
+                    <div className="flex gap-1 animate-pulse ml-1.5 mt-2">
+                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-full" />
+                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-full" style={{ animationDelay: '0.2s' }} />
+                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-full" style={{ animationDelay: '0.4s' }} />
                     </div>
                   )}
                </div>
@@ -458,20 +550,24 @@ export default function AutomationPreview({
 
             {/* Story Image Background */}
             <div className="absolute inset-0 opacity-40 select-none">
-               <img src="https://images.unsplash.com/photo-1541339907198-e08756ebafe1?w=800&q=80" alt="story" className="w-full h-full object-cover" />
+               <img src="https://images.unsplash.com/photo-1541339907198-e08756ebafe1?w=800&q=80" alt="story" className="w-full h-full object-cover animate-in fade-in duration-500" />
             </div>
 
             {/* Header */}
             <div className="relative z-10 p-3 flex items-center justify-between">
                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full border border-[#6366F1] p-[0.5px]">
-                    <div className="w-full h-full rounded-full bg-zinc-200 overflow-hidden">
-                       <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&q=80" alt="me" className="w-full h-full object-cover" />
+                  <div className="w-6 h-6 rounded-full border border-[#6366F1] p-[0.5px] shrink-0">
+                    <div className="w-full h-full rounded-full bg-zinc-200 overflow-hidden flex items-center justify-center text-[8px] font-semibold text-zinc-900">
+                       {activeProfilePic ? (
+                         <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                       ) : (
+                         activeUsername[0]?.toUpperCase()
+                       )}
                     </div>
                   </div>
                   <div>
                     <div className="text-[10px] font-bold text-white flex items-center gap-1">
-                      {aiName} <span className="w-1 h-1 bg-white/40 rounded-full" /> <span className="text-white/60 font-medium">9h</span>
+                      {activeUsername} <span className="w-1 h-1 bg-white/40 rounded-full" /> <span className="text-white/60 font-medium">9h</span>
                     </div>
                     <div className="text-[8px] text-white/40 font-medium">Sponsored</div>
                   </div>
@@ -551,19 +647,23 @@ export default function AutomationPreview({
             <div className="px-3 py-2 flex items-center justify-between border-b border-zinc-100">
                <div className="flex items-center gap-2 truncate">
                   <div className="w-6 h-6 rounded-full bg-zinc-100 flex items-center justify-center text-[7px] font-semibold text-zinc-900 border border-zinc-200 overflow-hidden shadow-sm shrink-0">
-                    {aiName[0]}
+                    {activeProfilePic ? (
+                      <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                    ) : (
+                      activeUsername[0]?.toUpperCase()
+                    )}
                   </div>
-                  <span className="text-[10px] font-semibold text-zinc-900 truncate">{aiName}</span>
+                  <span className="text-[10px] font-semibold text-zinc-900 truncate">{activeUsername}</span>
                </div>
                <MoreHorizontal size={14} className="text-zinc-400 shrink-0" />
             </div>
 
-            <div className="aspect-square bg-zinc-50 border-b border-zinc-100 overflow-hidden relative select-none">
+            <div className="aspect-[4/3] max-h-[160px] bg-zinc-50 border-b border-zinc-100 overflow-hidden relative select-none">
               {postUrl ? (
                 <img src={postUrl} alt="Preview" className="w-full h-full object-cover animate-in fade-in duration-500" />
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center text-zinc-400 p-6 text-center bg-zinc-50/50">
-                  <Layout size={32} className="mb-1 text-zinc-300" />
+                  <Layout size={24} className="mb-1 text-zinc-300" />
                   <p className="text-[9px] font-semibold leading-relaxed">Select a post on the left to see it here</p>
                 </div>
               )}
@@ -571,17 +671,17 @@ export default function AutomationPreview({
 
             <div className="p-2.5 flex items-center justify-between border-b border-zinc-100 bg-white">
                <div className="flex items-center gap-3">
-                  <Heart size={16} className="text-zinc-900" />
-                  <MessageCircle size={16} className="text-zinc-900" />
-                  <Send size={16} className="text-zinc-900" />
+                  <Heart size={16} className="text-zinc-900 animate-in zoom-in-75 duration-300" />
+                  <MessageCircle size={16} className="text-zinc-900 animate-in zoom-in-75 duration-300 delay-75" />
+                  <Send size={16} className="text-zinc-900 animate-in zoom-in-75 duration-300 delay-150" />
                </div>
-               <Bookmark size={16} className="text-zinc-900" />
+               <Bookmark size={16} className="text-zinc-900 animate-in zoom-in-75 duration-300 delay-200" />
             </div>
 
             <div className="p-3.5 space-y-2 bg-white">
                <div className="text-[10px] font-semibold text-zinc-900">1,234 likes</div>
                <div className="text-[10px] leading-relaxed font-normal text-zinc-700">
-                  <span className="font-semibold text-zinc-900 mr-1.5">{aiName}</span>
+                  <span className="font-semibold text-zinc-900 mr-1.5">{activeUsername}</span>
                   <span>Automate your growth with Automixa 🚀</span>
                </div>
                
@@ -598,7 +698,7 @@ export default function AutomationPreview({
                           </p>
                           <p className="text-[8px] text-zinc-400 font-normal mt-0.5">1m • reply</p>
                        </div>
-                       <Heart size={10} className="text-zinc-300" />
+                       <Heart size={10} className="text-zinc-300 animate-pulse" />
                     </div>
                  </div>
                )}
@@ -607,11 +707,15 @@ export default function AutomationPreview({
                  <div className="ml-6 pt-1.5 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
                     <div className="flex items-start gap-2">
                        <div className="w-5 h-5 rounded-full bg-zinc-100 flex items-center justify-center text-[6px] font-semibold text-zinc-900 shrink-0 border border-zinc-200 overflow-hidden shadow-sm">
-                         {aiName[0]}
+                          {activeProfilePic ? (
+                            <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                          ) : (
+                            activeUsername[0]?.toUpperCase()
+                          )}
                        </div>
                        <div className="flex-1">
                           <p className="text-[10px] font-semibold text-zinc-900 leading-tight">
-                             <span className="mr-1.5 font-semibold">{aiName}</span>
+                             <span className="mr-1.5 font-semibold">{activeUsername}</span>
                              {publicReply}
                           </p>
                           <p className="text-[8px] text-zinc-400 font-normal mt-0.5">Just now • active</p>
