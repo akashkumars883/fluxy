@@ -452,7 +452,7 @@ export default function CampaignWizard({
           />
         )}
         <div
-          className={`max-w-[80%] ${isAI
+          className={`max-w-[90%] sm:max-w-[80%] ${isAI
             ? "text-zinc-800 text-[14.5px] font-medium leading-relaxed"
             : "bg-[#6366F1] text-white px-5 py-3 rounded-[22px] rounded-br-[6px] text-[14px] font-semibold shadow-sm"
             }`}
@@ -495,25 +495,44 @@ export default function CampaignWizard({
     switch (phase) {
       // ── Step 0: Select automation type ───────────────────
       case "select_type":
+        const handleAiBuildClick = (e) => {
+          if (currentPlan === "free") {
+            e.preventDefault();
+            onUpgradeClick?.("ai_builder");
+          }
+        };
+
         return (
           <motion.div key="sel-type" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2">
             {/* One-Shot AI Input */}
-            <form onSubmit={handleAiBuildSubmit} className="bg-white border border-zinc-200 rounded-[22px] p-4 shadow-sm space-y-3 text-left">
-              <div className="flex items-center gap-2 text-[#6366F1]">
-                <Sparkles size={16} />
-                <span className="text-[11px] font-bold uppercase tracking-wider">Build with Automixa AI</span>
+            <form 
+              onSubmit={currentPlan === "free" ? handleAiBuildClick : handleAiBuildSubmit} 
+              className={`bg-white border border-zinc-200 rounded-[22px] p-3 sm:p-4 shadow-sm space-y-3 text-left transition-all ${currentPlan === "free" ? "hover:border-[#6366F1]/50 cursor-pointer" : ""}`}
+              onClick={currentPlan === "free" ? handleAiBuildClick : undefined}
+            >
+              <div className="flex items-center justify-between text-[#6366F1]">
+                <div className="flex items-center gap-2">
+                  <Sparkles size={16} />
+                  <span className="text-[11px] font-bold uppercase tracking-wider">Build with Automixa AI</span>
+                </div>
+                {currentPlan === "free" && (
+                  <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[9px] font-bold rounded-md uppercase">Pro</span>
+                )}
               </div>
               <div className="relative flex items-center w-full bg-zinc-50 border border-zinc-200 rounded-xl overflow-hidden focus-within:border-[#6366F1] focus-within:bg-white transition-all">
                 <input
                   type="text"
                   value={aiBuildPrompt}
                   onChange={(e) => setAiBuildPrompt(e.target.value)}
-                  placeholder="Describe what you want to automate in 1 sentence..."
-                  className="flex-1 w-full pl-4 pr-12 py-3 text-sm outline-none bg-transparent font-medium"
+                  onClick={currentPlan === "free" ? handleAiBuildClick : undefined}
+                  readOnly={currentPlan === "free"}
+                  placeholder={currentPlan === "free" ? "Upgrade to Pro to unlock AI Builder" : "Describe what you want to automate in 1 sentence..."}
+                  className={`flex-1 w-full pl-4 pr-12 py-3 text-sm outline-none bg-transparent font-medium ${currentPlan === "free" ? "cursor-pointer text-zinc-400 placeholder:text-zinc-400" : ""}`}
                 />
                 <button
                   type="submit"
-                  disabled={!aiBuildPrompt.trim() || isAiBuilding}
+                  disabled={currentPlan === "free" || !aiBuildPrompt.trim() || isAiBuilding}
+                  onClick={currentPlan === "free" ? handleAiBuildClick : undefined}
                   className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 bg-zinc-950 text-white rounded-lg flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#6366F1]"
                 >
                   <ArrowRight size={15} />
@@ -540,7 +559,7 @@ export default function CampaignWizard({
                   <button
                     key={type.id}
                     onClick={() => handleSelectType(type)}
-                    className={`group flex items-start gap-4 p-4 rounded-[20px] border-2 text-left transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 ${isLocked
+                    className={`group flex items-start gap-3 sm:gap-4 p-3.5 sm:p-4 rounded-[20px] border-2 text-left transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 ${isLocked
                       ? "border-zinc-100 bg-zinc-50 opacity-80"
                       : `border-zinc-200 bg-white hover:border-[#6366F1] hover:bg-[#6366F1]/5`
                       }`}
@@ -659,7 +678,7 @@ export default function CampaignWizard({
       // ── Step 2.5: Intro Setup ─────────────────────────────
       case "intro_setup":
         return (
-          <motion.div key="intro_setup" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="bg-white border border-zinc-200 rounded-xl shadow-lg p-4 space-y-3 mt-2 animate-in fade-in duration-200">
+          <motion.div key="intro_setup" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="bg-white border border-zinc-200 rounded-xl shadow-lg p-3.5 sm:p-4 space-y-3 mt-2 animate-in fade-in duration-200">
             <div className="space-y-2.5 text-left">
               <div>
                 <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">
@@ -719,11 +738,19 @@ export default function CampaignWizard({
               </div>
               <button
                 type="button"
-                onClick={() => handleAiSuggest("dm", tempDM)}
-                disabled={isSuggesting}
-                className="shrink-0 px-3 py-1.5 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 hover:border-indigo-200 rounded-full text-[11px] font-bold text-indigo-600 shadow-sm transition-all flex items-center gap-1"
+                onClick={() => {
+                  if (currentPlan === "free") {
+                    onUpgradeClick?.("magic_write");
+                  } else {
+                    handleAiSuggest("dm", tempDM);
+                  }
+                }}
+                disabled={currentPlan !== "free" && isSuggesting}
+                className="shrink-0 px-3 py-1.5 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 hover:border-indigo-200 rounded-full text-[11px] font-bold text-indigo-600 shadow-sm transition-all flex items-center gap-1 cursor-pointer"
               >
-                <Sparkles size={12} /> Suggest with AI
+                <Sparkles size={12} /> 
+                <span>Suggest with AI</span>
+                {currentPlan === "free" && <span className="text-[10px]">👑</span>}
               </button>
             </div>
             <div className="relative flex items-end w-full bg-zinc-50 border border-zinc-200 rounded-xl focus-within:border-[#6366F1] focus-within:bg-white transition-all p-1.5">
@@ -786,21 +813,21 @@ export default function CampaignWizard({
       // ── Step 4: CTA Button ────────────────────────────────
       case "cta":
         return (
-          <motion.div key="cta" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="bg-white border border-zinc-200 rounded-[22px] shadow-lg p-4 space-y-3 mt-2">
-            <div className="grid grid-cols-2 gap-3">
+          <motion.div key="cta" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="bg-white border border-zinc-200 rounded-[22px] shadow-lg p-3.5 sm:p-4 space-y-3 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
               <input
                 type="text"
                 placeholder="Button text (e.g. Shop Now)"
                 value={tempBtnText}
                 onChange={(e) => setTempBtnText(e.target.value)}
-                className="px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-[14px] text-[14px] font-medium outline-none focus:border-[#6366F1] transition-all"
+                className="px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-[14px] text-[14.5px] font-medium outline-none focus:border-[#6366F1] transition-all"
               />
               <input
                 type="text"
                 placeholder="URL (https://...)"
                 value={tempBtnLink}
                 onChange={(e) => setTempBtnLink(e.target.value)}
-                className="px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-[14px] text-[14px] font-medium outline-none focus:border-[#6366F1] transition-all"
+                className="px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-[14px] text-[14.5px] font-medium outline-none focus:border-[#6366F1] transition-all"
               />
             </div>
             <div className="flex gap-2">
@@ -824,16 +851,24 @@ export default function CampaignWizard({
       // ── Step 5: Public reply ──────────────────────────────
       case "public_reply":
         return (
-          <motion.div key="pr" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 text-left bg-white border border-zinc-200 rounded-[22px] p-4 shadow-md animate-in fade-in duration-200">
+          <motion.div key="pr" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 text-left bg-white border border-zinc-200 rounded-[22px] p-3.5 sm:p-4 shadow-md animate-in fade-in duration-200">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Comment Reply Variations</span>
               <button
                 type="button"
-                onClick={() => handleAiSuggest("public_reply", publicReplyVariants[0] || "")}
-                disabled={isSuggesting}
-                className="px-3 py-1.5 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 hover:border-indigo-200 rounded-lg text-[11px] font-bold text-indigo-600 shadow-sm transition-all flex items-center gap-1"
+                onClick={() => {
+                  if (currentPlan === "free") {
+                    onUpgradeClick?.("magic_write");
+                  } else {
+                    handleAiSuggest("public_reply", publicReplyVariants[0] || "");
+                  }
+                }}
+                disabled={currentPlan !== "free" && isSuggesting}
+                className="px-3 py-1.5 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 hover:border-indigo-200 rounded-lg text-[11px] font-bold text-indigo-600 shadow-sm transition-all flex items-center gap-1 cursor-pointer"
               >
-                <Sparkles size={12} /> Suggest with AI
+                <Sparkles size={11} /> 
+                <span>Suggest with AI</span>
+                {currentPlan === "free" && <span className="text-[10px]">👑</span>}
               </button>
             </div>
 
@@ -1101,7 +1136,7 @@ export default function CampaignWizard({
       // ── FAQ setup ─────────────────────────────────────────
       case "faq_setup":
         return (
-          <motion.div key="faq" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 bg-white border border-zinc-200 rounded-[22px] p-4 shadow-lg">
+          <motion.div key="faq" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 bg-white border border-zinc-200 rounded-[22px] p-3.5 sm:p-4 shadow-lg">
             <div className="space-y-3 max-h-[260px] overflow-y-auto no-scrollbar">
               {tempFaqs.map((faq, idx) => (
                 <div key={idx} className="group relative p-4 bg-zinc-50 border border-zinc-200 rounded-[16px] space-y-2">
@@ -1146,7 +1181,7 @@ export default function CampaignWizard({
             {/* Persona */}
             <div className="space-y-2 border-t border-zinc-100 pt-3">
               <p className="text-[12px] font-bold text-zinc-500">AI Tone</p>
-              <div className="flex gap-2">
+              <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
                 {[
                   { id: "friendly", label: "Friendly 😊" },
                   { id: "professional", label: "Professional 🎩" },
@@ -1155,7 +1190,7 @@ export default function CampaignWizard({
                   <button
                     key={p.id}
                     onClick={() => setAiPersona(p.id)}
-                    className={`flex-1 py-2 text-[12px] font-bold rounded-[12px] border-2 transition-all ${aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-600"
+                    className={`py-2 text-[11px] sm:text-[12px] font-bold rounded-[12px] border-2 transition-all ${aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-600"
                       }`}
                   >
                     {p.label}
@@ -1177,7 +1212,7 @@ export default function CampaignWizard({
       // ── Sales setup ───────────────────────────────────────
       case "sales_setup":
         return (
-          <motion.div key="sales" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 bg-white border border-zinc-200 rounded-[22px] p-4 shadow-lg">
+          <motion.div key="sales" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 bg-white border border-zinc-200 rounded-[22px] p-3.5 sm:p-4 shadow-lg">
             <div className="space-y-2">
               <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Sales Goal</label>
               <textarea
@@ -1202,7 +1237,7 @@ export default function CampaignWizard({
             {/* Persona */}
             <div className="space-y-2">
               <p className="text-[12px] font-bold text-zinc-500">AI Persona</p>
-              <div className="flex gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[
                   { id: "friendly", label: "Friendly" },
                   { id: "professional", label: "Pro" },
@@ -1212,7 +1247,7 @@ export default function CampaignWizard({
                   <button
                     key={p.id}
                     onClick={() => setAiPersona(p.id)}
-                    className={`flex-1 py-2 text-[12px] font-bold rounded-[12px] border-2 transition-all ${aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-600"
+                    className={`py-2 text-[12px] font-bold rounded-[12px] border-2 transition-all ${aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-600"
                       }`}
                   >
                     {p.label}
@@ -1254,9 +1289,9 @@ export default function CampaignWizard({
   // Render
   // ─────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col h-full w-full max-w-[580px] mx-auto relative bg-transparent overflow-hidden">
+    <div className="flex flex-col h-full w-full max-w-[620px] mx-auto relative bg-transparent overflow-hidden">
       {/* ── Chat messages ──────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-4 no-scrollbar pb-8 bg-transparent">
+      <div className="flex-1 overflow-y-auto px-2.5 sm:px-6 py-4 space-y-4 no-scrollbar pb-8 bg-transparent">
         {/* Intro header — shown only at the very start */}
         {messages.length === 1 && !isTyping && (
           <motion.div
@@ -1306,7 +1341,7 @@ export default function CampaignWizard({
       </div>
 
       {/* ── Input panel (contextual) ────────────────────────── */}
-      <div className="shrink-0 px-4 sm:px-6 pb-3 pt-2 bg-transparent">
+      <div className="shrink-0 px-2.5 sm:px-6 pb-3 pt-2 bg-transparent">
         <AnimatePresence mode="wait">{renderInputPanel()}</AnimatePresence>
       </div>
     </div>
