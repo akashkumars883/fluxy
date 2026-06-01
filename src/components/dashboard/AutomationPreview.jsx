@@ -32,9 +32,34 @@ export default function AutomationPreview({
   const [isTyping, setIsTyping] = useState(false);
   const [introClicked, setIntroClicked] = useState(false);
 
+  // ── Comment simulator states ────────────────────────────
+  const [mockComments, setMockComments] = useState([]);
+  const [showPushNotification, setShowPushNotification] = useState(false);
+  const [notificationText, setNotificationText] = useState("");
+  const [commentInput, setCommentInput] = useState("");
+
   const [prevStrategy, setPrevStrategy] = useState(strategy);
   const [prevPostUrl, setPrevPostUrl] = useState(postUrl);
   const [prevKeyword, setPrevKeyword] = useState(keyword);
+
+  const handlePostCommentSubmit = (e) => {
+    if (e) e.preventDefault();
+    if (!commentInput.trim()) return;
+
+    const newComment = commentInput.trim();
+    setMockComments((prev) => [...prev, { sender: "follower_user", text: newComment }]);
+    setCommentInput("");
+
+    const isKeywordMatch = keyword && newComment.toLowerCase().includes(keyword.toLowerCase());
+
+    if (isKeywordMatch) {
+      setTimeout(() => {
+        setNotificationText(`Tap to open details!`);
+        setShowPushNotification(true);
+        setIntroClicked(false);
+      }, 1200);
+    }
+  };
 
   if (strategy !== prevStrategy || postUrl !== prevPostUrl) {
     setPrevStrategy(strategy);
@@ -45,6 +70,8 @@ export default function AutomationPreview({
   if (keyword !== prevKeyword) {
     setPrevKeyword(keyword);
     setIntroClicked(false);
+    setMockComments([]); // reset comments on keyword change
+    setShowPushNotification(false);
   }
 
   const formatIntroTitle = (title) => {
@@ -228,6 +255,38 @@ export default function AutomationPreview({
         <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-16 h-3 bg-zinc-950 rounded-full z-30 flex items-center justify-center">
           <div className="w-1 h-1 bg-[#0a0a0c] rounded-full absolute right-2" />
         </div>
+
+        {/* Dynamic iOS Push Notification Banner */}
+        {showPushNotification && (
+          <div 
+            onClick={() => {
+              setView("dm");
+              setShowPushNotification(false);
+            }}
+            className="absolute top-8 inset-x-2.5 z-[100] bg-white/95 border border-zinc-200 shadow-xl rounded-2xl p-2.5 flex gap-2 items-center cursor-pointer hover:scale-[1.01] transition-all animate-in slide-in-from-top-12 duration-500"
+          >
+            <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-400 to-indigo-600 p-[1px] flex items-center justify-center shadow-sm shrink-0">
+               <div className="w-full h-full bg-white rounded-full p-[0.5px]">
+                  <div className="w-full h-full bg-zinc-100 rounded-full flex items-center justify-center text-[9px] font-bold text-zinc-900 overflow-hidden">
+                     {activeProfilePic ? (
+                       <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover" />
+                     ) : (
+                       activeUsername[0]?.toUpperCase()
+                     )}
+                  </div>
+               </div>
+            </div>
+            <div className="flex-1 min-w-0 text-left">
+              <div className="flex items-center justify-between">
+                <span className="text-[9px] font-bold text-zinc-900">instagram</span>
+                <span className="text-[8px] text-zinc-400 font-semibold">now</span>
+              </div>
+              <p className="text-[8px] text-zinc-600 font-medium truncate leading-tight mt-0.5">
+                @{activeUsername}: Tap to see details!
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Status Bar */}
         <div className="h-8 bg-white flex items-center justify-between px-6 pt-1.5 shrink-0 relative z-20 select-none">
@@ -628,14 +687,14 @@ export default function AutomationPreview({
                      />
                   </div>
                   <div className="flex items-center gap-3 text-white">
-                     {chatInput.trim() ? (
-                        <button type="submit" className="text-[#6366F1] font-bold text-[10px] bg-white px-3 py-1.5 rounded-full shadow-lg">Send</button>
-                     ) : (
-                        <>
-                           <Heart size={18} />
-                           <Send size={18} className="-rotate-12" />
-                        </>
-                     )}
+                      {chatInput.trim() ? (
+                         <button type="submit" className="text-[#6366F1] font-bold text-[10px] bg-white px-3 py-1.5 rounded-full shadow-lg">Send</button>
+                      ) : (
+                         <>
+                            <Heart size={18} />
+                            <Send size={18} className="-rotate-12" />
+                         </>
+                      )}
                   </div>
                </form>
             </div>
@@ -643,86 +702,147 @@ export default function AutomationPreview({
         )}
 
         {view === 'post' && (
-          <div className="flex-1 overflow-y-auto no-scrollbar bg-white">
-            <div className="px-3 py-2 flex items-center justify-between border-b border-zinc-100">
-               <div className="flex items-center gap-2 truncate">
-                  <div className="w-6 h-6 rounded-full bg-zinc-100 flex items-center justify-center text-[7px] font-semibold text-zinc-900 border border-zinc-200 overflow-hidden shadow-sm shrink-0">
-                    {activeProfilePic ? (
-                      <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
-                    ) : (
-                      activeUsername[0]?.toUpperCase()
-                    )}
-                  </div>
-                  <span className="text-[10px] font-semibold text-zinc-900 truncate">{activeUsername}</span>
-               </div>
-               <MoreHorizontal size={14} className="text-zinc-400 shrink-0" />
-            </div>
-
-            <div className="aspect-square w-full bg-zinc-50 border-b border-zinc-100 overflow-hidden relative select-none">
-              {postUrl ? (
-                <img src={postUrl} alt="Preview" className="w-full h-full object-cover animate-in fade-in duration-500" />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center text-zinc-400 p-6 text-center bg-zinc-50/50">
-                  <Layout size={32} className="mb-1 text-zinc-300" />
-                  <p className="text-[9px] font-semibold leading-relaxed">Select a post on the left to see it here</p>
-                </div>
-              )}
-            </div>
-
-            <div className="p-2.5 flex items-center justify-between border-b border-zinc-100 bg-white">
-               <div className="flex items-center gap-3">
-                  <Heart size={16} className="text-zinc-900 animate-in zoom-in-75 duration-300" />
-                  <MessageCircle size={16} className="text-zinc-900 animate-in zoom-in-75 duration-300 delay-75" />
-                  <Send size={16} className="text-zinc-900 animate-in zoom-in-75 duration-300 delay-150" />
-               </div>
-               <Bookmark size={16} className="text-zinc-900 animate-in zoom-in-75 duration-300 delay-200" />
-            </div>
-
-            <div className="p-3.5 space-y-2 bg-white">
-               <div className="text-[10px] font-semibold text-zinc-900">1,234 likes</div>
-               <div className="text-[10px] leading-relaxed font-normal text-zinc-700">
-                  <span className="font-semibold text-zinc-900 mr-1.5">{activeUsername}</span>
-                  <span>Automate your growth with Automixa 🚀</span>
-               </div>
-               
-               {keyword && (
-                 <div className="pt-2 border-t border-zinc-200/60 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <div className="flex items-start gap-2">
-                       <div className="w-5 h-5 rounded-full bg-[#6366F1] text-white flex items-center justify-center text-[7px] font-semibold shrink-0 shadow-sm">
-                         User
-                       </div>
-                       <div className="flex-1">
-                          <p className="text-[10px] font-semibold text-zinc-900 leading-tight">
-                             <span className="mr-1.5 font-normal">follower_user</span>
-                             <span className="text-[#6366F1]">{keyword}</span>
-                          </p>
-                          <p className="text-[8px] text-zinc-400 font-normal mt-0.5">1m • reply</p>
-                       </div>
-                       <Heart size={10} className="text-zinc-300 animate-pulse" />
+          <div className="flex-1 bg-white flex flex-col justify-between overflow-hidden">
+            <div className="flex-1 overflow-y-auto no-scrollbar">
+              <div className="px-3 py-2 flex items-center justify-between border-b border-zinc-100">
+                 <div className="flex items-center gap-2 truncate">
+                    <div className="w-6 h-6 rounded-full bg-zinc-100 flex items-center justify-center text-[7px] font-semibold text-zinc-900 border border-zinc-200 overflow-hidden shadow-sm shrink-0">
+                      {activeProfilePic ? (
+                        <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                      ) : (
+                        activeUsername[0]?.toUpperCase()
+                      )}
                     </div>
+                    <span className="text-[10px] font-semibold text-zinc-900 truncate">{activeUsername}</span>
                  </div>
-               )}
+                 <MoreHorizontal size={14} className="text-zinc-400 shrink-0" />
+              </div>
 
-               {publicReply && (
-                 <div className="ml-6 pt-1.5 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
-                    <div className="flex items-start gap-2">
-                       <div className="w-5 h-5 rounded-full bg-zinc-100 flex items-center justify-center text-[6px] font-semibold text-zinc-900 shrink-0 border border-zinc-200 overflow-hidden shadow-sm">
-                          {activeProfilePic ? (
-                            <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
-                          ) : (
-                            activeUsername[0]?.toUpperCase()
-                          )}
-                       </div>
-                       <div className="flex-1">
-                          <p className="text-[10px] font-semibold text-zinc-900 leading-tight">
-                             <span className="mr-1.5 font-semibold">{activeUsername}</span>
-                             {publicReply}
-                          </p>
-                          <p className="text-[8px] text-zinc-400 font-normal mt-0.5">Just now • active</p>
-                       </div>
-                    </div>
+              <div className="aspect-square w-full bg-zinc-50 border-b border-zinc-100 overflow-hidden relative select-none">
+                {postUrl ? (
+                  <img src={postUrl} alt="Preview" className="w-full h-full object-cover animate-in fade-in duration-500" />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-zinc-400 p-6 text-center bg-zinc-50/50">
+                    <Layout size={32} className="mb-1 text-zinc-300" />
+                    <p className="text-[9px] font-semibold leading-relaxed">Select a post on the left to see it here</p>
                   </div>
-               )}
+                )}
+              </div>
+
+              <div className="p-2.5 flex items-center justify-between border-b border-zinc-100 bg-white">
+                 <div className="flex items-center gap-3">
+                    <Heart size={16} className="text-zinc-900 animate-in zoom-in-75 duration-300" />
+                    <MessageCircle size={16} className="text-zinc-900 animate-in zoom-in-75 duration-300 delay-75" />
+                    <Send size={16} className="text-zinc-900 animate-in zoom-in-75 duration-300 delay-150" />
+                 </div>
+                 <Bookmark size={16} className="text-zinc-900 animate-in zoom-in-75 duration-300 delay-200" />
+              </div>
+
+              <div className="p-3.5 space-y-2 bg-white text-left">
+                 <div className="text-[10px] font-semibold text-zinc-900">1,234 likes</div>
+                 <div className="text-[10px] leading-relaxed font-normal text-zinc-700">
+                    <span className="font-semibold text-zinc-900 mr-1.5">{activeUsername}</span>
+                    <span>Automate your growth with Automixa 🚀</span>
+                 </div>
+
+                 {/* Render dynamic mock comments */}
+                 {mockComments.map((cmt, cIdx) => {
+                   const isKeyword = keyword && cmt.text.toLowerCase().includes(keyword.toLowerCase());
+                   return (
+                     <div key={cIdx} className="space-y-2 pt-2 border-t border-zinc-100 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                       <div className="flex items-start gap-2">
+                         <div className="w-5 h-5 rounded-full bg-[#6366F1] text-white flex items-center justify-center text-[7px] font-bold shrink-0 shadow-sm">
+                           U
+                         </div>
+                         <div className="flex-grow">
+                           <p className="text-[10px] font-semibold text-zinc-900 leading-tight">
+                             <span className="mr-1.5 font-normal">{cmt.sender}</span>
+                             <span className={isKeyword ? "text-[#6366F1] font-bold animate-pulse" : ""}>{cmt.text}</span>
+                           </p>
+                           <p className="text-[8px] text-zinc-400 font-normal mt-0.5">Just now • reply</p>
+                         </div>
+                         <Heart size={10} className="text-zinc-300 hover:text-red-500 cursor-pointer" />
+                       </div>
+
+                       {isKeyword && publicReply && (
+                         <div className="ml-6 pt-1.5 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-1000">
+                           <div className="flex items-start gap-2">
+                             <div className="w-5 h-5 rounded-full bg-zinc-100 flex items-center justify-center text-[6px] font-semibold text-zinc-900 shrink-0 border border-zinc-200 overflow-hidden shadow-sm">
+                               {activeProfilePic ? (
+                                 <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                               ) : (
+                                 activeUsername[0]?.toUpperCase()
+                               )}
+                             </div>
+                             <div className="flex-1">
+                               <p className="text-[10px] font-semibold text-zinc-900 leading-tight">
+                                 <span className="mr-1.5 font-semibold">{activeUsername}</span>
+                                 {Array.isArray(publicReply) ? publicReply[Math.floor(Math.random() * publicReply.length)] : publicReply}
+                               </p>
+                               <p className="text-[8px] text-zinc-400 font-normal mt-0.5">Just now • active</p>
+                             </div>
+                           </div>
+                         </div>
+                       )}
+                     </div>
+                   );
+                 })}
+                 
+                 {mockComments.length === 0 && keyword && (
+                   <div className="pt-2 border-t border-zinc-200/60 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                      <div className="flex items-start gap-2">
+                         <div className="w-5 h-5 rounded-full bg-[#6366F1] text-white flex items-center justify-center text-[7px] font-semibold shrink-0 shadow-sm">
+                           User
+                         </div>
+                         <div className="flex-1">
+                            <p className="text-[10px] font-semibold text-zinc-900 leading-tight">
+                               <span className="mr-1.5 font-normal">follower_user</span>
+                               <span className="text-[#6366F1] font-bold">{keyword}</span>
+                            </p>
+                            <p className="text-[8px] text-zinc-400 font-normal mt-0.5">1m • reply</p>
+                         </div>
+                         <Heart size={10} className="text-zinc-300 animate-pulse" />
+                      </div>
+ 
+                      {publicReply && (
+                        <div className="ml-6 pt-1.5 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
+                           <div className="flex items-start gap-2">
+                              <div className="w-5 h-5 rounded-full bg-zinc-100 flex items-center justify-center text-[6px] font-semibold text-zinc-900 shrink-0 border border-zinc-200 overflow-hidden shadow-sm">
+                                {activeProfilePic ? (
+                                  <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                                ) : (
+                                  activeUsername[0]?.toUpperCase()
+                                )}
+                              </div>
+                              <div className="flex-grow">
+                                 <p className="text-[10px] font-semibold text-zinc-900 leading-tight">
+                                    <span className="mr-1.5 font-semibold">{activeUsername}</span>
+                                    {Array.isArray(publicReply) ? publicReply[0] : publicReply}
+                                 </p>
+                                 <p className="text-[8px] text-zinc-400 font-normal mt-0.5">1m • active</p>
+                              </div>
+                           </div>
+                        </div>
+                      )}
+                   </div>
+                 )}
+              </div>
+            </div>
+
+            {/* Simulated comment input form */}
+            <div className="p-2 bg-white border-t border-zinc-100 shrink-0">
+               <form onSubmit={handlePostCommentSubmit} className="border border-zinc-200 rounded-[20px] px-3 py-1 flex items-center gap-2 bg-zinc-50 focus-within:bg-white focus-within:border-zinc-300 transition-all">
+                  <input 
+                    type="text"
+                    value={commentInput}
+                    onChange={(e) => setCommentInput(e.target.value)}
+                    placeholder="Comment as follower_user..."
+                    className="flex-1 bg-transparent border-none text-[10px] text-zinc-900 font-medium focus:ring-0 h-7 outline-none"
+                  />
+                  <button type="submit" disabled={!commentInput.trim()} className="text-[#3897f0] font-bold text-[10px] disabled:opacity-40">
+                    Post
+                  </button>
+               </form>
             </div>
           </div>
         )}

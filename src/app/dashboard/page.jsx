@@ -329,8 +329,12 @@ export default function Dashboard() {
       },
       variants: {
         dm: [response.trim()],
-        public: options.public_reply ? [options.public_reply.trim()] : []
-      }
+        public: Array.isArray(options.public_reply)
+          ? options.public_reply.map((r) => r.trim()).filter(Boolean)
+          : options.public_reply
+          ? [options.public_reply.trim()]
+          : [],
+      },
     };
 
     try {

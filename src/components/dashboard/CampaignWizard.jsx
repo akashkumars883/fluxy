@@ -103,6 +103,15 @@ export default function CampaignWizard({
   const [phase, setPhase] = useState("select_type"); // select_type | select_post | keyword | dm_message | cta | public_reply | follow_gate | faq_setup | story_setup | sales_setup | done
   const [selectedType, setSelectedType] = useState(null);
 
+  // ── AI Setup states ──────────────────────────────────────
+  const [isAiBuilding, setIsAiBuilding] = useState(false);
+  const [aiBuildPrompt, setAiBuildPrompt] = useState("");
+  const [aiBuildError, setAiBuildError] = useState("");
+
+  const [suggestedTexts, setSuggestedTexts] = useState([]);
+  const [isSuggesting, setIsSuggesting] = useState(false);
+  const [suggestType, setSuggestType] = useState("");
+
   // ── Field state ─────────────────────────────────────────
   const [tempKeyword, setTempKeyword] = useState("");
   const [tempDM, setTempDM] = useState("");
@@ -113,6 +122,7 @@ export default function CampaignWizard({
   const [tempBtnText, setTempBtnText] = useState("");
   const [tempBtnLink, setTempBtnLink] = useState("");
   const [tempPublicReply, setTempPublicReply] = useState("");
+  const [publicReplyVariants, setPublicReplyVariants] = useState(["Sent! Check DMs 📬"]);
   const [tempFaqs, setTempFaqs] = useState([{ q: "", a: "" }]);
   const [storyCondition, setStoryCondition] = useState("ANY");
   const [storyTriggerType, setStoryTriggerType] = useState("REPLY");
@@ -162,6 +172,99 @@ export default function CampaignWizard({
   // Handlers
   // ─────────────────────────────────────────────────────────
 
+  // ── AI Setup handlers ───────────────────────────────────
+  const handleAiBuildSubmit = async (e) => {
+    if (e) e.preventDefault();
+    if (!aiBuildPrompt.trim() || isAiBuilding) return;
+
+    setIsAiBuilding(true);
+    setAiBuildError("");
+    userSay(`AI build request: "${aiBuildPrompt.trim()}"`);
+
+    try {
+      const res = await fetch("/api/ai/autofill", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: aiBuildPrompt.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to generate campaign");
+
+      if (data.success) {
+        const generatedStrategy = data.campaignStrategy || "comment_dm";
+        const matchedType = AUTOMATION_TYPES.find(t => t.id === generatedStrategy) || AUTOMATION_TYPES[0];
+        setSelectedType(matchedType);
+
+        // Update campaign values
+        onChange({
+          keyword: (data.keyword || "OFFER").toLowerCase(),
+          response: data.response || "Here is your access!",
+          publicReply: [data.publicReply || "Done! Check your DMs 📬"],
+          buttonText: data.buttonText || "Get Access",
+          buttonLink: data.buttonLink || "https://example.com",
+          followerGate: !!data.followerGate,
+          campaignStrategy: generatedStrategy,
+          introMessage: `Hey {name}! 👋 Thanks for the comment! Tap the button below and I'll send you the access right away. ⚡`,
+          introButtonText: "Send me the access"
+        });
+
+        // Set local state variables as well
+        setTempKeyword("");
+        setTempDM("");
+        setTempBtnText("");
+        setTempBtnLink("");
+        setTempPublicReply("");
+        setPublicReplyVariants([data.publicReply || "Done! Check your DMs 📬"]);
+
+        setAiBuildPrompt("");
+
+        aiSay([
+          "✨ I've designed your campaign automation using Automixa AI!",
+          `Keyword: "${(data.keyword || "OFFER").toLowerCase()}" | DM: "${data.response}"`,
+          "I configured the initial Intro Greeting Card, CTA buttons, and a public comment reply. You can test it live in the iPhone preview on the right!",
+        ], "done", 1200);
+      } else {
+        throw new Error("Invalid response schema from AI Copilot");
+      }
+    } catch (err) {
+      console.error(err);
+      setAiBuildError(err.message || "Failed to build campaign. Please try a different prompt.");
+      aiSay("⚠️ I ran into an error generating that automation. Let's try again, or you can build it step-by-step using a template below.", "select_type", 1000);
+    } finally {
+      setIsAiBuilding(false);
+    }
+  };
+
+  const handleAiSuggest = async (type, currentText) => {
+    if (isSuggesting) return;
+    setIsSuggesting(true);
+    setSuggestedTexts([]);
+    setSuggestType(type);
+
+    try {
+      const res = await fetch("/api/ai/suggest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: currentText || (type === "public_reply" ? "Check your DMs 📬" : "Here is the access link!"),
+          type,
+          campaignName,
+          keyword: values.keyword
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.suggestions) {
+        setSuggestedTexts(data.suggestions);
+      } else {
+        throw new Error(data.error || "Suggestions request failed");
+      }
+    } catch (err) {
+      console.error("AI Suggestion failed:", err);
+    } finally {
+      setIsSuggesting(false);
+    }
+  };
+
   const handleSelectType = (type) => {
     if (type.isPremium && currentPlan === "free") {
       onUpgradeClick?.(type.id);
@@ -198,7 +301,7 @@ export default function CampaignWizard({
   };
 
   const handleConfirmIntro = () => {
-    onChange({ 
+    onChange({
       introMessage: tempIntroMessage.trim(),
       introButtonText: tempIntroBtnText.trim()
     });
@@ -227,16 +330,27 @@ export default function CampaignWizard({
   };
 
   const handleConfirmPublicReply = (reply) => {
-    const finalReply = reply || tempPublicReply;
-    if (!finalReply.trim()) return;
-    onChange({ publicReply: finalReply.trim() });
-    userSay(finalReply.trim());
+    let finalReplies = [];
+    if (reply) {
+      finalReplies = [reply.trim()];
+    } else {
+      finalReplies = publicReplyVariants.filter(r => r.trim() !== "");
+      if (finalReplies.length === 0 && tempPublicReply.trim()) {
+        finalReplies = [tempPublicReply.trim()];
+      }
+    }
+
+    if (finalReplies.length === 0) return;
+
+    onChange({ publicReply: finalReplies });
+    userSay(finalReplies.join(" | "));
     setTempPublicReply("");
+    setSuggestedTexts([]);
     aiSay("Should I enable **Follow Gate**? — Users must follow your page before receiving the DM.", "follow_gate");
   };
 
   const handleConfirmFollowGate = (enable, customMsg) => {
-    onChange({ 
+    onChange({
       followerGate: enable,
       followGateMessage: enable ? (customMsg || "").trim() : ""
     });
@@ -331,16 +445,16 @@ export default function CampaignWizard({
         className={`flex ${isAI ? "justify-start" : "justify-end"}`}
       >
         {isAI && (
-          <img 
-            src="/logo.png" 
-            alt="Automixa AI" 
-            className="w-8 h-8 object-contain shrink-0 mr-3 mt-0.5 select-none" 
+          <img
+            src="/logo.png"
+            alt="Automixa AI"
+            className="w-8 h-8 object-contain shrink-0 mr-3 mt-0.5 select-none"
           />
         )}
         <div
           className={`max-w-[80%] ${isAI
-              ? "text-zinc-800 text-[14.5px] font-medium leading-relaxed"
-              : "bg-[#6366F1] text-white px-5 py-3 rounded-[22px] rounded-br-[6px] text-[14px] font-semibold shadow-sm"
+            ? "text-zinc-800 text-[14.5px] font-medium leading-relaxed"
+            : "bg-[#6366F1] text-white px-5 py-3 rounded-[22px] rounded-br-[6px] text-[14px] font-semibold shadow-sm"
             }`}
         >
           {msg.text.split("\n").map((line, i) => (
@@ -361,46 +475,95 @@ export default function CampaignWizard({
     );
   };
 
-  // ─────────────────────────────────────────────────────────
-  // Render input panels (phase-based)
-  // ─────────────────────────────────────────────────────────
   const renderInputPanel = () => {
+    if (isAiBuilding) {
+      return (
+        <motion.div key="ai-loading" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center p-8 bg-white border border-zinc-200 rounded-[22px] shadow-lg text-center space-y-4">
+          <div className="w-12 h-12 bg-[#6366F1]/10 text-[#6366F1] rounded-2xl flex items-center justify-center border border-[#6366F1]/20">
+            <Sparkles className="animate-spin text-[#6366F1]" size={24} />
+          </div>
+          <div>
+            <h4 className="text-[14px] font-bold text-zinc-950">Automixa AI is building...</h4>
+            <p className="text-[11px] text-zinc-500 mt-1 font-medium leading-relaxed">Drafting copy, configuring triggers, and building your preview.</p>
+          </div>
+        </motion.div>
+      );
+    }
+
     if (isTyping) return null;
 
     switch (phase) {
       // ── Step 0: Select automation type ───────────────────
       case "select_type":
         return (
-          <motion.div key="sel-type" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
-            {AUTOMATION_TYPES.map((type) => {
-              const isLocked = type.isPremium && currentPlan === "free";
-              return (
+          <motion.div key="sel-type" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2">
+            {/* One-Shot AI Input */}
+            <form onSubmit={handleAiBuildSubmit} className="bg-white border border-zinc-200 rounded-[22px] p-4 shadow-sm space-y-3 text-left">
+              <div className="flex items-center gap-2 text-[#6366F1]">
+                <Sparkles size={16} />
+                <span className="text-[11px] font-bold uppercase tracking-wider">Build with Automixa AI</span>
+              </div>
+              <div className="relative flex items-center w-full bg-zinc-50 border border-zinc-200 rounded-xl overflow-hidden focus-within:border-[#6366F1] focus-within:bg-white transition-all">
+                <input
+                  type="text"
+                  value={aiBuildPrompt}
+                  onChange={(e) => setAiBuildPrompt(e.target.value)}
+                  placeholder="Describe what you want to automate in 1 sentence..."
+                  className="flex-1 w-full pl-4 pr-12 py-3 text-sm outline-none bg-transparent font-medium"
+                />
                 <button
-                  key={type.id}
-                  onClick={() => handleSelectType(type)}
-                  className={`group flex items-start gap-4 p-4 rounded-[20px] border-2 text-left transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 ${isLocked
+                  type="submit"
+                  disabled={!aiBuildPrompt.trim() || isAiBuilding}
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 bg-zinc-950 text-white rounded-lg flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#6366F1]"
+                >
+                  <ArrowRight size={15} />
+                </button>
+              </div>
+              {aiBuildError && (
+                <p className="text-[11px] text-rose-500 font-semibold px-1">{aiBuildError}</p>
+              )}
+              <p className="text-[10px] text-zinc-400 font-medium px-1">
+                e.g., "Send a VIP discount code when someone comments 'COUPON'"
+              </p>
+            </form>
+
+            <div className="relative flex py-1 items-center">
+              <div className="flex-grow border-t border-zinc-200"></div>
+              <span className="flex-shrink mx-4 text-zinc-400 text-[10px] font-bold uppercase tracking-wider">Or start with a template</span>
+              <div className="flex-grow border-t border-zinc-200"></div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {AUTOMATION_TYPES.map((type) => {
+                const isLocked = type.isPremium && currentPlan === "free";
+                return (
+                  <button
+                    key={type.id}
+                    onClick={() => handleSelectType(type)}
+                    className={`group flex items-start gap-4 p-4 rounded-[20px] border-2 text-left transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 ${isLocked
                       ? "border-zinc-100 bg-zinc-50 opacity-80"
                       : `border-zinc-200 bg-white hover:border-[#6366F1] hover:bg-[#6366F1]/5`
-                    }`}
-                >
-                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${type.bg} ${type.color} group-hover:bg-[#6366F1] group-hover:text-white transition-colors`}>
-                    <type.icon size={20} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-[13px] font-bold text-zinc-900 group-hover:text-[#6366F1] transition-colors">{type.title}</span>
-                      {type.isAI && (
-                        <span className="px-1.5 py-0.5 bg-gradient-to-r from-[#6366F1] to-purple-500 text-white text-[9px] font-semibold rounded-md">AI</span>
-                      )}
-                      {isLocked && (
-                        <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[9px] font-bold rounded-md uppercase">Pro</span>
-                      )}
+                      }`}
+                  >
+                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${type.bg} ${type.color} group-hover:bg-[#6366F1] group-hover:text-white transition-colors`}>
+                      <type.icon size={20} />
                     </div>
-                    <p className="text-[11px] text-zinc-500 font-medium mt-0.5 leading-snug">{type.desc}</p>
-                  </div>
-                </button>
-              );
-            })}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-[13px] font-bold text-zinc-900 group-hover:text-[#6366F1] transition-colors">{type.title}</span>
+                        {type.isAI && (
+                          <span className="px-1.5 py-0.5 bg-gradient-to-r from-[#6366F1] to-purple-500 text-white text-[9px] font-semibold rounded-md">AI</span>
+                        )}
+                        {isLocked && (
+                          <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[9px] font-bold rounded-md uppercase">Pro</span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-zinc-500 font-medium mt-0.5 leading-snug">{type.desc}</p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </motion.div>
         );
 
@@ -412,8 +575,8 @@ export default function CampaignWizard({
               <button
                 onClick={() => onSelectPosts([])}
                 className={`relative flex flex-col items-center justify-center aspect-square rounded-[12px] border-2 transition-all gap-1.5 ${selectedPosts.length === 0
-                    ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1] shadow-md shadow-[#6366F1]/10"
-                    : "border-zinc-200 bg-white hover:border-zinc-300 text-zinc-500"
+                  ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1] shadow-md shadow-[#6366F1]/10"
+                  : "border-zinc-200 bg-white hover:border-zinc-300 text-zinc-500"
                   }`}
               >
                 <Globe size={18} />
@@ -540,17 +703,28 @@ export default function CampaignWizard({
       // ── Step 3: DM message ────────────────────────────────
       case "dm_message":
         return (
-          <motion.div key="dm" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-3 mt-2">
-            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-              {DM_SUGGESTIONS.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setTempDM(s)}
-                  className="shrink-0 px-4 py-2 bg-white border border-zinc-200 hover:border-[#6366F1] hover:text-[#6366F1] rounded-full text-[13px] font-semibold text-zinc-700 shadow-sm transition-all"
-                >
-                  {s}
-                </button>
-              ))}
+          <motion.div key="dm" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-3 mt-2 text-left">
+            <div className="flex gap-2 items-center justify-between overflow-x-auto no-scrollbar pb-1">
+              <div className="flex gap-1">
+                {DM_SUGGESTIONS.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setTempDM(s)}
+                    className="shrink-0 px-3.5 py-1.5 bg-white border border-zinc-200 hover:border-[#6366F1] hover:text-[#6366F1] rounded-full text-[12px] font-semibold text-zinc-700 shadow-sm transition-all"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => handleAiSuggest("dm", tempDM)}
+                disabled={isSuggesting}
+                className="shrink-0 px-3 py-1.5 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 hover:border-indigo-200 rounded-full text-[11px] font-bold text-indigo-600 shadow-sm transition-all flex items-center gap-1"
+              >
+                <Sparkles size={12} /> Suggest with AI
+              </button>
             </div>
             <div className="relative flex items-end w-full bg-zinc-50 border border-zinc-200 rounded-xl focus-within:border-[#6366F1] focus-within:bg-white transition-all p-1.5">
               <textarea
@@ -574,6 +748,38 @@ export default function CampaignWizard({
                 <ArrowRight size={15} />
               </button>
             </div>
+
+            {isSuggesting && suggestType === "dm" && (
+              <div className="flex items-center justify-center py-4 bg-zinc-50 border border-dashed border-zinc-200 rounded-xl animate-pulse">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                  <span className="text-xs font-semibold text-zinc-500">Generating copy variants...</span>
+                </div>
+              </div>
+            )}
+
+            {suggestedTexts.length > 0 && suggestType === "dm" && (
+              <div className="p-3 bg-indigo-50/50 border border-indigo-100/60 rounded-xl space-y-2 text-left animate-in fade-in duration-200">
+                <p className="text-[10px] font-bold text-indigo-600 flex items-center gap-1 uppercase tracking-wider">
+                  <Sparkles size={11} /> AI Suggestions (click to apply)
+                </p>
+                <div className="space-y-1.5">
+                  {suggestedTexts.map((txt, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => {
+                        setTempDM(txt);
+                        setSuggestedTexts([]);
+                      }}
+                      className="w-full text-left p-2.5 bg-white hover:bg-indigo-50/60 border border-zinc-100 hover:border-indigo-200 rounded-xl text-xs font-medium text-zinc-700 transition-all leading-relaxed shadow-sm block"
+                    >
+                      {txt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </motion.div>
         );
 
@@ -618,40 +824,134 @@ export default function CampaignWizard({
       // ── Step 5: Public reply ──────────────────────────────
       case "public_reply":
         return (
-          <motion.div key="pr" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-3 mt-2">
-            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-              {PUBLIC_REPLY_SUGGESTIONS.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => handleConfirmPublicReply(s)}
-                  className="shrink-0 px-4 py-2 bg-white border border-zinc-200 hover:border-[#6366F1] hover:text-[#6366F1] rounded-full text-[13px] font-semibold text-zinc-700 shadow-sm transition-all"
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-            <div className="relative flex items-end w-full bg-zinc-50 border border-zinc-200 rounded-xl focus-within:border-[#6366F1] focus-within:bg-white transition-all p-1.5">
-              <textarea
-                value={tempPublicReply}
-                onChange={(e) => setTempPublicReply(e.target.value)}
-                placeholder="Public comment reply..."
-                rows={2}
-                className="flex-1 w-full px-3 py-2 text-sm outline-none bg-transparent resize-none max-h-28 min-h-[44px] font-medium"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleConfirmPublicReply();
-                  }
-                }}
-              />
+          <motion.div key="pr" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 text-left bg-white border border-zinc-200 rounded-[22px] p-4 shadow-md animate-in fade-in duration-200">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Comment Reply Variations</span>
               <button
-                onClick={() => handleConfirmPublicReply()}
-                disabled={!tempPublicReply.trim()}
-                className="shrink-0 mb-0.5 w-8 h-8 bg-zinc-950 text-white rounded-lg flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#6366F1]"
+                type="button"
+                onClick={() => handleAiSuggest("public_reply", publicReplyVariants[0] || "")}
+                disabled={isSuggesting}
+                className="px-3 py-1.5 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 hover:border-indigo-200 rounded-lg text-[11px] font-bold text-indigo-600 shadow-sm transition-all flex items-center gap-1"
               >
-                <ArrowRight size={15} />
+                <Sparkles size={12} /> Suggest with AI
               </button>
             </div>
+
+            {/* List of variations */}
+            <div className="space-y-2 max-h-[160px] overflow-y-auto no-scrollbar pr-1">
+              {publicReplyVariants.map((variant, idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={variant}
+                    onChange={(e) => {
+                      const updated = [...publicReplyVariants];
+                      updated[idx] = e.target.value;
+                      setPublicReplyVariants(updated);
+                    }}
+                    placeholder={`e.g. Sent! Check your DMs 📬`}
+                    className="flex-1 px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6366F1] focus:bg-white transition-all"
+                  />
+                  {publicReplyVariants.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => setPublicReplyVariants(publicReplyVariants.filter((_, i) => i !== idx))}
+                      className="p-2 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {publicReplyVariants.length < 5 && (
+              <button
+                type="button"
+                onClick={() => setPublicReplyVariants([...publicReplyVariants, ""])}
+                className="w-full py-2 border border-dashed border-zinc-200 rounded-xl text-xs font-bold text-zinc-500 hover:border-[#6366F1] hover:text-[#6366F1] transition-all flex items-center justify-center gap-1"
+              >
+                <Plus size={13} strokeWidth={2.5} /> Add variation reply
+              </button>
+            )}
+
+            {/* Loader / AI Suggestions */}
+            {isSuggesting && suggestType === "public_reply" && (
+              <div className="flex items-center justify-center py-4 bg-zinc-50 border border-dashed border-zinc-200 rounded-xl animate-pulse">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                  <span className="text-xs font-semibold text-zinc-500">Generating comment variations...</span>
+                </div>
+              </div>
+            )}
+
+            {suggestedTexts.length > 0 && suggestType === "public_reply" && (
+              <div className="p-3 bg-indigo-50/50 border border-indigo-100/60 rounded-xl space-y-2 animate-in fade-in duration-200">
+                <p className="text-[10px] font-bold text-indigo-600 flex items-center gap-1 uppercase tracking-wider">
+                  <Sparkles size={11} /> AI Suggestions (click to add as variant)
+                </p>
+                <div className="space-y-1">
+                  {suggestedTexts.map((txt, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => {
+                        const emptyIdx = publicReplyVariants.findIndex(v => v.trim() === "");
+                        if (emptyIdx !== -1) {
+                          const updated = [...publicReplyVariants];
+                          updated[emptyIdx] = txt;
+                          setPublicReplyVariants(updated);
+                        } else if (publicReplyVariants.length < 5) {
+                          setPublicReplyVariants([...publicReplyVariants, txt]);
+                        } else {
+                          const updated = [...publicReplyVariants];
+                          updated[updated.length - 1] = txt;
+                          setPublicReplyVariants(updated);
+                        }
+                        setSuggestedTexts(suggestedTexts.filter((_, i) => i !== index));
+                      }}
+                      className="w-full text-left p-2.5 bg-white hover:bg-indigo-50 border border-zinc-100 hover:border-indigo-200 rounded-lg text-[11px] font-medium text-zinc-700 transition-all leading-normal shadow-sm block"
+                    >
+                      {txt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Presets suggestions */}
+            <div className="space-y-1.5 border-t border-zinc-100 pt-3">
+              <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Presets</p>
+              <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
+                {PUBLIC_REPLY_SUGGESTIONS.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => {
+                      const emptyIdx = publicReplyVariants.findIndex(v => v.trim() === "");
+                      if (emptyIdx !== -1) {
+                        const updated = [...publicReplyVariants];
+                        updated[emptyIdx] = s;
+                        setPublicReplyVariants(updated);
+                      } else if (publicReplyVariants.length < 5) {
+                        setPublicReplyVariants([...publicReplyVariants, s]);
+                      }
+                    }}
+                    className="shrink-0 px-3.5 py-1.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 rounded-full text-xs font-semibold text-zinc-600 shadow-sm transition-all"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button
+              onClick={() => handleConfirmPublicReply()}
+              disabled={publicReplyVariants.filter(r => r.trim() !== "").length === 0}
+              className="w-full py-3 bg-zinc-950 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow-md hover:bg-[#6366F1] transition-all disabled:opacity-40"
+            >
+              Confirm Replies <ArrowRight size={16} />
+            </button>
           </motion.div>
         );
 
@@ -724,8 +1024,8 @@ export default function CampaignWizard({
                     key={t.id}
                     onClick={() => setStoryTriggerType(t.id)}
                     className={`flex flex-col gap-2 p-4 rounded-[18px] border-2 text-left transition-all ${storyTriggerType === t.id
-                        ? "border-[#6366F1] bg-[#6366F1]/5"
-                        : "border-zinc-200 bg-white hover:border-zinc-300"
+                      ? "border-[#6366F1] bg-[#6366F1]/5"
+                      : "border-zinc-200 bg-white hover:border-zinc-300"
                       }`}
                   >
                     <span className="text-2xl">{t.emoji}</span>
@@ -747,8 +1047,8 @@ export default function CampaignWizard({
                     key={c}
                     onClick={() => setStoryCondition(c)}
                     className={`flex-1 py-3 rounded-[14px] text-[13px] font-bold border-2 transition-all ${storyCondition === c
-                        ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]"
-                        : "border-zinc-200 bg-white text-zinc-600"
+                      ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]"
+                      : "border-zinc-200 bg-white text-zinc-600"
                       }`}
                   >
                     {c === "ANY" ? "Any Message" : "Specific Keyword"}
@@ -758,13 +1058,13 @@ export default function CampaignWizard({
             </div>
 
             {storyCondition === "KEYWORD" && (
-               <input
-                 type="text"
-                 placeholder="e.g. collab, vip, info"
-                 value={storyKeyword}
-                 onChange={(e) => setStoryKeyword(e.target.value.toLowerCase())}
-                 className="w-full px-5 py-3.5 border-2 border-zinc-200 rounded-[16px] text-[14px] font-bold lowercase outline-none focus:border-[#6366F1] transition-all"
-               />
+              <input
+                type="text"
+                placeholder="e.g. collab, vip, info"
+                value={storyKeyword}
+                onChange={(e) => setStoryKeyword(e.target.value.toLowerCase())}
+                className="w-full px-5 py-3.5 border-2 border-zinc-200 rounded-[16px] text-[14px] font-bold lowercase outline-none focus:border-[#6366F1] transition-all"
+              />
             )}
 
             <button
@@ -960,14 +1260,14 @@ export default function CampaignWizard({
         {/* Intro header — shown only at the very start */}
         {messages.length === 1 && !isTyping && (
           <motion.div
-             initial={{ opacity: 0, y: 10 }}
-             animate={{ opacity: 1, y: 0 }}
-             className="flex flex-col items-center text-center pt-6 pb-2"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center text-center pt-6 pb-2"
           >
-            <img 
-              src="/logo.png" 
-              alt="Automixa Logo" 
-              className="w-16 h-16 object-contain mb-4 select-none animate-in zoom-in-75 duration-500" 
+            <img
+              src="/logo.png"
+              alt="Automixa Logo"
+              className="w-16 h-16 object-contain mb-4 select-none animate-in zoom-in-75 duration-500"
             />
             <h2 className="text-[22px] font-black text-zinc-950 tracking-tight mb-1">
               Automixa AI
@@ -985,14 +1285,14 @@ export default function CampaignWizard({
         {/* Typing indicator */}
         {isTyping && (
           <motion.div
-             initial={{ opacity: 0 }}
-             animate={{ opacity: 1 }}
-             className="flex items-center gap-3"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex items-center gap-3"
           >
-            <img 
-              src="/logo.png" 
-              alt="Automixa AI" 
-              className="w-8 h-8 object-contain shrink-0 select-none" 
+            <img
+              src="/logo.png"
+              alt="Automixa AI"
+              className="w-8 h-8 object-contain shrink-0 select-none"
             />
             <div className="flex items-center gap-1.5 pt-1">
               <div className="w-2 h-2 bg-zinc-300 rounded-full animate-bounce [animation-delay:-0.3s]" />
