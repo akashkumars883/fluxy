@@ -9,6 +9,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
   const [response, setResponse] = useState("");
   const [type, setType] = useState("DM");
   const [followerGate, setFollowerGate] = useState(false);
+  const [followGateMessage, setFollowGateMessage] = useState("");
   const [cooldownGate, setCooldownGate] = useState(false);
   const [publicReply, setPublicReply] = useState("");
   const [buttonText, setButtonText] = useState("");
@@ -27,6 +28,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
         }
         setType(initialType);
         setFollowerGate(trigger.metadata?.follower_gate || false);
+        setFollowGateMessage(trigger.metadata?.follow_gate_message || "One final step to unlock! 🎁");
         setCooldownGate(trigger.metadata?.cooldown_gate || false);
         setPublicReply(trigger.variants?.public?.[0] || "");
         setButtonText(trigger.metadata?.button_text || "");
@@ -51,6 +53,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
       type: finalType,
       metadata: {
         follower_gate: followerGate,
+        follow_gate_message: followerGate ? followGateMessage : "",
         cooldown_gate: cooldownGate,
         button_text: buttonLink ? (buttonText || "Get Access") : null,
         button_link: buttonLink,
@@ -159,22 +162,39 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
                       />
                     </div>
 
-                    <div className="flex items-center justify-between p-4 bg-zinc-50/80 rounded-2xl border border-zinc-200/80 hover:border-zinc-300 transition-all">
-                      <div className="flex items-center gap-3.5">
-                        <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-zinc-500 shadow-sm">
-                          <ShieldCheck size={20} strokeWidth={1.5} />
+                    <div className="flex flex-col gap-3 p-4 bg-zinc-50/80 rounded-2xl border border-zinc-200/80 hover:border-zinc-300 transition-all">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3.5">
+                          <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-zinc-500 shadow-sm">
+                            <ShieldCheck size={20} strokeWidth={1.5} />
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold text-zinc-900">Follower Gate</p>
+                            <p className="text-[13px] text-zinc-500 font-medium">Only trigger for your followers</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm font-semibold text-zinc-900">Follower Gate</p>
-                          <p className="text-[13px] text-zinc-500 font-medium">Only trigger for your followers</p>
-                        </div>
+                        <button 
+                          type="button"
+                          onClick={() => setFollowerGate(!followerGate)}
+                          className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${followerGate ? 'bg-[#6366F1]' : 'bg-zinc-300'}`}
+                        >
+                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-all ${followerGate ? 'left-6' : 'left-1'}`} />
+                        </button>
                       </div>
-                      <button 
-                        onClick={() => setFollowerGate(!followerGate)}
-                        className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${followerGate ? 'bg-[#6366F1]' : 'bg-zinc-300'}`}
-                      >
-                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-all ${followerGate ? 'left-6' : 'left-1'}`} />
-                      </button>
+                      {followerGate && (
+                        <div className="pt-3 border-t border-zinc-200/60 space-y-1.5 animate-in fade-in duration-200">
+                          <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block">
+                            Custom Follow Gate Message
+                          </label>
+                          <input 
+                            type="text"
+                            value={followGateMessage}
+                            onChange={(e) => setFollowGateMessage(e.target.value)}
+                            placeholder="One final step to unlock! 🎁"
+                            className="w-full bg-white border border-zinc-200 rounded-xl p-3 text-sm font-medium outline-none focus:border-[#6366F1] transition-all shadow-sm"
+                          />
+                        </div>
+                      )}
                     </div>
 
                     {type === "STORY" && (

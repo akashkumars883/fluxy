@@ -555,7 +555,11 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         await delay(2000);
         
         const templates = automation.metadata?.templates || {};
-        const gateTitle = interpolate(templates.follow_gate_title || "One final step to unlock! 🎁", userName, automation.brand_name);
+        const gateTitle = interpolate(
+          match.metadata?.follow_gate_message || templates.follow_gate_title || "One final step to unlock! 🎁", 
+          userName, 
+          automation.brand_name
+        );
         await MetaService.sendFollowGateCard(
           senderId, 
           automation.brand_name || "us", 

@@ -106,6 +106,8 @@ export default function CampaignWizard({
   // ── Field state ─────────────────────────────────────────
   const [tempKeyword, setTempKeyword] = useState("");
   const [tempDM, setTempDM] = useState("");
+  const [followerGateEnabled, setFollowerGateEnabled] = useState(false);
+  const [tempFollowGateMsg, setTempFollowGateMsg] = useState("One final step to unlock! 🎁");
   const [tempBtnText, setTempBtnText] = useState("");
   const [tempBtnLink, setTempBtnLink] = useState("");
   const [tempPublicReply, setTempPublicReply] = useState("");
@@ -222,8 +224,11 @@ export default function CampaignWizard({
     aiSay("Should I enable **Follow Gate**? — Users must follow your page before receiving the DM.", "follow_gate");
   };
 
-  const handleConfirmFollowGate = (enable) => {
-    onChange({ followerGate: enable });
+  const handleConfirmFollowGate = (enable, customMsg) => {
+    onChange({ 
+      followerGate: enable,
+      followGateMessage: enable ? (customMsg || "").trim() : ""
+    });
     userSay(enable ? "Yes, enable Follow Gate 🔒" : "No, skip Follow Gate");
     aiSay("🎉 Your automation is ready! Review the summary and launch when you're set.", "done");
   };
@@ -268,6 +273,7 @@ export default function CampaignWizard({
       onPublish(values.keyword, values.response, {
         public_reply: values.publicReply,
         follower_gate: values.followerGate,
+        follow_gate_message: values.followerGate ? values.followGateMessage : "",
         button_text: values.buttonText,
         button_link: values.buttonLink,
         campaign_strategy: "comment_dm",
@@ -277,6 +283,8 @@ export default function CampaignWizard({
       onPublish(values.keyword || "*", values.response, {
         type: finalType,
         campaign_strategy: "story_automator",
+        follower_gate: values.followerGate,
+        follow_gate_message: values.followerGate ? values.followGateMessage : "",
         campaign_name: campaignName || "Story Automator ⚡",
       });
     } else if (strategy === "faq_assistant") {
@@ -427,9 +435,9 @@ export default function CampaignWizard({
             </div>
             <button
               onClick={handleConfirmPosts}
-              className="w-full py-4 bg-zinc-900 text-white rounded-[18px] text-[15px] font-bold flex items-center justify-center gap-2 shadow-lg hover:bg-[#6366F1] transition-all"
+              className="w-full py-3 bg-zinc-950 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow-md hover:bg-[#6366F1] transition-all"
             >
-              Confirm Selection <ArrowRight size={18} />
+              Confirm Selection <ArrowRight size={16} />
             </button>
           </motion.div>
         );
@@ -449,21 +457,21 @@ export default function CampaignWizard({
                 </button>
               ))}
             </div>
-            <div className="relative flex items-center w-full bg-white border border-zinc-300 rounded-[22px] shadow-lg overflow-hidden focus-within:border-[#6366F1] focus-within:ring-2 focus-within:ring-[#6366F1]/20 transition-all">
+            <div className="relative flex items-center w-full bg-zinc-50 border border-zinc-200 rounded-xl overflow-hidden focus-within:border-[#6366F1] focus-within:bg-white transition-all">
               <input
                 type="text"
                 value={tempKeyword}
                 onChange={(e) => setTempKeyword(e.target.value.toLowerCase())}
                 placeholder="Type custom keyword..."
-                className="flex-1 w-full px-6 py-4 text-[15px] outline-none bg-transparent font-medium lowercase"
+                className="flex-1 w-full pl-4 pr-12 py-3 text-sm outline-none bg-transparent font-medium lowercase"
                 onKeyDown={(e) => e.key === "Enter" && tempKeyword.trim() && handleConfirmKeyword()}
               />
               <button
                 onClick={() => handleConfirmKeyword()}
                 disabled={!tempKeyword.trim()}
-                className="absolute right-2 w-10 h-10 bg-zinc-900 text-white rounded-full flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#6366F1]"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 bg-zinc-950 text-white rounded-lg flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#6366F1]"
               >
-                <ArrowRight size={17} />
+                <ArrowRight size={15} />
               </button>
             </div>
             <p className="text-[11px] text-zinc-400 font-medium px-2 mt-1">
@@ -487,13 +495,13 @@ export default function CampaignWizard({
                 </button>
               ))}
             </div>
-            <div className="relative flex items-end w-full bg-white border border-zinc-300 rounded-[22px] shadow-lg focus-within:border-[#6366F1] focus-within:ring-2 focus-within:ring-[#6366F1]/20 transition-all p-2">
+            <div className="relative flex items-end w-full bg-zinc-50 border border-zinc-200 rounded-xl focus-within:border-[#6366F1] focus-within:bg-white transition-all p-1.5">
               <textarea
                 value={tempDM}
                 onChange={(e) => setTempDM(e.target.value)}
                 placeholder="Type the DM message to send..."
                 rows={2}
-                className="flex-1 w-full px-4 py-3 text-[15px] outline-none bg-transparent resize-none max-h-32 min-h-[52px] font-medium"
+                className="flex-1 w-full px-3 py-2 text-sm outline-none bg-transparent resize-none max-h-32 min-h-[48px] font-medium"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
@@ -504,9 +512,9 @@ export default function CampaignWizard({
               <button
                 onClick={handleConfirmDM}
                 disabled={!tempDM.trim()}
-                className="shrink-0 mb-1 w-10 h-10 bg-zinc-900 text-white rounded-full flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#6366F1]"
+                className="shrink-0 mb-0.5 w-8 h-8 bg-zinc-950 text-white rounded-lg flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#6366F1]"
               >
-                <ArrowRight size={17} />
+                <ArrowRight size={15} />
               </button>
             </div>
           </motion.div>
@@ -565,13 +573,13 @@ export default function CampaignWizard({
                 </button>
               ))}
             </div>
-            <div className="relative flex items-end w-full bg-white border border-zinc-300 rounded-[22px] shadow-lg focus-within:border-[#6366F1] focus-within:ring-2 focus-within:ring-[#6366F1]/20 transition-all p-2">
+            <div className="relative flex items-end w-full bg-zinc-50 border border-zinc-200 rounded-xl focus-within:border-[#6366F1] focus-within:bg-white transition-all p-1.5">
               <textarea
                 value={tempPublicReply}
                 onChange={(e) => setTempPublicReply(e.target.value)}
                 placeholder="Public comment reply..."
                 rows={2}
-                className="flex-1 w-full px-4 py-3 text-[15px] outline-none bg-transparent resize-none max-h-28 min-h-[48px] font-medium"
+                className="flex-1 w-full px-3 py-2 text-sm outline-none bg-transparent resize-none max-h-28 min-h-[44px] font-medium"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
@@ -582,9 +590,9 @@ export default function CampaignWizard({
               <button
                 onClick={() => handleConfirmPublicReply()}
                 disabled={!tempPublicReply.trim()}
-                className="shrink-0 mb-1 w-10 h-10 bg-zinc-900 text-white rounded-full flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#6366F1]"
+                className="shrink-0 mb-0.5 w-8 h-8 bg-zinc-950 text-white rounded-lg flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#6366F1]"
               >
-                <ArrowRight size={17} />
+                <ArrowRight size={15} />
               </button>
             </div>
           </motion.div>
@@ -593,19 +601,53 @@ export default function CampaignWizard({
       // ── Step 6: Follow gate ───────────────────────────────
       case "follow_gate":
         return (
-          <motion.div key="fg" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="flex gap-3 mt-2">
-            <button
-              onClick={() => handleConfirmFollowGate(false)}
-              className="flex-1 py-4 bg-white border-2 border-zinc-200 text-zinc-700 rounded-[18px] font-bold shadow-sm hover:border-zinc-300 transition-all"
-            >
-              No, Skip
-            </button>
-            <button
-              onClick={() => handleConfirmFollowGate(true)}
-              className="flex-1 py-4 bg-zinc-900 text-white rounded-[18px] font-bold shadow-lg hover:bg-[#6366F1] transition-all"
-            >
-              Yes, Enable 🔒
-            </button>
+          <motion.div key="fg" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-3 mt-2">
+            {!followerGateEnabled ? (
+              <div className="flex gap-3">
+                <button
+                  onClick={() => handleConfirmFollowGate(false, "")}
+                  className="flex-1 py-3 bg-white border border-zinc-200 text-zinc-700 rounded-xl font-bold shadow-sm hover:border-zinc-300 transition-all text-sm animate-in fade-in duration-200"
+                >
+                  No, Skip
+                </button>
+                <button
+                  onClick={() => setFollowerGateEnabled(true)}
+                  className="flex-1 py-3 bg-zinc-950 text-white rounded-xl font-bold shadow-lg hover:bg-[#6366F1] transition-all text-sm animate-in fade-in duration-200"
+                >
+                  Yes, Enable 🔒
+                </button>
+              </div>
+            ) : (
+              <div className="bg-white border border-zinc-200 rounded-xl p-4 shadow-lg space-y-3 animate-in fade-in duration-200">
+                <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider block">
+                  Customize Follow Gate Message
+                </label>
+                <textarea
+                  value={tempFollowGateMsg}
+                  onChange={(e) => setTempFollowGateMsg(e.target.value)}
+                  placeholder="e.g. One final step to unlock! 🎁"
+                  rows={2}
+                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-[14px] text-[14px] font-medium outline-none focus:border-[#6366F1] transition-all resize-none"
+                />
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setFollowerGateEnabled(false);
+                      setTempFollowGateMsg("One final step to unlock! 🎁");
+                    }}
+                    className="flex-1 py-2 bg-zinc-100 text-zinc-700 rounded-[12px] font-bold text-[13px] hover:bg-zinc-200 transition-all"
+                  >
+                    Back
+                  </button>
+                  <button
+                    onClick={() => handleConfirmFollowGate(true, tempFollowGateMsg)}
+                    className="flex-1 py-2 bg-zinc-950 text-white rounded-[12px] font-bold text-[13px] hover:bg-[#6366F1] transition-all"
+                  >
+                    Confirm & Continue
+                  </button>
+                </div>
+              </div>
+            )}
           </motion.div>
         );
 
@@ -670,9 +712,9 @@ export default function CampaignWizard({
 
             <button
               onClick={handleConfirmStory}
-              className="w-full py-4 bg-zinc-900 text-white rounded-[18px] text-[15px] font-bold flex items-center justify-center gap-2 shadow-lg hover:bg-[#6366F1] transition-all"
+              className="w-full py-3 bg-zinc-950 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow-md hover:bg-[#6366F1] transition-all"
             >
-              Next: Set DM Reply <ArrowRight size={18} />
+              Next: Set DM Reply <ArrowRight size={16} />
             </button>
           </motion.div>
         );
@@ -680,20 +722,20 @@ export default function CampaignWizard({
       case "story_dm":
         return (
           <motion.div key="story-dm" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-3 mt-2">
-            <div className="relative flex items-end w-full bg-white border border-zinc-300 rounded-[22px] shadow-lg focus-within:border-[#6366F1] focus-within:ring-2 focus-within:ring-[#6366F1]/20 transition-all p-2">
+            <div className="relative flex items-end w-full bg-zinc-50 border border-zinc-200 rounded-xl focus-within:border-[#6366F1] focus-within:bg-white transition-all p-1.5">
               <textarea
                 value={storyDM}
                 onChange={(e) => setStoryDM(e.target.value)}
                 placeholder="DM to send on story interaction..."
                 rows={2}
-                className="flex-1 w-full px-4 py-3 text-[15px] outline-none bg-transparent resize-none max-h-32 min-h-[52px] font-medium"
+                className="flex-1 w-full px-3 py-2 text-sm outline-none bg-transparent resize-none max-h-32 min-h-[48px] font-medium"
               />
               <button
                 onClick={handleConfirmStoryDM}
                 disabled={!storyDM.trim()}
-                className="shrink-0 mb-1 w-10 h-10 bg-zinc-900 text-white rounded-full flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#6366F1]"
+                className="shrink-0 mb-0.5 w-8 h-8 bg-zinc-950 text-white rounded-lg flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#6366F1]"
               >
-                <ArrowRight size={17} />
+                <ArrowRight size={15} />
               </button>
             </div>
           </motion.div>
@@ -768,7 +810,7 @@ export default function CampaignWizard({
             <button
               onClick={handleConfirmFAQ}
               disabled={tempFaqs.filter((f) => f.q.trim() && f.a.trim()).length === 0}
-              className="w-full py-3.5 bg-zinc-900 text-white rounded-[16px] font-bold text-[14px] disabled:opacity-40 transition-all hover:bg-[#6366F1] flex items-center justify-center gap-2 shadow-lg"
+              className="w-full py-3 bg-zinc-950 text-white rounded-xl text-sm font-semibold disabled:opacity-40 transition-all hover:bg-[#6366F1] flex items-center justify-center gap-2 shadow-md"
             >
               Launch AI FAQ <Sparkles size={16} />
             </button>
@@ -825,7 +867,7 @@ export default function CampaignWizard({
             <button
               onClick={handleConfirmSales}
               disabled={!aiGoal.trim()}
-              className="w-full py-3.5 bg-zinc-900 text-white rounded-[16px] font-bold text-[14px] disabled:opacity-40 transition-all hover:bg-[#6366F1] flex items-center justify-center gap-2 shadow-lg"
+              className="w-full py-3 bg-zinc-950 text-white rounded-xl text-sm font-semibold disabled:opacity-40 transition-all hover:bg-[#6366F1] flex items-center justify-center gap-2 shadow-md"
             >
               Launch AI Sales Agent <Rocket size={16} />
             </button>
@@ -838,9 +880,9 @@ export default function CampaignWizard({
           <motion.div key="done" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mt-2">
             <button
               onClick={handlePublish}
-              className="w-full py-5 bg-gradient-to-r from-[#6366F1] to-purple-600 text-white rounded-[22px] text-[16px] font-bold shadow-xl shadow-indigo-300/30 hover:-translate-y-0.5 hover:shadow-2xl transition-all flex items-center justify-center gap-3"
+              className="w-full py-3 bg-gradient-to-r from-[#6366F1] to-purple-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-indigo-100 hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
             >
-              <Rocket size={20} />
+              <Rocket size={16} />
               Confirm & Launch Automation
             </button>
           </motion.div>

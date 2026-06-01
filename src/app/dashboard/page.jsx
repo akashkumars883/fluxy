@@ -320,6 +320,7 @@ export default function Dashboard() {
       metadata: {
         campaign_name: options.campaign_name || "Custom Flow ⚡",
         follower_gate: options.follower_gate || false,
+        follow_gate_message: options.follow_gate_message || "",
         cooldown_gate: options.cooldownGate || options.cooldown_gate || false,
         button_text: options.button_text || "",
         button_link: options.button_link || ""

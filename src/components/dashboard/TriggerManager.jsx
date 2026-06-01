@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence,motion } from "framer-motion";
-import { AlertCircle,ArrowRight,Calendar,Camera,Check,CircleChevronLeft,Clock,Edit2,Gift,Globe,Loader2,MessageSquare,MousePointer2,Plus,Rocket,Send,Sparkles,Star,Trash2,Users,Video,X,Zap } from "lucide-react";
+import { AlertCircle,ArrowRight,Calendar,Camera,Check,CircleChevronLeft,Clock,Edit2,Gift,Globe,Loader2,Lock,MessageSquare,MousePointer2,Plus,Rocket,Send,Sparkles,Star,Trash2,Users,Video,X,Zap } from "lucide-react";
 import { useState } from "react";
 import AutomationPreview from "./AutomationPreview";
 import CampaignWizard from "./CampaignWizard";
@@ -293,8 +293,8 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
                 <p className="line-clamp-1 italic">&ldquo;{t.response}&rdquo;</p>
               </div>
 
-              {/* Public reply & Buttons */}
-              {(t.variants?.public?.[0] || t.metadata?.button_link) && (
+              {/* Public reply, Buttons & Follow Gate */}
+              {(t.variants?.public?.[0] || t.metadata?.button_link || t.metadata?.follower_gate) && (
                 <div className="flex items-center gap-3 flex-wrap text-[11px] pt-1">
                   {t.variants?.public?.[0] && (
                     <div className="flex items-center gap-1.5 text-zinc-500">
@@ -307,6 +307,13 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
                     <div className="flex items-center gap-1.5 text-zinc-500">
                       <MousePointer2 size={12} className="text-[#6366F1]" />
                       <span className="font-medium">Button: {t.metadata.button_text || "Link"}</span>
+                    </div>
+                  )}
+
+                  {t.metadata?.follower_gate && (
+                    <div className="flex items-center gap-1.5 text-zinc-500">
+                      <Lock size={12} className="text-amber-500" />
+                      <span className="font-medium truncate max-w-[200px]">Gate: &ldquo;{t.metadata.follow_gate_message || "One final step to unlock! 🎁"}&rdquo;</span>
                     </div>
                   )}
                 </div>
