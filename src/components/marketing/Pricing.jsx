@@ -43,9 +43,9 @@ export default function Pricing({ isModal = false } = {}) {
         "1 Personal Workspace",
         "25,000 AI Credits/mo",
         "5 Active Automations",
-        "1,000 Auto-Replies/mo",
+        "1,000 Auto-DMs & Replies/mo",
         "Follow before DM Gate",
-        "Basic CRM (50 Contacts)",
+        "Basic CRM (100 Contacts)",
         "Keyword Triggers Only"
       ],
       button: "Start Free",

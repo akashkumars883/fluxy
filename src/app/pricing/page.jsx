@@ -17,12 +17,17 @@ export default function PricingPage() {
     } catch {}
   }, []);
   const comparisonRows = [
+    { feature: "Instagram Accounts", free: "1 Account", pro: "Multiple", viral: "Multiple", agency: "Unlimited", desc: "Number of active Instagram profiles linked to your workspace" },
     { feature: "AI Credits per Month", free: "25,000 Credits", pro: "250,000 Credits (10X)", viral: "2,000,000 Credits (100X)", agency: "Custom Quota", desc: "Monthly quota for smart AI conversational responses" },
     { feature: "Active Automations Limit", free: "5 Automations", pro: "Unlimited", viral: "Unlimited", agency: "Unlimited", desc: "Number of active comment/DM trigger campaigns" },
     { feature: "Auto DMs Quota", free: "1,000 DMs/mo", pro: "Unlimited DMs & Replies", viral: "Unlimited DMs & Replies", agency: "Unlimited DMs & Replies", desc: "Volume of outbound automated Instagram DMs sent" },
+    { feature: "AI Intent & Smart AI Mode", free: false, pro: true, viral: true, agency: true, desc: "Analyze incoming DMs for customer intent and trigger custom AI actions" },
     { feature: "AI Human Mimicry Mode", free: false, pro: true, viral: true, agency: true, desc: "Add natural randomized delays to mimic real human chat" },
     { feature: "Follow before DM Gate", free: true, pro: true, viral: true, agency: true, desc: "Require users to follow your Instagram page before DM delivery" },
     { feature: "Story Mention Responder", free: false, pro: true, viral: true, agency: true, desc: "Instantly reply when followers tag you in stories" },
+    { feature: "Smart Bio & Mini Store", free: false, pro: true, viral: true, agency: true, desc: "Branded bio link page with direct digital product sales & checkout" },
+    { feature: "Custom Brand Persona", free: false, pro: false, viral: true, agency: true, desc: "Train the AI on your unique brand voice, FAQs, and custom system guidelines" },
+    { feature: "Auto-Fetch Profile Training", free: false, pro: false, viral: true, agency: true, desc: "Instantly feed the AI with your existing posts and website URLs" },
     { feature: "CRM Unlimited & CSV Export", free: "100 Contacts", pro: true, viral: true, agency: true, desc: "Export captured leads, phone numbers, and email contacts" },
     { feature: "Ambassador Promo Codes", free: false, pro: true, viral: true, agency: true, desc: "Generate custom discount codes for your followers" },
     { feature: "Razorpay Split Share", free: false, pro: "20% Commission", viral: "25% VIP Commission", agency: "Custom Terms", desc: "Earn recurring affiliate income via RazorpayX Split" },
