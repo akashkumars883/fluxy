@@ -10,7 +10,7 @@ import WorkspaceSwitcher from "@/components/dashboard/WorkspaceSwitcher";
 
 
 export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, realtimeStats, onAccountSettingsClick, onSubscriptionClick, onMenuClick }) {
-  const { user, setActiveTab } = useDashboard();
+  const { user, setActiveTab, isSidebarCollapsed } = useDashboard();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -73,9 +73,11 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
             alt="Automixa Logo" 
             className="w-8 h-8 mt-[2px] object-contain transition-all duration-300 shrink-0 group-hover:scale-110" 
           />
-          <h2 className="text-xl font-semibold tracking-normal text-zinc-900 truncate">
-            automixa
-          </h2>
+          {!isSidebarCollapsed && (
+            <h2 className="text-xl font-semibold tracking-normal text-zinc-900 truncate animate-in fade-in duration-200">
+              automixa
+            </h2>
+          )}
         </div>
       </div>
 
@@ -100,15 +102,6 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
           <WorkspaceSwitcher variant="minimal" onUpgradeClick={onSubscriptionClick} />
         </div>
 
-
-        <button 
-          onClick={onHelpClick}
-          className="p-1.5 sm:p-2 text-zinc-600 hover:text-zinc-950 transition-all flex items-center gap-1.5 text-xs sm:text-sm font-semibold shrink-0"
-        >
-          <HelpCircle size={20} /> 
-          <span className="hidden md:inline">Help</span>
-        </button>
-        
         <NotificationDropdown accounts={accounts} />
         
         <div className="h-5 w-[1px] bg-zinc-200 hidden xs:block" />

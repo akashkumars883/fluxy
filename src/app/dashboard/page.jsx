@@ -526,6 +526,7 @@ export default function Dashboard() {
       <div className="flex flex-1 relative overflow-hidden">
         <DashboardSidebar
           navigationItems={navigationItems}
+          onHelpClick={() => setIsHelpOpen(true)}
           onPricingClick={(reason) => {
             setUpgradeReason(typeof reason === 'string' ? reason : "");
             setIsSubscriptionOpen(true);

@@ -2,13 +2,14 @@
 
 import { useDashboard } from "@/context/DashboardContext";
 import { motion } from "framer-motion";
-import { ChevronDown,Lock as LucideLock,PanelTopOpen,Plus } from "lucide-react";
+import { ChevronDown,Lock as LucideLock,PanelTopOpen,Plus,HelpCircle } from "lucide-react";
 import { useState } from "react";
 
 export default function DashboardSidebar({ 
   navigationItems, 
   onPricingClick, 
-  onConnectClick
+  onConnectClick,
+  onHelpClick
 }) {
   const { 
     activeTab, 
@@ -33,30 +34,8 @@ export default function DashboardSidebar({
       {/* Top Nav */}
       <div className="space-y-1 w-full">
 
-        {/* Brand Logo & Collapse Toggle */}
-        <div className={`flex items-center w-full mb-5 ${
-          isSidebarCollapsed 
-            ? "flex-col gap-3.5 justify-center" 
-            : "flex-row justify-between"
-        }`}>
-          {isSidebarCollapsed ? (
-            <img 
-              src="/logo.png" 
-              alt="automixa logo" 
-              className="w-7 h-7 object-contain select-none" 
-            />
-          ) : (
-            <div className="flex items-center gap-2 select-none animate-in fade-in duration-200">
-              <img 
-                src="/logo.png" 
-                alt="automixa logo" 
-                className="w-7 h-7 object-contain" 
-              />
-              <span className="text-[15px] font-black text-zinc-950 tracking-tight lowercase">
-                automixa
-              </span>
-            </div>
-          )}
+        {/* Collapse Toggle */}
+        <div className={`flex items-center mb-3 ${isSidebarCollapsed ? "justify-center" : "justify-end"}`}>
           <button
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             className="p-1.5 text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 rounded-lg transition-all"
@@ -128,6 +107,32 @@ export default function DashboardSidebar({
 
       {/* Bottom Section */}
       <div className="mt-auto space-y-3 w-full">
+        {/* Help Option */}
+        <button
+          onClick={onHelpClick}
+          className={`group relative flex items-center rounded-xl text-sm font-medium transition-all duration-200 h-10 ${
+            isSidebarCollapsed ? "w-10 justify-center p-0 mx-auto" : "w-full justify-start px-3 gap-3"
+          } text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/80`}
+          title={isSidebarCollapsed ? "" : "Help"}
+        >
+          <div className="flex items-center justify-center shrink-0 relative z-10">
+            <HelpCircle size={18} strokeWidth={1.5} />
+          </div>
+
+          {isSidebarCollapsed && (
+            <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-zinc-800 text-white text-[11px] font-medium rounded-md opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none transition-all duration-200 whitespace-nowrap z-50 shadow-lg flex items-center">
+              Help
+              <div className="absolute top-1/2 -left-1 -mt-1 border-[4px] border-transparent border-r-zinc-800" />
+            </div>
+          )}
+
+          {!isSidebarCollapsed && (
+            <span className="whitespace-nowrap overflow-hidden flex-1 text-left relative z-10 font-semibold animate-in fade-in duration-150">
+              Help
+            </span>
+          )}
+        </button>
+
         {/* Settings Tab */}
         {settingsItem && (
           <button
