@@ -407,17 +407,17 @@ export default function CampaignWizard({
       // ── Step 1: Select post(s) ────────────────────────────
       case "select_post":
         return (
-          <motion.div key="sel-post" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-h-[300px] overflow-y-auto no-scrollbar p-1">
+          <motion.div key="sel-post" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-3 mt-2">
+            <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-2 max-h-[185px] overflow-y-auto no-scrollbar p-1">
               <button
                 onClick={() => onSelectPosts([])}
-                className={`relative flex flex-col items-center justify-center aspect-square rounded-[18px] border-2 transition-all gap-2 ${selectedPosts.length === 0
+                className={`relative flex flex-col items-center justify-center aspect-square rounded-[12px] border-2 transition-all gap-1.5 ${selectedPosts.length === 0
                     ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1] shadow-md shadow-[#6366F1]/10"
                     : "border-zinc-200 bg-white hover:border-zinc-300 text-zinc-500"
                   }`}
               >
-                <Globe size={28} />
-                <span className="text-[12px] font-bold">All Posts</span>
+                <Globe size={18} />
+                <span className="text-[10px] font-bold">All Posts</span>
               </button>
               {media.map((item) => {
                 const url =
@@ -433,13 +433,13 @@ export default function CampaignWizard({
                         isSel ? selectedPosts.filter((id) => id !== item.id) : [...selectedPosts, item.id]
                       )
                     }
-                    className={`relative flex-col aspect-square rounded-[18px] overflow-hidden border-2 transition-all group ${isSel ? "border-[#6366F1] scale-[0.97] shadow-md shadow-[#6366F1]/20" : "border-zinc-200 hover:border-zinc-300"
+                    className={`relative flex-col aspect-square rounded-[12px] overflow-hidden border-2 transition-all group ${isSel ? "border-[#6366F1] scale-[0.97] shadow-md shadow-[#6366F1]/20" : "border-zinc-200 hover:border-zinc-300"
                       }`}
                   >
                     <img src={url} alt="post" className="w-full h-full object-cover" />
                     {isSel && (
-                      <div className="absolute top-2 right-2 w-6 h-6 bg-[#6366F1] rounded-full flex items-center justify-center shadow-lg animate-in zoom-in-75">
-                        <Check size={13} className="text-white" strokeWidth={3} />
+                      <div className="absolute top-1 right-1 w-4.5 h-4.5 bg-[#6366F1] rounded-full flex items-center justify-center shadow-lg animate-in zoom-in-75">
+                        <Check size={10} className="text-white" strokeWidth={3} />
                       </div>
                     )}
                   </button>
@@ -448,9 +448,9 @@ export default function CampaignWizard({
             </div>
             <button
               onClick={handleConfirmPosts}
-              className="w-full py-3 bg-zinc-950 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow-md hover:bg-[#6366F1] transition-all"
+              className="w-full py-2.5 bg-zinc-950 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 shadow-md hover:bg-[#6366F1] transition-all"
             >
-              Confirm Selection <ArrowRight size={16} />
+              Confirm Selection <ArrowRight size={14} />
             </button>
           </motion.div>
         );
@@ -954,7 +954,7 @@ export default function CampaignWizard({
   // Render
   // ─────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col h-full w-full max-w-none relative bg-transparent overflow-hidden">
+    <div className="flex flex-col h-full w-full max-w-[580px] mx-auto relative bg-transparent overflow-hidden">
       {/* ── Chat messages ──────────────────────────────────── */}
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-4 no-scrollbar pb-8 bg-transparent">
         {/* Intro header — shown only at the very start */}

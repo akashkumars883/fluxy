@@ -49,8 +49,12 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
             {/* Header */}
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#6366F1] to-purple-600 rounded-[16px] flex items-center justify-center shadow-lg shadow-indigo-200 text-white font-black text-xl select-none">
-                  A
+                <div className="w-12 h-12 bg-zinc-50 border border-zinc-200/60 rounded-[16px] flex items-center justify-center shadow-sm select-none overflow-hidden shrink-0">
+                  <img
+                    src="/logo.png"
+                    alt="Automixa Logo"
+                    className="w-8 h-8 object-contain"
+                  />
                 </div>
                 <div>
                   <h2 className="text-xl font-black text-zinc-950 tracking-tight">New Automation</h2>

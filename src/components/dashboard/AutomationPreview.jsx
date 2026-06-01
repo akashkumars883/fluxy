@@ -658,12 +658,12 @@ export default function AutomationPreview({
                <MoreHorizontal size={14} className="text-zinc-400 shrink-0" />
             </div>
 
-            <div className="aspect-[4/3] max-h-[160px] bg-zinc-50 border-b border-zinc-100 overflow-hidden relative select-none">
+            <div className="aspect-square w-full bg-zinc-50 border-b border-zinc-100 overflow-hidden relative select-none">
               {postUrl ? (
                 <img src={postUrl} alt="Preview" className="w-full h-full object-cover animate-in fade-in duration-500" />
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center text-zinc-400 p-6 text-center bg-zinc-50/50">
-                  <Layout size={24} className="mb-1 text-zinc-300" />
+                  <Layout size={32} className="mb-1 text-zinc-300" />
                   <p className="text-[9px] font-semibold leading-relaxed">Select a post on the left to see it here</p>
                 </div>
               )}
