@@ -162,28 +162,10 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
 
 
   return (
-    <div className="animate-in fade-in duration-500 flex flex-col flex-1 min-h-0 rounded-[20px] overflow-hidden border border-zinc-200/60 bg-zinc-50/30 shadow-sm">
-
-      {/* Top bar */}
-      <div className="px-4 sm:px-5 py-3 shrink-0 flex items-center gap-3 border-b border-zinc-200/60 bg-white">
-        <button onClick={onClose} className="p-2 cursor-pointer text-zinc-400 hover:text-zinc-950 transition-all shrink-0 hover:bg-zinc-100 rounded-xl">
-          <CircleChevronLeft size={20} />
-        </button>
-        <div className="min-w-0 flex-1">
-          <h1 className="text-[15px] font-bold text-zinc-900 truncate">{campaignName || "New Automation"}</h1>
-          <div className="mt-1 flex items-center gap-2">
-            <div className="h-1.5 flex-1 max-w-sm rounded-full bg-zinc-100 overflow-hidden">
-              <div className="h-full rounded-full bg-[#6366F1] transition-all duration-500" style={{ width: `${progressPercent}%` }} />
-            </div>
-            <span className="hidden sm:inline text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-              {phaseLabels[phaseIndex]?.label || "Setup"}
-            </span>
-          </div>
-        </div>
-      </div>
+    <div className="animate-in fade-in duration-500 flex flex-col flex-1 min-h-0 bg-transparent">
 
       {/* Unified chat wizard — full width */}
-      <div className="flex-1 min-h-0 overflow-hidden p-3 sm:p-4">
+      <div className="flex-1 min-h-0 overflow-hidden py-2">
         <div className="grid h-full min-h-0 grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px] gap-4">
         <CampaignWizard
           values={wizardValues}
@@ -213,20 +195,8 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
             });
           }}
         />
-          <aside className="hidden xl:flex min-h-0 flex-col rounded-[20px] border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
-            <div className="shrink-0 border-b border-zinc-200/60 px-5 py-3 bg-zinc-50/50">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-[9px] font-bold uppercase tracking-[0.22em] text-[#6366F1]">Live Build</p>
-                  <h2 className="mt-0.5 text-[14px] font-bold text-zinc-950 tracking-tight">Automation preview</h2>
-                </div>
-                <div className="h-8 w-8 rounded-lg bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center border border-[#6366F1]/15">
-                  <MessageSquare size={14} />
-                </div>
-              </div>
-            </div>
-
-            <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar bg-zinc-50/20">
+          <aside className="hidden xl:flex min-h-0 flex-col bg-transparent overflow-hidden">
+            <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
               <AutomationPreview
                 keyword={wizardValues.keyword}
                 response={wizardValues.response}

@@ -33,8 +33,30 @@ export default function DashboardSidebar({
       {/* Top Nav */}
       <div className="space-y-1 w-full">
 
-        {/* Collapse Toggle */}
-        <div className={`flex items-center mb-3 ${isSidebarCollapsed ? "justify-center" : "justify-end"}`}>
+        {/* Brand Logo & Collapse Toggle */}
+        <div className={`flex items-center w-full mb-5 ${
+          isSidebarCollapsed 
+            ? "flex-col gap-3.5 justify-center" 
+            : "flex-row justify-between"
+        }`}>
+          {isSidebarCollapsed ? (
+            <img 
+              src="/logo.png" 
+              alt="automixa logo" 
+              className="w-7 h-7 object-contain select-none" 
+            />
+          ) : (
+            <div className="flex items-center gap-2 select-none animate-in fade-in duration-200">
+              <img 
+                src="/logo.png" 
+                alt="automixa logo" 
+                className="w-7 h-7 object-contain" 
+              />
+              <span className="text-[15px] font-black text-zinc-950 tracking-tight lowercase">
+                automixa
+              </span>
+            </div>
+          )}
           <button
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             className="p-1.5 text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 rounded-lg transition-all"

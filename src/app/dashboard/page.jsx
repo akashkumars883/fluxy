@@ -549,17 +549,25 @@ export default function Dashboard() {
                 <div className="flex items-center gap-3 min-w-0">
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 leading-tight">
-                        {activeTab === "home" ? "Overview"
-                          : activeTab === "automations" ? "Automations"
-                            : activeTab === "audience" ? "Audience"
-                              : activeTab === "store" ? "Mini Store"
-                                : activeTab === "smart_bio" ? "Smart Bio"
-                                  : activeTab === "crm" ? "CRM"
-                                    : activeTab === "analytics" ? "Analytics"
-                                      : activeTab === "settings" ? "Settings"
-                                        : activeTab === "partner" ? "Partner Program"
-                                          : activeTab}
+                      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 leading-tight flex items-center gap-2">
+                        <span>
+                          {activeTab === "home" ? "Overview"
+                            : activeTab === "automations" ? "Automations"
+                              : activeTab === "audience" ? "Audience"
+                                : activeTab === "store" ? "Mini Store"
+                                  : activeTab === "smart_bio" ? "Smart Bio"
+                                    : activeTab === "crm" ? "CRM"
+                                      : activeTab === "analytics" ? "Analytics"
+                                        : activeTab === "settings" ? "Settings"
+                                          : activeTab === "partner" ? "Partner Program"
+                                            : activeTab}
+                        </span>
+                        {activeTab === "automations" && builderActive && (
+                          <>
+                            <span className="text-zinc-300 font-medium select-none">/</span>
+                            <span className="text-zinc-500 text-lg sm:text-xl font-semibold truncate max-w-[150px] sm:max-w-xs">{builderCampaignName || "New Campaign"}</span>
+                          </>
+                        )}
                       </h1>
                       <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border ${(selectedAccount.persona || "content_creator") === "content_creator"
                           ? "bg-purple-50 text-purple-600 border-purple-200"
@@ -573,7 +581,7 @@ export default function Dashboard() {
                     </p>
                   </div>
                 </div>
-
+ 
                 {/* Right: Contextual Actions */}
                 <div className="flex items-center gap-2 shrink-0">
                   {(activeTab === "audience" || activeTab === "crm") && (
@@ -586,7 +594,7 @@ export default function Dashboard() {
                       {currentPlan === "free" && <LucideLock size={11} />}
                     </button>
                   )}
-
+ 
                   {activeTab === "analytics" && (
                     <div className="flex items-center gap-2">
                       <div className="bg-white border border-zinc-200 rounded-xl p-1 flex items-center shadow-sm">
@@ -613,7 +621,7 @@ export default function Dashboard() {
                       </button>
                     </div>
                   )}
-
+ 
                   {activeTab === "home" && (
                     <button
                       onClick={() => updateSelectedAccount({ is_active: !selectedAccount.is_active })}
@@ -626,7 +634,7 @@ export default function Dashboard() {
                       {selectedAccount?.is_active ? "Shield Active" : "System Paused"}
                     </button>
                   )}
-
+ 
                   {activeTab === "automations" && !builderActive && (
                     <>
                       <button
@@ -636,6 +644,15 @@ export default function Dashboard() {
                         <Plus size={14} strokeWidth={2.5} /> New Campaign
                       </button>
                     </>
+                  )}
+
+                  {activeTab === "automations" && builderActive && (
+                    <button
+                      onClick={() => setBuilderActive(false)}
+                      className="flex items-center gap-1.5 px-4 py-2 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-xl text-xs font-semibold shadow-sm transition-all hover:scale-[1.02] cursor-pointer"
+                    >
+                      Exit Builder
+                    </button>
                   )}
 
                   {activeTab === "partner" && partnerAppStatus === "approved" && (

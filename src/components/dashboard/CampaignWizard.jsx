@@ -66,7 +66,7 @@ const AUTOMATION_TYPES = [
   },
 ];
 
-const KEYWORD_SUGGESTIONS = ["PRICE", "LINK", "GUIDE", "YES", "VIP", "INFO", "JOIN"];
+const KEYWORD_SUGGESTIONS = ["*", "price", "link", "guide", "yes", "vip", "info"];
 const DM_SUGGESTIONS = ["Here is the link! 🔗", "Sent it to you 📬", "Check your DMs!", "Happy to help! 😊"];
 const PUBLIC_REPLY_SUGGESTIONS = ["Sent! Check DMs 📬", "Done! ✅", "Just messaged you!", "Check your request!"];
 
@@ -187,10 +187,10 @@ export default function CampaignWizard({
   const handleConfirmKeyword = (kw) => {
     const finalKw = kw || tempKeyword;
     if (!finalKw.trim()) return;
-    onChange({ keyword: finalKw.trim().toUpperCase() });
-    userSay(`Keyword: "${finalKw.trim().toUpperCase()}"`);
+    onChange({ keyword: finalKw.trim().toLowerCase() });
+    userSay(`Keyword: "${finalKw.trim().toLowerCase()}"`);
     setTempKeyword("");
-    aiSay(`Nice! 🎯 When someone comments **"${finalKw.trim().toUpperCase()}"**, what DM should I send them?`, "dm_message");
+    aiSay(`Nice! 🎯 When someone comments **"${finalKw.trim().toLowerCase()}"**, what DM should I send them?`, "dm_message");
   };
 
   const handleConfirmDM = () => {
@@ -230,7 +230,7 @@ export default function CampaignWizard({
 
   // Story
   const handleConfirmStory = () => {
-    const finalKw = storyCondition === "ANY" ? "*" : storyKeyword.trim().toUpperCase();
+    const finalKw = storyCondition === "ANY" ? "*" : storyKeyword.trim().toLowerCase();
     const finalType = storyTriggerType === "MENTION" ? "STORY_MENTION" : "STORY_REPLY";
     userSay(`Story ${storyTriggerType === "MENTION" ? "Mention" : "Reply"} • ${storyCondition === "ANY" ? "Any message" : `Keyword: "${finalKw}"`}`);
     onChange({ keyword: finalKw, storyCondition, storyTriggerType });
@@ -310,9 +310,11 @@ export default function CampaignWizard({
         className={`flex ${isAI ? "justify-start" : "justify-end"}`}
       >
         {isAI && (
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#6366F1] to-purple-600 flex items-center justify-center shrink-0 mr-3 mt-0.5 shadow-md shadow-indigo-200 text-white font-black text-[13px] tracking-tight select-none">
-            A
-          </div>
+          <img 
+            src="/logo.png" 
+            alt="Automixa AI" 
+            className="w-8 h-8 object-contain shrink-0 mr-3 mt-0.5 select-none" 
+          />
         )}
         <div
           className={`max-w-[80%] ${isAI
@@ -451,9 +453,9 @@ export default function CampaignWizard({
               <input
                 type="text"
                 value={tempKeyword}
-                onChange={(e) => setTempKeyword(e.target.value.toUpperCase())}
+                onChange={(e) => setTempKeyword(e.target.value.toLowerCase())}
                 placeholder="Type custom keyword..."
-                className="flex-1 w-full px-6 py-4 text-[15px] outline-none bg-transparent font-medium uppercase"
+                className="flex-1 w-full px-6 py-4 text-[15px] outline-none bg-transparent font-medium lowercase"
                 onKeyDown={(e) => e.key === "Enter" && tempKeyword.trim() && handleConfirmKeyword()}
               />
               <button
@@ -464,6 +466,9 @@ export default function CampaignWizard({
                 <ArrowRight size={17} />
               </button>
             </div>
+            <p className="text-[11px] text-zinc-400 font-medium px-2 mt-1">
+              💡 Tip: Type <span className="font-bold text-zinc-700 font-mono">*</span> to trigger this automation for every comment or message.
+            </p>
           </motion.div>
         );
 
@@ -654,13 +659,13 @@ export default function CampaignWizard({
             </div>
 
             {storyCondition === "KEYWORD" && (
-              <input
-                type="text"
-                placeholder="e.g. COLLAB, VIP, INFO"
-                value={storyKeyword}
-                onChange={(e) => setStoryKeyword(e.target.value.toUpperCase())}
-                className="w-full px-5 py-3.5 bg-white border-2 border-zinc-200 rounded-[16px] text-[14px] font-bold uppercase outline-none focus:border-[#6366F1] transition-all"
-              />
+               <input
+                 type="text"
+                 placeholder="e.g. collab, vip, info"
+                 value={storyKeyword}
+                 onChange={(e) => setStoryKeyword(e.target.value.toLowerCase())}
+                 className="w-full px-5 py-3.5 border-2 border-zinc-200 rounded-[16px] text-[14px] font-bold lowercase outline-none focus:border-[#6366F1] transition-all"
+               />
             )}
 
             <button
@@ -850,9 +855,9 @@ export default function CampaignWizard({
   // Render
   // ─────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col h-full w-full max-w-none relative rounded-[20px] bg-white border border-zinc-200/60 shadow-sm overflow-hidden">
+    <div className="flex flex-col h-full w-full max-w-none relative bg-transparent overflow-hidden">
       {/* ── Chat messages ──────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-6 no-scrollbar pb-8 bg-white">
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-6 no-scrollbar pb-8 bg-transparent">
         {/* Intro header — shown only at the very start */}
         {messages.length === 1 && !isTyping && (
           <motion.div
@@ -860,9 +865,11 @@ export default function CampaignWizard({
              animate={{ opacity: 1, y: 0 }}
              className="flex flex-col items-center text-center pt-6 pb-2"
           >
-            <div className="w-16 h-16 bg-gradient-to-br from-[#6366F1] to-purple-600 rounded-[22px] flex items-center justify-center shadow-xl shadow-indigo-200 mb-4 text-white font-black text-3xl select-none">
-              A
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="Automixa Logo" 
+              className="w-16 h-16 object-contain mb-4 select-none animate-in zoom-in-75 duration-500" 
+            />
             <h2 className="text-[22px] font-black text-zinc-950 tracking-tight mb-1">
               Automixa AI
             </h2>
@@ -883,9 +890,11 @@ export default function CampaignWizard({
              animate={{ opacity: 1 }}
              className="flex items-center gap-3"
           >
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#6366F1] to-purple-600 flex items-center justify-center shrink-0 shadow-md shadow-indigo-200 text-white font-black text-[13px] select-none">
-              A
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="Automixa AI" 
+              className="w-8 h-8 object-contain shrink-0 select-none" 
+            />
             <div className="flex items-center gap-1.5 pt-1">
               <div className="w-2 h-2 bg-zinc-300 rounded-full animate-bounce [animation-delay:-0.3s]" />
               <div className="w-2 h-2 bg-zinc-300 rounded-full animate-bounce [animation-delay:-0.15s]" />
@@ -898,7 +907,7 @@ export default function CampaignWizard({
       </div>
 
       {/* ── Input panel (contextual) ────────────────────────── */}
-      <div className="shrink-0 px-4 sm:px-6 pb-5 pt-3 border-t border-zinc-200/60 bg-zinc-50/50">
+      <div className="shrink-0 px-4 sm:px-6 pb-5 pt-3 bg-transparent">
         <AnimatePresence mode="wait">{renderInputPanel()}</AnimatePresence>
       </div>
     </div>
