@@ -1,23 +1,17 @@
 "use client";
 
 import CTA from "@/components/marketing/CTA";
+import FAQ from "@/components/marketing/FAQ";
 import { competitorsData } from "@/data/comparisons";
 import { AnimatePresence,motion } from "framer-motion";
 import { ArrowRight,Check,Minus,Plus,ShieldCheck,Sparkles,X,Zap } from "lucide-react";
 import Link from "next/link";
-import { use,useState } from "react";
+import { use } from "react";
 
 export default function ComparePage({ params: paramsPromise }) {
   const params = use(paramsPromise);
   const competitor = params?.competitor;
   const data = competitorsData[competitor];
-
-  // Accordion active index state
-  const [activeFaq, setActiveFaq] = useState(null);
-
-  const toggleFaq = (idx) => {
-    setActiveFaq(activeFaq === idx ? null : idx);
-  };
 
   if (!data) {
     return (
@@ -33,10 +27,10 @@ export default function ComparePage({ params: paramsPromise }) {
   }
 
   return (
-    <main className="min-h-screen bg-background overflow-hidden selection:bg-[#6366F1]/20">
+    <main className="min-h-screen pt-32 pb-16 relative overflow-hidden bg-background selection:bg-[#6366F1]/20">
       
       {/* 1. Hero Section (Styled exactly like the homepage Hero) */}
-      <section className="relative w-full overflow-hidden pt-32 pb-20 md:pt-44 md:pb-28 flex items-center isolate">
+      <section className="relative w-full overflow-hidden pt-12 pb-20 md:pt-16 md:pb-28 flex items-center isolate">
         
         {/* Decorative Grid Pattern */}
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
@@ -191,60 +185,7 @@ export default function ComparePage({ params: paramsPromise }) {
       </section>
 
       {/* 4. Dynamic Competitor-Specific FAQ Accordion */}
-      <section className="py-24 bg-zinc-50/50 border-t border-zinc-100 relative z-10">
-        <div className="max-w-4xl mx-auto px-6 sm:px-10">
-          
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-[10px] font-black uppercase tracking-widest text-[#6366F1]">
-              Got Questions?
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-semibold text-zinc-900 tracking-tight mt-2">
-              Automixa vs {data.name} FAQs
-            </h2>
-            <p className="text-zinc-500 text-xs sm:text-sm mt-3">
-              Clear, transparent answers about switching your automation engine safely.
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            {data.faqs.map((faq, idx) => {
-              const isOpen = activeFaq === idx;
-              return (
-                <div 
-                  key={idx}
-                  className="bg-white border border-zinc-200/60 rounded-[28px] overflow-hidden transition-shadow hover:shadow-sm"
-                >
-                  <button
-                    onClick={() => toggleFaq(idx)}
-                    className="w-full px-6 sm:px-8 py-5 flex items-center justify-between text-left gap-4 font-bold text-zinc-900 text-sm sm:text-base cursor-pointer hover:bg-zinc-50/50 transition-colors"
-                  >
-                    <span>{faq.q}</span>
-                    <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center shrink-0 text-zinc-500">
-                      {isOpen ? <Minus size={14} /> : <Plus size={14} />}
-                    </div>
-                  </button>
-
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25, ease: "easeInOut" }}
-                      >
-                        <div className="px-6 sm:px-8 pb-6 text-zinc-500 font-normal text-xs sm:text-sm leading-relaxed border-t border-zinc-100 pt-4">
-                          {faq.a}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              );
-            })}
-          </div>
-
-        </div>
-      </section>
+      <FAQ customFaqs={data.faqs} />
 
       {/* 5. Homepage-style High-converting CTA Block */}
       <CTA />

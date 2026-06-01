@@ -114,7 +114,7 @@ export default function PartnersPage() {
   ];
 
   return (
-    <main className="min-h-screen text-foreground overflow-hidden relative font-sans pt-24 pb-6 selection:bg-[#6366F1]/20">
+    <main className="min-h-screen text-foreground overflow-hidden relative font-sans pt-32 pb-16 selection:bg-[#6366F1]/20">
       
       {/* Ambient Orbs */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#6366F1]/5 rounded-full blur-[150px] pointer-events-none" />
@@ -125,7 +125,7 @@ export default function PartnersPage() {
           
           {/* HERO SECTION */}
           {/* ... existing hero code ... */}
-          <div className="flex flex-col items-center text-center gap-6 mb-16 pt-12">
+          <div className="flex flex-col items-center text-center gap-6 mb-16">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -295,16 +295,12 @@ export default function PartnersPage() {
             </div>
           </div>
           
-          <div className="mt-12">
-            <FAQ customFaqs={partnerFaqs} />
-          </div>
+          <FAQ customFaqs={partnerFaqs} />
 
         </div>
       </PageTransition>
 
-      <div className="mt-16">
-        <CTA />
-      </div>
+      <CTA />
 
       {/* APPLICATION MODAL */}
       <AnimatePresence>

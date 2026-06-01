@@ -30,10 +30,8 @@ export default function PricingPage() {
   ];
 
   return (
-    <main className="min-h-screen pt-24 bg-background overflow-hidden selection:bg-[#6366F1]/20">
-      <div className="pt-10">
-        <Pricing />
-      </div>
+    <main className="min-h-screen pt-32 pb-16 relative overflow-hidden bg-background selection:bg-[#6366F1]/20">
+      <Pricing />
 
       {/* Feature Comparison Table */}
       <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-16 py-20 border-t border-zinc-100 mt-10">
@@ -112,9 +110,7 @@ export default function PricingPage() {
 
       <FAQ />
       
-      <div className="mt-10">
-        <CTA />
-      </div>
+      <CTA />
     </main>
   );
 }

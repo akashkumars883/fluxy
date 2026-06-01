@@ -6,6 +6,7 @@ import { ArrowRight,Mail,ShieldCheck,Ticket } from "lucide-react";
 import { useState } from "react";
 
 import FAQ from "@/components/marketing/FAQ";
+import CTA from "@/components/marketing/CTA";
 
 export default function ContactPage() {
   const [copied, setCopied] = useState(false);
@@ -32,7 +33,7 @@ export default function ContactPage() {
   ];
 
   return (
-    <main className="min-h-screen text-foreground overflow-hidden relative font-sans pt-32 pb-24 selection:bg-sage/20">
+    <main className="min-h-screen text-foreground overflow-hidden relative font-sans pt-32 pb-16 selection:bg-sage/20">
       
       {/* Premium Soft Ambient Backglows matching homepage FAQ & Pricing */}
       <div className="absolute top-1/4 right-0 w-[400px] h-[400px] bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none" />
@@ -157,12 +158,11 @@ export default function ContactPage() {
           </motion.div>
 
           {/* Shared FAQ Block */}
-          <div className="max-w-4xl mx-auto">
-             <FAQ customFaqs={faqItems} />
-          </div>
+          <FAQ customFaqs={faqItems} />
 
         </div>
       </PageTransition>
+      <CTA />
     </main>
   );
 }

@@ -29,7 +29,7 @@ export default function ShieldPage() {
   ];
 
   return (
-    <main className="min-h-screen pt-24 bg-background overflow-hidden selection:bg-[#6366F1]/20">
+    <main className="min-h-screen pt-32 pb-16 relative overflow-hidden bg-background selection:bg-[#6366F1]/20">
       
       {/* Hero Section */}
       <section className="relative py-20 md:py-28 overflow-hidden">
@@ -196,12 +196,10 @@ export default function ShieldPage() {
       </section>
 
       {/* Security specific Accordion FAQ */}
-      <FAQ customFaqs={securityFaqs as unknown as null} />
+      <FAQ customFaqs={securityFaqs as any} />
 
       {/* Security CTA Card */}
-      <div className="pb-16">
-        <CTA />
-      </div>
+      <CTA />
 
     </main>
   );
