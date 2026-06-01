@@ -24,10 +24,8 @@ export default function BlogPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedPost, setSelectedPost] = useState(null);
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [readingProgress, setReadingProgress] = useState(0);
 
   // Fetch blogs dynamically from Supabase
   useEffect(() => {
@@ -86,41 +84,6 @@ export default function BlogPage() {
     return blogPosts.find(post => post.isFeatured) || blogPosts[0];
   }, [blogPosts]);
 
-  // Automatically select a post on initial load if ?post=slug-name is in the URL query parameters
-  useEffect(() => {
-    if (blogPosts.length > 0 && typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const postSlug = params.get("post");
-      if (postSlug) {
-        const post = blogPosts.find(p => p.id === postSlug);
-        if (post) {
-          setTimeout(() => setSelectedPost(post), 0);
-        }
-      }
-    }
-  }, [blogPosts]);
-
-  // Track scroll reading progress in deep-article mode
-  useEffect(() => {
-    if (!selectedPost) return;
-
-    const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (totalHeight > 0) {
-        const progress = (window.scrollY / totalHeight) * 100;
-        setReadingProgress(progress);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [selectedPost]);
-
-  // Scroll to top when post changes
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [selectedPost]);
-
   const handleSubscribe = (e) => {
     e.preventDefault();
     if (!newsletterEmail || !newsletterEmail.includes("@")) return;
@@ -132,21 +95,11 @@ export default function BlogPage() {
 
   return (
     <main className="min-h-screen text-foreground overflow-x-clip relative font-sans pt-24 pb-16 selection:bg-sage/20">
-      {/* Reading Progress Bar for Article detail view */}
-      {selectedPost && (
-        <div className="fixed top-0 left-0 right-0 h-1 z-[110] bg-zinc-100">
-          <div 
-            className="h-full bg-[#6366F1] transition-all duration-100" 
-            style={{ width: `${readingProgress}%` }}
-          />
-        </div>
-      )}
-
       <PageTransition>
         <div className="max-w-7xl mx-auto px-6 md:px-10 mt-16 relative z-10">
           
           <AnimatePresence mode="wait">
-            {!selectedPost && (
+            {(
               // ----------------------------------------------------
               // BLOG DIRECTORY VIEW
               // ----------------------------------------------------

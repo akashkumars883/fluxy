@@ -1,6 +1,7 @@
 import BlogClient from "./BlogClient";
 import { createClient } from "@/lib/supabase";
-import { fetchBlogBySlug } from "@/lib/blogs";
+import { fetchBlogBySlug, fetchPublishedBlogs } from "@/lib/blogs";
+import { notFound } from "next/navigation";
 
 // Next.js 16 requires awaiting params
 export async function generateMetadata({ params }) {
@@ -51,6 +52,11 @@ export default async function Page({ params }) {
   const supabase = createClient();
   
   const post = await fetchBlogBySlug(supabase, slug);
+  if (!post) notFound();
+
+  const relatedPosts = (await fetchPublishedBlogs(supabase))
+    .filter((item) => item.id !== post.id)
+    .slice(0, 3);
 
   return (
     <>
@@ -81,7 +87,7 @@ export default async function Page({ params }) {
           }}
         />
       )}
-      <BlogClient />
+      <BlogClient initialPost={post} relatedPosts={relatedPosts} />
     </>
   );
 }

@@ -1,8 +1,6 @@
 "use client";
 
 import PageTransition from "@/components/ui/PageTransition";
-import { fetchPublishedBlogs } from "@/lib/blogs";
-import { createClient } from "@/lib/supabase";
 import { motion } from "framer-motion";
 import {
 ArrowLeft,
@@ -14,36 +12,13 @@ Copy,
 Share2
 } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import { useEffect,useState } from "react";
 
-export default function BlogPostPage() {
-  const params = useParams();
-  const slug = params.slug;
-  const [blogPosts, setBlogPosts] = useState([]);
-  const [selectedPost, setSelectedPost] = useState(null);
+export default function BlogPostPage({ initialPost, relatedPosts = [] }) {
+  const selectedPost = initialPost;
+  const blogPosts = relatedPosts;
   const [copiedLink, setCopiedLink] = useState(false);
   const [readingProgress, setReadingProgress] = useState(0);
-
-  useEffect(() => {
-    async function fetchBlogs() {
-      try {
-        const supabase = createClient();
-        const posts = await fetchPublishedBlogs(supabase);
-        setBlogPosts(posts);
-      } catch {}
-    }
-    fetchBlogs();
-  }, []);
-
-  useEffect(() => {
-    if (blogPosts.length > 0 && slug) {
-      const post = blogPosts.find(p => p.id === slug);
-      if (post) {
-        setTimeout(() => setSelectedPost(post), 0);
-      }
-    }
-  }, [blogPosts, slug]);
 
   useEffect(() => {
     if (!selectedPost) return;

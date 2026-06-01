@@ -173,7 +173,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
             <div>
               <h4 className="text-sm font-bold text-rose-900 tracking-tight mb-0.5">Usage Limit Approaching!</h4>
               <p className="text-[13px] font-medium text-rose-600/90 leading-snug">
-                You've used <strong>{autoReplies} / 1,000</strong> of your free replies this month. Automations will pause when the limit is reached.
+                You&apos;ve used <strong>{autoReplies} / 1,000</strong> of your free replies this month. Automations will pause when the limit is reached.
               </p>
             </div>
           </div>

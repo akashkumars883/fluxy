@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { Plus, Package, Link2, DollarSign, Download, Image as ImageIcon, Trash2, Edit2, ShoppingBag } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -16,11 +16,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
   const [coverImage, setCoverImage] = useState("");
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    if (accountId) fetchProducts();
-  }, [accountId]);
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
       const res = await fetch(`/api/store/products?automationId=${accountId}`);
@@ -34,7 +30,13 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
     } finally {
       setLoading(false);
     }
-  };
+  }, [accountId]);
+
+  useEffect(() => {
+    if (!accountId) return;
+    const timer = setTimeout(fetchProducts, 0);
+    return () => clearTimeout(timer);
+  }, [accountId, fetchProducts]);
 
   const handleSaveProduct = async (e) => {
     e.preventDefault();

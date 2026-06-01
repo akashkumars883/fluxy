@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
-  Brain,
   Camera,
   Check,
   Globe,
@@ -86,6 +85,7 @@ export default function CampaignWizard({
   currentPlan = "free",
   onUpgradeClick,
   campaignName,
+  onPhaseChange,
 }) {
   // ── Chat state ──────────────────────────────────────────
   const [messages, setMessages] = useState([
@@ -93,7 +93,7 @@ export default function CampaignWizard({
       id: "init",
       role: "ai",
       type: "text",
-      text: `Hi! 👋 I'm your Automixa AI Copilot.\n\nWhat would you like to automate today?`,
+      text: `Hi! 👋 I'm your Automixa AI.\n\nWhat would you like to automate today?`,
     },
   ]);
   const [isTyping, setIsTyping] = useState(false);
@@ -122,6 +122,10 @@ export default function CampaignWizard({
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping, phase]);
+
+  useEffect(() => {
+    onPhaseChange?.(phase);
+  }, [onPhaseChange, phase]);
 
   // ─────────────────────────────────────────────────────────
   // Helper: push AI message after typing delay
@@ -306,16 +310,15 @@ export default function CampaignWizard({
         className={`flex ${isAI ? "justify-start" : "justify-end"}`}
       >
         {isAI && (
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 mr-3 mt-0.5 shadow-md shadow-indigo-200">
-            <Brain size={16} className="text-white" />
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#6366F1] to-purple-600 flex items-center justify-center shrink-0 mr-3 mt-0.5 shadow-md shadow-indigo-200 text-white font-black text-[13px] tracking-tight select-none">
+            A
           </div>
         )}
         <div
-          className={`max-w-[80%] ${
-            isAI
+          className={`max-w-[80%] ${isAI
               ? "text-zinc-800 text-[14.5px] font-medium leading-relaxed"
               : "bg-[#6366F1] text-white px-5 py-3 rounded-[22px] rounded-br-[6px] text-[14px] font-semibold shadow-sm"
-          }`}
+            }`}
         >
           {msg.text.split("\n").map((line, i) => (
             <p key={i} className={`${i > 0 ? "mt-1.5" : ""}`}>
@@ -352,11 +355,10 @@ export default function CampaignWizard({
                 <button
                   key={type.id}
                   onClick={() => handleSelectType(type)}
-                  className={`group flex items-start gap-4 p-4 rounded-[20px] border-2 text-left transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 ${
-                    isLocked
+                  className={`group flex items-start gap-4 p-4 rounded-[20px] border-2 text-left transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 ${isLocked
                       ? "border-zinc-100 bg-zinc-50 opacity-80"
                       : `border-zinc-200 bg-white hover:border-[#6366F1] hover:bg-[#6366F1]/5`
-                  }`}
+                    }`}
                 >
                   <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${type.bg} ${type.color} group-hover:bg-[#6366F1] group-hover:text-white transition-colors`}>
                     <type.icon size={20} />
@@ -386,11 +388,10 @@ export default function CampaignWizard({
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-h-[300px] overflow-y-auto no-scrollbar p-1">
               <button
                 onClick={() => onSelectPosts([])}
-                className={`relative flex flex-col items-center justify-center aspect-square rounded-[18px] border-2 transition-all gap-2 ${
-                  selectedPosts.length === 0
+                className={`relative flex flex-col items-center justify-center aspect-square rounded-[18px] border-2 transition-all gap-2 ${selectedPosts.length === 0
                     ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1] shadow-md shadow-[#6366F1]/10"
                     : "border-zinc-200 bg-white hover:border-zinc-300 text-zinc-500"
-                }`}
+                  }`}
               >
                 <Globe size={28} />
                 <span className="text-[12px] font-bold">All Posts</span>
@@ -409,9 +410,8 @@ export default function CampaignWizard({
                         isSel ? selectedPosts.filter((id) => id !== item.id) : [...selectedPosts, item.id]
                       )
                     }
-                    className={`relative flex-col aspect-square rounded-[18px] overflow-hidden border-2 transition-all group ${
-                      isSel ? "border-[#6366F1] scale-[0.97] shadow-md shadow-[#6366F1]/20" : "border-zinc-200 hover:border-zinc-300"
-                    }`}
+                    className={`relative flex-col aspect-square rounded-[18px] overflow-hidden border-2 transition-all group ${isSel ? "border-[#6366F1] scale-[0.97] shadow-md shadow-[#6366F1]/20" : "border-zinc-200 hover:border-zinc-300"
+                      }`}
                   >
                     <img src={url} alt="post" className="w-full h-full object-cover" />
                     {isSel && (
@@ -619,11 +619,10 @@ export default function CampaignWizard({
                   <button
                     key={t.id}
                     onClick={() => setStoryTriggerType(t.id)}
-                    className={`flex flex-col gap-2 p-4 rounded-[18px] border-2 text-left transition-all ${
-                      storyTriggerType === t.id
+                    className={`flex flex-col gap-2 p-4 rounded-[18px] border-2 text-left transition-all ${storyTriggerType === t.id
                         ? "border-[#6366F1] bg-[#6366F1]/5"
                         : "border-zinc-200 bg-white hover:border-zinc-300"
-                    }`}
+                      }`}
                   >
                     <span className="text-2xl">{t.emoji}</span>
                     <div>
@@ -643,11 +642,10 @@ export default function CampaignWizard({
                   <button
                     key={c}
                     onClick={() => setStoryCondition(c)}
-                    className={`flex-1 py-3 rounded-[14px] text-[13px] font-bold border-2 transition-all ${
-                      storyCondition === c
+                    className={`flex-1 py-3 rounded-[14px] text-[13px] font-bold border-2 transition-all ${storyCondition === c
                         ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]"
                         : "border-zinc-200 bg-white text-zinc-600"
-                    }`}
+                      }`}
                   >
                     {c === "ANY" ? "Any Message" : "Specific Keyword"}
                   </button>
@@ -753,9 +751,8 @@ export default function CampaignWizard({
                   <button
                     key={p.id}
                     onClick={() => setAiPersona(p.id)}
-                    className={`flex-1 py-2 text-[12px] font-bold rounded-[12px] border-2 transition-all ${
-                      aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-600"
-                    }`}
+                    className={`flex-1 py-2 text-[12px] font-bold rounded-[12px] border-2 transition-all ${aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-600"
+                      }`}
                   >
                     {p.label}
                   </button>
@@ -811,9 +808,8 @@ export default function CampaignWizard({
                   <button
                     key={p.id}
                     onClick={() => setAiPersona(p.id)}
-                    className={`flex-1 py-2 text-[12px] font-bold rounded-[12px] border-2 transition-all ${
-                      aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-600"
-                    }`}
+                    className={`flex-1 py-2 text-[12px] font-bold rounded-[12px] border-2 transition-all ${aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-600"
+                      }`}
                   >
                     {p.label}
                   </button>
@@ -854,9 +850,9 @@ export default function CampaignWizard({
   // Render
   // ─────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col h-full w-full max-w-3xl mx-auto relative">
+    <div className="flex flex-col h-full w-full max-w-3xl mx-auto relative rounded-[28px] bg-white/65 border border-white/70 shadow-[0_18px_60px_rgba(15,23,42,0.08)] overflow-hidden backdrop-blur-xl">
       {/* ── Chat messages ──────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-6 no-scrollbar pb-8">
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-6 no-scrollbar pb-8 bg-gradient-to-b from-white/80 via-white/45 to-transparent">
         {/* Intro header — shown only at the very start */}
         {messages.length === 1 && !isTyping && (
           <motion.div
@@ -864,11 +860,11 @@ export default function CampaignWizard({
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col items-center text-center pt-6 pb-2"
           >
-            <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[22px] flex items-center justify-center shadow-xl shadow-indigo-200 mb-4">
-              <Brain size={32} className="text-white" />
+            <div className="w-16 h-16 bg-gradient-to-br from-[#6366F1] to-purple-600 rounded-[22px] flex items-center justify-center shadow-xl shadow-indigo-200 mb-4 text-white font-black text-3xl select-none">
+              A
             </div>
             <h2 className="text-[22px] font-black text-zinc-950 tracking-tight mb-1">
-              Automixa AI Copilot
+              Automixa AI
             </h2>
             <p className="text-[13px] font-medium text-zinc-500 max-w-xs leading-relaxed">
               Your intelligent assistant to build powerful Instagram automations in minutes.
@@ -887,8 +883,8 @@ export default function CampaignWizard({
             animate={{ opacity: 1 }}
             className="flex items-center gap-3"
           >
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 shadow-md shadow-indigo-200">
-              <Brain size={16} className="text-white" />
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#6366F1] to-purple-600 flex items-center justify-center shrink-0 shadow-md shadow-indigo-200 text-white font-black text-[13px] select-none">
+              A
             </div>
             <div className="flex items-center gap-1.5 pt-1">
               <div className="w-2 h-2 bg-zinc-300 rounded-full animate-bounce [animation-delay:-0.3s]" />
@@ -902,7 +898,7 @@ export default function CampaignWizard({
       </div>
 
       {/* ── Input panel (contextual) ────────────────────────── */}
-      <div className="shrink-0 px-4 sm:px-6 pb-6 pt-2 bg-gradient-to-t from-white via-white to-transparent">
+      <div className="shrink-0 px-4 sm:px-6 pb-6 pt-4 border-t border-white/70 bg-gradient-to-t from-indigo-50/90 via-white/92 to-white/20 shadow-[0_-18px_45px_rgba(99,102,241,0.08)]">
         <AnimatePresence mode="wait">{renderInputPanel()}</AnimatePresence>
       </div>
     </div>

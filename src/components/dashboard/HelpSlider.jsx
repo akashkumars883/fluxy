@@ -33,8 +33,6 @@ export default function HelpSlider({ isOpen, onClose }) {
   const [emailSending, setEmailSending] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
 
-  if (typeof document === "undefined") return null;
-
   const reasons = [
     { id: "no_longer_using", label: "No longer using automation" },
     { id: "too_difficult", label: "Too difficult to set up" },
@@ -102,6 +100,8 @@ export default function HelpSlider({ isOpen, onClose }) {
       chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
     }
   }, [chatMessages, activeView]);
+
+  if (typeof document === "undefined") return null;
 
   const handleSendEmail = (e) => {
     e.preventDefault();
