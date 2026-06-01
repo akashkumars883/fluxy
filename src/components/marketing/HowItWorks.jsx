@@ -1,6 +1,6 @@
 "use client";
 
-import { UserPlus, Settings2, PlayCircle } from "lucide-react";
+import { UserPlus, Sparkles, PlayCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function HowItWorks() {
@@ -14,9 +14,9 @@ export default function HowItWorks() {
     },
     {
       number: "02",
-      icon: <Settings2 size={24} className="text-amber-600" />,
-      title: "Create Reply Rules",
-      desc: "Choose your trigger keywords (like 'INFO' or 'BUY') and set the product links or messages you want to send.",
+      icon: <Sparkles size={24} className="text-amber-600" />,
+      title: "One-Shot AI Campaign Setup",
+      desc: "Describe what you want to automate in one simple sentence. Automixa AI drafts copy, sets up keyword triggers, and configures the DM funnel instantly.",
       image: "/images/how-it-works-2.png"
     },
     {
