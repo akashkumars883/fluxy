@@ -2,40 +2,15 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useState } from "react";
 import { 
   ArrowRight, Target, Users, Heart, Share2, Play, 
-  CheckCircle2, Clock, Sparkles, Phone, Send, RotateCcw, AlertCircle, ShieldCheck
+  CheckCircle2, Clock, Sparkles, ShieldCheck
 } from "lucide-react";
 import PageTransition from "@/components/ui/PageTransition";
 import FAQ from "@/components/marketing/FAQ";
 import CTA from "@/components/marketing/CTA";
 
 export default function StoryMentionPage() {
-  // Simulator State
-  const [step, setStep] = useState("idle"); // idle, posting_story, story_posted, dm_received
-  const [discountClaimed, setDiscountClaimed] = useState(false);
-
-  const runSimulation = () => {
-    setStep("posting_story");
-    setDiscountClaimed(false);
-    
-    // Simulate story posting animation
-    setTimeout(() => {
-      setStep("story_posted");
-      
-      // Simulate DM trigger delay (1.5 seconds)
-      setTimeout(() => {
-        setStep("dm_received");
-      }, 1500);
-    }, 1000);
-  };
-
-  const resetSimulation = () => {
-    setStep("idle");
-    setDiscountClaimed(false);
-  };
-
   const benefits = [
     {
       title: "Boost Word-of-Mouth Sales",
@@ -47,7 +22,8 @@ export default function StoryMentionPage() {
         "Increases organic user-generated content by up to 10x"
       ],
       icon: Users,
-      color: "text-emerald-600 bg-emerald-50 border-emerald-100",
+      image: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1200&auto=format&fit=crop",
+      color: "text-emerald-600 bg-emerald-500/10 border-emerald-500/20",
     },
     {
       title: "Smart 24h Cooldown Limits",
@@ -59,19 +35,21 @@ export default function StoryMentionPage() {
         "Prevents duplicate coupon deliveries"
       ],
       icon: Clock,
-      color: "text-teal-600 bg-teal-50 border-teal-100",
+      image: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=1200&auto=format&fit=crop",
+      color: "text-teal-600 bg-teal-500/10 border-teal-500/20",
     },
     {
       title: "Chat to Build Story Rules",
       tagline: "AI Triggers Setup",
-      description: "Skipping coding or menu configurations. Tell the AI what you want to reward when tagged. The AI constructs the story match listener, sets custom cooldowns, and designs your coupon DM cards instantly.",
+      description: "Skip coding or menu configurations. Tell the AI what you want to reward when tagged. The AI constructs the story match listener, sets custom cooldowns, and designs your coupon DM cards instantly.",
       bullets: [
         "1-click AI prompt builder integration",
         "No complicated workflow charts to manage",
         "Tested & verified Meta API alignment"
       ],
       icon: Sparkles,
-      color: "text-green-600 bg-green-50 border-green-100",
+      image: "https://images.unsplash.com/photo-1542744173-05336fcc7ad4?q=80&w=1200&auto=format&fit=crop",
+      color: "text-green-600 bg-green-500/10 border-green-500/20",
     }
   ];
 
@@ -105,7 +83,7 @@ export default function StoryMentionPage() {
         <div className="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
           
           {/* HERO SECTION */}
-          <div className="flex flex-col lg:flex-row items-center gap-16 py-12 md:py-20">
+          <div className="flex flex-col lg:flex-row items-center gap-16 py-12 md:py-20 mb-8">
             
             {/* Left Content */}
             <motion.div 
@@ -136,13 +114,13 @@ export default function StoryMentionPage() {
                   Start Story Auto-Replies Free
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <a 
-                  href="#simulator" 
+                <Link 
+                  href="#features-list" 
                   className="px-8 py-4.5 bg-white border border-zinc-200 text-zinc-800 font-bold rounded-full hover:bg-zinc-50 transition-all flex items-center justify-center gap-2 text-sm shadow-sm"
                 >
                   <Play size={18} className="text-emerald-500 fill-emerald-500" />
-                  Try Live Simulator
-                </a>
+                  Explore Features
+                </Link>
               </div>
 
               {/* Trust Indicators */}
@@ -187,235 +165,66 @@ export default function StoryMentionPage() {
             </motion.div>
           </div>
 
-          {/* INTERACTIVE STORY MENTION SIMULATOR SECTION */}
-          <div id="simulator" className="py-16 md:py-24 scroll-mt-20">
-            <div className="max-w-3xl mx-auto text-center mb-16 space-y-3">
-              <span className="text-emerald-500 font-bold uppercase tracking-widest text-xs">Interactive Playground</span>
+          {/* RESTORED ALTERNATING FEATURES LIST */}
+          <div id="features-list" className="py-16 md:py-24 border-t border-zinc-200/60 scroll-mt-20">
+            <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
+              <span className="text-emerald-500 font-bold uppercase tracking-widest text-xs">Core Capabilities</span>
               <h2 className="text-3xl sm:text-5xl font-bold text-zinc-900 tracking-tight leading-tight">
-                Try the Story Tag auto-reply live simulator
+                Turn your followers into your marketing team
               </h2>
-              <p className="text-zinc-500 text-sm sm:text-base max-w-xl mx-auto">
-                Watch how tagging a brand instantly triggers a DM coupon delivery, increasing organic shares.
+              <p className="text-zinc-500 text-sm sm:text-base">
+                Discover the story tag reward capabilities that make Automixa the #1 organic growth marketing tool.
               </p>
             </div>
 
-            {/* Simulator Grid */}
-            <div className="bg-white/60 border border-white rounded-[48px] p-6 md:p-12 shadow-xl shadow-zinc-200/50 backdrop-blur-xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              
-              {/* Simulator Controls */}
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 text-xs font-bold rounded-full">
-                    <Sparkles size={12} />
-                    Story Tag Simulator
-                  </div>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-zinc-900 leading-tight">
-                    Simulate a follower tagging your page
-                  </h3>
-                  <p className="text-zinc-500 text-sm leading-relaxed">
-                    Tagging a business is a major endorsement. Automixa makes it viral: when a follower uploads a story tagging <code className="bg-zinc-100 text-emerald-600 px-2 py-0.5 rounded font-bold">@automixa_app</code>, they get an instant coupon code.
-                  </p>
-                </div>
-
-                <div className="bg-zinc-50/80 border border-zinc-200/60 p-5 rounded-2xl space-y-4">
-                  <div className="flex items-center justify-between text-xs font-bold text-zinc-500">
-                    <span>STATUS DETECTOR</span>
-                    <span className="uppercase text-emerald-600">{step}</span>
-                  </div>
-                  
-                  {/* Status Steps */}
-                  <div className="space-y-3">
-                    <div className={`flex items-center gap-3 text-xs font-semibold ${step !== "idle" ? "text-emerald-600" : "text-zinc-400"}`}>
-                      <CheckCircle2 size={16} className={step !== "idle" ? "text-emerald-500" : "text-zinc-300"} />
-                      Follower posts an Instagram Story tagging your brand.
-                    </div>
-                    <div className={`flex items-center gap-3 text-xs font-semibold ${step === "story_posted" || step === "dm_received" ? "text-emerald-600" : "text-zinc-400"}`}>
-                      <CheckCircle2 size={16} className={step === "story_posted" || step === "dm_received" ? "text-emerald-500" : "text-zinc-300"} />
-                      Webhook registers mention and starts DM cooldown check.
-                    </div>
-                    <div className={`flex items-center gap-3 text-xs font-semibold ${step === "dm_received" ? "text-emerald-600" : "text-zinc-400"}`}>
-                      <CheckCircle2 size={16} className={step === "dm_received" ? "text-emerald-500" : "text-zinc-300"} />
-                      Discount coupon code auto-delivered inside Instagram DMs.
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <button
-                    onClick={runSimulation}
-                    disabled={step !== "idle"}
-                    className="flex-1 px-6 py-4 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-700 disabled:bg-zinc-300 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 text-sm shadow-lg shadow-emerald-100"
-                  >
-                    <Play size={16} />
-                    Start Story Tag Demo
-                  </button>
-                  <button
-                    onClick={resetSimulation}
-                    className="px-6 py-4 bg-white border border-zinc-200 text-zinc-600 font-bold rounded-2xl hover:bg-zinc-50 transition-all flex items-center justify-center gap-2 text-sm shadow-sm"
-                  >
-                    <RotateCcw size={16} />
-                    Reset
-                  </button>
-                </div>
-              </div>
-
-              {/* iPhone Mockup */}
-              <div className="flex justify-center">
-                <div className="relative w-[320px] h-[600px] bg-zinc-950 border-[10px] border-zinc-900 rounded-[50px] shadow-2xl ring-4 ring-zinc-800 overflow-hidden">
-                  {/* Notch */}
-                  <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-28 h-5 bg-zinc-900 rounded-full z-50 flex items-center justify-center">
-                    <div className="w-2.5 h-2.5 bg-zinc-950 rounded-full ml-auto mr-4" />
-                  </div>
-
-                  {/* Simulator Screen */}
-                  <div className="w-full h-full bg-white relative flex flex-col justify-between pt-8">
-                    
-                    {/* Header */}
-                    <div className="px-4 py-2 border-b border-zinc-100 flex items-center gap-2 bg-zinc-50">
-                      <div className="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center text-white text-[10px] font-bold">
-                        AM
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[10px] font-bold text-zinc-800 flex items-center gap-0.5">
-                          automixa_app ✓
-                        </span>
-                        <span className="text-[7px] text-zinc-400">Story Trigger Engine</span>
-                      </div>
-                    </div>
-
-                    {/* Chat Area / Screen Content */}
-                    <div className="flex-1 p-4 relative overflow-y-auto bg-zinc-50 flex flex-col gap-3">
-                      
-                      {step === "idle" && (
-                        <div className="flex flex-col items-center justify-center h-full text-center space-y-2">
-                          <Share2 className="text-zinc-300" size={32} />
-                          <p className="text-xs text-zinc-400 font-medium">Click &ldquo;Start Story Tag Demo&rdquo; to simulate organic word-of-mouth loops</p>
-                        </div>
-                      )}
-
-                      {step === "posting_story" && (
-                        <div className="flex flex-col items-center justify-center h-full text-center space-y-3">
-                          <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-                          <p className="text-xs text-zinc-500">Follower is posting Story and adding tag sticker...</p>
-                        </div>
-                      )}
-
-                      {step === "story_posted" && (
-                        <div className="flex flex-col h-full justify-between pb-4">
-                          <div className="space-y-3">
-                            <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider block">Follower&apos;s Active Story</span>
-                            
-                            <div className="relative rounded-2xl overflow-hidden aspect-[9/16] h-[340px] border border-zinc-200 shadow-md">
-                              <img 
-                                src="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?q=80&w=600&auto=format&fit=crop" 
-                                alt="User Story mock background" 
-                                className="w-full h-full object-cover"
-                              />
-                              <div className="absolute inset-0 bg-black/25" />
-                              
-                              {/* Story Sticker Tag */}
-                              <motion.div 
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{ type: "spring", stiffness: 200, delay: 0.3 }}
-                                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/90 backdrop-blur px-4 py-2 rounded-xl border border-white font-bold text-[10px] text-emerald-700 shadow-lg flex items-center gap-1"
-                              >
-                                🏷️ @automixa_app
-                              </motion.div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* DM received screen simulation */}
-                      {step === "dm_received" && (
-                        <div className="flex flex-col h-full justify-between">
-                          <div className="space-y-4">
-                            <div className="text-center">
-                              <span className="text-[9px] font-semibold text-zinc-400 bg-zinc-100 px-2 py-0.5 rounded-full">INBOX REWARDED</span>
-                            </div>
-                            
-                            <motion.div 
-                              initial={{ opacity: 0, y: 15 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              className="bg-white border border-zinc-150 rounded-2xl overflow-hidden shadow-md max-w-[90%] mx-auto"
-                            >
-                              <div className="bg-emerald-50 p-4 border-b border-zinc-100 flex items-center justify-between">
-                                <div className="space-y-0.5">
-                                  <div className="text-[10px] font-bold text-emerald-900">Story Reward Triggered!</div>
-                                  <div className="text-[8px] text-emerald-700">Thank you for sharing automixa!</div>
-                                </div>
-                                <span className="text-xl">🎁</span>
-                              </div>
-                              <div className="p-3.5 space-y-3">
-                                <p className="text-[10px] text-zinc-700 leading-relaxed">
-                                  Hey! We saw you tagged us in your story. You are awesome! Here is your exclusive 15% discount code:
-                                </p>
-                                <div className="text-center py-2.5 bg-zinc-50 border border-zinc-200 border-dashed rounded-lg font-mono text-xs font-bold text-zinc-800">
-                                  {discountClaimed ? "✓ CODE COPIED: GROW15" : "GROW15"}
-                                </div>
-                                <button 
-                                  onClick={() => setDiscountClaimed(true)}
-                                  className="w-full text-center py-2 bg-emerald-600 text-white font-bold text-[10px] rounded-lg hover:bg-emerald-700 transition-colors"
-                                >
-                                  {discountClaimed ? "✓ Claimed Successfully" : "Copy Discount Code"}
-                                </button>
-                              </div>
-                            </motion.div>
-                          </div>
-
-                          <div className="bg-zinc-100 p-2.5 rounded-xl border border-zinc-200/50 flex items-center gap-2">
-                            <AlertCircle size={14} className="text-emerald-600 shrink-0" />
-                            <span className="text-[8px] text-zinc-500 font-semibold leading-normal">
-                              Story webhook verified and DM triggered in 2.1 seconds.
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* DYNAMIC DETAILS BENTO */}
-          <div className="py-16 md:py-24 border-t border-zinc-200/60">
-            <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-              <span className="text-emerald-500 font-bold uppercase tracking-widest text-xs">Capabilities Details</span>
-              <h2 className="text-3xl sm:text-5xl font-bold text-zinc-900 tracking-tight leading-tight">
-                Everything you need to automate your story mentions
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="space-y-24 md:space-y-32">
               {benefits.map((benefit, idx) => {
                 const Icon = benefit.icon;
+                const isEven = idx % 2 !== 0;
+                
                 return (
                   <motion.div 
                     key={idx}
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 35 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: idx * 0.1 }}
-                    className="bg-white border border-zinc-200/40 rounded-[36px] p-8 shadow-xl shadow-zinc-200/10 hover:shadow-2xl hover:shadow-emerald-500/5 hover:border-emerald-500/20 transition-all duration-300 flex flex-col justify-between"
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    className={`flex flex-col gap-12 lg:gap-16 items-center ${isEven ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}
                   >
-                    <div className="space-y-4">
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border ${benefit.color}`}>
-                        <Icon size={22} />
+                    {/* Left: Text Details */}
+                    <div className="w-full lg:w-1/2 space-y-5">
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-2 border shadow-sm ${benefit.color}`}>
+                        <Icon size={26} />
                       </div>
                       <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest block">{benefit.tagline}</span>
-                      <h3 className="text-xl font-bold text-zinc-900 leading-snug">{benefit.title}</h3>
-                      <p className="text-zinc-500 text-sm leading-relaxed">{benefit.description}</p>
+                      <h3 className="text-2xl sm:text-4xl font-bold text-zinc-900 leading-tight tracking-tight">
+                        {benefit.title}
+                      </h3>
+                      <p className="text-zinc-500 text-base sm:text-lg leading-relaxed font-normal">
+                        {benefit.description}
+                      </p>
+                      
+                      <ul className="space-y-3 pt-3">
+                        {benefit.bullets.map((bullet, bulletIdx) => (
+                          <li key={bulletIdx} className="flex items-start gap-3 text-zinc-700 font-medium text-sm">
+                            <CheckCircle2 size={18} className="text-emerald-500 mt-0.5 shrink-0" />
+                            <span>{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-
-                    <div className="mt-8 pt-6 border-t border-zinc-100 space-y-3">
-                      {benefit.bullets.map((bullet, bulletIdx) => (
-                        <div key={bulletIdx} className="flex items-start gap-2.5 text-xs text-zinc-700 font-medium">
-                          <CheckCircle2 size={14} className="text-emerald-500 mt-0.5 shrink-0" />
-                          <span>{bullet}</span>
+                    
+                    {/* Right: Glassmorphic Image Frame */}
+                    <div className="w-full lg:w-1/2">
+                      <div className="rounded-[40px] overflow-hidden bg-white/40 p-3 border border-white shadow-2xl relative group">
+                        <div className="rounded-[32px] overflow-hidden aspect-[4/3] relative">
+                          <img 
+                            src={benefit.image} 
+                            alt={benefit.title} 
+                            className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-700"
+                          />
                         </div>
-                      ))}
+                      </div>
                     </div>
                   </motion.div>
                 );

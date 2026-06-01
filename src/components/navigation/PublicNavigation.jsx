@@ -110,9 +110,9 @@ export default function PublicNavigation() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 border-b ${showScrolledStyle
-          ? "bg-white/90 backdrop-blur-2xl border-zinc-200/40 py-4 shadow-sm"
-          : "bg-transparent border-transparent py-6"
+        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${showScrolledStyle
+          ? "bg-white/90 backdrop-blur-2xl py-4 shadow-sm"
+          : "bg-transparent py-6"
           }`}
         style={{
           transform: isVisible || isMenuOpen ? "translateY(0)" : "translateY(-100%)"

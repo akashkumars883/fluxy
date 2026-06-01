@@ -2,74 +2,15 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useState } from "react";
 import { 
   ArrowRight, Zap, MessageCircle, Clock, ShieldCheck, Play, 
-  CheckCircle2, Sparkles, Phone, Send, RotateCcw, AlertCircle
+  CheckCircle2, Sparkles
 } from "lucide-react";
 import PageTransition from "@/components/ui/PageTransition";
 import FAQ from "@/components/marketing/FAQ";
 import CTA from "@/components/marketing/CTA";
 
 export default function DMAutoReplyPage() {
-  // Simulator State
-  const [selectedFlow, setSelectedFlow] = useState("price"); // price, agent
-  const [step, setStep] = useState("idle"); // idle, typing_user, user_sent, typing_bot, bot_replied
-  const [messages, setMessages] = useState([]);
-
-  const runSimulation = (flow) => {
-    setSelectedFlow(flow);
-    setStep("typing_user");
-    setMessages([]);
-
-    const userText = flow === "price" ? "price list" : "do you ship to India?";
-    
-    // Simulate user typing
-    setTimeout(() => {
-      setMessages([{ sender: "user", text: userText }]);
-      setStep("typing_bot");
-
-      // Simulate bot typing delay
-      setTimeout(() => {
-        if (flow === "price") {
-          setMessages(prev => [
-            ...prev,
-            { 
-              sender: "bot", 
-              text: "Hey there! here is our full pricing details and list. We have 3 plans tailored to your needs.",
-              card: {
-                title: "Automixa Growth Plans",
-                subtitle: "Unlock complete automation starting from ₹999/month.",
-                price: "₹999/mo",
-                link: "🔗 View Plans & Checkout"
-              }
-            }
-          ]);
-        } else {
-          setMessages(prev => [
-            ...prev,
-            { 
-              sender: "bot", 
-              text: "Yes, we certainly do! 🇮🇳 We offer free shipping across India for orders above ₹1,499. Orders usually arrive in 3-5 business days.",
-              card: {
-                title: "Fast Shipping Details",
-                subtitle: "Delivered via BlueDart & Delhivery. Tracker provided.",
-                price: "Free Shipping Available",
-                link: "🔗 Track Order Status"
-              }
-            }
-          ]);
-        }
-        setStep("bot_replied");
-      }, 1200);
-    }, 800);
-  };
-
-  const resetSimulation = () => {
-    setStep("idle");
-    setMessages([]);
-  };
-
   const benefits = [
     {
       title: "AI FAQ & Sales Agents",
@@ -81,7 +22,8 @@ export default function DMAutoReplyPage() {
         "Passes complex queries to your support inbox"
       ],
       icon: Sparkles,
-      color: "text-amber-600 bg-amber-50 border-amber-100",
+      image: "https://images.unsplash.com/photo-1512428559087-560fa5ceab42?q=80&w=1200&auto=format&fit=crop",
+      color: "text-amber-600 bg-amber-500/10 border-amber-500/20",
     },
     {
       title: "Magic Write Copilot",
@@ -93,7 +35,8 @@ export default function DMAutoReplyPage() {
         "Keeps replies fresh, dynamic, and engaging"
       ],
       icon: Zap,
-      color: "text-orange-600 bg-orange-50 border-orange-100",
+      image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&auto=format&fit=crop",
+      color: "text-orange-600 bg-orange-500/10 border-orange-500/20",
     },
     {
       title: "Chat to Build Rules",
@@ -105,7 +48,8 @@ export default function DMAutoReplyPage() {
         "Official Meta API approved configuration"
       ],
       icon: MessageCircle,
-      color: "text-yellow-600 bg-yellow-50 border-yellow-100",
+      image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?q=80&w=1200&auto=format&fit=crop",
+      color: "text-yellow-600 bg-yellow-500/10 border-yellow-500/20",
     }
   ];
 
@@ -139,7 +83,7 @@ export default function DMAutoReplyPage() {
         <div className="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
           
           {/* HERO SECTION */}
-          <div className="flex flex-col lg:flex-row items-center gap-16 py-12 md:py-20">
+          <div className="flex flex-col lg:flex-row items-center gap-16 py-12 md:py-20 mb-8">
             
             {/* Left Content */}
             <motion.div 
@@ -170,13 +114,13 @@ export default function DMAutoReplyPage() {
                   Start Auto-Replies Free
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <a 
-                  href="#simulator" 
+                <Link 
+                  href="#features-list" 
                   className="px-8 py-4.5 bg-white border border-zinc-200 text-zinc-800 font-bold rounded-full hover:bg-zinc-50 transition-all flex items-center justify-center gap-2 text-sm shadow-sm"
                 >
                   <Play size={18} className="text-amber-500 fill-amber-500" />
-                  Try Live Simulator
-                </a>
+                  Explore Features
+                </Link>
               </div>
 
               {/* Trust Indicators */}
@@ -221,216 +165,66 @@ export default function DMAutoReplyPage() {
             </motion.div>
           </div>
 
-          {/* INTERACTIVE DM SIMULATOR SECTION */}
-          <div id="simulator" className="py-16 md:py-24 scroll-mt-20">
-            <div className="max-w-3xl mx-auto text-center mb-16 space-y-3">
-              <span className="text-amber-500 font-bold uppercase tracking-widest text-xs">Interactive Playground</span>
+          {/* RESTORED ALTERNATING FEATURES LIST */}
+          <div id="features-list" className="py-16 md:py-24 border-t border-zinc-200/60 scroll-mt-20">
+            <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
+              <span className="text-amber-500 font-bold uppercase tracking-widest text-xs">Core Capabilities</span>
               <h2 className="text-3xl sm:text-5xl font-bold text-zinc-900 tracking-tight leading-tight">
-                Try the DM auto-reply live simulator
+                Unlock the full potential of your DMs
               </h2>
-              <p className="text-zinc-500 text-sm sm:text-base max-w-xl mx-auto">
-                Test both direct keyword automation and our intelligent AI Sales assistant in this real-time simulator.
+              <p className="text-zinc-500 text-sm sm:text-base">
+                Discover the advanced features that make Automixa the ultimate Instagram DM auto-reply software.
               </p>
             </div>
 
-            {/* Simulator Container */}
-            <div className="bg-white/60 border border-white rounded-[48px] p-6 md:p-12 shadow-xl shadow-zinc-200/50 backdrop-blur-xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              
-              {/* Controls */}
-              <div className="space-y-6">
-                <div className="space-y-3">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-700 text-xs font-bold rounded-full">
-                    <Sparkles size={12} />
-                    Select Automation Flow
-                  </div>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-zinc-900 leading-tight">
-                    Choose which simulation flow to test
-                  </h3>
-                  <p className="text-zinc-500 text-sm leading-relaxed">
-                    Select a trigger logic to see how Automixa handles incoming Direct Messages. You can trigger standard product prices or test our custom AI sales agent answering shipment questions.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <button
-                    onClick={() => runSimulation("price")}
-                    disabled={step !== "idle"}
-                    className={`p-4 rounded-2xl border text-left transition-all ${
-                      selectedFlow === "price" && step !== "idle"
-                        ? "bg-amber-50/80 border-amber-300 ring-2 ring-amber-500/10"
-                        : "bg-white border-zinc-200 hover:bg-zinc-50"
-                    }`}
-                  >
-                    <div className="font-bold text-zinc-800 text-sm">Flow 1: Keyword Trigger</div>
-                    <div className="text-xs text-zinc-500 mt-1">User sends keyword &ldquo;price list&rdquo;</div>
-                  </button>
-
-                  <button
-                    onClick={() => runSimulation("agent")}
-                    disabled={step !== "idle"}
-                    className={`p-4 rounded-2xl border text-left transition-all ${
-                      selectedFlow === "agent" && step !== "idle"
-                        ? "bg-amber-50/80 border-amber-300 ring-2 ring-amber-500/10"
-                        : "bg-white border-zinc-200 hover:bg-zinc-50"
-                    }`}
-                  >
-                    <div className="font-bold text-zinc-800 text-sm">Flow 2: AI Support Agent</div>
-                    <div className="text-xs text-zinc-500 mt-1">User asks &ldquo;do you ship to India?&rdquo;</div>
-                  </button>
-                </div>
-
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => runSimulation(selectedFlow)}
-                    disabled={step !== "idle"}
-                    className="flex-1 px-6 py-4 bg-amber-500 text-white font-bold rounded-2xl hover:bg-amber-600 disabled:bg-zinc-300 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 text-sm shadow-lg shadow-amber-100"
-                  >
-                    <Play size={16} />
-                    Run Active Flow
-                  </button>
-                  <button
-                    onClick={resetSimulation}
-                    className="px-6 py-4 bg-white border border-zinc-200 text-zinc-600 font-bold rounded-2xl hover:bg-zinc-50 transition-all flex items-center justify-center gap-2 text-sm shadow-sm"
-                  >
-                    <RotateCcw size={16} />
-                    Reset
-                  </button>
-                </div>
-              </div>
-
-              {/* iPhone Mockup */}
-              <div className="flex justify-center">
-                <div className="relative w-[320px] h-[600px] bg-zinc-950 border-[10px] border-zinc-900 rounded-[50px] shadow-2xl ring-4 ring-zinc-800 overflow-hidden">
-                  {/* Notch */}
-                  <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-28 h-5 bg-zinc-900 rounded-full z-50 flex items-center justify-center">
-                    <div className="w-2.5 h-2.5 bg-zinc-950 rounded-full ml-auto mr-4" />
-                  </div>
-
-                  {/* Simulator Screen */}
-                  <div className="w-full h-full bg-white relative flex flex-col justify-between pt-8">
-                    
-                    {/* Header */}
-                    <div className="px-4 py-2 border-b border-zinc-100 flex items-center gap-2 bg-zinc-50">
-                      <div className="w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center text-white text-[10px] font-bold">
-                        AM
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[10px] font-bold text-zinc-800 flex items-center gap-0.5">
-                          automixa_app ✓
-                        </span>
-                        <span className="text-[7px] text-emerald-600 font-bold">● Active 24/7 AI Bot</span>
-                      </div>
-                    </div>
-
-                    {/* Chat Area */}
-                    <div className="flex-1 p-4 relative overflow-y-auto bg-zinc-50 flex flex-col gap-3">
-                      
-                      {step === "idle" && (
-                        <div className="flex flex-col items-center justify-center h-full text-center space-y-2">
-                          <MessageCircle className="text-zinc-300" size={32} />
-                          <p className="text-xs text-zinc-400 font-medium">Select a flow on the left and click &ldquo;Run Active Flow&rdquo;</p>
-                        </div>
-                      )}
-
-                      {/* Chat Messages */}
-                      {messages.map((msg, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className={`flex flex-col max-w-[85%] ${msg.sender === "user" ? "ml-auto items-end" : "mr-auto items-start"}`}
-                        >
-                          <div className={`p-3 rounded-2xl text-[10px] leading-relaxed font-medium ${
-                            msg.sender === "user" 
-                              ? "bg-zinc-900 text-white rounded-tr-none" 
-                              : "bg-white border border-zinc-200/60 text-zinc-800 rounded-tl-none shadow-sm"
-                          }`}>
-                            {msg.text}
-                          </div>
-                          
-                          {/* Bot Rich Card */}
-                          {msg.card && (
-                            <motion.div 
-                              initial={{ opacity: 0, scale: 0.95 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{ delay: 0.2 }}
-                              className="mt-2 bg-white border border-zinc-200/80 rounded-xl overflow-hidden shadow-md max-w-full"
-                            >
-                              <div className="bg-amber-50 p-2.5 border-b border-zinc-100">
-                                <div className="text-[9px] font-bold text-amber-900">{msg.card.title}</div>
-                                <div className="text-[7px] text-amber-700 mt-0.5">{msg.card.subtitle}</div>
-                              </div>
-                              <div className="p-2.5 flex items-center justify-between gap-2">
-                                <span className="text-[9px] font-bold text-zinc-800">{msg.card.price}</span>
-                                <span className="text-[8px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">{msg.card.link}</span>
-                              </div>
-                            </motion.div>
-                          )}
-                        </motion.div>
-                      ))}
-
-                      {/* Bot typing simulation */}
-                      {step === "typing_bot" && (
-                        <div className="bg-white border border-zinc-200/50 px-3.5 py-2.5 rounded-2xl rounded-tl-none mr-auto shadow-sm flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                          <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                          <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Bottom Status Info */}
-                    {step === "bot_replied" && (
-                      <div className="p-3 bg-zinc-50 border-t border-zinc-150 flex items-center gap-2">
-                        <AlertCircle size={14} className="text-amber-500 shrink-0" />
-                        <span className="text-[8px] text-zinc-500 font-semibold leading-normal">
-                          Replied in 1.4s. AI FAQ Agent verified.
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* DYNAMIC BENTO DETAILS */}
-          <div className="py-16 md:py-24 border-t border-zinc-200/60">
-            <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-              <span className="text-amber-500 font-bold uppercase tracking-widest text-xs">Capabilities Details</span>
-              <h2 className="text-3xl sm:text-5xl font-bold text-zinc-900 tracking-tight leading-tight">
-                Everything you need to automate your direct messages
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="space-y-24 md:space-y-32">
               {benefits.map((benefit, idx) => {
                 const Icon = benefit.icon;
+                const isEven = idx % 2 !== 0;
+                
                 return (
                   <motion.div 
                     key={idx}
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 35 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: idx * 0.1 }}
-                    className="bg-white border border-zinc-200/40 rounded-[36px] p-8 shadow-xl shadow-zinc-200/10 hover:shadow-2xl hover:shadow-amber-500/5 hover:border-amber-500/20 transition-all duration-300 flex flex-col justify-between"
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    className={`flex flex-col gap-12 lg:gap-16 items-center ${isEven ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}
                   >
-                    <div className="space-y-4">
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border ${benefit.color}`}>
-                        <Icon size={22} />
+                    {/* Left: Text Details */}
+                    <div className="w-full lg:w-1/2 space-y-5">
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-2 border shadow-sm ${benefit.color}`}>
+                        <Icon size={26} />
                       </div>
                       <span className="text-[10px] font-bold text-amber-600 uppercase tracking-widest block">{benefit.tagline}</span>
-                      <h3 className="text-xl font-bold text-zinc-900 leading-snug">{benefit.title}</h3>
-                      <p className="text-zinc-500 text-sm leading-relaxed">{benefit.description}</p>
+                      <h3 className="text-2xl sm:text-4xl font-bold text-zinc-900 leading-tight tracking-tight">
+                        {benefit.title}
+                      </h3>
+                      <p className="text-zinc-500 text-base sm:text-lg leading-relaxed font-normal">
+                        {benefit.description}
+                      </p>
+                      
+                      <ul className="space-y-3 pt-3">
+                        {benefit.bullets.map((bullet, bulletIdx) => (
+                          <li key={bulletIdx} className="flex items-start gap-3 text-zinc-700 font-medium text-sm">
+                            <CheckCircle2 size={18} className="text-amber-500 mt-0.5 shrink-0" />
+                            <span>{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-
-                    <div className="mt-8 pt-6 border-t border-zinc-100 space-y-3">
-                      {benefit.bullets.map((bullet, bulletIdx) => (
-                        <div key={bulletIdx} className="flex items-start gap-2.5 text-xs text-zinc-700 font-medium">
-                          <CheckCircle2 size={14} className="text-amber-500 mt-0.5 shrink-0" />
-                          <span>{bullet}</span>
+                    
+                    {/* Right: Glassmorphic Image Frame */}
+                    <div className="w-full lg:w-1/2">
+                      <div className="rounded-[40px] overflow-hidden bg-white/40 p-3 border border-white shadow-2xl relative group">
+                        <div className="rounded-[32px] overflow-hidden aspect-[4/3] relative">
+                          <img 
+                            src={benefit.image} 
+                            alt={benefit.title} 
+                            className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-700"
+                          />
                         </div>
-                      ))}
+                      </div>
                     </div>
                   </motion.div>
                 );
