@@ -60,36 +60,37 @@ const features = [
     image: "/images/instagram-stories.png",
     color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
     icon: Target
+  },
+  {
+    id: "smart-bio",
+    title: "Next-Gen Smart Bio Link",
+    tagline: "Your Digital Storefront",
+    desc: "Replace your boring bio link with a high-converting, branded Smart Bio. Showcase your best content and sell digital products directly.",
+    bullets: [
+      "Custom themes and presets",
+      "Direct store and product checkout",
+      "Unlimited custom links"
+    ],
+    image: "/images/smart-bio-solid.png",
+    color: "text-rose-500 bg-rose-500/10 border-rose-500/20",
+    icon: Layout,
+    isComingSoon: true
+  },
+  {
+    id: "mini-store",
+    title: "Integrated Mini Store",
+    tagline: "Sell Products Automatically",
+    desc: "Sell E-books, templates, and digital courses directly from your profile. Collect payments effortlessly with zero transaction fees.",
+    bullets: [
+      "Zero transaction fees (excl. gateway)",
+      "Instant payout to your bank account",
+      "Automated delivery on Instagram"
+    ],
+    image: "/images/mini-store.png",
+    color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
+    icon: ShoppingBag
   }
 ];
-
-const smartBio = {
-  title: "Next-Gen Smart Bio Link",
-  desc: "Replace your boring Linktree with a high-converting, branded Smart Bio. Showcase your best content and sell products directly.",
-  bullets: [
-    "Beautiful Custom Themes & Presets",
-    "Direct Store & Product Checkout",
-    "Unlimited Custom Links & Socials",
-    "Linked with Instagram Automations"
-  ],
-  image: "/images/smart-bio-solid.png",
-  color: "text-rose-500 bg-rose-500/10 border-rose-500/20",
-  icon: Layout
-};
-
-const miniStore = {
-  title: "Integrated Mini Store",
-  desc: "Sell E-books, templates, and digital courses directly from your profile. Collect payments effortlessly without third-party commission fees.",
-  bullets: [
-    "Zero transaction fees (excl. gateway)",
-    "Instant payout to your bank account",
-    "Automated delivery on Instagram",
-    "Beautiful custom checkout pages"
-  ],
-  image: "/images/mini-store.png",
-  color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
-  icon: ShoppingBag
-};
 
 export default function Features() {
   return (
@@ -153,138 +154,21 @@ export default function Features() {
                     ))}
                   </div>
                   <Link
-                    href="/login"
-                    className="mt-auto flex items-center justify-center gap-2.5 bg-zinc-950 text-white py-4 rounded-3xl font-bold text-xs hover:bg-[#6366F1] transition-all duration-300 shadow-lg shadow-zinc-200"
+                    href={feature.isComingSoon ? "#" : "/login"}
+                    className={`mt-auto flex items-center justify-center gap-2.5 py-4 rounded-3xl font-bold text-xs transition-all duration-300 shadow-lg ${
+                      feature.isComingSoon 
+                        ? "bg-zinc-200 text-zinc-500 cursor-not-allowed shadow-none" 
+                        : "bg-zinc-950 text-white hover:bg-[#6366F1] shadow-zinc-200"
+                    }`}
+                    onClick={(e) => feature.isComingSoon && e.preventDefault()}
                   >
-                    Get Started
-                    <ArrowRight size={16} />
+                    {feature.isComingSoon ? "Coming Soon" : "Get Started"}
+                    {!feature.isComingSoon && <ArrowRight size={16} />}
                   </Link>
                 </div>
               </motion.div>
             );
           })}
-
-          {/* Full Width Horizontal Card - Smart Bio */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="group col-span-full relative flex flex-col lg:flex-row items-stretch rounded-[36px] lg:h-[350px] bg-white/40 backdrop-blur-3xl border border-white/60 hover:border-[#6366F1]/30 transition-all duration-500 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 overflow-hidden"
-          >
-            {/* Visual Area (Left/Top) - Full Bleed */}
-            <div className="relative h-56 lg:h-full lg:w-[38%] shrink-0 flex items-center justify-center bg-zinc-50/50 overflow-hidden border-b lg:border-b-0 lg:border-r border-white/60">
-              <motion.img
-                src={smartBio.image}
-                alt={smartBio.title}
-                className="w-full h-full object-cover object-top z-10 transition-transform duration-700 group-hover:scale-105"
-              />
-              
-              {/* Smooth Blend to Right Content */}
-              <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white/40 to-transparent z-20 pointer-events-none hidden lg:block" />
-              <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white/40 to-transparent z-20 pointer-events-none lg:hidden" />
-              
-              <div className={`absolute top-5 left-5 w-10 h-10 rounded-2xl flex items-center justify-center border shadow-xl z-30 backdrop-blur-md ${smartBio.color}`}>
-                <smartBio.icon size={18} />
-              </div>
-            </div>
-
-            {/* Content Area (Right/Bottom) */}
-            <div className="p-6 lg:p-8 flex flex-col justify-center flex-1">
-              <div className="max-w-xl">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="px-2 py-1 bg-zinc-200/50 text-zinc-500 rounded-lg text-[10px] font-black uppercase tracking-wider">
-                    Coming Soon
-                  </div>
-                </div>
-                <h3 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-[#6366F1] transition-colors duration-300 tracking-tight mb-2">
-                  {smartBio.title}
-                </h3>
-                <p className="text-sm text-zinc-500 font-normal leading-relaxed mb-4">
-                  {smartBio.desc}
-                </p>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-5">
-                  {smartBio.bullets.map((bullet, bIdx) => (
-                    <div key={bIdx} className="flex items-center gap-2 text-zinc-600 font-medium text-[11px] md:text-xs">
-                      <CheckCircle2 size={14} className="text-[#6366F1] shrink-0" />
-                      {bullet}
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <div
-                    className="w-full sm:w-auto px-6 flex items-center justify-center gap-2 bg-zinc-200 text-zinc-500 py-2.5 rounded-3xl font-bold text-xs cursor-not-allowed shadow-none"
-                  >
-                    Coming Soon
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Full Width Horizontal Card - Mini Store */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="group col-span-full relative flex flex-col lg:flex-row-reverse items-stretch rounded-[36px] lg:h-[350px] bg-white/40 backdrop-blur-3xl border border-white/60 hover:border-[#6366F1]/30 transition-all duration-500 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 overflow-hidden mt-2"
-          >
-            {/* Visual Area (Right/Top) - Full Bleed */}
-            <div className="relative h-56 lg:h-full lg:w-[38%] shrink-0 flex items-center justify-center bg-zinc-50/50 overflow-hidden border-b lg:border-b-0 lg:border-l border-zinc-200/50">
-              <motion.img
-                src={miniStore.image}
-                alt={miniStore.title}
-                className="w-full h-full object-cover object-center z-10 transition-transform duration-700 group-hover:scale-105"
-              />
-              
-              {/* Smooth Blend to Left Content */}
-              <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white/80 to-transparent z-20 pointer-events-none hidden lg:block" />
-              <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white/40 to-transparent z-20 pointer-events-none lg:hidden" />
-              
-              <div className={`absolute top-5 right-5 w-10 h-10 rounded-2xl flex items-center justify-center border shadow-xl z-30 backdrop-blur-md ${miniStore.color}`}>
-                <miniStore.icon size={18} />
-              </div>
-            </div>
-
-            {/* Content Area (Left/Bottom) */}
-            <div className="p-6 lg:p-8 flex flex-col justify-center flex-1">
-              <div className="max-w-xl">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="px-2 py-1 bg-amber-500/10 text-amber-600 rounded-lg text-[10px] font-black uppercase tracking-wider">
-                    Most Requested
-                  </div>
-                </div>
-                <h3 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-amber-500 transition-colors duration-300 tracking-tight mb-2">
-                  {miniStore.title}
-                </h3>
-                <p className="text-sm text-zinc-500 font-normal leading-relaxed mb-4">
-                  {miniStore.desc}
-                </p>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-5">
-                  {miniStore.bullets.map((bullet, bIdx) => (
-                    <div key={bIdx} className="flex items-center gap-2 text-zinc-600 font-medium text-[11px] md:text-xs">
-                      <CheckCircle2 size={14} className="text-amber-500 shrink-0" />
-                      {bullet}
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <Link
-                    href="/login"
-                    className="w-full sm:w-auto px-6 flex items-center justify-center gap-2 bg-zinc-950 text-white py-2.5 rounded-3xl font-bold text-xs hover:bg-amber-500 transition-all duration-300 shadow-lg shadow-zinc-200"
-                  >
-                    Start Selling Now
-                    <ArrowRight size={14} />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </motion.div>
         </div>
       </div>
     </section>
