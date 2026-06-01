@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Target, Users, Heart, Share2, Play, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Target, Users, Heart, Share2, Play, CheckCircle2, Clock, Sparkles } from "lucide-react";
 import PageTransition from "@/components/ui/PageTransition";
 import FAQ from "@/components/marketing/FAQ";
 import CTA from "@/components/marketing/CTA";
@@ -10,21 +10,36 @@ import CTA from "@/components/marketing/CTA";
 export default function StoryMentionPage() {
   const benefits = [
     {
-      title: "Encourage User Generated Content",
-      description: "When followers know they will get an instant reward (like a discount code) for tagging you in their stories, your brand visibility skyrockets.",
+      title: "Boost Word-of-Mouth Sales",
+      description: "Give followers a reward (like a discount code or free guide) for tagging you in their stories, sending your brand visibility and sales through the roof.",
+      bullets: [
+        "Reward mentions instantly",
+        "Auto-deliver coupons or files",
+        "Massive boost in organic reach"
+      ],
       icon: Users,
       image: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1200&auto=format&fit=crop",
     },
     {
-      title: "Send Private Thank You's",
-      description: "Automatically reply via DM to say 'Thank you for sharing!' whenever someone mentions your account. Build a loyal community.",
-      icon: Heart,
+      title: "24-Hour Cooldown Limits",
+      description: "Avoid spamming your loyal fans. Our smart cooldown logic ensures that even if a follower tags you multiple times a day, they receive only one reply every 24 hours.",
+      bullets: [
+        "Anti-spam direct message safety",
+        "Set custom intervals",
+        "Keeps conversations friendly and human"
+      ],
+      icon: Clock,
       image: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=1200&auto=format&fit=crop",
     },
     {
-      title: "Amplify Giveaways & Contests",
-      description: "Run 'Tag us to enter' contests. Automixa will instantly send a confirmation DM to every user who participates by tagging you.",
-      icon: Share2,
+      title: "Chat to Build",
+      description: "Set up complex Story Reply and Story Tag rules in seconds by simply chatting with the AI. No coding or complicated menus required.",
+      bullets: [
+        "1-click story rules generation",
+        "Describe your story rules simply",
+        "No complex trigger menus"
+      ],
+      icon: Sparkles,
       image: "https://images.unsplash.com/photo-1542744173-05336fcc7ad4?q=80&w=1200&auto=format&fit=crop",
     }
   ];
@@ -149,10 +164,10 @@ export default function StoryMentionPage() {
                         {benefit.description}
                       </p>
                       <ul className="space-y-3 pt-2">
-                        {[1, 2, 3].map((_, i) => (
-                          <li key={i} className="flex items-center gap-3 text-zinc-700 font-medium">
+                        {benefit.bullets.map((bullet, bulletIdx) => (
+                          <li key={bulletIdx} className="flex items-center gap-3 text-zinc-700 font-medium">
                             <CheckCircle2 size={18} className="text-emerald-500" />
-                            {i === 0 ? "Works 24/7 automatically" : i === 1 ? "Limit to once per user per 24hrs" : "Increase brand awareness"}
+                            {bullet}
                           </li>
                         ))}
                       </ul>

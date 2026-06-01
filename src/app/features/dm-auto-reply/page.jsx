@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Zap, MessageCircle, Clock, ShieldCheck, Play, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Zap, MessageCircle, Clock, ShieldCheck, Play, CheckCircle2, Sparkles } from "lucide-react";
 import PageTransition from "@/components/ui/PageTransition";
 import FAQ from "@/components/marketing/FAQ";
 import CTA from "@/components/marketing/CTA";
@@ -10,21 +10,36 @@ import CTA from "@/components/marketing/CTA";
 export default function DMAutoReplyPage() {
   const benefits = [
     {
-      title: "Zero Delay Responses",
-      description: "When a follower asks a question, they expect an answer immediately. Automixa replies in milliseconds so your leads never go cold.",
-      icon: Clock,
+      title: "AI FAQ & Sales Agents",
+      description: "Deploy custom AI chat agents trained on your product information. They automatically close sales, answer questions, and direct leads to your website 24/7.",
+      bullets: [
+        "Train AI on your product info",
+        "Natural, human-like conversations",
+        "24/7 automated sales assistant"
+      ],
+      icon: Sparkles,
       image: "https://images.unsplash.com/photo-1512428559087-560fa5ceab42?q=80&w=1200&auto=format&fit=crop",
     },
     {
-      title: "Handle Common FAQs",
-      description: "Stop repeating yourself. Set up keyword-based replies for questions about pricing, location, shipping, and opening hours.",
-      icon: MessageCircle,
+      title: "Magic Write AI",
+      description: "Stuck on what to reply in your direct messages? Let Magic Write generate 3 highly engaging, friendly response options for DMs instantly.",
+      bullets: [
+        "3 engaging reply variants per click",
+        "Select your tone (Friendly, Witty, Pro)",
+        "Boost clicks and conversion rates"
+      ],
+      icon: Zap,
       image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&auto=format&fit=crop",
     },
     {
-      title: "Collect Leads 24/7",
-      description: "Ask users for their email or phone number right inside the Instagram DM to send them your exclusive offers.",
-      icon: ShieldCheck,
+      title: "Chat to Build",
+      description: "Set up complex Direct Message triggers by typing one simple instruction. The AI configures your greeting cards, buttons, and redirects in seconds.",
+      bullets: [
+        "Zero manual setup required",
+        "Instantly configures keyword rules",
+        "Official and approved Instagram partner"
+      ],
+      icon: MessageCircle,
       image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?q=80&w=1200&auto=format&fit=crop",
     }
   ];
@@ -150,10 +165,10 @@ export default function DMAutoReplyPage() {
                         {benefit.description}
                       </p>
                       <ul className="space-y-3 pt-2">
-                        {[1, 2, 3].map((_, i) => (
-                          <li key={i} className="flex items-center gap-3 text-zinc-700 font-medium">
+                        {benefit.bullets.map((bullet, bulletIdx) => (
+                          <li key={bulletIdx} className="flex items-center gap-3 text-zinc-700 font-medium">
                             <CheckCircle2 size={18} className="text-amber-500" />
-                            {i === 0 ? "Works seamlessly with existing chat" : i === 1 ? "Custom delays to look human" : "Advanced conditional logic"}
+                            {bullet}
                           </li>
                         ))}
                       </ul>

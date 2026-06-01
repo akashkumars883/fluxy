@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, MessageSquare, TrendingUp, Search, Star, Play, CheckCircle2 } from "lucide-react";
+import { ArrowRight, MessageSquare, TrendingUp, Search, Star, Play, CheckCircle2, Sparkles } from "lucide-react";
 import PageTransition from "@/components/ui/PageTransition";
 import FAQ from "@/components/marketing/FAQ";
 import CTA from "@/components/marketing/CTA";
@@ -10,21 +10,36 @@ import CTA from "@/components/marketing/CTA";
 export default function CommentAutoResponderPage() {
   const benefits = [
     {
-      title: "Keyword Triggers",
-      description: "Ask your followers to comment a specific word like 'LINK' or 'GUIDE', and Automixa will instantly send the requested material to their DM.",
-      icon: Search,
+      title: "Chat to Build",
+      description: "Don't waste time on complex setups. Just tell the AI what you want to automate in plain English, and it configures the keywords, greeting texts, and buttons instantly.",
+      bullets: [
+        "1-click AI campaign generation",
+        "No complex trigger settings required",
+        "Instant setup from expert templates"
+      ],
+      icon: Sparkles,
       image: "https://images.unsplash.com/photo-1515378960530-7c0da6229674?q=80&w=1200&auto=format&fit=crop",
     },
     {
-      title: "Explode Your Engagement",
-      description: "When people comment to get your link, it signals to the Instagram algorithm that your post is popular, pushing it to the top of their feeds.",
-      icon: TrendingUp,
+      title: "Multiple Reply Variations",
+      description: "Set up to 5 variations of public comment replies. Automixa rotates replies randomly, protecting your account from Instagram spam limits and keeping interaction natural.",
+      bullets: [
+        "Anti-spam reply rotator",
+        "Random selection algorithm",
+        "Spam filter protection"
+      ],
+      icon: MessageSquare,
       image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop",
     },
     {
-      title: "Like Comments Automatically",
-      description: "Show appreciation to your audience by automatically liking their comments just before sending the DM. It adds a human touch.",
-      icon: Star,
+      title: "Live Preview Simulator",
+      description: "Interactive live preview lets you test your keywords and DMs inside a realistic phone mockup before you launch. Zero API costs, 100% free playground.",
+      bullets: [
+        "Test comments and triggers live",
+        "Check notifications flow",
+        "100% free sandbox playground"
+      ],
+      icon: Play,
       image: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=1200&auto=format&fit=crop",
     }
   ];
@@ -149,10 +164,10 @@ export default function CommentAutoResponderPage() {
                         {benefit.description}
                       </p>
                       <ul className="space-y-3 pt-2">
-                        {[1, 2, 3].map((_, i) => (
-                          <li key={i} className="flex items-center gap-3 text-zinc-700 font-medium">
+                        {benefit.bullets.map((bullet, bulletIdx) => (
+                          <li key={bulletIdx} className="flex items-center gap-3 text-zinc-700 font-medium">
                             <CheckCircle2 size={18} className="text-indigo-600" />
-                            {i === 0 ? "Setup multiple variations of replies" : i === 1 ? "Exclude negative keywords" : "Track click-through rates"}
+                            {bullet}
                           </li>
                         ))}
                       </ul>

@@ -27,66 +27,38 @@ const features = [
     bullets: [
       "Auto-reply to public comments",
       "Send links via DMs instantly",
-      "100% official and safe connection"
+      "Multiple reply variations to avoid spam limits"
     ],
     image: "/images/instagram-comments-v2.png",
     color: "text-indigo-500 bg-indigo-500/10 border-indigo-500/20",
     icon: MessageSquare
   },
   {
-    id: "magic-write",
-    title: "Magic Write AI Copywriter",
-    tagline: "Engage Your Fans Automatically",
-    desc: "Stuck on what to reply? Let Magic Write generate 3 highly engaging, friendly response options for your DMs and comments instantly.",
+    id: "dm",
+    title: "Instagram DM Auto-Reply",
+    tagline: "Never Miss a Message",
+    desc: "Set up 24/7 intelligent auto-replies for your Instagram DMs. Send instant product links, location cards, or custom guides.",
     bullets: [
-      "3 engaging reply variations per click",
-      "Adjust tone & personality",
-      "Boost clicks and replies"
+      "Instant keyword replies",
+      "Suggest replies using Magic Write AI",
+      "Automatic AI FAQ & Sales Agents"
     ],
     image: "/images/smart-bio-solid.png",
     color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
     icon: Zap
   },
   {
-    id: "ai-agents",
-    title: "AI FAQ & Sales Agents",
-    tagline: "Your 24/7 Social Sales Team",
-    desc: "Deploy custom AI chat agents trained on your product info. Automatically close leads, answer questions, and direct users to buy in DMs.",
+    id: "stories",
+    title: "Story Auto-Reply",
+    tagline: "Turn Views Into Customers",
+    desc: "Automatically send a DM whenever a follower tags your brand in an Instagram Story or replies to your stories. Grow reach organically.",
     bullets: [
-      "AI Tone selection (Witty, Friendly, Pro)",
-      "Train AI on your product info",
-      "Natural product-led conversations"
-    ],
-    image: "/images/mini-store.png",
-    color: "text-rose-500 bg-rose-500/10 border-rose-500/20",
-    icon: Rocket
-  },
-  {
-    id: "preview",
-    title: "Interactive Live Preview",
-    tagline: "Test-Drive Before Launching",
-    desc: "Interact with your campaign live in a realistic iPhone mockup before deploying. Type comments, click buttons, and see notifications for free.",
-    bullets: [
-      "Instant live previews",
-      "Simulate push notifications",
-      "100% free playground sandbox"
+      "Auto-reward story tags & mentions",
+      "Automatic cooldown spam limits",
+      "Official Instagram API approved"
     ],
     image: "/images/instagram-stories.png",
     color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
-    icon: Layout
-  },
-  {
-    id: "spintax",
-    title: "Multiple Reply Variations",
-    tagline: "Spam Filter Protection",
-    desc: "Set up to 5 comment reply options. Automixa rotates replies randomly, protecting your account from being flagged by Instagram.",
-    bullets: [
-      "Set up to 5 reply variations",
-      "Automatic reply rotation",
-      "Avoid Instagram spam limits"
-    ],
-    image: "/images/instagram-comments-v2.png",
-    color: "text-blue-500 bg-blue-500/10 border-blue-500/20",
     icon: Target
   }
 ];
