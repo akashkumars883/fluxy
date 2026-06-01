@@ -7,12 +7,12 @@ import Link from "next/link";
 const features = [
   {
     id: "ai-builder",
-    title: "One-Shot AI Campaign Builder",
+    title: "Chat to Build",
     tagline: "Type, Build, Launch",
-    desc: "Describe what you want to automate in one sentence and let our AI configure triggers, draft response copy, and build the entire funnel in seconds.",
+    desc: "Describe what you want to automate in one simple sentence and let our AI write the replies, configure triggers, and setup the settings for you instantly.",
     bullets: [
       "Zero manual configuration",
-      "Powered by Llama 3.1 AI",
+      "Powered by smart AI",
       "Instant setup in a single step"
     ],
     image: "/images/instagram-dm.png",
@@ -21,13 +21,13 @@ const features = [
   },
   {
     id: "comments",
-    title: "Comment → DM Auto-Responder",
+    title: "Comment Auto-Responder",
     tagline: "Grow From Comments",
-    desc: "Convert public comments on your Reels into private sales. Automixa replies to comments AND sends a DM with your link instantly.",
+    desc: "Convert public comments on your Reels into private sales. Automixa replies to comments AND sends a DM with your link automatically.",
     bullets: [
       "Auto-reply to public comments",
-      "Send links via DM instantly",
-      "Official Meta Graph API connection"
+      "Send links via DMs instantly",
+      "100% official and safe connection"
     ],
     image: "/images/instagram-comments-v2.png",
     color: "text-indigo-500 bg-indigo-500/10 border-indigo-500/20",
@@ -37,11 +37,11 @@ const features = [
     id: "magic-write",
     title: "Magic Write AI Copywriter",
     tagline: "Engage Your Fans Automatically",
-    desc: "Stuck on writing copies? Let Magic Write generate 3 highly engaging, conversion-optimized variations for your DMs and comments instantly.",
+    desc: "Stuck on what to reply? Let Magic Write generate 3 highly engaging, friendly response options for your DMs and comments instantly.",
     bullets: [
-      "3 conversion-ready variants per click",
+      "3 engaging reply variations per click",
       "Adjust tone & personality",
-      "Boost CTR and engagement rate"
+      "Boost clicks and replies"
     ],
     image: "/images/smart-bio-solid.png",
     color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
@@ -49,13 +49,13 @@ const features = [
   },
   {
     id: "ai-agents",
-    title: "AI FAQ & Sales Closer Agents",
+    title: "AI FAQ & Sales Agents",
     tagline: "Your 24/7 Social Sales Team",
-    desc: "Deploy custom AI agents trained on your product info and pricing. Automatically close leads, answer FAQs, and direct users to buy in DMs.",
+    desc: "Deploy custom AI chat agents trained on your product info. Automatically close leads, answer questions, and direct users to buy in DMs.",
     bullets: [
-      "AI Tone customization (Witty, Pro)",
-      "Upload custom FAQ training data",
-      "Intelligent product-led conversations"
+      "AI Tone selection (Witty, Friendly, Pro)",
+      "Train AI on your product info",
+      "Natural product-led conversations"
     ],
     image: "/images/mini-store.png",
     color: "text-rose-500 bg-rose-500/10 border-rose-500/20",
@@ -63,13 +63,13 @@ const features = [
   },
   {
     id: "preview",
-    title: "Zero-API Simulation Preview",
+    title: "Interactive Live Preview",
     tagline: "Test-Drive Before Launching",
-    desc: "Interact with your campaign live in a realistic iPhone mockup before deploying. Type comments, click CTAs, and see notifications at 0 credit cost.",
+    desc: "Interact with your campaign live in a realistic iPhone mockup before deploying. Type comments, click buttons, and see notifications for free.",
     bullets: [
-      "Pure client-side state machine",
+      "Instant live previews",
       "Simulate push notifications",
-      "100% free sandbox playground"
+      "100% free playground sandbox"
     ],
     image: "/images/instagram-stories.png",
     color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
@@ -77,13 +77,13 @@ const features = [
   },
   {
     id: "spintax",
-    title: "Spintax Multi-Variant Replies",
+    title: "Multiple Reply Variations",
     tagline: "Spam Filter Protection",
-    desc: "Input up to 5 comment reply variations. Automixa rotates replies randomly, protecting your account and complying with Instagram security policies.",
+    desc: "Set up to 5 comment reply options. Automixa rotates replies randomly, protecting your account from being flagged by Instagram.",
     bullets: [
-      "Configure up to 5 variations",
-      "Random rotation algorithm",
-      "Prevents spam detection flags"
+      "Set up to 5 reply variations",
+      "Automatic reply rotation",
+      "Avoid Instagram spam limits"
     ],
     image: "/images/instagram-comments-v2.png",
     color: "text-blue-500 bg-blue-500/10 border-blue-500/20",

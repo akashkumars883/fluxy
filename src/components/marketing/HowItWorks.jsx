@@ -9,21 +9,21 @@ export default function HowItWorks() {
       number: "01",
       icon: <UserPlus size={24} className="text-indigo-600" />,
       title: "Link Your Instagram",
-      desc: "Connect your Creator or Business Instagram account in just one click. Safe and fully approved by Meta.",
+      desc: "Connect your Instagram account in just one click. 100% safe, official, and approved by Instagram.",
       image: "/images/how-it-works-1.png"
     },
     {
       number: "02",
       icon: <Sparkles size={24} className="text-amber-600" />,
-      title: "One-Shot AI Campaign Setup",
-      desc: "Describe what you want to automate in one simple sentence. Automixa AI drafts copy, sets up keyword triggers, and configures the DM funnel instantly.",
+      title: "Chat to Build",
+      desc: "Tell the AI what you want to automate in simple words (e.g., 'Send a discount code when someone comments VIP'). The AI sets up the replies and settings for you instantly.",
       image: "/images/how-it-works-2.png"
     },
     {
       number: "03",
       icon: <PlayCircle size={24} className="text-emerald-600" />,
-      title: "Watch Followers Grow",
-      desc: "Go live! Automixa will reply to comments and send DMs instantly 24/7. Watch your sales and followers grow.",
+      title: "Watch Your Sales Grow",
+      desc: "Go live! Automixa will reply to comments and send direct messages instantly 24/7, turning views into customers automatically.",
       image: "/images/how-it-works-3.png"
     }
   ];
