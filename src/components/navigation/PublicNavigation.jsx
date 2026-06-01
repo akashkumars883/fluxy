@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   ArrowRight, Zap, MessageSquare, Target, Users, ShoppingBag, ChevronDown
 } from "lucide-react";
@@ -9,6 +10,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/lib/supabase";
 
 export default function PublicNavigation() {
+  const pathname = usePathname();
+  const isHomepage = pathname === "/";
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -18,6 +22,8 @@ export default function PublicNavigation() {
   const [mobileDropdown, setMobileDropdown] = useState(null);
 
   const [session, setSession] = useState(null);
+
+  const showScrolledStyle = !isHomepage || isScrolled || isMenuOpen;
 
   useEffect(() => {
     const supabase = createClient();
@@ -104,7 +110,7 @@ export default function PublicNavigation() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 border-b ${isScrolled || isMenuOpen
+        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 border-b ${showScrolledStyle
           ? "bg-white/90 backdrop-blur-2xl border-zinc-200/40 py-4 shadow-sm"
           : "bg-transparent border-transparent py-6"
           }`}
@@ -119,9 +125,9 @@ export default function PublicNavigation() {
             <img
               src="/logo.png"
               alt="Automixa Logo"
-              className={`w-8 h-8 mt-[2px] object-contain transition-all duration-300 shrink-0 ${isScrolled || isMenuOpen ? "" : "brightness-0 invert"}`}
+              className={`w-8 h-8 mt-[2px] object-contain transition-all duration-300 shrink-0 ${showScrolledStyle ? "" : "brightness-0 invert"}`}
             />
-            <span className={`text-xl font-semibold tracking-normal transition-colors ${isScrolled || isMenuOpen ? "text-foreground" : "text-white"}`}>automixa</span>
+            <span className={`text-xl font-semibold tracking-normal transition-colors ${showScrolledStyle ? "text-foreground" : "text-white"}`}>automixa</span>
           </Link>
 
           {/* Center: Desktop Navigation Links with Hover Megamenus */}
@@ -129,9 +135,9 @@ export default function PublicNavigation() {
 
             {/* Features Hover Dropdown */}
             <div className="relative group/menu py-2">
-              <button className={`flex items-center gap-1.5 text-sm font-semibold transition-colors cursor-pointer ${isScrolled || isMenuOpen ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
+              <button className={`flex items-center gap-1.5 text-sm font-semibold transition-colors cursor-pointer ${showScrolledStyle ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
                 Features
-                <ChevronDown size={14} className={`group-hover/menu:rotate-180 transition-transform duration-300 ${isScrolled || isMenuOpen ? "text-zinc-400" : "text-white/70"}`} />
+                <ChevronDown size={14} className={`group-hover/menu:rotate-180 transition-transform duration-300 ${showScrolledStyle ? "text-zinc-400" : "text-white/70"}`} />
               </button>
 
               {/* Dropdown panel container */}
@@ -166,9 +172,9 @@ export default function PublicNavigation() {
 
             {/* Solutions Hover Dropdown */}
             <div className="relative group/menu py-2">
-              <button className={`flex items-center gap-1.5 text-sm font-semibold transition-colors cursor-pointer ${isScrolled || isMenuOpen ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
+              <button className={`flex items-center gap-1.5 text-sm font-semibold transition-colors cursor-pointer ${showScrolledStyle ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
                 Solutions
-                <ChevronDown size={14} className={`group-hover/menu:rotate-180 transition-transform duration-300 ${isScrolled || isMenuOpen ? "text-zinc-400" : "text-white/70"}`} />
+                <ChevronDown size={14} className={`group-hover/menu:rotate-180 transition-transform duration-300 ${showScrolledStyle ? "text-zinc-400" : "text-white/70"}`} />
               </button>
 
               {/* Dropdown panel container */}
@@ -202,17 +208,17 @@ export default function PublicNavigation() {
             </div>
 
             {/* Pricing Direct Link */}
-            <Link href="/pricing" className={`text-sm font-semibold transition-colors cursor-pointer ${isScrolled || isMenuOpen ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
+            <Link href="/pricing" className={`text-sm font-semibold transition-colors cursor-pointer ${showScrolledStyle ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
               Pricing
             </Link>
 
             {/* Blog Direct Link */}
-            <Link href="/blog" className={`text-sm font-semibold transition-colors cursor-pointer ${isScrolled || isMenuOpen ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
+            <Link href="/blog" className={`text-sm font-semibold transition-colors cursor-pointer ${showScrolledStyle ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
               Blog
             </Link>
 
             {/* Contact Direct Link */}
-            <Link href="/contact" className={`text-sm font-semibold transition-colors cursor-pointer ${isScrolled || isMenuOpen ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
+            <Link href="/contact" className={`text-sm font-semibold transition-colors cursor-pointer ${showScrolledStyle ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
               Contact
             </Link>
 
@@ -223,7 +229,7 @@ export default function PublicNavigation() {
             {/* CTA Button: Visible on Tablet/Desktop, Hidden on Mobile */}
             <Link
               href={session ? "/dashboard" : "/login"}
-              className={`hidden sm:flex text-sm font-semibold px-6 py-3 rounded-full hover:scale-[1.05] active:scale-[0.98] transition-all tracking-normal items-center gap-2 group ${isScrolled || isMenuOpen ? "bg-foreground text-background" : "bg-white text-zinc-950 shadow-lg"}`}
+              className={`hidden sm:flex text-sm font-semibold px-6 py-3 rounded-full hover:scale-[1.05] active:scale-[0.98] transition-all tracking-normal items-center gap-2 group ${showScrolledStyle ? "bg-foreground text-background" : "bg-white text-zinc-950 shadow-lg"}`}
             >
               {session ? "Dashboard" : "Get Started"}
               <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-rotate-45" />
@@ -232,13 +238,13 @@ export default function PublicNavigation() {
             {/* Custom Interactive Morphing Hamburger Button (Mobile Only) */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={`p-3 rounded-full transition-all flex items-center justify-center cursor-pointer relative z-50 group lg:hidden ${isScrolled || isMenuOpen ? "hover:bg-[#09090B]/5" : "hover:bg-white/10"}`}
+              className={`p-3 rounded-full transition-all flex items-center justify-center cursor-pointer relative z-50 group lg:hidden ${showScrolledStyle ? "hover:bg-[#09090B]/5" : "hover:bg-white/10"}`}
             >
               <div className="w-5 h-5 flex items-center justify-center relative">
                 {/* Custom morphing lines centered mathematically */}
-                <span className={`absolute h-0.5 rounded-full transition-all duration-300 ${isMenuOpen ? "rotate-45 w-5" : "w-5 -translate-y-1.5"} ${isScrolled || isMenuOpen ? "bg-foreground" : "bg-white"}`} />
-                <span className={`absolute h-0.5 rounded-full transition-all duration-300 ${isMenuOpen ? "opacity-0 w-0" : "w-5"} ${isScrolled || isMenuOpen ? "bg-foreground" : "bg-white"}`} />
-                <span className={`absolute h-0.5 rounded-full transition-all duration-300 ${isMenuOpen ? "-rotate-45 w-5" : "w-5 translate-y-1.5"} ${isScrolled || isMenuOpen ? "bg-foreground" : "bg-white"}`} />
+                <span className={`absolute h-0.5 rounded-full transition-all duration-300 ${isMenuOpen ? "rotate-45 w-5" : "w-5 -translate-y-1.5"} ${showScrolledStyle ? "bg-foreground" : "bg-white"}`} />
+                <span className={`absolute h-0.5 rounded-full transition-all duration-300 ${isMenuOpen ? "opacity-0 w-0" : "w-5"} ${showScrolledStyle ? "bg-foreground" : "bg-white"}`} />
+                <span className={`absolute h-0.5 rounded-full transition-all duration-300 ${isMenuOpen ? "-rotate-45 w-5" : "w-5 translate-y-1.5"} ${showScrolledStyle ? "bg-foreground" : "bg-white"}`} />
               </div>
             </button>
           </div>
