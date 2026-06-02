@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { ShieldCheck, Sparkles, Activity, ShieldAlert, CheckCircle2 } from "lucide-react";
 
 export default function Safety() {
@@ -174,9 +175,11 @@ export default function Safety() {
                   <span>100% Meta API Compliant</span>
                 </div>
               </div>
-              <img 
+              <Image 
                 src="/images/meta-partner.png" 
                 alt="Meta Business Partner" 
+                width={120}
+                height={72}
                 className="w-full max-w-[120px] h-auto object-contain opacity-40 group-hover:opacity-60 transition-opacity duration-300"
               />
             </div>

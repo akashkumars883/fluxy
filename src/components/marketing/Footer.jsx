@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Heart, Shield } from "lucide-react";
 
 export default function Footer() {
@@ -45,10 +46,12 @@ export default function Footer() {
         {/* Brand Section (LEFT) */}
         <div className="space-y-6 max-w-sm">
           <div className="flex items-center gap-3 group/logo">
-            <img 
+            <Image 
               src="/logo.png" 
               alt="Automixa Logo" 
-              className="w-8 h-8 object-contain group-hover/logo:scale-110 transition-transform duration-500" 
+              width={32}
+              height={32}
+              className="object-contain group-hover/logo:scale-110 transition-transform duration-500" 
             />
             <span className="text-2xl font-bold text-foreground">
               automixa

@@ -1,7 +1,10 @@
 # Automixa Product Roadmap & TODO
 
 ## 🚀 Future Features (Planned)
-- *(None planned for now! Ready for scaling & launch)*
+- [ ] **Cookie Consent Banner 🍪**
+  - Implement a modern floating glassmorphic cookie consent banner
+  - Save user preferences in `localStorage` and conditionally load Google Analytics based on consent
+
 
 ## ✅ Completed Refinements
 - [x] **Mobile App (PWA) Optimization 📱**

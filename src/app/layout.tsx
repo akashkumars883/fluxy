@@ -4,6 +4,21 @@ import Script from "next/script";
 import type { Metadata, Viewport } from "next";
 import { createClient } from "@/lib/supabase";
 import { Toaster } from "react-hot-toast";
+import { Outfit, Space_Grotesk } from "next/font/google";
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-outfit",
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+});
 
 export async function generateMetadata(): Promise<Metadata> {
   const supabase = createClient();
@@ -122,27 +137,39 @@ export default function RootLayout({
   const hasGA = !!gaId;
 
   return (
-    <html lang="en" className="h-full antialiased">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en" className={`h-full antialiased ${outfit.variable} ${spaceGrotesk.variable}`}>
+      <head />
       <body className="min-h-full flex flex-col bg-[#FBFBFD]">
         {hasGA ? (
           <>
-            {/* Google Analytics (GA4) Integration */}
+            {/* Google Analytics (GA4) Integration with Consent Mode v2 */}
+            <Script id="google-analytics-consent" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                
+                // Read consent value from localStorage
+                var consentVal = 'denied';
+                try {
+                  if (localStorage.getItem('cookie_consent') === 'accepted') {
+                    consentVal = 'granted';
+                  }
+                } catch(e) {}
+
+                gtag('consent', 'default', {
+                  'analytics_storage': consentVal,
+                  'ad_storage': consentVal,
+                  'ad_user_data': consentVal,
+                  'ad_personalization': consentVal
+                });
+              `}
+            </Script>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
               strategy="afterInteractive"
             />
             <Script id="google-analytics" strategy="afterInteractive">
               {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
                 gtag('config', '${gaId}', {
                   page_path: window.location.pathname,

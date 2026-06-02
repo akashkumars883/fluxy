@@ -1,6 +1,7 @@
 "use client";
 
 import { UserPlus, Sparkles, PlayCircle } from "lucide-react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 export default function HowItWorks() {
@@ -64,9 +65,11 @@ export default function HowItWorks() {
             >
               {/* Step Image */}
               <div className="relative h-64 md:h-80 w-full overflow-hidden bg-zinc-50/30">
-                <img
+                <Image
                   src={step.image}
                   alt={step.title}
+                  width={400}
+                  height={320}
                   className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]"
                 />
 

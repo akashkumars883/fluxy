@@ -4,6 +4,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, Suspense } from "react";
 import PublicNavigation from "@/components/navigation/PublicNavigation";
 import Footer from "@/components/marketing/Footer";
+import CookieBanner from "@/components/layout/CookieBanner";
 
 // Captures ?ref=xyz query parameter from URL and stores it in localStorage
 function RefTracker() {
@@ -35,6 +36,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       {!hideGlobalElements && <PublicNavigation />}
       {children}
       {!hideGlobalElements && <Footer />}
+      <CookieBanner />
     </>
   );
 }

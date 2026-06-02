@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ShieldCheck, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -27,9 +28,11 @@ export default function SafetyBanner() {
 
           {/* Right Side: Meta Badge, Seperator, and Link */}
           <div className="flex flex-col sm:flex-row items-center gap-6 shrink-0 w-full md:w-auto justify-center sm:justify-between md:justify-end">
-            <img 
+            <Image 
               src="/images/meta-partner.png" 
               alt="Meta Business Partner Logo" 
+              width={160}
+              height={96}
               className="h-24 w-auto object-contain"
             />
             <div className="h-6 w-[1px] bg-zinc-200 hidden sm:block" />

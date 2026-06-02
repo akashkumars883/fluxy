@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   ArrowRight, Zap, MessageSquare, Target, Users, ShoppingBag, ChevronDown
@@ -122,10 +123,13 @@ export default function PublicNavigation() {
 
           {/* Left Side: Logo */}
           <Link href="/" className="flex items-center group gap-2.5">
-            <img
+            <Image
               src="/logo.png"
               alt="Automixa Logo"
-              className={`w-8 h-8 mt-[2px] object-contain transition-all duration-300 shrink-0 ${showScrolledStyle ? "" : "brightness-0 invert"}`}
+              width={32}
+              height={32}
+              className={`mt-[2px] object-contain transition-all duration-300 shrink-0 ${showScrolledStyle ? "" : "brightness-0 invert"}`}
+              priority
             />
             <span className={`text-xl font-semibold tracking-normal transition-colors ${showScrolledStyle ? "text-foreground" : "text-white"}`}>automixa</span>
           </Link>

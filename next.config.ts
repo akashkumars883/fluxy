@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 import fs from "node:fs";
 import path from "node:path";
+import { withSentryConfig } from "@sentry/nextjs";
 
 function readDistDir() {
   // Always use standard .next directory on Vercel
@@ -23,4 +24,16 @@ const nextConfig: NextConfig = {
   distDir: readDistDir(),
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  org: "automixa",
+  project: "nextjs",
+
+  // Only print logs for uploading source maps in CI
+  silent: !process.env.CI,
+
+  // Widen sourcemaps upload
+  widenClientFileUpload: true,
+
+  // Automatically tree-shake Sentry logger statements to reduce bundle size
+  disableLogger: true,
+});
