@@ -73,6 +73,8 @@ const PUBLIC_REPLY_SUGGESTIONS = ["Sent! Check DMs 📬", "Done! ✅", "Just mes
 // ─────────────────────────────────────────────────────────
 // Main Component
 // ─────────────────────────────────────────────────────────
+import * as logger from "@/lib/logger";
+
 export default function CampaignWizard({
   onPublish,
   onBack,
@@ -227,7 +229,7 @@ export default function CampaignWizard({
         throw new Error("Invalid response schema from AI Copilot");
       }
     } catch (err) {
-      console.error(err);
+      logger.error("CampaignWizard: AI build error:", err);
       setAiBuildError(err.message || "Failed to build campaign. Please try a different prompt.");
       aiSay("⚠️ I ran into an error generating that automation. Let's try again, or you can build it step-by-step using a template below.", "select_type", 1000);
     } finally {
@@ -259,7 +261,7 @@ export default function CampaignWizard({
         throw new Error(data.error || "Suggestions request failed");
       }
     } catch (err) {
-      console.error("AI Suggestion failed:", err);
+      logger.error("CampaignWizard: AI suggestion failed:", err);
     } finally {
       setIsSuggesting(false);
     }
@@ -514,8 +516,8 @@ export default function CampaignWizard({
         return (
           <motion.div key="sel-type" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2">
             {/* One-Shot AI Input */}
-            <form 
-              onSubmit={currentPlan === "free" ? handleAiBuildClick : handleAiBuildSubmit} 
+            <form
+              onSubmit={currentPlan === "free" ? handleAiBuildClick : handleAiBuildSubmit}
               className={`bg-white border border-zinc-200 rounded-[22px] p-3 sm:p-4 shadow-sm space-y-3 text-left transition-all ${currentPlan === "free" ? "hover:border-[#6366F1]/50 cursor-pointer" : ""}`}
               onClick={currentPlan === "free" ? handleAiBuildClick : undefined}
             >
@@ -757,7 +759,7 @@ export default function CampaignWizard({
                 disabled={currentPlan !== "free" && isSuggesting}
                 className="shrink-0 px-3 py-1.5 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 hover:border-indigo-200 rounded-full text-[11px] font-bold text-indigo-600 shadow-sm transition-all flex items-center gap-1 cursor-pointer"
               >
-                <Sparkles size={12} /> 
+                <Sparkles size={12} />
                 <span>Suggest with AI</span>
                 {currentPlan === "free" && <span className="text-[10px]">👑</span>}
               </button>
@@ -875,7 +877,7 @@ export default function CampaignWizard({
                 disabled={currentPlan !== "free" && isSuggesting}
                 className="px-3 py-1.5 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 hover:border-indigo-200 rounded-lg text-[11px] font-bold text-indigo-600 shadow-sm transition-all flex items-center gap-1 cursor-pointer"
               >
-                <Sparkles size={11} /> 
+                <Sparkles size={11} />
                 <span>Suggest with AI</span>
                 {currentPlan === "free" && <span className="text-[10px]">👑</span>}
               </button>

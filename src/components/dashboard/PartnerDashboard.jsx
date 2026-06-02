@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase";
 import { ArrowRight, Check, Clock, Copy, ExternalLink, Trash2, Users, Link as LinkIcon, DollarSign, Award, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
+import * as logger from "@/lib/logger";
 
 export default function PartnerDashboard({ currentPlan = "free" }) {
   const [appStatus, setAppStatus] = useState("approved");
@@ -106,7 +107,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
           }
         }
       } catch (e) {
-        console.error("Supabase sync fallback active:", e);
+        logger.warn("Supabase sync fallback active:", e);
       }
     }
     loadRealData();
@@ -127,7 +128,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
         });
       }
     } catch (e) {
-      console.error("Error submitting application:", e);
+      logger.error("Error submitting application:", e);
     }
   };
 
@@ -142,7 +143,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
       document.body.appendChild(textarea);
       textarea.focus();
       textarea.select();
-      try { document.execCommand("copy"); } catch (err) { console.error("Failed to copy", err); } finally { document.body.removeChild(textarea); }
+      try { document.execCommand("copy"); } catch (err) { logger.warn("PartnerDashboard: Failed to copy tracking link fallback", err); } finally { document.body.removeChild(textarea); }
     }
     setTimeout(() => setCopied(false), 2000);
   };
@@ -158,7 +159,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
       document.body.appendChild(textarea);
       textarea.focus();
       textarea.select();
-      try { document.execCommand("copy"); } catch (err) { console.error("Failed to copy", err); } finally { document.body.removeChild(textarea); }
+      try { document.execCommand("copy"); } catch (err) { logger.warn("PartnerDashboard: Failed to copy promo code fallback", err); } finally { document.body.removeChild(textarea); }
     }
     setTimeout(() => setCopiedCode(null), 2000);
   };
@@ -203,7 +204,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
       setGenSuccess(true);
       setTimeout(() => setGenSuccess(false), 3000);
     } catch (err) {
-      console.error("Error creating promo code:", err);
+      logger.error("Error creating promo code:", err);
       alert(err.message || "Failed to create promo code. Please try again.");
     } finally {
       setGenerating(false);
@@ -221,7 +222,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
       if (error) throw error;
       setPromoCodes(prev => prev.filter(c => c.code !== codeToDelete));
     } catch (err) {
-      console.error("Error deleting promo code:", err);
+      logger.error("Error deleting promo code:", err);
       alert(err.message || "Failed to delete promo code.");
     }
   };
@@ -342,13 +343,13 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
 
           {/* Main Grouped Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 items-stretch">
-            
+
             {/* Left Card: Promotion & Links */}
             <div className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-transparent">
               <h3 className="font-bold text-xl text-zinc-950 tracking-tight flex items-center gap-2 mb-6 border-b border-zinc-100 pb-4">
                 <LinkIcon size={20} className="text-[#6366F1]" /> Promotion & Links
               </h3>
-              
+
               <div className="space-y-6 flex-1 flex flex-col">
                 {/* Tracking Link */}
                 <div className="space-y-3">
@@ -484,11 +485,10 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
                     ].map((t) => (
                       <div
                         key={t.tier}
-                        className={`flex items-center justify-between rounded-xl px-4 py-3 border text-sm transition-all shadow-sm ${
-                          t.active
+                        className={`flex items-center justify-between rounded-xl px-4 py-3 border text-sm transition-all shadow-sm ${t.active
                             ? "bg-indigo-50 border-indigo-200 text-indigo-900 scale-[1.02]"
                             : "bg-white border-zinc-100 text-zinc-500"
-                        }`}
+                          }`}
                       >
                         <div>
                           <span className={`font-semibold ${t.active ? "text-indigo-700" : "text-zinc-700"}`}>{t.tier}</span>

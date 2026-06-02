@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { Plus, Package, Link2, DollarSign, Download, Image as ImageIcon, Trash2, Edit2, ShoppingBag } from "lucide-react";
 import toast from "react-hot-toast";
+import * as logger from "@/lib/logger";
 
 export default function StoreManager({ accountId, currentPlan, onUpgradeClick }) {
   const [products, setProducts] = useState([]);
@@ -25,7 +26,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
         setProducts(data.products || []);
       }
     } catch (err) {
-      console.error(err);
+      logger.error("StoreManager: Failed to fetch products:", err);
       toast.error("Failed to load products");
     } finally {
       setLoading(false);
@@ -41,7 +42,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
   const handleSaveProduct = async (e) => {
     e.preventDefault();
     if (!name || !price) return toast.error("Name and price are required");
-    
+
     setSaving(true);
     try {
       const res = await fetch("/api/store/products", {
@@ -59,7 +60,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      
+
       toast.success("Product created successfully!");
       setIsModalOpen(false);
       setName(""); setPrice(""); setDescription(""); setFileUrl(""); setCoverImage("");
@@ -93,7 +94,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
 
   return (
     <div className="w-full space-y-4 animate-in fade-in duration-500">
-      
+
       {/* Header Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 shadow-sm flex items-center justify-between">
@@ -132,7 +133,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
             <h3 className="text-lg font-bold text-zinc-900">Your Products</h3>
             <p className="text-xs font-medium text-zinc-500 mt-0.5">Manage digital and physical items for your store.</p>
           </div>
-          <button 
+          <button
             onClick={() => setIsModalOpen(true)}
             className="px-4 py-2 bg-[#6366F1] hover:bg-[#4f46e5] text-white rounded-xl text-xs font-semibold shadow-sm transition-all hover:scale-[1.02] flex items-center gap-1.5"
           >
@@ -147,7 +148,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
             <Package size={32} className="mx-auto text-zinc-300 mb-3" />
             <p className="text-sm font-bold text-zinc-700">No products yet</p>
             <p className="text-xs text-zinc-500 mt-1 max-w-sm mx-auto">Create your first digital download, course, or physical merch to start selling via DM automations.</p>
-            <button 
+            <button
               onClick={() => setIsModalOpen(true)}
               className="mt-4 px-5 py-2 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-xs font-semibold transition-all inline-flex items-center gap-1.5"
             >
@@ -172,11 +173,11 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
                   </div>
                   <span className="font-bold text-[#6366F1] text-sm shrink-0">₹{product.price_inr}</span>
                 </div>
-                
+
                 <div className="mt-auto pt-3 flex items-center justify-between border-t border-zinc-100">
                   <p className="text-[11px] font-semibold text-zinc-400">{product.sales_count} Sales</p>
                   <div className="flex gap-1">
-                    <button 
+                    <button
                       onClick={() => {
                         navigator.clipboard.writeText(`${window.location.origin}/pay/${product.id}`);
                         toast.success("Checkout link copied!");
@@ -205,7 +206,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
               </h3>
               <button onClick={() => setIsModalOpen(false)} className="text-zinc-400 hover:text-zinc-700">✕</button>
             </div>
-            
+
             <div className="p-6 overflow-y-auto">
               <form id="productForm" onSubmit={handleSaveProduct} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -239,14 +240,14 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
 
                 {type === 'digital' && (
                   <div className="space-y-1.5 p-4 bg-zinc-50 border border-zinc-200 rounded-xl">
-                    <label className="text-xs font-bold text-zinc-700 flex items-center gap-1.5"><Download size={14}/> Downloadable File URL</label>
+                    <label className="text-xs font-bold text-zinc-700 flex items-center gap-1.5"><Download size={14} /> Downloadable File URL</label>
                     <p className="text-[10px] text-zinc-500 mb-2 leading-relaxed">Enter the direct link to your PDF, Course, or Zip file. This will be automatically sent to the buyer after successful payment.</p>
                     <input type="url" required value={fileUrl} onChange={e => setFileUrl(e.target.value)} placeholder="https://drive.google.com/..." className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-sm outline-none focus:border-[#6366F1] transition-colors" />
                   </div>
                 )}
               </form>
             </div>
-            
+
             <div className="px-6 py-4 border-t border-zinc-100 bg-zinc-50/50 flex justify-end gap-2 shrink-0">
               <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2.5 text-xs font-bold text-zinc-600 hover:bg-zinc-100 rounded-xl transition-colors">Cancel</button>
               <button form="productForm" type="submit" disabled={saving} className="px-6 py-2.5 bg-[#6366F1] hover:bg-[#4f46e5] disabled:opacity-50 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-2">

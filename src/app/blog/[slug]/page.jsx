@@ -3,11 +3,11 @@ import { createClient } from "@/lib/supabase";
 import { fetchBlogBySlug, fetchPublishedBlogs } from "@/lib/blogs";
 import { notFound } from "next/navigation";
 
-// Next.js 16 requires awaiting params
+// `params` is a plain object provided by Next.js; do not `await` it
 export async function generateMetadata({ params }) {
-  const { slug } = await params;
+  const { slug } = params;
   const supabase = createClient();
-  
+
   const post = await fetchBlogBySlug(supabase, slug);
 
   if (!post) {
@@ -48,9 +48,9 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Page({ params }) {
-  const { slug } = await params;
+  const { slug } = params;
   const supabase = createClient();
-  
+
   const post = await fetchBlogBySlug(supabase, slug);
   if (!post) notFound();
 

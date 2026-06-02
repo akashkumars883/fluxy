@@ -1,17 +1,18 @@
 "use client";
 import {
-Activity,
-ArrowRight,
-Cpu,
-MessageSquare,
-Plus,
-ShieldAlert,
-Sparkles,
-TrendingUp,
-X,
-Zap
+  Activity,
+  ArrowRight,
+  Cpu,
+  MessageSquare,
+  Plus,
+  ShieldAlert,
+  Sparkles,
+  TrendingUp,
+  X,
+  Zap
 } from "lucide-react";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
+import * as logger from "@/lib/logger";
 import { createPortal } from "react-dom";
 
 export default function CreatorOverview({ stats = {}, history = [], topTriggers = [], automationId, hideHeader = false, onSimulateLocal, isActive = true, onViewAudience, onCreateAutoReply, onToggleTriggerActive, currentPlan = "free", onUpgradeClick }) {
@@ -48,13 +49,13 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
 
       const data = await res.json();
       if (!res.ok) {
-        console.error("Simulation endpoint failed:", data.error);
+        logger.error("Simulation endpoint failed:", data.error);
         alert("Simulation endpoint failed: " + data.error);
       } else {
-        console.log("Simulated live event successfully via API route:", data);
+        logger.log("Simulated live event successfully via API route");
       }
     } catch (err) {
-      console.error("Network error during simulation:", err);
+      logger.error("Network error during simulation:", err);
     }
   };
 
@@ -65,7 +66,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
     try {
       const res = await fetch(`/api/media/sync?automationId=${automationId}`);
       const data = await res.json();
-      
+
       if (data.success && data.diagnostics) {
         setSyncReport({
           success: true,
@@ -82,7 +83,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
         success: false,
         error: "Network error occurred while syncing with Meta."
       });
-      console.error(err);
+      logger.error("CreatorOverview: Meta sync error:", err);
     } finally {
       setIsSyncing(false);
     }
@@ -105,7 +106,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
     const date = new Date(dateStr);
     const now = new Date();
     const diff = Math.floor((now - date) / 1000);
-    
+
     if (diff < 60) return `${diff}s ago`;
     if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
@@ -114,15 +115,15 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
 
   const activeKeywords = topTriggers && topTriggers.length > 0
     ? topTriggers.map((t, idx) => {
-        const triggerTypes = ["Post Comment", "Reel Comment", "Direct Inbox", "Story Reply"];
-        return {
-          id: t.id,
-          keyword: (t.keyword || "AUTO").toUpperCase(),
-          triggerType: triggerTypes[idx % triggerTypes.length],
-          isActive: t.metadata?.is_active !== false,
-          comments: t.count
-        };
-      })
+      const triggerTypes = ["Post Comment", "Reel Comment", "Direct Inbox", "Story Reply"];
+      return {
+        id: t.id,
+        keyword: (t.keyword || "AUTO").toUpperCase(),
+        triggerType: triggerTypes[idx % triggerTypes.length],
+        isActive: t.metadata?.is_active !== false,
+        comments: t.count
+      };
+    })
     : [];
 
   const metricCards = [
@@ -138,18 +139,18 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
         {metricCards.map((card) => {
           const Icon = card.icon;
           return (
-            <div 
+            <div
               key={card.label}
               className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5"
             >
               <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#6366F1]/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
-              
+
               <div className="flex items-center justify-between mb-4 relative z-10">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-sm transition-all duration-500 group-hover:scale-110 ${card.color}`}>
                   <Icon size={18} />
                 </div>
               </div>
-              
+
               <div className="space-y-1 relative z-10">
                 <span className="text-2xl sm:text-4xl font-bold text-zinc-950 tracking-tighter leading-none block group-hover:text-[#6366F1] transition-colors duration-300">
                   {card.value}
@@ -177,7 +178,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
               </p>
             </div>
           </div>
-          <button 
+          <button
             onClick={() => onUpgradeClick?.()}
             className="shrink-0 w-full sm:w-auto px-6 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-[13px] font-bold rounded-xl shadow-lg shadow-rose-500/20 hover:shadow-rose-500/30 transition-all flex items-center justify-center gap-2 group/btn"
           >
@@ -187,7 +188,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 items-stretch">
-        
+
         {/* Left Column: Active Automations */}
         <div className="lg:col-span-2 bg-white border border-zinc-200/80 rounded-[24px] p-5 sm:p-6 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col relative overflow-hidden h-[380px]">
           <div className="flex items-center justify-between mb-8 relative z-10 shrink-0 border-b border-zinc-100 pb-6">
@@ -197,8 +198,8 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
               </h3>
               <p className="text-[13px] text-zinc-500 font-medium">Manage your currently running auto-reply rules.</p>
             </div>
-            
-            <button 
+
+            <button
               onClick={onCreateAutoReply}
               className="hidden sm:flex items-center gap-2 text-sm font-bold text-white bg-[#6366F1] hover:bg-[#4f46e5] px-5 py-2.5 rounded-xl transition-all shadow-md shadow-[#6366F1]/10 hover:shadow-lg hover:shadow-[#6366F1]/20"
             >
@@ -237,15 +238,13 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div 
+                    <div
                       onClick={() => onToggleTriggerActive && onToggleTriggerActive(item.id, item.isActive)}
-                      className={`w-10 h-6 rounded-full relative cursor-pointer shadow-inner hover:opacity-90 transition-all duration-300 ${
-                        item.isActive ? "bg-[#6366F1]" : "bg-zinc-300"
-                      }`}
+                      className={`w-10 h-6 rounded-full relative cursor-pointer shadow-inner hover:opacity-90 transition-all duration-300 ${item.isActive ? "bg-[#6366F1]" : "bg-zinc-300"
+                        }`}
                     >
-                      <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-sm transition-all duration-300 ${
-                        item.isActive ? "right-0.5" : "left-0.5"
-                      }`} />
+                      <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-sm transition-all duration-300 ${item.isActive ? "right-0.5" : "left-0.5"
+                        }`} />
                     </div>
                   </div>
                 </div>
@@ -263,7 +262,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
               </h3>
               <p className="text-[13px] text-zinc-500 font-medium">Live feed of interactions.</p>
             </div>
-            <button 
+            <button
               onClick={onViewAudience}
               className="w-10 h-10 flex items-center justify-center rounded-xl bg-zinc-50 border border-zinc-100 text-zinc-400 hover:text-[#6366F1] hover:border-[#6366F1]/20 hover:bg-[#6366F1]/5 transition-all"
             >
@@ -283,9 +282,9 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
               history.map((log) => (
                 <div key={log.id} className="flex items-start justify-between group cursor-default">
                   <div className="flex items-start gap-3.5">
-                    <img 
-                      src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${log.sender_id || log.id}`} 
-                      alt={log.sender_name} 
+                    <img
+                      src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${log.sender_id || log.id}`}
+                      alt={log.sender_name}
                       className="w-10 h-10 rounded-xl object-cover border border-zinc-200/50 shadow-sm shrink-0 group-hover:border-zinc-300 transition-colors"
                     />
                     <div className="space-y-1 mt-0.5">
@@ -307,7 +306,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
       {/* Meta Sync Report Dialog Modal */}
       {mounted && syncReport && typeof document !== "undefined" && createPortal(
         <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-300">
-          <div 
+          <div
             className="fixed inset-0 bg-[#f3f3f3]/60 backdrop-blur-md transition-all duration-500"
             onClick={() => setSyncReport(null)}
           />
@@ -321,7 +320,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
                 </div>
                 <h3 className="text-xl font-bold text-zinc-900 tracking-tight">Meta Connection Report</h3>
               </div>
-              <button 
+              <button
                 onClick={() => setSyncReport(null)}
                 className="p-2 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-400 hover:text-zinc-950 transition-all hover:bg-zinc-100"
               >
@@ -338,11 +337,10 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
                   </div>
                   <div>
                     <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block">Status Overview</span>
-                    <span className={`text-xs font-bold ${
-                      syncReport.diagnostics.scope_insights === "SUCCESS" && syncReport.diagnostics.scope_comments === "SUCCESS"
+                    <span className={`text-xs font-bold ${syncReport.diagnostics.scope_insights === "SUCCESS" && syncReport.diagnostics.scope_comments === "SUCCESS"
                         ? "text-emerald-600"
                         : "text-amber-600"
-                    }`}>
+                      }`}>
                       {syncReport.diagnostics.scope_insights === "SUCCESS" && syncReport.diagnostics.scope_comments === "SUCCESS"
                         ? "✅ READY FOR ACTION"
                         : "⚠️ ATTENTION NEEDED"}
@@ -353,27 +351,24 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
                 <div className="space-y-3">
                   <div className="flex items-center justify-between py-2 border-b border-zinc-100">
                     <span className="text-xs font-semibold text-zinc-500">Insights Reading Permission</span>
-                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
-                      syncReport.diagnostics.scope_insights === "SUCCESS" ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"
-                    }`}>
+                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${syncReport.diagnostics.scope_insights === "SUCCESS" ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"
+                      }`}>
                       {syncReport.diagnostics.scope_insights}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between py-2 border-b border-zinc-100">
                     <span className="text-xs font-semibold text-zinc-500">Comments Auto-Reply Permission</span>
-                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
-                      syncReport.diagnostics.scope_comments === "SUCCESS" ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"
-                    }`}>
+                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${syncReport.diagnostics.scope_comments === "SUCCESS" ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"
+                      }`}>
                       {syncReport.diagnostics.scope_comments}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between py-2 border-b border-zinc-100">
                     <span className="text-xs font-semibold text-zinc-500">Active Media Feed Detected</span>
-                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
-                      syncReport.diagnostics.media_found === "YES" ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"
-                    }`}>
+                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${syncReport.diagnostics.media_found === "YES" ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"
+                      }`}>
                       {syncReport.diagnostics.media_found}
                     </span>
                   </div>

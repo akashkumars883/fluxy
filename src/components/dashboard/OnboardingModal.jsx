@@ -1,9 +1,10 @@
 "use client";
 
-import { AnimatePresence,motion } from "framer-motion";
-import { ArrowRight,CheckCircle2,Loader2 } from "lucide-react";
-import { useEffect,useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { createClient } from '@/lib/supabase'; // adding this back since it's used
+import * as logger from "@/lib/logger";
 
 // Custom premium CSS-based confetti using Framer Motion
 const Confetti = () => {
@@ -68,7 +69,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
         data: { onboarding_completed: true }
       });
     } catch (e) {
-      console.error(e);
+      logger.error("OnboardingModal: Failed to update user onboarding state ->", e);
     }
     onClose();
   };
@@ -86,7 +87,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-6">
       {/* Backdrop */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -94,7 +95,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
       />
 
       {/* Modal Content */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -110,7 +111,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
         <div className="relative p-5 sm:p-6 md:p-8 z-10">
           <AnimatePresence mode="wait">
             {step !== 4 && (
-              <motion.div 
+              <motion.div
                 key="connect"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -134,7 +135,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                         className="w-full h-full object-contain"
                       />
                     </div>
-                    
+
                     <div className="space-y-1 sm:space-y-2">
                       <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Connect with Facebook</h2>
                       <p className="text-zinc-muted font-normal text-sm sm:text-base max-w-sm mx-auto px-2">
@@ -143,13 +144,13 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                     </div>
 
                     <div className="pt-1 sm:pt-2 flex flex-col items-center gap-2">
-                      <button 
+                      <button
                         onClick={handleConnectClick}
                         className="w-full sm:w-auto px-8 sm:px-12 py-3 sm:py-3.5 bg-[#1877F2] text-white rounded-xl text-sm font-bold shadow-[0_8px_30px_-8px_rgba(24,119,242,0.5)] hover:shadow-[0_10px_40px_-10px_rgba(24,119,242,0.7)] transition-all flex items-center justify-center gap-3 hover:scale-[1.02]"
                       >
                         Login with Facebook <ArrowRight size={18} className="sm:w-5 sm:h-5" />
                       </button>
-                      
+
                       <div className="flex flex-col gap-1.5 sm:gap-2 items-center mt-1 sm:mt-2">
                         <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-zinc-500 font-semibold px-2 py-1">
                           <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E1306C] shrink-0" viewBox="0 0 24 24" fill="currentColor">
@@ -162,7 +163,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="pt-1 sm:pt-2">
                       <button onClick={handleSkipOrClose} className="text-xs sm:text-sm text-zinc-400 hover:text-zinc-700 transition-colors underline underline-offset-4 font-medium">
                         Cancel, I&apos;ll do this later

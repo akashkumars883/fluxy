@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase";
+import * as logger from "@/lib/logger";
 
 const DashboardContext = createContext();
 
@@ -94,16 +95,16 @@ export function DashboardProvider({ children }) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const [currentPlan, setCurrentPlan] = useState("free");
   const [upgradeReason, setUpgradeReason] = useState("");
-  
+
   // Workspaces State
   const [workspaces, setWorkspaces] = useState([]);
   const [selectedWorkspace, setSelectedWorkspace] = useState(null);
-  
+
   // Collaboration / Team members state
   const [workspaceMembers, setWorkspaceMembers] = useState([]);
   const [workspaceMembersLoading, setWorkspaceMembersLoading] = useState(false);
 
-  
+
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [realtimeStats, setRealtimeStats] = useState({
     totalDms: 0,
@@ -126,7 +127,7 @@ export function DashboardProvider({ children }) {
 
   // Initialize and load workspaces & accounts
   useEffect(() => {
-    console.log("DashboardContext: Effect Started");
+    logger.log("DashboardContext: Effect Started");
     const supabaseClient = createClient();
 
     const loadData = async (session) => {
@@ -137,8 +138,8 @@ export function DashboardProvider({ children }) {
 
       setUser(session.user);
       try {
-        console.log("DashboardContext: Fetching data for", session.user.id);
-        
+        logger.log("DashboardContext: Fetching data for", session.user.id);
+
         // 0. Auto-accept pending workspace invites matching this user's email
         if (session.user.email) {
           try {
@@ -149,7 +150,7 @@ export function DashboardProvider({ children }) {
               .eq("status", "pending");
 
             if (pendingRes.data && pendingRes.data.length > 0) {
-              console.log("DashboardContext: Accepting pending invites:", pendingRes.data.length);
+              logger.log("DashboardContext: Accepting pending invites:", pendingRes.data.length);
               await Promise.all(
                 pendingRes.data.map(invite =>
                   supabaseClient
@@ -160,10 +161,10 @@ export function DashboardProvider({ children }) {
               );
             }
           } catch (e) {
-            console.warn("DB Auto-accept invite check failed:", e);
+            logger.warn("DB Auto-accept invite check failed:", e);
           }
         }
-        
+
         // 1. Fetch workspaces from DB (Owned and Shared/Collaborated)
         let workspacesData = [];
         try {
@@ -172,7 +173,7 @@ export function DashboardProvider({ children }) {
           if (wsRes.data && wsRes.data.length > 0) {
             workspacesData = wsRes.data;
           }
-          
+
           // Fetch shared workspaces
           const collabRes = await supabaseClient
             .from("workspace_members")
@@ -193,7 +194,7 @@ export function DashboardProvider({ children }) {
             }
           }
         } catch (e) {
-          console.warn("DB Workspace fetch error, falling back to LocalStorage:", e);
+          logger.warn("DB Workspace fetch error, falling back to LocalStorage:", e);
         }
 
 
@@ -210,7 +211,7 @@ export function DashboardProvider({ children }) {
             workspacesData = localWs;
           }
         }
-        
+
         setWorkspaces(workspacesData);
 
         // Active Workspace selection
@@ -238,7 +239,7 @@ export function DashboardProvider({ children }) {
           setCurrentPlan("free");
         }
       } catch (err) {
-        console.error("DashboardContext: Unexpected Fetch Error ->", err);
+        logger.error("DashboardContext: Unexpected Fetch Error ->", err);
       } finally {
         setLoading(false);
       }
@@ -247,7 +248,7 @@ export function DashboardProvider({ children }) {
     // 1. Initial Session Check (Immediate)
     supabaseClient.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        console.log("DashboardContext: Initial Session Found");
+        logger.log("DashboardContext: Initial Session Found");
         loadData(session);
       } else {
         setTimeout(() => setLoading(false), 3000);
@@ -256,7 +257,7 @@ export function DashboardProvider({ children }) {
 
     // 2. Auth State Change Listener
     const { data: { subscription } } = supabaseClient.auth.onAuthStateChange(async (event, session) => {
-      console.log("DashboardContext: Auth Event ->", event);
+      logger.log("DashboardContext: Auth Event ->", event);
       if (session) {
         loadData(session);
       } else {
@@ -279,7 +280,7 @@ export function DashboardProvider({ children }) {
     let timer;
     if (selectedWorkspace) {
       const workspaceAccounts = allAccounts.filter(acc => getAccountWorkspaceId(acc) === selectedWorkspace.id);
-      
+
       // If selectedAccount doesn't belong to the active workspace, switch to first account or null
       if (!selectedAccount || !workspaceAccounts.some(acc => acc.id === selectedAccount.id)) {
         timer = setTimeout(() => {
@@ -301,7 +302,7 @@ export function DashboardProvider({ children }) {
   // Apply dynamic color theme based on active workspace's selected color
   useEffect(() => {
     if (!selectedWorkspace || typeof window === "undefined") return;
-    
+
     const colorKey = selectedWorkspace.avatar_color || "bg-indigo-600";
     const theme = THEME_COLORS[colorKey] || THEME_COLORS["bg-indigo-600"];
     const root = document.documentElement;
@@ -332,11 +333,11 @@ export function DashboardProvider({ children }) {
       }
 
       setWorkspaceMembersLoading(true);
-      
+
       // Load local storage members first as fallback
       const localMembers = JSON.parse(localStorage.getItem("automixa_workspace_members") || "[]");
       const filteredLocal = localMembers.filter(m => m.workspace_id === selectedWorkspace.id);
-      
+
       // If the workspace ID is a virtual string (like "personal") and not a valid UUID, do NOT query the database
       const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
       if (!UUID_REGEX.test(selectedWorkspace.id)) {
@@ -361,7 +362,7 @@ export function DashboardProvider({ children }) {
           setWorkspaceMembers(filteredLocal);
         }
       } catch (err) {
-        console.warn("DB load members failed, using local fallback:", err);
+        logger.warn("DB load members failed, using local fallback:", err);
         setWorkspaceMembers(filteredLocal);
       } finally {
         setWorkspaceMembersLoading(false);
@@ -384,7 +385,7 @@ export function DashboardProvider({ children }) {
     };
 
     setWorkspaceMembers(prev => [...prev, newMember]);
-    
+
     const localMembers = JSON.parse(localStorage.getItem("automixa_workspace_members") || "[]");
     localStorage.setItem("automixa_workspace_members", JSON.stringify([...localMembers, newMember]));
 
@@ -397,12 +398,12 @@ export function DashboardProvider({ children }) {
         workspaceName: workspaces.find(w => w.id === workspaceId)?.name || "a Workspace",
         invitedByEmail: user?.email || "Someone"
       })
-    }).catch(err => console.warn("Failed to trigger server-side invite email:", err));
+    }).catch(err => logger.warn("Failed to trigger server-side invite email:", err));
 
     // 3. DB Persistence
     const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!UUID_REGEX.test(workspaceId)) {
-      console.warn("Bypassing DB persistence for virtual workspace invite");
+      logger.warn("Bypassing DB persistence for virtual workspace invite");
       return { data: newMember };
     }
 
@@ -425,7 +426,7 @@ export function DashboardProvider({ children }) {
       }
       return { error };
     } catch (err) {
-      console.warn("DB Invite failed, relying on local fallback:", err);
+      logger.warn("DB Invite failed, relying on local fallback:", err);
       return { data: newMember };
     }
   };
@@ -441,7 +442,7 @@ export function DashboardProvider({ children }) {
     try {
       await supabase.from("workspace_members").delete().eq("id", memberId);
     } catch (err) {
-      console.warn("DB remove collaborator failed:", err);
+      logger.warn("DB remove collaborator failed:", err);
     }
   };
 
@@ -458,7 +459,7 @@ export function DashboardProvider({ children }) {
     try {
       await supabase.from("workspace_members").update({ role: newRole }).eq("id", memberId);
     } catch (err) {
-      console.warn("DB role update failed:", err);
+      logger.warn("DB role update failed:", err);
     }
   };
 
@@ -488,7 +489,7 @@ export function DashboardProvider({ children }) {
     setUpgradeReason,
     realtimeStats,
     setRealtimeStats,
-    
+
     // Workspaces
     workspaces,
     setWorkspaces,
@@ -497,7 +498,7 @@ export function DashboardProvider({ children }) {
       setSelectedWorkspace(ws);
       if (ws) localStorage.setItem("automixa_active_workspace_id", ws.id);
     },
-    
+
     createWorkspace: async (name, color) => {
       const tempId = Math.random().toString(36).substring(2, 11);
       const newWs = {
@@ -523,7 +524,7 @@ export function DashboardProvider({ children }) {
             user_id: user.id,
             avatar_color: newWs.avatar_color
           }).select().single();
-          
+
           if (data && !error) {
             setWorkspaces(prev => prev.map(w => w.id === tempId ? data : w));
             const currentLocal = JSON.parse(localStorage.getItem("automixa_workspaces") || "[]");
@@ -534,12 +535,12 @@ export function DashboardProvider({ children }) {
             return data;
           }
         } catch (e) {
-          console.warn("DB Workspace save failed (using local fallback):", e);
+          logger.warn("DB Workspace save failed (using local fallback):", e);
         }
       }
       return newWs;
     },
-    
+
     renameWorkspace: async (id, newName) => {
       setWorkspaces(prev => prev.map(w => w.id === id ? { ...w, name: newName } : w));
       const current = JSON.parse(localStorage.getItem("automixa_workspaces") || "[]");
@@ -553,13 +554,13 @@ export function DashboardProvider({ children }) {
       try {
         await supabase.from("workspaces").update({ name: newName }).eq("id", id);
       } catch (e) {
-        console.warn("DB Workspace rename failed:", e);
+        logger.warn("DB Workspace rename failed:", e);
       }
     },
-    
+
     deleteWorkspace: async (id) => {
       if (id === "personal") return;
-      
+
       const newWorkspaces = workspaces.filter(w => w.id !== id);
       setWorkspaces(newWorkspaces);
       localStorage.setItem("automixa_workspaces", JSON.stringify(newWorkspaces));
@@ -584,7 +585,7 @@ export function DashboardProvider({ children }) {
       try {
         await supabase.from("workspaces").delete().eq("id", id);
       } catch (e) {
-        console.warn("DB Workspace delete failed:", e);
+        logger.warn("DB Workspace delete failed:", e);
       }
     },
 
@@ -603,22 +604,22 @@ export function DashboardProvider({ children }) {
           await supabase.from("automations").update({ workspace_id: dbWorkspaceId }).eq("id", accountId);
         }
       } catch (e) {
-        console.warn("DB Account Workspace link failed:", e);
+        logger.warn("DB Account Workspace link failed:", e);
       }
     },
 
     updateSelectedAccount: async (updates) => {
       if (!selectedAccount) return;
-      
+
       // 1. Optimistic Update
       const previousAccount = { ...selectedAccount };
       const updatedAccount = { ...selectedAccount, ...updates };
-      
+
       setSelectedAccount(updatedAccount);
       setAllAccounts(prev => prev.map(acc => acc.id === selectedAccount.id ? updatedAccount : acc));
 
       try {
-        console.log("DashboardContext: Updating account", selectedAccount.id, updates);
+        logger.log("DashboardContext: Updating account", selectedAccount.id, updates);
         const supabase = createClient();
 
         const { data, error } = await supabase
@@ -629,20 +630,20 @@ export function DashboardProvider({ children }) {
           .single();
 
         if (error) {
-          console.error("DashboardContext: Update Error ->", error.message);
+          logger.error("DashboardContext: Update Error ->", error.message);
           setSelectedAccount(previousAccount);
           setAllAccounts(prev => prev.map(acc => acc.id === selectedAccount.id ? previousAccount : acc));
           return { error };
         }
 
         if (data) {
-          console.log("DashboardContext: Update Success ->", data.is_active);
+          logger.log("DashboardContext: Update Success ->", data.is_active);
           setSelectedAccount(data);
           setAllAccounts(prev => prev.map(acc => acc.id === data.id ? data : acc));
           return { data };
         }
       } catch (err) {
-        console.error("DashboardContext: Unexpected Update Error ->", err);
+        logger.error("DashboardContext: Unexpected Update Error ->", err);
         setSelectedAccount(previousAccount);
         setAllAccounts(prev => prev.map(acc => acc.id === selectedAccount.id ? previousAccount : acc));
         return { error: err };
@@ -652,7 +653,7 @@ export function DashboardProvider({ children }) {
     disconnectAccount: async (accountId) => {
       if (!accountId) return { error: "No account selected" };
       try {
-        console.log("DashboardContext: Disconnecting account", accountId);
+        logger.log("DashboardContext: Disconnecting account", accountId);
         const supabase = createClient();
         const { error } = await supabase
           .from("automations")
@@ -660,7 +661,7 @@ export function DashboardProvider({ children }) {
           .eq("id", accountId);
 
         if (error) {
-          console.error("DashboardContext: Disconnect Error ->", error.message);
+          logger.error("DashboardContext: Disconnect Error ->", error.message);
           return { error };
         }
 
@@ -668,7 +669,7 @@ export function DashboardProvider({ children }) {
         setAllAccounts(prev => prev.filter(acc => acc.id !== accountId));
         return { success: true };
       } catch (err) {
-        console.error("DashboardContext: Unexpected Disconnect Error ->", err);
+        logger.error("DashboardContext: Unexpected Disconnect Error ->", err);
         return { error: err };
       }
     }

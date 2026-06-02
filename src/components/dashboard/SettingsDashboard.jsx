@@ -7,13 +7,14 @@ import {
   LogOut, RefreshCcw, UserCheck, UserPlus, Users, Wallet, Zap
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import * as logger from "@/lib/logger";
 
 const NAV_ITEMS = [
-  { id: "account",       label: "Account",       icon: UserCheck },
-  { id: "payout",        label: "Payout",         icon: Wallet    },
-  { id: "notifications", label: "Notifications",  icon: Bell      },
-  { id: "team",          label: "Team",            icon: Users     },
-  { id: "integrations",  label: "Integrations",   icon: Globe     },
+  { id: "account", label: "Account", icon: UserCheck },
+  { id: "payout", label: "Payout", icon: Wallet },
+  { id: "notifications", label: "Notifications", icon: Bell },
+  { id: "team", label: "Team", icon: Users },
+  { id: "integrations", label: "Integrations", icon: Globe },
 ];
 
 const Toggle = ({ checked, onChange }) => (
@@ -34,11 +35,11 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
 
   // Quota
   const usedQuota = (realtimeStats?.totalDms || 0) + (realtimeStats?.autoReplies || 0);
-  const maxQuota  = currentPlan === "viral_scale" ? 2000000 : currentPlan === "creator_pro" ? 250000 : 25000;
+  const maxQuota = currentPlan === "viral_scale" ? 2000000 : currentPlan === "creator_pro" ? 250000 : 25000;
   const quotaPercent = Math.min((usedQuota / maxQuota) * 100, 100);
 
   // Notification toggles
-  const [emailAlerts,  setEmailAlerts]  = useState(true);
+  const [emailAlerts, setEmailAlerts] = useState(true);
   const [weeklyReport, setWeeklyReport] = useState(true);
 
   // Account states
@@ -46,32 +47,32 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
 
   // Team
   const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteRole,  setInviteRole]  = useState("viewer");
-  const [isInviting,  setIsInviting]  = useState(false);
+  const [inviteRole, setInviteRole] = useState("viewer");
+  const [isInviting, setIsInviting] = useState(false);
 
   // Webhook
-  const [webhookUrl,         setWebhookUrl]         = useState(account?.metadata?.webhook_url     || "");
-  const [webhookEnabled,     setWebhookEnabled]     = useState(account?.metadata?.webhook_enabled || false);
-  const [isTestingWebhook,   setIsTestingWebhook]   = useState(false);
-  const [testWebhookResult,  setTestWebhookResult]  = useState(null);
+  const [webhookUrl, setWebhookUrl] = useState(account?.metadata?.webhook_url || "");
+  const [webhookEnabled, setWebhookEnabled] = useState(account?.metadata?.webhook_enabled || false);
+  const [isTestingWebhook, setIsTestingWebhook] = useState(false);
+  const [testWebhookResult, setTestWebhookResult] = useState(null);
   const [testWebhookMessage, setTestWebhookMessage] = useState("");
-  const [isSaved,            setIsSaved]            = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   // Payout
-  const [payoutMethod,   setPayoutMethod]   = useState("upi");
-  const [upiId,          setUpiId]          = useState("");
-  const [bankAccountNo,  setBankAccountNo]  = useState("");
-  const [bankIfsc,       setBankIfsc]       = useState("");
+  const [payoutMethod, setPayoutMethod] = useState("upi");
+  const [upiId, setUpiId] = useState("");
+  const [bankAccountNo, setBankAccountNo] = useState("");
+  const [bankIfsc, setBankIfsc] = useState("");
   const [bankHolderName, setBankHolderName] = useState("");
-  const [payoutSaving,   setPayoutSaving]   = useState(false);
-  const [payoutSaved,    setPayoutSaved]    = useState(false);
-  const [payoutError,    setPayoutError]    = useState("");
+  const [payoutSaving, setPayoutSaving] = useState(false);
+  const [payoutSaved, setPayoutSaved] = useState(false);
+  const [payoutError, setPayoutError] = useState("");
 
   // Sync account ref changes
   const [prevAccount, setPrevAccount] = useState(account);
   if (account !== prevAccount) {
     setPrevAccount(account);
-    setWebhookUrl(account?.metadata?.webhook_url     || "");
+    setWebhookUrl(account?.metadata?.webhook_url || "");
     setWebhookEnabled(account?.metadata?.webhook_enabled || false);
     setTestWebhookResult(null);
     setTestWebhookMessage("");
@@ -96,13 +97,13 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
           } else {
             try {
               const p = JSON.parse(data.payout_address);
-              if (p.accountNo)  setBankAccountNo(p.accountNo);
-              if (p.ifsc)       setBankIfsc(p.ifsc);
+              if (p.accountNo) setBankAccountNo(p.accountNo);
+              if (p.ifsc) setBankIfsc(p.ifsc);
               if (p.holderName) setBankHolderName(p.holderName);
             } catch { setBankAccountNo(data.payout_address); }
           }
         }
-      } catch (e) { console.error("Failed to load payout details:", e); }
+      } catch (e) { logger.error("SettingsDashboard: Failed to load payout details:", e); }
     }
     loadPayout();
   }, []);
@@ -115,7 +116,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
     try {
       await inviteMember(selectedWorkspace.id, inviteEmail.trim(), inviteRole);
       setInviteEmail(""); setInviteRole("viewer");
-    } catch (err) { console.error(err); }
+    } catch (err) { logger.error("SettingsDashboard: handleInviteSubmit error:", err); }
     finally { setIsInviting(false); }
   };
 
@@ -123,7 +124,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
     setIsSaved(true);
     try {
       await updateSelectedAccount({ metadata: { ...(account?.metadata || {}), webhook_url: url, webhook_enabled: enabled } });
-    } catch (e) { console.error(e); }
+    } catch (e) { logger.error("SettingsDashboard: handleSave error:", e); }
     if (typeof window !== "undefined") {
       localStorage.setItem("settings_saved", "true");
       window.dispatchEvent(new Event("settings_saved_updated"));
@@ -141,7 +142,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
     if (!webhookUrl.trim()) { setTestWebhookResult("error"); setTestWebhookMessage("Please enter a webhook URL first."); return; }
     setIsTestingWebhook(true); setTestWebhookResult(null); setTestWebhookMessage("");
     try {
-      const res  = await fetch("/api/webhooks/test", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ webhookUrl: webhookUrl.trim() }) });
+      const res = await fetch("/api/webhooks/test", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ webhookUrl: webhookUrl.trim() }) });
       const data = await res.json();
       if (res.ok && data.success) { setTestWebhookResult("success"); setTestWebhookMessage("Connection test successful! A test payload was sent."); }
       else { setTestWebhookResult("error"); setTestWebhookMessage(data.error || "Failed to deliver payload. Check your URL."); }
@@ -170,10 +171,10 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
 
       setPayoutSaved(true);
       setTimeout(() => setPayoutSaved(false), 3000);
-    } catch (err) { 
-      setPayoutError(err.message || "Failed to save."); 
-    } finally { 
-      setPayoutSaving(false); 
+    } catch (err) {
+      setPayoutError(err.message || "Failed to save.");
+    } finally {
+      setPayoutSaving(false);
     }
   };
 
@@ -261,11 +262,10 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
         <div className="flex gap-2">
           {[{ id: "upi", label: "UPI" }, { id: "bank_transfer", label: "Bank Transfer" }].map((m) => (
             <button key={m.id} type="button" onClick={() => setPayoutMethod(m.id)}
-              className={`flex-1 py-2 text-xs font-semibold rounded-xl border transition-all ${
-                payoutMethod === m.id
+              className={`flex-1 py-2 text-xs font-semibold rounded-xl border transition-all ${payoutMethod === m.id
                   ? "bg-indigo-50 border-indigo-300 text-indigo-700"
                   : "bg-zinc-50 border-zinc-200 text-zinc-500 hover:border-zinc-300"
-              }`}>
+                }`}>
               {m.label}
             </button>
           ))}
@@ -319,8 +319,8 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
       </div>
       <div className="space-y-2 max-w-md">
         {[
-          { label: "Contact Alerts",  desc: "Get notified when a new lead submits a form", state: emailAlerts,  toggle: () => setEmailAlerts(!emailAlerts)   },
-          { label: "Weekly Summary",  desc: "Growth & reply performance report every Monday", state: weeklyReport, toggle: () => setWeeklyReport(!weeklyReport) },
+          { label: "Contact Alerts", desc: "Get notified when a new lead submits a form", state: emailAlerts, toggle: () => setEmailAlerts(!emailAlerts) },
+          { label: "Weekly Summary", desc: "Growth & reply performance report every Monday", state: weeklyReport, toggle: () => setWeeklyReport(!weeklyReport) },
         ].map((item) => (
           <div key={item.label} className="flex items-center justify-between p-3 bg-zinc-50 border border-zinc-100 rounded-xl">
             <div>
@@ -403,9 +403,8 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
                     </select>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-md border ${
-                      member.status === "active" ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-amber-50 text-amber-700 border-amber-100"
-                    }`}>
+                    <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-md border ${member.status === "active" ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-amber-50 text-amber-700 border-amber-100"
+                      }`}>
                       <span className={`w-1.5 h-1.5 rounded-full ${member.status === "active" ? "bg-emerald-500" : "bg-amber-500 animate-pulse"}`} />
                       {member.status}
                     </span>
@@ -433,9 +432,8 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
           <p className="text-xs text-zinc-400 mt-0.5">Send lead event payloads to Zapier, Make, or your custom endpoint in real-time.</p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-md border ${
-            webhookEnabled ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-zinc-50 text-zinc-500 border-zinc-200"
-          }`}>
+          <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-md border ${webhookEnabled ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-zinc-50 text-zinc-500 border-zinc-200"
+            }`}>
             <span className={`w-1.5 h-1.5 rounded-full ${webhookEnabled ? "bg-emerald-500" : "bg-zinc-400"}`} />
             {webhookEnabled ? "Active" : "Disabled"}
           </span>
@@ -457,9 +455,8 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
       </div>
 
       {testWebhookResult && (
-        <div className={`p-3 rounded-xl border flex items-start gap-2 text-xs font-semibold max-w-xl animate-in slide-in-from-top-1 duration-300 ${
-          testWebhookResult === "success" ? "bg-emerald-50 border-emerald-100 text-emerald-800" : "bg-rose-50 border-rose-100 text-rose-800"
-        }`}>
+        <div className={`p-3 rounded-xl border flex items-start gap-2 text-xs font-semibold max-w-xl animate-in slide-in-from-top-1 duration-300 ${testWebhookResult === "success" ? "bg-emerald-50 border-emerald-100 text-emerald-800" : "bg-rose-50 border-rose-100 text-rose-800"
+          }`}>
           {testWebhookResult === "success" ? <CheckCircle2 size={14} className="text-emerald-600 shrink-0 mt-0.5" /> : <AlertCircle size={14} className="text-rose-600 shrink-0 mt-0.5" />}
           {testWebhookMessage}
         </div>
@@ -468,11 +465,11 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   );
 
   const sections = {
-    account:       renderAccount(),
-    payout:        renderPayout(),
+    account: renderAccount(),
+    payout: renderPayout(),
     notifications: renderNotifications(),
-    team:          renderTeam(),
-    integrations:  renderIntegrations(),
+    team: renderTeam(),
+    integrations: renderIntegrations(),
   };
 
   return (
@@ -482,9 +479,8 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
       <div className="flex sm:hidden gap-1 overflow-x-auto no-scrollbar pb-3 mb-4 border-b border-zinc-100">
         {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
           <button key={id} onClick={() => setActiveSection(id)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all shrink-0 ${
-              activeSection === id ? "bg-[#6366F1] text-white shadow-sm" : "bg-zinc-100 text-zinc-500 hover:text-zinc-900"
-            }`}>
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all shrink-0 ${activeSection === id ? "bg-[#6366F1] text-white shadow-sm" : "bg-zinc-100 text-zinc-500 hover:text-zinc-900"
+              }`}>
             <Icon size={12} /> {label}
           </button>
         ))}
@@ -502,11 +498,10 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
                 <li key={id}>
                   <button
                     onClick={() => setActiveSection(id)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all text-left ${
-                      active
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all text-left ${active
                         ? "bg-indigo-50 text-[#6366F1] font-semibold"
                         : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 font-medium"
-                    }`}
+                      }`}
                   >
                     <Icon size={14} className={active ? "text-[#6366F1]" : "text-zinc-400"} />
                     {label}

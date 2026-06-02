@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { Bell, CheckCircle2, MessageSquare, ShieldAlert, Sparkles, Check, HelpCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase";
+import * as logger from "@/lib/logger";
 
 export default function NotificationDropdown({ accounts = [] }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -75,7 +76,7 @@ export default function NotificationDropdown({ accounts = [] }) {
         .limit(10);
 
       if (error) {
-        console.error("Error fetching notifications from history:", error);
+        logger.error("NotificationDropdown: Error fetching notifications from history:", error);
         return;
       }
 
@@ -162,7 +163,7 @@ export default function NotificationDropdown({ accounts = [] }) {
         .in("automation_id", accountIds)
         .eq("is_read", false);
     } catch (e) {
-      console.error("Failed to mark notifications as read in DB:", e);
+      logger.warn("NotificationDropdown: Failed to mark notifications as read in DB:", e);
     }
   };
 
@@ -176,7 +177,7 @@ export default function NotificationDropdown({ accounts = [] }) {
         .update({ is_read: !currentRead })
         .eq("id", id);
     } catch (e) {
-      console.error("Failed to update notification read state in DB:", e);
+      logger.warn("NotificationDropdown: Failed to update notification read state in DB:", e);
     }
   };
 
@@ -212,7 +213,7 @@ export default function NotificationDropdown({ accounts = [] }) {
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <button 
+      <button
         onClick={() => setIsOpen(!isOpen)}
         className="p-2 text-zinc-600 hover:text-zinc-950 transition-all relative shrink-0"
       >
@@ -224,7 +225,7 @@ export default function NotificationDropdown({ accounts = [] }) {
 
       {isOpen && (
         <div className="fixed sm:absolute left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0 right-auto sm:right-0 top-[64px] sm:top-auto sm:mt-3 w-[calc(100vw-32px)] sm:w-[360px] bg-white border border-zinc-200 rounded-2xl shadow-2xl py-3 z-[999] animate-in fade-in zoom-in-95 duration-200">
-          
+
           <div className="px-5 py-3 border-b border-zinc-200/50 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <h4 className="text-base font-semibold text-zinc-900 tracking-tight">Notifications</h4>
@@ -235,7 +236,7 @@ export default function NotificationDropdown({ accounts = [] }) {
               )}
             </div>
             {unreadCount > 0 && (
-              <button 
+              <button
                 onClick={markAllAsRead}
                 className="text-xs font-semibold text-[#6366F1] hover:underline flex items-center gap-1"
               >
@@ -254,9 +255,8 @@ export default function NotificationDropdown({ accounts = [] }) {
                 <div
                   key={notif.id}
                   onClick={() => toggleReadStatus(notif.id, notif.read)}
-                  className={`w-full flex items-start gap-4 p-4 rounded-2xl transition-all cursor-pointer border shadow-sm ${
-                    notif.read ? "bg-zinc-50/50 hover:bg-zinc-50 border-transparent text-zinc-600" : "bg-white border-[#6366F1]/30 hover:border-[#6366F1]"
-                  }`}
+                  className={`w-full flex items-start gap-4 p-4 rounded-2xl transition-all cursor-pointer border shadow-sm ${notif.read ? "bg-zinc-50/50 hover:bg-zinc-50 border-transparent text-zinc-600" : "bg-white border-[#6366F1]/30 hover:border-[#6366F1]"
+                    }`}
                 >
                   <div className={`p-2.5 rounded-xl shrink-0 shadow-sm ${getIconBg(notif.type)}`}>
                     {getIcon(notif.type)}
