@@ -45,6 +45,7 @@ import StoreManager from "@/components/dashboard/StoreManager";
 import SubscriptionModal from "@/components/dashboard/SubscriptionModal";
 import { CampaignBuilderWorkspace, TriggerInputModal, TriggerList } from "@/components/dashboard/TriggerManager";
 import Loader from "@/components/ui/Loader";
+import SystemBroadcast from "@/components/dashboard/SystemBroadcast";
 
 
 // Context
@@ -504,6 +505,7 @@ export default function Dashboard() {
 
   return (
     <div className="h-screen flex flex-col bg-[#F5F5F7] relative overflow-hidden selection:bg-[#6366F1]/10 selection:text-[#6366F1]">
+      <SystemBroadcast />
       <DashboardNavbar
         isScrolled={isScrolled}
         onHelpClick={() => setIsHelpOpen(true)}

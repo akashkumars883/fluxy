@@ -4,18 +4,6 @@ import Razorpay from "razorpay";
 
 export const dynamic = "force-dynamic";
 
-// Price definitions in INR (Razorpay standard)
-const PLAN_PRICES = {
-  creator_pro: {
-    monthly: 899,
-    annual: 8630 // Billed annually (approx 20% off of 899 * 12)
-  },
-  viral_scale: {
-    monthly: 1999,
-    annual: 19190 // Billed annually (approx 20% off of 1999 * 12)
-  }
-};
-
 export async function POST(req) {
   try {
     const body = await req.json().catch(() => ({}));
@@ -23,8 +11,8 @@ export async function POST(req) {
     const reqUrl = new URL(req.url);
     const isDevHost = ["localhost", "127.0.0.1"].includes(reqUrl.hostname);
 
-    if (!planId || !PLAN_PRICES[planId]) {
-      return NextResponse.json({ error: "Invalid or missing planId" }, { status: 400 });
+    if (!planId) {
+      return NextResponse.json({ error: "Missing planId" }, { status: 400 });
     }
 
     // 1. Authenticate user
@@ -47,9 +35,20 @@ export async function POST(req) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // 2. Determine base price
-    const pricing = PLAN_PRICES[planId];
-    let basePrice = isAnnual ? pricing.annual : pricing.monthly;
+    // 2. Fetch Base Price from DB
+    const supabaseAdmin = createAdminClient();
+    const { data: planData, error: planError } = await supabaseAdmin
+      .from("pricing_plans")
+      .select("*")
+      .eq("plan_id", planId)
+      .eq("is_active", true)
+      .single();
+
+    if (planError || !planData) {
+      return NextResponse.json({ error: "Invalid or inactive planId" }, { status: 400 });
+    }
+
+    let basePrice = isAnnual ? planData.price_inr_annual : planData.price_inr_monthly;
     let discountPercent = 0;
     let partnerId = null;
 
@@ -63,7 +62,6 @@ export async function POST(req) {
       } else {
         // Query Supabase for dynamic promo codes
         try {
-          const supabaseAdmin = createAdminClient();
           const { data: promoData, error: promoError } = await supabaseAdmin
             .from("promo_codes")
             .select("*, partner_id, clicks_count")
@@ -97,7 +95,6 @@ export async function POST(req) {
           : cleanRef;
         const isUuid =
           /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(partnerIdCandidate);
-        const supabaseAdmin = createAdminClient();
         let query = supabaseAdmin
           .from("partner_profiles")
           .select("id")

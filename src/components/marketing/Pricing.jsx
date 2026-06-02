@@ -30,7 +30,7 @@ export default function Pricing({ isModal = false } = {}) {
     }
   }, []);
 
-  const tiers = [
+  const [tiers, setTiers] = useState([
     {
       name: "Free Plan",
       price_inr: "0",
@@ -91,7 +91,38 @@ export default function Pricing({ isModal = false } = {}) {
       button: "Go Viral Scale",
       popular: false
     }
-  ];
+  ]);
+
+  useEffect(() => {
+    async function fetchPricing() {
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from("pricing_plans")
+          .select("*")
+          .eq("is_active", true)
+          .order("display_order", { ascending: true });
+        
+        if (data && !error && data.length > 0) {
+          const formattedTiers = data.map(plan => ({
+            name: plan.name,
+            price_inr: plan.price_inr_monthly.toLocaleString('en-IN'),
+            price_usd: plan.price_usd_monthly.toString(),
+            raw_inr: plan.price_inr_monthly,
+            raw_usd: plan.price_usd_monthly,
+            desc: plan.description,
+            features: typeof plan.features === 'string' ? JSON.parse(plan.features) : (plan.features || []),
+            button: plan.plan_id === "free" ? "Start Free" : `Get ${plan.name}`,
+            popular: plan.is_popular
+          }));
+          setTiers(formattedTiers);
+        }
+      } catch (err) {
+        console.error("Failed to load dynamic pricing", err);
+      }
+    }
+    fetchPricing();
+  }, []);
 
   const handleApplyPromo = async (e) => {
     e.preventDefault();
