@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase';
+import { createClient, createAdminClient } from '@/lib/supabase';
 import { MetaService } from '@/lib/meta';
 import { encryptToken } from '@/lib/security';
 import { cookies } from "next/headers";
@@ -27,10 +27,22 @@ export async function GET(request) {
     console.warn("Auth check failed, checking for local dev bypass:", e.message);
   }
 
+  const supabaseAdmin = createAdminClient();
+
   // Local development bypass if not logged in to Supabase
   if (!user) {
     if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-      user = { id: 'dev-bypass' };
+      try {
+        const { data: authData } = await supabaseAdmin.auth.admin.listUsers();
+        if (authData?.users?.length > 0) {
+          user = authData.users[0];
+        } else {
+          user = { id: '5de676f1-ea54-414f-93fd-cb7cdd678cc6' }; // Fallback valid UUID
+        }
+      } catch (e) {
+        console.warn("Could not list users for bypass, using fallback UUID:", e.message);
+        user = { id: '5de676f1-ea54-414f-93fd-cb7cdd678cc6' }; // Fallback valid UUID
+      }
     } else {
       return NextResponse.redirect(`${origin}/login`);
     }
@@ -92,7 +104,7 @@ export async function GET(request) {
 
     const encryptedToken = encryptToken(userToken);
 
-    const { data: savedAutomation, error: upsertError } = await supabase
+    const { data: savedAutomation, error: upsertError } = await supabaseAdmin
       .from('automations')
       .upsert({
         user_id: user.id,

@@ -27,49 +27,21 @@ export function normalizeBlogPost(post) {
 }
 
 export async function fetchPublishedBlogs(supabase) {
-  const primary = await supabase
-    .from("blog_posts")
-    .select("*")
-    .eq("status", "published")
-    .order("published_at", { ascending: false, nullsFirst: false });
-
-  if (!primary.error) {
-    return (primary.data || []).map(normalizeBlogPost);
-  }
-
-  const fallback = await supabase
+  const { data, error } = await supabase
     .from("blogs")
     .select("*")
     .order("created_at", { ascending: false });
 
-  if (fallback.error) throw fallback.error;
-  return (fallback.data || []).map(normalizeBlogPost);
+  if (error) throw error;
+  return (data || []).map(normalizeBlogPost);
 }
 
 export async function fetchBlogBySlug(supabase, slug) {
-  const bySlug = await supabase
-    .from("blog_posts")
-    .select("*")
-    .eq("slug", slug)
-    .eq("status", "published")
-    .maybeSingle();
-
+  const bySlug = await supabase.from("blogs").select("*").eq("slug", slug).maybeSingle();
   if (!bySlug.error && bySlug.data) return normalizeBlogPost(bySlug.data);
 
-  const byId = await supabase
-    .from("blog_posts")
-    .select("*")
-    .eq("id", slug)
-    .eq("status", "published")
-    .maybeSingle();
-
+  const byId = await supabase.from("blogs").select("*").eq("id", slug).maybeSingle();
   if (!byId.error && byId.data) return normalizeBlogPost(byId.data);
-
-  const legacyBySlug = await supabase.from("blogs").select("*").eq("slug", slug).maybeSingle();
-  if (!legacyBySlug.error && legacyBySlug.data) return normalizeBlogPost(legacyBySlug.data);
-
-  const legacyById = await supabase.from("blogs").select("*").eq("id", slug).maybeSingle();
-  if (!legacyById.error && legacyById.data) return normalizeBlogPost(legacyById.data);
 
   return null;
 }

@@ -554,7 +554,7 @@ export default function Dashboard() {
           {selectedAccount ? (
             <div className="flex flex-col flex-1 min-h-0 space-y-4 overflow-hidden">
               {/* === COMPACT PAGE HEADER === */}
-              <div className="flex items-center justify-between gap-4 pb-4 border-b border-zinc-200/60 shrink-0">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-200/60 shrink-0">
 
                 {/* Left: Title + inline account badge */}
                 <div className="flex items-center gap-3 min-w-0">
@@ -594,7 +594,7 @@ export default function Dashboard() {
                 </div>
  
                 {/* Right: Contextual Actions */}
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex flex-wrap items-center gap-2 shrink-0">
                   {(activeTab === "audience" || activeTab === "crm") && (
                     <button
                       onClick={() => window.dispatchEvent(new Event("export_audience_csv"))}

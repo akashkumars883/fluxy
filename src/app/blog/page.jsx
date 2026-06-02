@@ -52,9 +52,20 @@ export default function BlogPage() {
     fetchBlogs();
   }, []);
 
+  // Featured post (from all posts, or fallback to first)
+  const featuredPost = useMemo(() => {
+    return blogPosts.find(post => post.isFeatured) || blogPosts[0];
+  }, [blogPosts]);
+
   // Filter blog posts based on category and search query
   const filteredPosts = useMemo(() => {
+    const isFeaturedShownAtTop = selectedCategory === "All" && searchQuery === "";
     return blogPosts.filter(post => {
+      // Exclude featured post from the grid if it's shown at the top
+      if (isFeaturedShownAtTop && featuredPost && post.id === featuredPost.id) {
+        return false;
+      }
+
       const matchesCategory = selectedCategory === "All" || post.category === selectedCategory;
       const matchesSearch = searchQuery === "" || 
         post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -62,13 +73,11 @@ export default function BlogPage() {
         post.category.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [selectedCategory, searchQuery, blogPosts]);
+  }, [selectedCategory, searchQuery, blogPosts, featuredPost]);
 
   // Pagination states and calculations
   const [currentPage, setCurrentPage] = useState(1);
   const POSTS_PER_PAGE = 10;
-
-
 
   // Calculate total pages
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
@@ -78,11 +87,6 @@ export default function BlogPage() {
     const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
     return filteredPosts.slice(startIndex, startIndex + POSTS_PER_PAGE);
   }, [filteredPosts, currentPage]);
-
-  // Featured post (from all posts, or fallback to first)
-  const featuredPost = useMemo(() => {
-    return blogPosts.find(post => post.isFeatured) || blogPosts[0];
-  }, [blogPosts]);
 
   const handleSubscribe = (e) => {
     e.preventDefault();

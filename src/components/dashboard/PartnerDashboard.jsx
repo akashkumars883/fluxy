@@ -377,7 +377,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
                     <p className="text-xs text-zinc-500 mt-0.5">Create unique codes to share with your audience.</p>
                   </div>
 
-                  <form onSubmit={handleGenerateCode} className="flex gap-2 mb-4">
+                  <form onSubmit={handleGenerateCode} className="flex flex-col sm:flex-row gap-2 mb-4">
                     <div className="relative flex-1">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-sm">#</span>
                       <input
@@ -392,7 +392,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
                     <select
                       value={newSplit}
                       onChange={(e) => setNewSplit(e.target.value)}
-                      className="w-24 sm:w-auto px-2 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-xs sm:text-sm text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white transition-colors appearance-none"
+                      className="w-full sm:w-auto px-2 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-xs sm:text-sm text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white transition-colors appearance-none"
                     >
                       <option value="10_20">10% Off / 20% Comm.</option>
                       <option value="15_15">15% Off / 15% Comm.</option>
