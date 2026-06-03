@@ -38,6 +38,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: new URL("https://automixa.in"),
+    alternates: {
+      canonical: "/",
+    },
     title: {
       default: siteTitle,
       template: "%s | Automixa"
