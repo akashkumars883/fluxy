@@ -39,7 +39,6 @@ import MobileSidebar from "@/components/dashboard/MobileSidebar";
 import MobileBottomNav from "@/components/dashboard/MobileBottomNav";
 import OnboardingModal from "@/components/dashboard/OnboardingModal";
 import PartnerDashboard from "@/components/dashboard/PartnerDashboard";
-import PwaInstallBanner from "@/components/dashboard/PwaInstallBanner";
 import SettingsDashboard from "@/components/dashboard/SettingsDashboard";
 import SmartBio from "@/components/dashboard/SmartBio";
 import StoreManager from "@/components/dashboard/StoreManager";
@@ -1090,8 +1089,6 @@ export default function Dashboard() {
             )}
           </main>
         </div>
-
-        <PwaInstallBanner />
 
         {/* Modals and HelpSlider */}
         <HelpSlider isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
