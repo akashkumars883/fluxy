@@ -1,7 +1,7 @@
 "use client";
 
 import { useDashboard } from "@/context/DashboardContext";
-import { Home, Zap, Users, Menu } from "lucide-react";
+import { Home, Zap, Users, Settings, Menu } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function MobileBottomNav({ onMenuClick }) {
@@ -11,6 +11,7 @@ export default function MobileBottomNav({ onMenuClick }) {
     { id: "home", label: "Overview", icon: Home },
     { id: "automations", label: "Automations", icon: Zap },
     { id: 'audience', label: 'Audience', icon: Users, isSpecial: false },
+    { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
   return (
