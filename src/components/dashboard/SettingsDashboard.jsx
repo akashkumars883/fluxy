@@ -35,7 +35,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
 
   // Quota
   const usedQuota = (realtimeStats?.totalDms || 0) + (realtimeStats?.autoReplies || 0);
-  const maxQuota = currentPlan === "viral_scale" ? 2000000 : currentPlan === "creator_pro" ? 250000 : 25000;
+  const maxQuota = currentPlan === "viral_scale" ? 50000 : currentPlan === "creator_pro" ? 15000 : 1000;
   const quotaPercent = Math.min((usedQuota / maxQuota) * 100, 100);
 
   // Notification toggles
