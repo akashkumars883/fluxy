@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { Plus, Package, Link2, DollarSign, Download, Image as ImageIcon, Trash2, Edit2, ShoppingBag } from "lucide-react";
+import { Plus, Package, Link2, DollarSign, Download, Image as ImageIcon, Trash2, Edit2, ShoppingBag, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
 import * as logger from "@/lib/logger";
 
@@ -94,10 +94,38 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
 
   return (
     <div className="w-full space-y-4 animate-in fade-in duration-500">
+      {/* Premium Upgrade Banner Card (Visible for Free & Pro users) */}
+      {currentPlan !== 'viral_scale' && (
+        <div className="bg-gradient-to-r from-[#6366F1] to-indigo-700 text-white rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md relative overflow-hidden animate-in fade-in">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none" />
+          <div className="flex items-start sm:items-center gap-3.5 relative z-10">
+            <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white shrink-0 shadow-inner">
+              <Sparkles size={16} />
+            </div>
+            <div>
+              <h4 className="text-xs sm:text-sm font-bold tracking-tight mb-0.5">
+                {currentPlan === 'free' ? "Scale Your Automations with Creator Pro ⚡" : "Upgrade to Viral Scale Plan 🚀"}
+              </h4>
+              <p className="text-[11px] text-indigo-100 font-medium leading-normal max-w-xl">
+                {currentPlan === 'free' 
+                  ? "Get unlimited automated replies, unlock the Mini Digital Store to sell directly inside DMs, and build premium Link-in-Bio landing pages."
+                  : "Get up to 50,000 monthly automated replies, advanced CRM tracking, and full agency multi-workspace collaboration features."
+                }
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => onUpgradeClick?.(currentPlan === 'free' ? "creator_pro" : "viral_scale")}
+            className="shrink-0 w-full sm:w-auto px-5 py-2 bg-white hover:bg-zinc-50 text-indigo-700 text-[11px] font-bold rounded-xl shadow-md transition-all active:scale-[0.98] cursor-pointer"
+          >
+            Upgrade Plan
+          </button>
+        </div>
+      )}
 
       {/* Header Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-        <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 shadow-sm flex items-center justify-between">
+        <div className="bg-white rounded-xl p-4 sm:p-5 flex items-center justify-between shadow-md shadow-zinc-200/10 border border-zinc-200/80 hover:shadow-lg transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
           <div>
             <p className="text-xs font-semibold text-zinc-500">Total Revenue</p>
             <p className="text-2xl font-bold text-zinc-900 mt-1">₹0</p>
@@ -106,7 +134,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
             <DollarSign size={20} />
           </div>
         </div>
-        <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 shadow-sm flex items-center justify-between">
+        <div className="bg-white rounded-xl p-4 sm:p-5 flex items-center justify-between shadow-md shadow-zinc-200/10 border border-zinc-200/80 hover:shadow-lg transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
           <div>
             <p className="text-xs font-semibold text-zinc-500">Sales</p>
             <p className="text-2xl font-bold text-zinc-900 mt-1">0</p>
@@ -115,7 +143,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
             <ShoppingBag size={20} />
           </div>
         </div>
-        <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 shadow-sm flex items-center justify-between">
+        <div className="bg-white rounded-xl p-4 sm:p-5 flex items-center justify-between shadow-md shadow-zinc-200/10 border border-zinc-200/80 hover:shadow-lg transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
           <div>
             <p className="text-xs font-semibold text-zinc-500">Active Products</p>
             <p className="text-2xl font-bold text-zinc-900 mt-1">{products.length}</p>
@@ -127,7 +155,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
       </div>
 
       {/* Main Content Area */}
-      <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 shadow-sm space-y-3 sm:space-y-4">
+      <div className="bg-white border border-zinc-200/80 rounded-xl p-4 sm:p-5 shadow-md shadow-zinc-200/5 hover:shadow-lg transition-all duration-500 space-y-3 sm:space-y-4">
         <div className="flex items-center justify-between pb-4 border-b border-zinc-100">
           <div>
             <h3 className="text-lg font-bold text-zinc-900">Your Products</h3>
@@ -158,7 +186,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {products.map(product => (
-              <div key={product.id} className="border border-zinc-200/80 rounded-[20px] sm:rounded-2xl p-3 sm:p-4 flex flex-col hover:border-indigo-200 transition-colors bg-zinc-50/30">
+              <div key={product.id} className="border border-zinc-200/80 rounded-xl p-3 sm:p-4 flex flex-col hover:border-indigo-200 hover:shadow-md transition-all bg-zinc-50/30">
                 <div className="w-full aspect-video bg-zinc-100 rounded-xl mb-3 flex items-center justify-center overflow-hidden border border-zinc-200/50">
                   {product.cover_image ? (
                     <img src={product.cover_image} alt={product.name} className="w-full h-full object-cover" />
@@ -182,10 +210,10 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
                         navigator.clipboard.writeText(`${window.location.origin}/pay/${product.id}`);
                         toast.success("Checkout link copied!");
                       }}
-                      className="p-1.5 text-zinc-400 hover:text-indigo-600 bg-white border border-zinc-200 hover:border-indigo-200 rounded-lg transition-colors" title="Copy Checkout Link">
+                      className="p-1.5 text-zinc-400 hover:text-indigo-600 bg-white border border-zinc-200 hover:border-indigo-200 rounded-xl transition-colors" title="Copy Checkout Link">
                       <Link2 size={13} />
                     </button>
-                    <button className="p-1.5 text-zinc-400 hover:text-zinc-900 bg-white border border-zinc-200 hover:border-zinc-300 rounded-lg transition-colors" title="Edit">
+                    <button className="p-1.5 text-zinc-400 hover:text-zinc-900 bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl transition-colors" title="Edit">
                       <Edit2 size={13} />
                     </button>
                   </div>
@@ -242,7 +270,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
                   <div className="space-y-1.5 p-4 bg-zinc-50 border border-zinc-200 rounded-xl">
                     <label className="text-xs font-bold text-zinc-700 flex items-center gap-1.5"><Download size={14} /> Downloadable File URL</label>
                     <p className="text-[10px] text-zinc-500 mb-2 leading-relaxed">Enter the direct link to your PDF, Course, or Zip file. This will be automatically sent to the buyer after successful payment.</p>
-                    <input type="url" required value={fileUrl} onChange={e => setFileUrl(e.target.value)} placeholder="https://drive.google.com/..." className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-sm outline-none focus:border-[#6366F1] transition-colors" />
+                    <input type="url" required value={fileUrl} onChange={e => setFileUrl(e.target.value)} placeholder="https://drive.google.com/..." className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-xl text-sm outline-none focus:border-[#6366F1] transition-colors" />
                   </div>
                 )}
               </form>

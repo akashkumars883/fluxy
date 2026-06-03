@@ -4,7 +4,7 @@ import { useDashboard } from "@/context/DashboardContext";
 import { createClient } from "@/lib/supabase";
 import {
   AlertCircle, Bell, Check, CheckCircle2, Globe, Loader2,
-  LogOut, RefreshCcw, UserCheck, UserPlus, Users, Wallet, Zap
+  LogOut, RefreshCcw, UserCheck, UserPlus, Users, Wallet, Zap, Sparkles
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import * as logger from "@/lib/logger";
@@ -189,7 +189,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   const renderAccount = () => (
     <div className="space-y-4">
       {/* Connected account */}
-      <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-2xl p-3 sm:p-4 shadow-sm space-y-2 sm:space-y-3">
+      <div className="bg-white border border-zinc-200/80 rounded-xl p-4 sm:p-5 shadow-md shadow-zinc-200/5 space-y-2 sm:space-y-3">
         <h4 className="text-sm font-semibold text-zinc-900">Connected Instagram account</h4>
         <div className="flex items-center gap-3 p-3 bg-zinc-50 rounded-xl border border-zinc-100">
           <img
@@ -224,7 +224,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
       </div>
 
       {/* API Quota */}
-      <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-2xl p-3 sm:p-4 shadow-sm space-y-2 sm:space-y-3">
+      <div className="bg-white border border-zinc-200/80 rounded-xl p-4 sm:p-5 shadow-md shadow-zinc-200/5 space-y-2 sm:space-y-3">
         <div className="flex items-center justify-between">
           <h4 className="text-sm font-semibold text-zinc-900">API quota usage</h4>
           <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-full text-[10px] font-bold">
@@ -251,7 +251,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   );
 
   const renderPayout = () => (
-    <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-2xl p-3 sm:p-4 shadow-sm space-y-3 sm:space-y-4">
+    <div className="bg-white border border-zinc-200/80 rounded-xl p-4 sm:p-5 shadow-md shadow-zinc-200/5 space-y-3 sm:space-y-4">
       <div>
         <h4 className="text-sm font-semibold text-zinc-900">Payout details</h4>
         <p className="text-xs text-zinc-400 mt-0.5">Your Mini Store sales and Partner Program commissions will be sent to this account.</p>
@@ -312,7 +312,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   );
 
   const renderNotifications = () => (
-    <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-2xl p-3 sm:p-4 shadow-sm space-y-2 sm:space-y-3">
+    <div className="bg-white border border-zinc-200/80 rounded-xl p-4 sm:p-5 shadow-md shadow-zinc-200/5 space-y-2 sm:space-y-3">
       <div>
         <h4 className="text-sm font-semibold text-zinc-900">Email notifications</h4>
         <p className="text-xs text-zinc-400 mt-0.5">Choose what updates you want to receive by email.</p>
@@ -335,7 +335,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   );
 
   const renderTeam = () => (
-    <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-2xl p-3 sm:p-4 shadow-sm space-y-3 sm:space-y-4">
+    <div className="bg-white border border-zinc-200/80 rounded-xl p-4 sm:p-5 shadow-md shadow-zinc-200/5 space-y-3 sm:space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-100">
         <div>
           <h4 className="text-sm font-semibold text-zinc-900">Team & Collaboration</h4>
@@ -425,7 +425,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   );
 
   const renderIntegrations = () => (
-    <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-2xl p-3 sm:p-4 shadow-sm space-y-3 sm:space-y-4">
+    <div className="bg-white border border-zinc-200/80 rounded-xl p-4 sm:p-5 shadow-md shadow-zinc-200/5 space-y-3 sm:space-y-4">
       <div className="flex items-center justify-between pb-3 border-b border-zinc-100">
         <div>
           <h4 className="text-sm font-semibold text-zinc-900">Outbound Webhooks</h4>
@@ -474,6 +474,35 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
 
   return (
     <div className="w-full animate-in fade-in duration-500">
+
+      {/* Premium Upgrade Banner Card (Visible for Free & Pro users) */}
+      {currentPlan !== 'viral_scale' && (
+        <div className="bg-gradient-to-r from-[#6366F1] to-indigo-700 text-white rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md relative overflow-hidden animate-in fade-in mb-5">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none" />
+          <div className="flex items-start sm:items-center gap-3.5 relative z-10">
+            <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white shrink-0 shadow-inner">
+              <Sparkles size={16} />
+            </div>
+            <div>
+              <h4 className="text-xs sm:text-sm font-bold tracking-tight mb-0.5">
+                {currentPlan === 'free' ? "Scale Your Automations with Creator Pro ⚡" : "Upgrade to Viral Scale Plan 🚀"}
+              </h4>
+              <p className="text-[11px] text-indigo-100 font-medium leading-normal max-w-xl">
+                {currentPlan === 'free' 
+                  ? "Get unlimited automated replies, unlock the Mini Digital Store to sell directly inside DMs, and build premium Link-in-Bio landing pages."
+                  : "Get up to 50,000 monthly automated replies, advanced CRM tracking, and full agency multi-workspace collaboration features."
+                }
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => onSubscriptionClick?.()}
+            className="shrink-0 w-full sm:w-auto px-5 py-2 bg-white hover:bg-zinc-50 text-indigo-700 text-[11px] font-bold rounded-xl shadow-md transition-all active:scale-[0.98] cursor-pointer"
+          >
+            Upgrade Plan
+          </button>
+        </div>
+      )}
 
       {/* Mobile: horizontal scroll tabs */}
       <div className="flex sm:hidden gap-1 overflow-x-auto no-scrollbar pb-3 mb-4 border-b border-zinc-100">

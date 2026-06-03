@@ -76,7 +76,7 @@ export default function MobileSidebar({
                       />
                       <div className="text-left overflow-hidden">
                         <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest leading-none mb-1">Active Account</p>
-                        <span className="text-sm font-semibold text-zinc-800 truncate block">
+                        <span className="text-sm font-medium text-zinc-800 truncate block">
                           @{selectedAccount.ig_username || selectedAccount.name || selectedAccount.page_name || 'automixa_user'}
                         </span>
                       </div>
@@ -102,7 +102,7 @@ export default function MobileSidebar({
                                 setIsSwitchAccountOpen(false);
                                 onClose();
                               }}
-                              className={`w-full flex items-center justify-between p-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                              className={`w-full flex items-center justify-between p-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                                 selectedAccount.id === acc.id ? "bg-[#6366F1]/10 text-[#6366F1]" : "hover:bg-zinc-50/80 text-zinc-700"
                               }`}
                             >
@@ -127,7 +127,7 @@ export default function MobileSidebar({
                             }}
                             className="w-full flex items-center gap-2 p-2 hover:bg-zinc-50 rounded-xl text-xs font-bold text-zinc-800 transition-all cursor-pointer"
                           >
-                            <Plus size={14} className="text-[#6366F1]" /> <span>Connect Account</span>
+                            <Plus size={14} className="text-[#6366F1]" /> <span>Connect Instagram</span>
                           </button>
                         </div>
                       </motion.div>
@@ -139,7 +139,7 @@ export default function MobileSidebar({
 
             {/* Main Menu Links */}
             <div className="space-y-1 overflow-y-auto pr-1 flex-1 pb-safe">
-              <p className="text-xs font-semibold text-zinc-500 tracking-normal capitalize px-3 mb-2">Main Menu</p>
+              <p className="text-xs font-medium text-zinc-500 tracking-normal capitalize px-3 mb-2">Main Menu</p>
               {navigationItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
@@ -155,9 +155,9 @@ export default function MobileSidebar({
                         onClose();
                       }
                     }}
-                    className={`relative w-full flex items-center justify-between px-3.5 py-3 rounded-2xl font-semibold text-sm transition-all cursor-pointer ${
+                    className={`relative w-full flex items-center justify-between px-3.5 py-3 rounded-2xl font-medium text-sm transition-all cursor-pointer ${
                       isActive
-                        ? "text-[#6366F1] font-semibold"
+                        ? "text-[#6366F1] font-medium"
                         : item.locked
                           ? "text-zinc-400 font-medium hover:bg-zinc-100"
                           : "text-zinc-600 hover:text-zinc-950 hover:bg-zinc-50"

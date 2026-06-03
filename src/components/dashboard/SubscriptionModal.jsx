@@ -276,7 +276,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative bg-white/95 backdrop-blur-3xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] rounded-[20px] sm:rounded-[32px] shadow-2xl border border-zinc-200/80 overflow-hidden flex flex-col z-10"
+            className="relative bg-white/95 backdrop-blur-3xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] rounded-xl shadow-2xl border border-zinc-200/80 overflow-hidden flex flex-col z-10"
           >
 
             {/* Main Content Area */}
@@ -331,7 +331,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                         <div
                           key={plan.id}
                           onClick={() => setSelectedPlanId(plan.id)}
-                          className={`relative p-4 rounded-[14px] border transition-all cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group ${selectedPlanId === plan.id
+                          className={`relative p-4 rounded-xl border transition-all cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group ${selectedPlanId === plan.id
                               ? "bg-[#6366F1]/[0.02] border-[#6366F1] shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]"
                               : "bg-white border-zinc-200/60 hover:bg-zinc-50 hover:border-zinc-300"
                             }`}
@@ -374,7 +374,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                     {selectedPlanId !== 'free' && selectedPlanId !== currentPlan && (
                       <div className="space-y-2">
                         {promoApplied ? (
-                          <div className="flex items-center justify-between px-4 py-2.5 bg-emerald-50 border border-emerald-200 rounded-2xl">
+                          <div className="flex items-center justify-between px-4 py-2.5 bg-emerald-50 border border-emerald-200 rounded-xl">
                             <div className="flex items-center gap-2">
                               <Tag size={13} className="text-emerald-600" />
                               <span className="text-xs font-semibold text-emerald-700">{promoApplied.code}</span>
@@ -411,7 +411,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                     <button
                       onClick={handleCheckout}
                       disabled={selectedPlanId === currentPlan}
-                      className="w-full py-4 bg-zinc-950 text-white rounded-2xl font-medium text-xs shadow-xl flex items-center justify-center gap-2 hover:bg-zinc-800 disabled:opacity-50 hover:scale-[1.01] transition-all active:scale-[0.98]"
+                      className="w-full py-4 bg-zinc-950 text-white rounded-xl font-medium text-xs shadow-xl flex items-center justify-center gap-2 hover:bg-zinc-800 disabled:opacity-50 hover:scale-[1.01] transition-all active:scale-[0.98]"
                     >
                       <span>{selectedPlanId === currentPlan ? "Current Active Plan" : `Upgrade to ${selectedPlanId.replace('_', ' ')}${promoApplied ? ` (${promoApplied.discountPercent}% off)` : ''}`}</span>
                       <ArrowRight size={14} />

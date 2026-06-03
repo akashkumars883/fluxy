@@ -23,7 +23,7 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
         setIsSearchOpen(prev => !prev);
         return;
       }
-      
+
       // Close on Escape
       if (e.key === 'Escape') {
         setIsSearchOpen(false);
@@ -55,23 +55,22 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
     { title: "Account Settings", type: "Settings", url: "settings", icon: Settings },
   ];
 
-  const filteredResults = searchQuery.length > 0 
+  const filteredResults = searchQuery.length > 0
     ? searchableItems.filter(item => item.title.toLowerCase().includes(searchQuery.toLowerCase()) || item.type.toLowerCase().includes(searchQuery.toLowerCase()))
     : [];
 
   return (
-    <nav className={`sticky top-0 z-50 transition-all duration-300 border-b px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between shrink-0 ${
-      isScrolled 
-        ? "bg-white/90 backdrop-blur-md border-zinc-200 shadow-sm" 
+    <nav className={`sticky top-0 z-50 transition-all duration-300 border-b px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between shrink-0 ${isScrolled
+        ? "bg-white/90 backdrop-blur-md border-zinc-200 shadow-sm"
         : "bg-white border-transparent shadow-none"
-    }`}>
+      }`}>
       <div className="flex items-center gap-1.5 sm:gap-3 overflow-hidden">
 
         <div className="flex items-center gap-2.5 cursor-pointer group" onClick={() => window.location.href = '/?home=true'}>
-          <img 
-            src="/logo.png" 
-            alt="Automixa Logo" 
-            className="w-8 h-8 mt-[2px] object-contain transition-all duration-300 shrink-0 group-hover:scale-110" 
+          <img
+            src="/logo.png"
+            alt="Automixa Logo"
+            className="w-8 h-8 object-contain transition-all duration-300 shrink-0 group-hover:scale-110"
           />
           {!isSidebarCollapsed && (
             <h2 className="text-xl font-semibold tracking-normal text-zinc-900 truncate animate-in fade-in duration-200">
@@ -103,14 +102,14 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
         </div>
 
         <NotificationDropdown accounts={accounts} />
-        
+
         <div className="h-5 w-[1px] bg-zinc-200 hidden xs:block" />
-        
-        <ProfileDropdown 
-          user={user} 
-          realtimeStats={realtimeStats} 
-          setActiveTab={setActiveTab} 
-          onAccountSettingsClick={onAccountSettingsClick} 
+
+        <ProfileDropdown
+          user={user}
+          realtimeStats={realtimeStats}
+          setActiveTab={setActiveTab}
+          onAccountSettingsClick={onAccountSettingsClick}
           onSubscriptionClick={onSubscriptionClick}
         />
       </div>
@@ -125,7 +124,7 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
               onClick={() => setIsSearchOpen(false)}
               className="absolute inset-0 bg-zinc-950/40 backdrop-blur-xl"
             />
-            
+
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -134,15 +133,15 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
             >
               <div className="p-6 border-b border-zinc-100 flex items-center gap-4">
                 <Search className="text-[#6366F1]" size={24} />
-                <input 
+                <input
                   autoFocus
-                  type="text" 
-                  placeholder="Search campaigns, users, or automation logs..." 
+                  type="text"
+                  placeholder="Search campaigns, users, or automation logs..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="flex-1 bg-transparent border-none outline-none text-lg font-medium text-zinc-900 placeholder:text-zinc-400"
                 />
-                <button 
+                <button
                   onClick={() => setIsSearchOpen(false)}
                   className="p-2 hover:bg-zinc-100 rounded-full transition-colors text-zinc-400"
                 >
@@ -157,7 +156,7 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
                       <h3 className="text-[10px] font-semibold text-zinc-400 mb-4">Quick Actions</h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {quickActions.map((action, i) => (
-                          <button 
+                          <button
                             key={i}
                             onClick={() => {
                               setActiveTab(action.tab);
@@ -181,7 +180,7 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
                       <h3 className="text-[10px] font-semibold text-zinc-400 mb-4">Recent Searches</h3>
                       <div className="space-y-2">
                         {recentSearches.map((search, i) => (
-                          <button 
+                          <button
                             key={i}
                             onClick={() => setSearchQuery(search)}
                             className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-50 transition-colors text-sm text-zinc-600 group"
@@ -199,7 +198,7 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
                       <>
                         <h3 className="text-[10px] font-semibold text-zinc-400 mb-4 px-2">Search Results</h3>
                         {filteredResults.map((result, i) => (
-                          <button 
+                          <button
                             key={i}
                             onClick={() => {
                               setActiveTab(result.url);
@@ -208,13 +207,13 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
                             className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-zinc-50 transition-colors text-sm group"
                           >
                             <div className="flex items-center gap-3">
-                               <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-500">
-                                 <result.icon size={18} />
-                               </div>
-                               <div className="text-left">
-                                 <div className="font-semibold text-zinc-900">{result.title}</div>
-                                 <div className="text-xs text-zinc-500">{result.type}</div>
-                               </div>
+                              <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-500">
+                                <result.icon size={18} />
+                              </div>
+                              <div className="text-left">
+                                <div className="font-semibold text-zinc-900">{result.title}</div>
+                                <div className="text-xs text-zinc-500">{result.type}</div>
+                              </div>
                             </div>
                             <ArrowRight size={16} className="text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity" />
                           </button>

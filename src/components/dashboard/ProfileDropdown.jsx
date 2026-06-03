@@ -76,24 +76,6 @@ export default function ProfileDropdown({ user, realtimeStats, onAccountSettings
             </div>
           </div>
 
-          <div className="px-4 py-3 bg-zinc-50/80 border-b border-zinc-200/50">
-            <div className="flex items-center justify-between text-xs font-semibold text-zinc-600 capitalize mb-2">
-              <span className="flex items-center gap-1.5"><Zap size={14} className="text-[#6366F1] fill-[#6366F1]/10" /> Monthly Usage</span>
-              <span className="text-zinc-900 font-semibold">{usagePercentage}%</span>
-            </div>
-            
-            <div className="w-full h-2.5 bg-zinc-100 border border-zinc-200/50 rounded-full overflow-hidden shadow-inner">
-              <div 
-                className="h-full bg-[#6366F1] rounded-full transition-all duration-500 shadow-sm"
-                style={{ width: `${usagePercentage}%` }}
-              />
-            </div>
-
-            <div className="flex items-center justify-between mt-3 text-xs font-semibold text-zinc-500">
-              <span>Plan Limits</span>
-              <span className="text-zinc-900 font-semibold">{usedReplies} / {totalReplies} Replies</span>
-            </div>
-          </div>
 
           <div className="p-2 space-y-1 border-b border-zinc-200/50">
             {[

@@ -194,7 +194,7 @@ export default function WorkspaceSwitcher({ variant = "sidebar", onUpgradeClick 
                         setEditWsName(ws.name);
                         setShowManageModal(true);
                       }}
-                      className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-zinc-200/60 rounded-lg text-zinc-400 hover:text-zinc-700 transition-all mr-1.5"
+                      className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-zinc-200/60 rounded-xl text-zinc-400 hover:text-zinc-700 transition-all mr-1.5"
                       title="Workspace Settings"
                     >
                       <Settings2 size={12} />
@@ -381,7 +381,7 @@ export default function WorkspaceSwitcher({ variant = "sidebar", onUpgradeClick 
                                 const newDest = isMappedToThis ? "personal" : managingWs.id;
                                 linkAccountToWorkspace(acc.id, newDest);
                               }}
-                              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all border ${
+                              className={`px-2.5 py-1 rounded-xl text-[10px] font-bold transition-all border ${
                                 isMappedToThis 
                                   ? "bg-indigo-50 border-indigo-100 text-indigo-700 hover:bg-rose-50 hover:border-rose-100 hover:text-rose-700" 
                                   : "bg-zinc-50 border-zinc-200 text-zinc-500 hover:bg-indigo-50 hover:border-indigo-100 hover:text-indigo-700"

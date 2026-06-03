@@ -10,12 +10,13 @@ Search,
 UserCheck,
 Users,
 X,
-Zap
+Zap,
+Sparkles
 } from "lucide-react";
 import { useEffect,useState } from "react";
 import { createPortal } from "react-dom";
 
-export default function AudienceCRM({ history = [], currentPlan = "free" }) {
+export default function AudienceCRM({ history = [], currentPlan = "free", onUpgradeClick }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [selectedUser, setSelectedUser] = useState(null);
@@ -164,6 +165,35 @@ export default function AudienceCRM({ history = [], currentPlan = "free" }) {
   return (
     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700 w-full max-w-[1400px] mx-auto pb-8">
 
+      {/* Premium Upgrade Banner Card (Visible for Free & Pro users) */}
+      {currentPlan !== 'viral_scale' && (
+        <div className="bg-gradient-to-r from-[#6366F1] to-indigo-700 text-white rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md relative overflow-hidden animate-in fade-in">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none" />
+          <div className="flex items-start sm:items-center gap-3.5 relative z-10">
+            <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white shrink-0 shadow-inner">
+              <Sparkles size={16} />
+            </div>
+            <div>
+              <h4 className="text-xs sm:text-sm font-bold tracking-tight mb-0.5">
+                {currentPlan === 'free' ? "Scale Your Automations with Creator Pro ⚡" : "Upgrade to Viral Scale Plan 🚀"}
+              </h4>
+              <p className="text-[11px] text-indigo-100 font-medium leading-normal max-w-xl">
+                {currentPlan === 'free' 
+                  ? "Get unlimited automated replies, unlock the Mini Digital Store to sell directly inside DMs, and build premium Link-in-Bio landing pages."
+                  : "Get up to 50,000 monthly automated replies, advanced CRM tracking, and full agency multi-workspace collaboration features."
+                }
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => onUpgradeClick?.(currentPlan === 'free' ? "creator_pro" : "viral_scale")}
+            className="shrink-0 w-full sm:w-auto px-5 py-2 bg-white hover:bg-zinc-50 text-indigo-700 text-[11px] font-bold rounded-xl shadow-md transition-all active:scale-[0.98] cursor-pointer"
+          >
+            Upgrade Plan
+          </button>
+        </div>
+      )}
+
       {/* Stats Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {statCards.map((card) => {
@@ -171,9 +201,8 @@ export default function AudienceCRM({ history = [], currentPlan = "free" }) {
           return (
             <div
               key={card.label}
-              className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5"
+              className="bg-white rounded-xl p-4 sm:p-5 flex flex-col justify-between shadow-md shadow-zinc-200/10 border border-zinc-200/80 hover:shadow-lg transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5"
             >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#6366F1]/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
               <div className="flex items-center justify-between mb-4 relative z-10">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-sm transition-all duration-500 group-hover:scale-110 ${card.color}`}>
                   <Icon size={18} />
@@ -193,8 +222,7 @@ export default function AudienceCRM({ history = [], currentPlan = "free" }) {
       </div>
 
       {/* Main Content: Full width user list */}
-      <div className="bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 transition-all duration-500 flex flex-col relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#6366F1]/3 to-transparent rounded-full -mr-32 -mt-32 pointer-events-none" />
+      <div className="bg-white border border-zinc-200/80 rounded-xl p-4 sm:p-6 shadow-md shadow-zinc-200/5 hover:shadow-lg transition-all duration-500 flex flex-col relative overflow-hidden">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-4 sm:mb-6 border-b border-zinc-100 pb-4 sm:pb-6 shrink-0 relative z-10">

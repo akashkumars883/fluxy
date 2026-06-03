@@ -27,8 +27,12 @@ import AccountSettingsModal from "@/components/dashboard/AccountSettingsModal";
 import AnalyticsDashboard from "@/components/dashboard/AnalyticsDashboard";
 import AudienceCRM from "@/components/dashboard/AudienceCRM";
 import CreatorOverview from "@/components/dashboard/CreatorOverview";
-import DashboardNavbar from "@/components/dashboard/DashboardNavbar";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import NotificationDropdown from "@/components/dashboard/NotificationDropdown";
+import ProfileDropdown from "@/components/dashboard/ProfileDropdown";
+import WorkspaceSwitcher from "@/components/dashboard/WorkspaceSwitcher";
+import { Zap, Search, X, Clock, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import EditTriggerModal from "@/components/dashboard/EditTriggerModal";
 import HelpSlider from "@/components/dashboard/HelpSlider";
 import MobileSidebar from "@/components/dashboard/MobileSidebar";
@@ -117,6 +121,50 @@ export default function Dashboard() {
   const [partnerCommissionRate, setPartnerCommissionRate] = useState("15");
   const [settingsSaved, setSettingsSaved] = useState(false);
 
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Keyboard shortcut for search
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.code === 'KeyK') {
+        e.preventDefault();
+        setIsSearchOpen(prev => !prev);
+        return;
+      }
+      if (e.key === 'Escape') {
+        setIsSearchOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
+  }, []);
+
+  const recentSearches = [
+    "Instagram Campaign 2024",
+    "Story Auto-Reply Setup",
+    "Lead Gen Analytics"
+  ];
+
+  const quickActions = [
+    { name: "Create New Campaign", icon: Zap, tab: "automations" },
+    { name: "View CRM", icon: Zap, tab: "audience" },
+    { name: "Settings", icon: Zap, tab: "settings" }
+  ];
+
+  const searchableItems = [
+    { title: "Comment-to-DM Setup", type: "Automation", url: "automations", icon: Zap },
+    { title: "Story Auto-Reply Setup", type: "Automation", url: "automations", icon: Zap },
+    { title: "Instagram Campaign 2024", type: "Campaign", url: "automations", icon: Zap },
+    { title: "Lead Gen Analytics", type: "Analytics", url: "analytics", icon: BarChart2 },
+    { title: "Audience CRM", type: "Contacts", url: "audience", icon: Users },
+    { title: "Account Settings", type: "Settings", url: "settings", icon: Settings },
+  ];
+
+  const filteredResults = searchQuery.length > 0
+    ? searchableItems.filter(item => item.title.toLowerCase().includes(searchQuery.toLowerCase()) || item.type.toLowerCase().includes(searchQuery.toLowerCase()))
+    : [];
+
   useEffect(() => {
     const syncStatus = () => {
       const savedStatus = localStorage.getItem("partner_app_status");
@@ -168,7 +216,7 @@ export default function Dashboard() {
   // Set dynamic document title based on active tab
   useEffect(() => {
     const tabLabels = {
-      home: selectedAccount ? "Overview" : "Home",
+      home: "Dashboard",
       automations: "Automations",
       audience: "Audience",
       analytics: "Analytics",
@@ -291,6 +339,60 @@ export default function Dashboard() {
       return () => {
         supabase.removeChannel(historyChannel);
       };
+    } else if (selectedAccount) {
+      // Mock data injection for local testing on localhost
+      setRealtimeStats({
+        totalDms: 1245,
+        autoReplies: 328,
+        engagementRate: "4.8%",
+        followerGrowth: 89,
+      });
+
+      const mockHistory = [
+        { id: "h1", sender_id: "u1", sender_username: "john_doe", keyword: "START", response: "Here is your download link! 🔗", type: "COMMENT", status: "SUCCESS", created_at: new Date().toISOString() },
+        { id: "h2", sender_id: "u2", sender_username: "alice_w", keyword: "PROMO", response: "Get 20% off with coupon code VIP20! 🏷️", type: "COMMENT", status: "SUCCESS", created_at: new Date(Date.now() - 3600000).toISOString() },
+        { id: "h3", sender_id: "u3", sender_username: "mike_s", keyword: "GUIDE", response: "Here is the free guide PDF! 📕", type: "COMMENT", status: "SUCCESS", created_at: new Date(Date.now() - 7200000).toISOString() }
+      ];
+      setRealtimeHistory(mockHistory);
+
+      const mockTriggers = [
+        {
+          id: "t1",
+          keyword: "START",
+          response: "Here is your download link! 🔗",
+          type: "COMMENT",
+          metadata: { campaign_name: "Start Campaign 🚀", is_active: true }
+        },
+        {
+          id: "t2",
+          keyword: "PROMO",
+          response: "Get 20% off with coupon code VIP20! 🏷️",
+          type: "COMMENT",
+          metadata: { campaign_name: "Promo Discount 🏷️", is_active: true }
+        },
+        {
+          id: "t3",
+          keyword: "GUIDE",
+          response: "Here is the free guide PDF! 📕",
+          type: "COMMENT",
+          metadata: { campaign_name: "Growth Guide 📕", is_active: false }
+        }
+      ];
+      setTriggersList(mockTriggers);
+
+      const triggersWithCounts = mockTriggers.map(t => ({
+        ...t,
+        count: mockHistory.filter(h => h.keyword === t.keyword).length
+      })).sort((a, b) => b.count - a.count);
+      setRealtimeTriggers(triggersWithCounts);
+
+      setInstagramMedia([
+        { id: "m1", media_type: "IMAGE", media_url: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=300&q=80", permalink: "#" },
+        { id: "m2", media_type: "VIDEO", media_url: "https://images.unsplash.com/photo-1611224885990-ab7363d1f2a9?w=300&q=80", permalink: "#" }
+      ]);
+      setInstagramStories([
+        { id: "s1", media_type: "IMAGE", media_url: "https://images.unsplash.com/photo-1541339907198-e08756ebafe1?w=300&q=80" }
+      ]);
     }
   }, [selectedAccount, setRealtimeStats]);
 
@@ -456,7 +558,9 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    if (!loading && !user) {
+    const isLocalDev = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
+    if (!loading && !user && !isLocalDev) {
       router.push("/login");
     }
   }, [user, loading, router]);
@@ -464,7 +568,7 @@ export default function Dashboard() {
   if (loading) return <Loader fullScreen text="Loading Dashboard..." />;
 
   const navigationItems = [
-    { id: "home", label: selectedAccount ? "Overview" : "Home", icon: Home, reqPlan: "free" },
+    { id: "home", label: "Dashboard", icon: Home, reqPlan: "free" },
     { id: "automations", label: "Automations", icon: Cpu, reqPlan: "free" },
     { id: "audience", label: "Audience", icon: Users, reqPlan: "free" },
     { id: "store", label: "Mini Store", icon: Package, reqPlan: "creator_pro" },
@@ -499,25 +603,25 @@ export default function Dashboard() {
   });
 
   const maxQuota = currentPlan === "viral_scale" ? 50000 : currentPlan === "creator_pro" ? 15000 : 1000;
-  const usedQuota = realtimeStats?.autoReplies || 0;
+  const usedQuota = (realtimeStats?.totalDms || 0) + (realtimeStats?.autoReplies || 0);
   const quotaPercent = Math.min(100, Math.round((usedQuota / maxQuota) * 100));
+
+  const tabTitle = activeTab === "home"
+    ? "Dashboard"
+    : activeTab === "automations" ? "Automations"
+      : activeTab === "audience" ? "Audience"
+        : activeTab === "store" ? "Mini Store"
+          : activeTab === "smart_bio" ? "Smart Bio"
+            : activeTab === "crm" ? "CRM"
+              : activeTab === "analytics" ? "Analytics"
+                : activeTab === "settings" ? "Settings"
+                  : activeTab === "partner" ? "Partner Program"
+                    : activeTab;
 
   return (
     <AppShell>
       <div className="h-screen flex flex-col bg-background relative overflow-hidden selection:bg-sage/10 selection:text-sage">
         <SystemBroadcast />
-        <DashboardNavbar
-          isScrolled={isScrolled}
-          onHelpClick={() => setIsHelpOpen(true)}
-          accounts={accounts}
-          realtimeStats={realtimeStats}
-          onAccountSettingsClick={() => setIsAccountSettingsOpen(true)}
-          onSubscriptionClick={(reason) => {
-            setUpgradeReason(typeof reason === 'string' ? reason : "");
-            setIsSubscriptionOpen(true);
-          }}
-          onMenuClick={() => setIsMobileSidebarOpen(true)}
-        />
 
         <MobileSidebar
           isOpen={isMobileSidebarOpen}
@@ -551,66 +655,102 @@ export default function Dashboard() {
 
           <main
             onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-            className="flex-1 p-3 sm:p-4 lg:p-5 max-w-8xl mx-auto w-full flex flex-col min-h-0 overflow-hidden pb-20 md:pb-6"
+            className="flex-1 p-3 sm:p-4 lg:p-5 w-full flex flex-col min-h-0 overflow-hidden pb-20 md:pb-6"
           >
-            {selectedAccount ? (
-              <div className="flex flex-col flex-1 min-h-0 space-y-4 overflow-hidden">
-                {/* === COMPACT PAGE HEADER === */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-200/60 shrink-0">
-
-                  {/* Left: Title + inline account badge */}
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="min-w-0">
-                      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 leading-tight flex items-center gap-2">
-                        <span className={builderActive ? "hidden sm:inline" : ""}>
-                          {activeTab === "home" ? "Overview"
-                            : activeTab === "automations" ? "Automations"
-                              : activeTab === "audience" ? "Audience"
-                                : activeTab === "store" ? "Mini Store"
-                                  : activeTab === "smart_bio" ? "Smart Bio"
-                                    : activeTab === "crm" ? "CRM"
-                                      : activeTab === "analytics" ? "Analytics"
-                                        : activeTab === "settings" ? "Settings"
-                                          : activeTab === "partner" ? "Partner Program"
-                                            : activeTab}
-                        </span>
-                        {activeTab === "automations" && builderActive && (
-                          <>
-                            <span className="text-zinc-300 font-medium select-none hidden sm:inline">/</span>
-                            <span className="text-zinc-500 text-lg sm:text-xl font-semibold truncate max-w-37.5 sm:max-w-xs">{builderCampaignName || "New Campaign"}</span>
-                          </>
-                        )}
-                      </h1>
-                      <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border ${(selectedAccount.persona || "content_creator") === "content_creator"
+            {/* Global Page Header (Navbar elements + Actions on the right, Title on the left) */}
+            <div className="flex flex-row items-center justify-between gap-3 pb-4 border-b border-zinc-200/60 shrink-0 mb-4">
+              {/* Left: Title + inline account badge */}
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="min-w-0">
+                  <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-950 leading-tight flex items-center gap-2">
+                    <span className={builderActive ? "hidden sm:inline" : ""}>
+                      {tabTitle}
+                    </span>
+                    {activeTab === "automations" && builderActive && (
+                      <>
+                        <span className="text-zinc-300 font-medium select-none hidden sm:inline">/</span>
+                        <span className="text-zinc-500 text-lg sm:text-xl font-semibold truncate max-w-37.5 sm:max-w-xs">{builderCampaignName || "New Campaign"}</span>
+                      </>
+                    )}
+                  </h1>
+                  {selectedAccount && (
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold border ${(selectedAccount.persona || "content_creator") === "content_creator"
                         ? "bg-purple-50 text-purple-600 border-purple-200"
                         : "bg-blue-50 text-blue-600 border-blue-200"
                         } ${builderActive ? 'hidden sm:inline-block' : 'inline-block'}`}>
                         {(selectedAccount.persona || "content_creator") === "content_creator" ? "Creator" : "Business"}
                       </span>
+                      <p className={`text-xs text-zinc-400 font-medium truncate ${builderActive ? 'hidden sm:block' : 'block'}`}>
+                        @{selectedAccount.ig_username || selectedAccount.name || selectedAccount.page_name || "automixa_user"}
+                      </p>
                     </div>
-                    <p className={`text-xs text-zinc-400 font-medium mt-0.5 truncate ${builderActive ? 'hidden sm:block' : 'block'}`}>
-                      @{selectedAccount.ig_username || selectedAccount.name || selectedAccount.page_name || "automixa_user"}
-                    </p>
-                  </div>
+                  )}
+                </div>
+              </div>
 
-                  {/* Right: Contextual Actions */}
-                  <div className="flex flex-wrap items-center gap-2 shrink-0">
+              {/* Right Side: Navbar Elements + Contextual Actions */}
+              <div className="flex items-center gap-2 sm:gap-3 shrink-0 flex-wrap justify-end">
+                {/* Search Bar */}
+                <div className="hidden lg:flex items-center w-48 xl:w-56">
+                  <div className="relative w-full group cursor-pointer" onClick={() => setIsSearchOpen(true)}>
+                    <div className="w-full bg-zinc-50/80 hover:bg-white backdrop-blur-xl border border-zinc-200 hover:border-zinc-300 rounded-xl pl-9 pr-10 py-1.5 text-[12px] font-medium text-zinc-400 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] hover:shadow-sm flex items-center h-[34px] group-hover:ring-4 group-hover:ring-zinc-50">
+                      Search...
+                    </div>
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none group-hover:text-[#6366F1] transition-colors z-10">
+                      <Search size={13} strokeWidth={2} />
+                    </div>
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center gap-0.5 px-1 py-0.5 rounded-[4px] bg-white border border-zinc-200 text-[8px] font-semibold text-zinc-500 pointer-events-none transition-all shadow-sm group-hover:bg-zinc-50">
+                      <span>⌘</span>
+                      <span>K</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Workspace Switcher */}
+                <div className="hidden md:block">
+                  <WorkspaceSwitcher variant="minimal" onUpgradeClick={() => {
+                    setUpgradeReason("");
+                    setIsSubscriptionOpen(true);
+                  }} />
+                </div>
+
+                {/* Notification Dropdown */}
+                <NotificationDropdown accounts={accounts} />
+
+                <div className="h-5 w-[1px] bg-zinc-200/60 hidden xs:block" />
+
+                {/* Profile Dropdown */}
+                <ProfileDropdown
+                  user={user}
+                  realtimeStats={realtimeStats}
+                  setActiveTab={setActiveTab}
+                  onAccountSettingsClick={() => setIsAccountSettingsOpen(true)}
+                  onSubscriptionClick={(reason) => {
+                    setUpgradeReason(typeof reason === 'string' ? reason : "");
+                    setIsSubscriptionOpen(true);
+                  }}
+                />
+
+                {/* Contextual Actions */}
+                {selectedAccount && (
+                  <div className="flex items-center gap-1.5 sm:gap-2 border-l border-zinc-200/60 pl-2 sm:pl-3">
                     {(activeTab === "audience" || activeTab === "crm") && (
                       <Button
                         onClick={() => window.dispatchEvent(new Event("export_audience_csv"))}
                         variant={currentPlan === "free" ? "ghost" : "primary"}
                         disabled={currentPlan === "free"}
-                        className="flex items-center gap-1.5 px-4 py-2 text-xs"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-[11px]"
                       >
-                        <Download size={13} />
+                        <Download size={12} />
                         <span>Export CSV</span>
-                        {currentPlan === "free" && <LucideLock size={11} />}
+                        {currentPlan === "free" && <LucideLock size={10} />}
                       </Button>
                     )}
 
                     {activeTab === "analytics" && (
                       <div className="flex items-center gap-2">
-                        <div className="bg-white border border-zinc-200 rounded-xl p-1 flex items-center shadow-sm">
+                        <div className="bg-white border border-zinc-200 rounded-xl p-0.5 flex items-center shadow-sm">
                           {[
                             { id: "7d", label: "7d" },
                             { id: "30d", label: "30d" },
@@ -619,7 +759,7 @@ export default function Dashboard() {
                             <button
                               key={t.id}
                               onClick={() => setTimeRange(t.id)}
-                              className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all ${timeRange === t.id ? "bg-zinc-950 text-white shadow-sm" : "text-zinc-400 hover:text-zinc-800"
+                              className={`px-2 py-0.5 rounded-xl text-[9px] font-bold uppercase tracking-wide transition-all ${timeRange === t.id ? "bg-zinc-950 text-white shadow-sm" : "text-zinc-400 hover:text-zinc-800"
                                 }`}
                             >
                               {t.label}
@@ -629,9 +769,9 @@ export default function Dashboard() {
                         <Button
                           onClick={handleExportAnalytics}
                           variant="primary"
-                          className="flex items-center gap-1.5 px-4 py-2 text-xs shrink-0"
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] shrink-0"
                         >
-                          <Download size={13} /> Export
+                          <Download size={12} /> Export
                         </Button>
                       </div>
                     )}
@@ -639,41 +779,21 @@ export default function Dashboard() {
                     {activeTab === "home" && (
                       <button
                         onClick={() => updateSelectedAccount({ is_active: !selectedAccount.is_active })}
-                        className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer hover:scale-[1.02] active:scale-95 ${selectedAccount?.is_active ? "bg-emerald-50 border-emerald-200/80 text-emerald-700 hover:bg-emerald-100/30" : "bg-rose-50 border-rose-200/80 text-rose-600 hover:bg-rose-100/30"}`}
+                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border text-[11px] font-semibold transition-all cursor-pointer hover:scale-[1.02] active:scale-95 ${selectedAccount?.is_active ? "bg-emerald-50 border-emerald-200/80 text-emerald-700 hover:bg-emerald-100/30" : "bg-rose-50 border-rose-200/80 text-rose-600 hover:bg-rose-100/30"}`}
                       >
                         <span className="relative flex h-1.5 w-1.5">
                           <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${selectedAccount?.is_active ? "bg-emerald-400" : "bg-rose-400"}`} />
-                          <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${selectedAccount?.is_active ? "bg-emerald-600" : "bg-rose-600"}`} />
+                          <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${selectedAccount?.is_active ? "bg-[#10B981]" : "bg-[#EF4444]"}`} />
                         </span>
-                        {selectedAccount?.is_active ? "Shield Active" : "System Paused"}
+                        {selectedAccount?.is_active ? "Active" : "Paused"}
                       </button>
                     )}
 
-                    {activeTab === "automations" && !builderActive && (
-                      <>
-                        <Button
-                          onClick={() => setIsCreateModalOpen(true)}
-                          variant="primary"
-                          className="flex items-center gap-1.5 px-4 py-2 text-xs"
-                        >
-                          <Plus size={14} strokeWidth={2.5} /> New Campaign
-                        </Button>
-                      </>
-                    )}
 
-                    {activeTab === "automations" && builderActive && (
-                      <Button
-                        onClick={() => setBuilderActive(false)}
-                        variant="ghost"
-                        className="flex items-center gap-1 px-2.5 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs"
-                      >
-                        Exit Builder
-                      </Button>
-                    )}
 
                     {activeTab === "partner" && partnerAppStatus === "approved" && (
-                      <span className="px-3 py-1.5 bg-zinc-950 text-white font-bold text-[10px] rounded-xl uppercase tracking-wider border border-zinc-800">
-                        {partnerActiveTier} · {partnerCommissionRate}% Commission
+                      <span className="px-2 py-1 bg-zinc-950 text-white font-bold text-[9px] rounded-lg uppercase tracking-wider border border-zinc-800">
+                        {partnerActiveTier} · {partnerCommissionRate}%
                       </span>
                     )}
 
@@ -681,15 +801,19 @@ export default function Dashboard() {
                       <Button
                         onClick={() => window.dispatchEvent(new Event("save_settings"))}
                         variant="primary"
-                        className="flex items-center gap-1.5 px-4 py-2 text-xs shrink-0"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] shrink-0"
                       >
-                        {settingsSaved && <CheckCircle2 size={13} className="text-emerald-400" />}
-                        {settingsSaved ? "Saved!" : "Save Changes"}
+                        {settingsSaved && <CheckCircle2 size={12} className="text-emerald-400" />}
+                        {settingsSaved ? "Saved!" : "Save"}
                       </Button>
                     )}
                   </div>
-                </div>
+                )}
+              </div>
+            </div>
 
+            {selectedAccount ? (
+              <div className="flex flex-col flex-1 min-h-0 space-y-4 overflow-hidden">
                 {/* === DYNAMIC ERROR / WARNING BANNER === */}
                 {
                   (!selectedAccount?.is_active || usedQuota >= maxQuota) && (
@@ -774,38 +898,24 @@ export default function Dashboard() {
                   activeTab === "automations" && (
                     <div
                       onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                      className={`flex-1 min-h-0 sm:pr-1 no-scrollbar ${builderActive ? 'flex flex-col overflow-hidden' : 'overflow-y-auto'}`}
+                      className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                     >
-                      {builderActive ? (
-                        <div className="flex-1 min-h-0 flex flex-col animate-in slide-in-from-bottom-4 duration-500">
-                          <CampaignBuilderWorkspace
-                            stories={instagramStories}
-                            automation={selectedAccount}
-                            templateKey={builderTemplateKey}
-                            campaignName={builderCampaignName}
-                            currentPlan={currentPlan}
-                            onUpgradeClick={(reason) => {
-                              setUpgradeReason(reason || "general");
-                              setIsSubscriptionOpen(true);
-                            }}
-                            media={instagramMedia}
-                            onPublish={handleAddTrigger}
-                            onClose={() => setBuilderActive(false)}
-                          />
-                        </div>
-                      ) : (
-                        <TriggerList
-                          triggers={triggersList}
-                          isMasterActive={selectedAccount?.is_active}
-                          onCreateNew={() => setIsCreateModalOpen(true)}
-                          onEdit={(t) => {
-                            setEditingTrigger(t);
-                            setIsEditModalOpen(true);
-                          }}
-                          onDelete={handleDeleteTrigger}
-                          onToggleActive={handleToggleTriggerActive}
-                        />
-                      )}
+                      <TriggerList
+                        triggers={triggersList}
+                        isMasterActive={selectedAccount?.is_active}
+                        currentPlan={currentPlan}
+                        onUpgradeClick={(reason) => {
+                          setUpgradeReason(reason || "general");
+                          setIsSubscriptionOpen(true);
+                        }}
+                        onCreateNew={() => setIsCreateModalOpen(true)}
+                        onEdit={(t) => {
+                          setEditingTrigger(t);
+                          setIsEditModalOpen(true);
+                        }}
+                        onDelete={handleDeleteTrigger}
+                        onToggleActive={handleToggleTriggerActive}
+                      />
                     </div>
                   )
                 }
@@ -816,7 +926,15 @@ export default function Dashboard() {
                       onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                       className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                     >
-                      <AudienceCRM accountId={selectedAccount.id} history={realtimeHistory} currentPlan={currentPlan} />
+                      <AudienceCRM 
+                        accountId={selectedAccount.id} 
+                        history={realtimeHistory} 
+                        currentPlan={currentPlan} 
+                        onUpgradeClick={(reason) => {
+                          setUpgradeReason(reason || "general");
+                          setIsSubscriptionOpen(true);
+                        }}
+                      />
                     </div>
                   )
                 }
@@ -826,8 +944,8 @@ export default function Dashboard() {
                       onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                       className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                     >
-                      <StoreManager accountId={selectedAccount.id} currentPlan={currentPlan} onUpgradeClick={() => {
-                        setUpgradeReason("mini_store");
+                      <StoreManager accountId={selectedAccount.id} currentPlan={currentPlan} onUpgradeClick={(reason) => {
+                        setUpgradeReason(reason || "mini_store");
                         setIsSubscriptionOpen(true);
                       }} />
                     </div>
@@ -839,8 +957,8 @@ export default function Dashboard() {
                       onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                       className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                     >
-                      <SmartBio accountId={selectedAccount.id} account={selectedAccount} currentPlan={currentPlan} onUpgradeClick={() => {
-                        setUpgradeReason("smart_bio");
+                      <SmartBio accountId={selectedAccount.id} account={selectedAccount} currentPlan={currentPlan} onUpgradeClick={(reason) => {
+                        setUpgradeReason(reason || "smart_bio");
                         setIsSubscriptionOpen(true);
                       }} />
                     </div>
@@ -852,7 +970,15 @@ export default function Dashboard() {
                       onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                       className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                     >
-                      <AudienceCRM accountId={selectedAccount.id} history={realtimeHistory} currentPlan={currentPlan} />
+                      <AudienceCRM 
+                        accountId={selectedAccount.id} 
+                        history={realtimeHistory} 
+                        currentPlan={currentPlan} 
+                        onUpgradeClick={(reason) => {
+                          setUpgradeReason(reason || "general");
+                          setIsSubscriptionOpen(true);
+                        }}
+                      />
                     </div>
                   )
                 }
@@ -862,7 +988,17 @@ export default function Dashboard() {
                       onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                       className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                     >
-                      <AnalyticsDashboard account={selectedAccount} realtimeStats={realtimeStats} history={realtimeHistory} triggers={triggersList} />
+                      <AnalyticsDashboard 
+                        account={selectedAccount} 
+                        realtimeStats={realtimeStats} 
+                        history={realtimeHistory} 
+                        triggers={triggersList} 
+                        currentPlan={currentPlan}
+                        onUpgradeClick={(reason) => {
+                          setUpgradeReason(reason || "general");
+                          setIsSubscriptionOpen(true);
+                        }}
+                      />
                     </div>
                   )
                 }
@@ -886,102 +1022,115 @@ export default function Dashboard() {
                       onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                       className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                     >
-                      <PartnerDashboard currentPlan={currentPlan} />
+                      <PartnerDashboard 
+                        currentPlan={currentPlan} 
+                        onUpgradeClick={(reason) => {
+                          setUpgradeReason(reason || "general");
+                          setIsSubscriptionOpen(true);
+                        }}
+                      />
                     </div>
                   )
                 }
               </div >
             ) : (
-              <div className="flex flex-col flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-2 sm:pb-0">
-                {/* Optional Upgrade Banner */}
-                {(!currentPlan || currentPlan === "free" || currentPlan?.name?.toLowerCase() === "free") && (
-                  <div className="relative bg-white border border-indigo-100 rounded-2xl p-4 sm:px-6 sm:py-4 mb-4 sm:mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-[0_8px_30px_rgba(99,102,241,0.06)] shrink-0 overflow-hidden group">
-                    {/* Soft animated gradient background */}
-                    <div className="absolute inset-0 bg-linear-to-r from-blue-50/50 via-indigo-50/30 to-purple-50/50 opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-linear-to-br from-[#1877F2]/10 to-purple-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-
-                    <div className="relative z-10 flex items-center gap-4 w-full sm:w-auto">
-                      {/* Glowing Icon */}
-                      <div className="w-12 h-12 rounded-xl bg-linear-to-tr from-[#1877F2] to-indigo-500 flex items-center justify-center shadow-[0_4px_20px_rgba(24,119,242,0.25)] shrink-0 group-hover:scale-105 transition-transform">
-                        <Sparkles size={20} className="text-white" />
+              <div className="flex-1 flex flex-col min-h-0 relative overflow-hidden rounded-xl border border-zinc-200/60 bg-white">
+                {/* Background: Blurred Dashboard Preview Mockup */}
+                <div className="absolute inset-0 z-0 p-6 overflow-hidden pointer-events-none select-none blur-[0.5px] opacity-[0.6] flex flex-col gap-6">
+                  {/* Mock Stats Cards */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {[
+                      { label: "Total Replies", value: "1,245", trend: "+12.4%" },
+                      { label: "DM Automations", value: "328", trend: "+8.2%" },
+                      { label: "Engagement Rate", value: "4.8%", trend: "+1.2%" },
+                      { label: "New Leads", value: "89", trend: "+14.6%" }
+                    ].map((card, i) => (
+                      <div key={i} className="p-4 rounded-xl border border-zinc-200/80 bg-zinc-50/50">
+                        <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">{card.label}</div>
+                        <div className="text-xl font-bold text-zinc-900 mt-1">{card.value}</div>
+                        <div className="text-[9px] font-bold text-emerald-600 mt-1">{card.trend} vs last week</div>
                       </div>
-                      <div>
-                        <div className="flex items-center gap-2 mb-0.5">
-                          <h3 className="text-lg sm:text-xl font-bold text-zinc-900 tracking-tight">
-                            Upgrade to Automixa Pro
-                          </h3>
-                          <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-[9px] font-bold uppercase tracking-wider">
-                            <LucideLock size={10} /> Premium
-                          </span>
-                        </div>
-                        <p className="text-zinc-500 text-[13px] font-medium leading-snug">
-                          {upgradeReason === "smart_bio" ? "Unlock Smart Bio and build unlimited tracking links." : "Unlock advanced features and scale your automations effortlessly."}
-                        </p>
+                    ))}
+                  </div>
+
+                  {/* Mock Charts Section */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1 min-h-0">
+                    <div className="md:col-span-2 p-6 rounded-xl border border-zinc-200/80 bg-white flex flex-col gap-4">
+                      <div className="font-bold text-zinc-800 text-sm">Reply Analytics</div>
+                      <div className="flex-1 flex items-end gap-2 pt-4">
+                        {[40, 60, 45, 90, 65, 85, 110, 80, 95, 130, 115, 140].map((h, idx) => (
+                          <div key={idx} className="flex-1 bg-[#6366F1]/10 rounded-t-lg" style={{ height: `${h}%` }} />
+                        ))}
                       </div>
                     </div>
+                    <div className="p-6 rounded-xl border border-zinc-200/80 bg-white flex flex-col gap-4">
+                      <div className="font-bold text-zinc-800 text-sm">Top Trigger Keywords</div>
+                      <div className="space-y-3 pt-2">
+                        {[
+                          { keyword: "START", count: "482 replies" },
+                          { keyword: "PROMO", count: "312 replies" },
+                          { keyword: "GUIDE", count: "219 replies" }
+                        ].map((row, idx) => (
+                          <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-50 border border-zinc-100">
+                            <span className="text-xs font-bold text-[#6366F1] bg-[#6366F1]/5 px-2 py-1 rounded-lg">#{row.keyword}</span>
+                            <span className="text-xs font-semibold text-zinc-500">{row.count}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Foreground: Premium Onboarding Overlay */}
+                <div className="absolute inset-0 z-10 flex items-center justify-center p-4 sm:p-8 bg-gradient-to-b from-white/30 via-white/70 to-white/95">
+                  <div className="w-full max-w-md bg-white/80 backdrop-blur-xl border border-zinc-200/50 rounded-xl p-6 sm:p-8 shadow-2xl flex flex-col items-center text-center relative overflow-hidden group">
+                    {/* Glowing background gradient inside the card */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-[#6366F1]/5 rounded-full blur-3xl -z-10" />
+
+                    {/* Animated Connection Icon */}
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white border-[3px] border-[#6366F1] shadow-[0_0_0_6px_rgba(99,102,241,0.03)] flex items-center justify-center mb-5 relative transition-transform duration-500 group-hover:scale-105">
+                      <div className="absolute inset-0 rounded-full border border-dashed border-[#6366F1]/30 animate-[spin_12s_linear_infinite]" />
+                      <Link2 size={20} className="text-[#6366F1] relative z-10" />
+                    </div>
+
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold mb-3 border border-[#6366F1]/20 uppercase tracking-widest">
+                      <Sparkles size={11} /> Connect Profile
+                    </div>
+
+                    <h2 className="text-xl sm:text-2xl font-extrabold text-zinc-900 tracking-tight leading-tight mb-2">
+                      Unlock Your Marketing Workspace
+                    </h2>
+
+                    <p className="text-zinc-500 text-[12px] sm:text-[13px] font-medium leading-relaxed mb-6 max-w-sm">
+                      Connect your Instagram Business account to view live analytics, manage automations, and track leads in real-time.
+                    </p>
+
+                    {/* Quick Onboarding Steps Checklist */}
+                    <div className="w-full text-left space-y-3 mb-6 bg-zinc-50/50 border border-zinc-200/40 rounded-xl p-4">
+                      <div className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest border-b border-zinc-200/50 pb-2 mb-2">Getting Started</div>
+
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-5 h-5 rounded-full bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold flex items-center justify-center shrink-0">1</div>
+                        <span className="text-xs font-semibold text-zinc-700">Connect your Instagram profile</span>
+                      </div>
+
+                      <div className="flex items-center gap-2.5 opacity-60">
+                        <div className="w-5 h-5 rounded-full bg-zinc-200 text-zinc-500 text-[10px] font-bold flex items-center justify-center shrink-0">2</div>
+                        <span className="text-xs font-medium text-zinc-500">Set up comment auto-replies</span>
+                      </div>
+
+                      <div className="flex items-center gap-2.5 opacity-60">
+                        <div className="w-5 h-5 rounded-full bg-zinc-200 text-zinc-500 text-[10px] font-bold flex items-center justify-center shrink-0">3</div>
+                        <span className="text-xs font-medium text-zinc-500">Collect leads & grow audience</span>
+                      </div>
+                    </div>
+
                     <button
-                      onClick={() => {
-                        setUpgradeReason("");
-                        setIsSubscriptionOpen(true);
-                      }}
-                      className="relative z-10 w-full sm:w-auto px-6 py-2.5 bg-linear-to-r from-[#1877F2] to-indigo-600 text-white rounded-xl font-bold text-[14px] shadow-[0_4px_15px_rgba(99,102,241,0.3)] hover:shadow-[0_6px_25px_rgba(99,102,241,0.4)] hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center shrink-0"
+                      onClick={handleConnectClick}
+                      className="w-full px-6 py-2.5 bg-[#6366F1] hover:bg-[#5558e3] text-white rounded-xl text-xs font-bold shadow-[0_4px_20px_-4px_rgba(99,102,241,0.4)] transition-all hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 hover:scale-[1.01]"
                     >
-                      Upgrade Now
+                      <Plus size={14} strokeWidth={2.5} /> Connect Instagram
                     </button>
-                  </div>
-                )}
-
-                {/* Bento Grid Empty State */}
-                <div className="flex-1 flex flex-col md:grid md:grid-cols-3 md:grid-rows-2 gap-4 sm:gap-4 min-h-0 mb-4 sm:mb-0 w-full md:min-h-125">
-                  {/* Main Connect Card (Spans 2 cols, 2 rows) */}
-                  <div className="flex-1 min-h-0 w-full md:col-span-2 md:row-span-2 md:h-full bg-white border border-zinc-200/60 rounded-4xl flex flex-col items-center justify-center p-4 sm:p-12 relative overflow-hidden group shadow-[0_2px_20px_rgba(0,0,0,0.02)]">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-linear-to-tr from-blue-50/60 via-white to-indigo-50/40 rounded-full blur-3xl -z-10 pointer-events-none transition-transform duration-1000 group-hover:scale-110" />
-
-                    <div className="relative z-10 flex flex-col items-center text-center max-w-lg mx-auto h-full justify-center">
-                      <div className="w-16 h-16 sm:w-28 sm:h-28 rounded-full bg-white border-[3px] sm:border-4 border-[#1877F2] shadow-[0_0_0_6px_rgba(24,119,242,0.05)] sm:shadow-[0_0_0_8px_rgba(24,119,242,0.05)] flex items-center justify-center mb-4 sm:mb-8 relative shrink-0 transition-transform duration-500 group-hover:scale-105 group-hover:shadow-[0_0_0_12px_rgba(24,119,242,0.08)]">
-                        <div className="absolute inset-0 rounded-full border-2 border-dashed border-[#1877F2]/40 animate-[spin_10s_linear_infinite]" />
-                        <Link2 size={28} className="text-[#1877F2] relative z-10 sm:w-9 sm:h-9" />
-                      </div>
-
-                      <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-full bg-[#1877F2]/10 text-[#1877F2] text-[9px] sm:text-[11px] font-bold mb-2 sm:mb-4 border border-[#1877F2]/20 uppercase tracking-wider">
-                        <Sparkles size={12} /> Step 1
-                      </div>
-                      <h1 className="text-2xl sm:text-4xl font-extrabold text-zinc-900 mb-2 sm:mb-4 tracking-tight leading-tight">
-                        Connect Your Account
-                      </h1>
-                      <p className="text-zinc-500 text-[12px] sm:text-[15px] font-medium mb-5 sm:mb-10 leading-relaxed px-4 max-w-70 sm:max-w-none">
-                        Link your Facebook Page and Instagram profile to unlock your personalized automation dashboard.
-                      </p>
-
-                      <button
-                        onClick={handleConnectClick}
-                        className="px-8 py-3 bg-[#1877F2] hover:bg-[#166fe5] text-white rounded-2xl text-[14px] sm:text-base font-bold shadow-[0_8px_30px_-8px_rgba(24,119,242,0.5)] transition-all hover:-translate-y-1 active:translate-y-0 flex items-center gap-2.5 hover:scale-105 shrink-0"
-                      >
-                        <Plus size={18} strokeWidth={3} /> Connect Now
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Feature Highlight 1: Comment Auto-Reply */}
-                  <div className="hidden md:flex md:col-span-1 md:row-span-1 border border-zinc-200/60 rounded-4xl relative overflow-hidden flex-col group">
-                    <div className="absolute inset-0 z-0">
-                      <Image src="/images/feature_comment_real.png" alt="Comment Automation Feature" fill className="object-cover object-top transition-transform duration-700 group-hover:scale-105" />
-                    </div>
-                    <div className="absolute bottom-0 left-0 w-full pt-28 pb-6 px-6 bg-linear-to-t from-white via-white/90 to-transparent z-10">
-                      <div className="text-lg font-bold text-zinc-900 mb-1">Comment to DM</div>
-                      <div className="text-sm font-medium text-zinc-700 leading-snug">Auto-reply to Instagram comments with a direct message instantly.</div>
-                    </div>
-                  </div>
-
-                  {/* Feature Highlight 2: Lead Gen CRM */}
-                  <div className="hidden md:flex md:col-span-1 md:row-span-1 border border-zinc-200/60 rounded-4xl relative overflow-hidden flex-col group">
-                    <div className="absolute inset-0 z-0">
-                      <Image src="/images/feature_crm_real.png" alt="Lead Generation CRM Feature" fill className="object-cover object-top transition-transform duration-700 group-hover:scale-105" />
-                    </div>
-                    <div className="absolute bottom-0 left-0 w-full pt-28 pb-6 px-6 bg-linear-to-t from-white via-white/90 to-transparent z-10">
-                      <div className="text-lg font-bold text-zinc-900 mb-1">Lead Generation</div>
-                      <div className="text-sm font-medium text-zinc-700 leading-snug">Automatically collect emails & phone numbers from DMs.</div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -1043,6 +1192,171 @@ export default function Dashboard() {
           connectedAccount={connectedAccount}
           user={user}
         />
+
+        {/* Full-Screen Focused Campaign Builder Workspace */}
+        <AnimatePresence>
+          {builderActive && (
+            <motion.div
+              initial={{ y: "100%", opacity: 0.95 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: "100%", opacity: 0.95 }}
+              transition={{ type: "spring", damping: 26, stiffness: 220 }}
+              className="fixed inset-0 z-[100] bg-white w-screen h-screen overflow-hidden flex flex-col"
+            >
+              <CampaignBuilderWorkspace
+                stories={instagramStories}
+                automation={selectedAccount}
+                templateKey={builderTemplateKey}
+                campaignName={builderCampaignName}
+                currentPlan={currentPlan}
+                onUpgradeClick={(reason) => {
+                  setUpgradeReason(reason || "general");
+                  setIsSubscriptionOpen(true);
+                }}
+                media={instagramMedia}
+                onPublish={handleAddTrigger}
+                onClose={() => setBuilderActive(false)}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Global Search Modal */}
+        <AnimatePresence>
+          {isSearchOpen && (
+            <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[10vh] px-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsSearchOpen(false)}
+                className="absolute inset-0 bg-zinc-950/40 backdrop-blur-xl"
+              />
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: -20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                className="relative w-full max-w-2xl bg-white rounded-[32px] shadow-2xl border border-zinc-200/60 overflow-hidden"
+              >
+                <div className="p-6 border-b border-zinc-100 flex items-center gap-4">
+                  <Search className="text-[#6366F1]" size={24} />
+                  <input
+                    autoFocus
+                    type="text"
+                    placeholder="Search campaigns, users, or automation logs..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="flex-1 bg-transparent border-none outline-none text-lg font-medium text-zinc-900 placeholder:text-zinc-400"
+                  />
+                  <button
+                    onClick={() => setIsSearchOpen(false)}
+                    className="p-2 hover:bg-zinc-100 rounded-full transition-colors text-zinc-400"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <div className="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                  {searchQuery.length === 0 ? (
+                    <div className="space-y-8">
+                      <div>
+                        <h3 className="text-[10px] font-semibold text-zinc-400 mb-4">Quick Actions</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {quickActions.map((action, i) => (
+                            <button
+                              key={i}
+                              onClick={() => {
+                                setActiveTab(action.tab);
+                                setIsSearchOpen(false);
+                              }}
+                              className="flex items-center justify-between p-4 rounded-2xl bg-zinc-50 border border-zinc-100 hover:border-[#6366F1]/30 hover:bg-[#6366F1]/5 transition-all group"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-[#6366F1]">
+                                  <action.icon size={18} />
+                                </div>
+                                <span className="text-sm font-semibold text-zinc-700 group-hover:text-zinc-900">{action.name}</span>
+                              </div>
+                              <ArrowRight size={16} className="text-zinc-300 group-hover:text-[#6366F1] transition-colors" />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <h3 className="text-[10px] font-semibold text-zinc-400 mb-4">Recent Searches</h3>
+                        <div className="space-y-2">
+                          {recentSearches.map((search, i) => (
+                            <button
+                              key={i}
+                              onClick={() => setSearchQuery(search)}
+                              className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-50 transition-colors text-sm text-zinc-600 group"
+                            >
+                              <Clock size={16} className="text-zinc-300 group-hover:text-zinc-500" />
+                              {search}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {filteredResults.length > 0 ? (
+                        <>
+                          <h3 className="text-[10px] font-semibold text-zinc-400 mb-4 px-2">Search Results</h3>
+                          {filteredResults.map((result, i) => (
+                            <button
+                              key={i}
+                              onClick={() => {
+                                setActiveTab(result.url);
+                                setIsSearchOpen(false);
+                              }}
+                              className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-zinc-50 transition-colors text-sm group"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-500">
+                                  <result.icon size={18} />
+                                </div>
+                                <div className="text-left">
+                                  <div className="font-semibold text-zinc-900">{result.title}</div>
+                                  <div className="text-xs text-zinc-500">{result.type}</div>
+                                </div>
+                              </div>
+                              <ArrowRight size={16} className="text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </button>
+                          ))}
+                        </>
+                      ) : (
+                        <div className="py-12 text-center">
+                          <div className="w-16 h-16 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Search className="text-zinc-300" size={32} />
+                          </div>
+                          <h3 className="text-zinc-900 font-semibold mb-1">{`No results for "${searchQuery}"`}</h3>
+                          <p className="text-sm text-zinc-500">Try searching for campaigns, keywords, or account settings.</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div className="p-4 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1.5 text-[10px] text-zinc-400">
+                      <span className="px-1.5 py-0.5 bg-white border border-zinc-200 rounded shadow-sm text-zinc-500 font-bold">ESC</span>
+                      <span>to close</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[10px] text-zinc-400">
+                      <span className="px-1.5 py-0.5 bg-white border border-zinc-200 rounded shadow-sm text-zinc-500 font-bold">↵</span>
+                      <span>to select</span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-semibold text-zinc-300">Automixa Search v1.0</span>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     </AppShell>
   );

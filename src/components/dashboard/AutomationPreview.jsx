@@ -213,13 +213,13 @@ export default function AutomationPreview({
             <>
               <button 
                 onClick={() => setView('story')}
-                className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[10px] font-bold transition-all shrink-0 ${view === 'story' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
+                className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-xl text-[10px] font-bold transition-all shrink-0 ${view === 'story' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
               >
                 <Camera size={11} /> <span>Story</span>
               </button>
               <button 
                 onClick={() => setView('dm')}
-                className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[10px] font-bold transition-all shrink-0 ${view === 'dm' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
+                className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-xl text-[10px] font-bold transition-all shrink-0 ${view === 'dm' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
               >
                 <MessageSquare size={11} /> <span>DM</span>
               </button>
@@ -228,19 +228,19 @@ export default function AutomationPreview({
             <>
              <button 
                onClick={() => setView('post')}
-               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[10px] font-bold transition-all shrink-0 ${view === 'post' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
+               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-xl text-[10px] font-bold transition-all shrink-0 ${view === 'post' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
              >
                <Layout size={11} /> <span>Post</span>
              </button>
              <button 
                onClick={() => setView('dm')}
-               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[10px] font-bold transition-all shrink-0 ${view === 'dm' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
+               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-xl text-[10px] font-bold transition-all shrink-0 ${view === 'dm' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
              >
                <MessageSquare size={11} /> <span>DM</span>
              </button>
              <button 
                onClick={() => setView('faq')}
-               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[10px] font-bold transition-all shrink-0 ${view === 'faq' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
+               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-xl text-[10px] font-bold transition-all shrink-0 ${view === 'faq' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
              >
                <MoreHorizontal size={11} /> <span>AI Sandbox</span>
              </button>

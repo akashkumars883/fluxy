@@ -31,7 +31,7 @@ export default function AccountSettingsModal({ isOpen, onClose, user }) {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative bg-white w-full max-w-xl rounded-[20px] sm:rounded-[24px] shadow-2xl flex flex-col max-h-[95vh] sm:max-h-[85vh] overflow-hidden"
+            className="relative bg-white w-full max-w-xl rounded-xl shadow-2xl flex flex-col max-h-[95vh] sm:max-h-[85vh] overflow-hidden"
           >
             {/* Header */}
             <div className="px-5 sm:px-8 py-4 sm:py-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50 shrink-0">
@@ -114,7 +114,7 @@ export default function AccountSettingsModal({ isOpen, onClose, user }) {
             </div>
 
             {/* Action Button */}
-            <div className="px-5 sm:px-8 py-4 sm:py-6 bg-zinc-50 border-t border-zinc-100 flex justify-end gap-3 shrink-0 rounded-b-[20px] sm:rounded-b-[24px]">
+            <div className="px-5 sm:px-8 py-4 sm:py-6 bg-zinc-50 border-t border-zinc-100 flex justify-end gap-3 shrink-0 rounded-b-xl">
               <button 
                 onClick={onClose}
                 className="px-6 py-3 text-sm font-semibold text-zinc-600 hover:text-zinc-900 transition-all cursor-pointer"

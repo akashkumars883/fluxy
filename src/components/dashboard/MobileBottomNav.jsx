@@ -18,7 +18,7 @@ export default function MobileBottomNav({ onMenuClick }) {
       {primaryNavItems.map((item) => {
         const Icon = item.icon;
         const isActive = activeTab === item.id;
-        
+
         return (
           <button
             key={item.id}
@@ -44,7 +44,7 @@ export default function MobileBottomNav({ onMenuClick }) {
         onClick={onMenuClick}
         className="relative flex-1 flex items-center justify-center py-2 min-w-[50px]"
       >
-        <div className="p-1.5 rounded-full text-zinc-400 hover:text-zinc-600 transition-colors">
+        <div className="inline-flex items-center justify-center p-1.5 rounded-full text-zinc-400 hover:text-zinc-600 transition-colors">
           <Menu size={23} strokeWidth={2} />
         </div>
       </button>

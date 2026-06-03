@@ -44,12 +44,12 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
             initial={{ opacity: 0, scale: 0.96, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 16 }}
-            className="relative w-full max-w-md bg-white border border-zinc-200/60 rounded-[24px] shadow-2xl p-8 flex flex-col gap-6"
+            className="relative w-full max-w-md bg-white border border-zinc-200/60 rounded-xl shadow-2xl p-8 flex flex-col gap-6"
           >
             {/* Header */}
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-zinc-50 border border-zinc-200/60 rounded-[16px] flex items-center justify-center shadow-sm select-none overflow-hidden shrink-0">
+                <div className="w-12 h-12 bg-zinc-50 border border-zinc-200/60 rounded-xl flex items-center justify-center shadow-sm select-none overflow-hidden shrink-0">
                   <img
                     src="/logo.png"
                     alt="Automixa Logo"
@@ -76,7 +76,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                 onChange={(e) => setCampaignName(e.target.value)}
                 onKeyDown={handleKeyDown}
                 autoFocus
-                className="w-full bg-zinc-50 border-2 border-zinc-200 rounded-[16px] px-5 py-4 text-[15px] font-medium text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all"
+                className="w-full bg-zinc-50 border-2 border-zinc-200 rounded-xl px-5 py-4 text-[15px] font-medium text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all"
               />
               <p className="text-[12px] text-zinc-400 font-medium px-1">
                 Don&apos;t worry about the type - Automixa AI will ask you what you want to automate.
@@ -87,7 +87,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
             <button
               onClick={handleCreate}
               disabled={!campaignName.trim()}
-              className="w-full py-4 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-[16px] text-[14px] font-bold shadow-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-4 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-xl text-[14px] font-bold shadow-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Start with Automixa AI <ArrowRight size={18} />
             </button>
@@ -120,11 +120,9 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
     storyTriggerType: "REPLY"
   });
 
-
-
   const [selectedPosts, setSelectedPosts] = useState([]);
   const [wizardPhase, setWizardPhase] = useState("select_type");
-
+  const [campaignNameState, setCampaignNameState] = useState(campaignName || "New Campaign");
 
   const handleWizardChange = (newVals) => {
     setWizardValues(prev => ({ ...prev, ...newVals }));
@@ -140,38 +138,74 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
         : selectedPreviewPost.media_url)
     : "";
 
-  const phaseLabels = [
-    { id: "select_type", label: "Type" },
-    { id: "select_post", label: "Post" },
-    { id: "keyword", label: "Keyword" },
-    { id: "intro_setup", label: "Intro" },
-    { id: "dm_message", label: "DM" },
-    { id: "cta", label: "Button" },
-    { id: "public_reply", label: "Reply" },
-    { id: "follow_gate", label: "Gate" },
-    { id: "done", label: "Launch" },
-  ];
-
-  const phaseIndex = Math.max(0, phaseLabels.findIndex((step) => step.id === wizardPhase));
-  const progressPercent = Math.min(100, Math.round(((phaseIndex + 1) / phaseLabels.length) * 100));
-
-  const summaryItems = [
-    { label: "Automation", value: wizardValues.campaignStrategy === "story_automator" ? "Story automation" : wizardValues.campaignStrategy === "faq_assistant" ? "AI FAQ assistant" : wizardValues.campaignStrategy === "sales_closer" ? "AI sales agent" : "Comment to DM" },
-    { label: "Posts", value: selectedPosts.length > 0 ? `${selectedPosts.length} selected` : "All posts" },
-    { label: "Keyword", value: wizardValues.keyword || "Not set yet" },
-    { label: "DM Message", value: wizardValues.response || "Not set yet" },
-    { label: "Button", value: wizardValues.buttonText ? `${wizardValues.buttonText} -> ${wizardValues.buttonLink || "link"}` : "No button" },
-    { label: "Public Reply", value: wizardValues.publicReply || "Not set yet" },
-  ];
-
-
-
+  const activeUsername = automation?.ig_username || automation?.page_name || automation?.name || "Instagram account";
+  const activeProfilePic = automation?.profile_pic || automation?.profile_picture_url || automation?.metadata?.profile_picture_url || automation?.metadata?.profile_pic || null;
+  
+  const strategyLabel = wizardValues.campaignStrategy === "story_automator"
+    ? "Story automation"
+    : wizardValues.campaignStrategy === "faq_assistant"
+      ? "AI FAQ assistant"
+      : wizardValues.campaignStrategy === "sales_closer"
+        ? "AI sales agent"
+        : "Comment to DM";
   return (
-    <div className="animate-in fade-in duration-500 flex flex-col flex-1 min-h-0 bg-transparent">
+    <div 
+      className="animate-in fade-in duration-500 flex flex-col flex-1 h-full min-h-0 bg-white text-zinc-950"
+    >
+      
+      {/* Header / Navbar */}
+      <header className="shrink-0 border-none bg-transparent px-4 py-3 shadow-none sm:px-6">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <button
+              onClick={onClose}
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-650 shadow-sm transition-all hover:border-zinc-300 hover:text-zinc-950 cursor-pointer"
+              title="Back to automations"
+            >
+              <CircleChevronLeft size={18} />
+            </button>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={campaignNameState}
+                  onChange={(e) => setCampaignNameState(e.target.value)}
+                  className="bg-transparent border-none font-black text-zinc-950 text-base sm:text-lg focus:ring-0 focus:outline-none p-0 select-all cursor-text rounded max-w-[200px] sm:max-w-xs"
+                  placeholder="Campaign Name"
+                />
+              </div>
+              <p className="mt-0.5 truncate text-[11px] font-semibold text-zinc-500">
+                {strategyLabel} Setup
+              </p>
+            </div>
+          </div>
 
-      {/* Unified chat wizard — full width */}
-      <div className="flex-1 min-h-0 overflow-hidden py-2">
-        <div className="grid h-full min-h-0 grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px] gap-4">
+          <div className="flex items-center gap-3 shrink-0">
+            {/* Connected Account Avatar & Name */}
+            <div className="flex items-center gap-2 bg-transparent border-none p-0 shadow-none">
+              <div className="text-right hidden sm:block shrink-0">
+                <span className="block text-[9px] font-black text-zinc-400 uppercase tracking-wider leading-none">Instagram</span>
+                <span className="text-[11px] font-black text-zinc-750 leading-none">@{activeUsername}</span>
+              </div>
+              <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-400 to-indigo-600 p-[1px] flex items-center justify-center shrink-0">
+                <div className="w-full h-full bg-white rounded-full p-[0.5px]">
+                  <div className="w-full h-full bg-zinc-100 rounded-full flex items-center justify-center text-[9px] font-bold text-zinc-900 overflow-hidden select-none">
+                    {activeProfilePic ? (
+                      <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover" />
+                    ) : (
+                      activeUsername[0]?.toUpperCase()
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Unified chat wizard — centered and responsive */}
+      <div className="flex-1 min-h-0 overflow-hidden py-2 px-4 max-w-[1240px] mx-auto w-full">
+        <div className="grid h-full min-h-0 grid-cols-1 xl:grid-cols-[minmax(0,1fr)_300px] gap-6">
         <CampaignWizard
           values={wizardValues}
           onChange={handleWizardChange}
@@ -190,18 +224,18 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
           onSelectPosts={(selection) => setSelectedPosts(selection)}
           currentPlan={currentPlan}
           onUpgradeClick={onUpgradeClick}
-          campaignName={campaignName}
+          campaignName={campaignNameState}
           onPhaseChange={setWizardPhase}
           onPublish={(keyword, response, opts) => {
-            onPublish(keyword, response, {
+            onPublish(keyword?.trim().toUpperCase(), response, {
               ...opts,
               target_media_ids: selectedPosts.length > 0 ? selectedPosts : null,
-              campaign_name: campaignName
+              campaign_name: campaignNameState
             });
           }}
         />
-          <aside className="hidden xl:flex min-h-0 flex-col bg-transparent overflow-hidden">
-            <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
+          <aside className="hidden xl:flex min-h-0 flex-col justify-center bg-transparent overflow-hidden">
+            <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar flex flex-col justify-center">
               <AutomationPreview
                 keyword={wizardValues.keyword}
                 response={wizardValues.response}
@@ -225,7 +259,7 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
   );
 }
 
-export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, isMasterActive = true, error = null, onToggleActive }) {
+export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, isMasterActive = true, error = null, onToggleActive, currentPlan = "free", onUpgradeClick }) {
   if (error) {
     return (
       <div className="bg-rose-50/80 border border-rose-200 rounded-xl p-8 text-center text-rose-800 font-semibold text-xs sm:text-sm">
@@ -259,16 +293,51 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
 
   return (
     <div className="space-y-5 animate-in fade-in duration-500">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
+      {/* Premium Upgrade Banner Card (Visible for Free & Pro users) */}
+      {currentPlan !== 'viral_scale' && (
+        <div className="bg-gradient-to-r from-[#6366F1] to-indigo-700 text-white rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md relative overflow-hidden animate-in fade-in">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none" />
+          <div className="flex items-start sm:items-center gap-3.5 relative z-10">
+            <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white shrink-0 shadow-inner">
+              <Sparkles size={16} />
+            </div>
+            <div>
+              <h4 className="text-xs sm:text-sm font-bold tracking-tight mb-0.5">
+                {currentPlan === 'free' ? "Scale Your Automations with Creator Pro ⚡" : "Upgrade to Viral Scale Plan 🚀"}
+              </h4>
+              <p className="text-[11px] text-indigo-100 font-medium leading-normal max-w-xl">
+                {currentPlan === 'free' 
+                  ? "Get unlimited automated replies, unlock the Mini Digital Store to sell directly inside DMs, and build premium Link-in-Bio landing pages."
+                  : "Get up to 50,000 monthly automated replies, advanced CRM tracking, and full agency multi-workspace collaboration features."
+                }
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => onUpgradeClick?.(currentPlan === 'free' ? "creator_pro" : "viral_scale")}
+            className="shrink-0 w-full sm:w-auto px-5 py-2 bg-white hover:bg-zinc-50 text-indigo-700 text-[11px] font-bold rounded-xl shadow-md transition-all active:scale-[0.98] cursor-pointer"
+          >
+            Upgrade Plan
+          </button>
+        </div>
+      )}
+
+      <div className="flex flex-row items-center justify-between gap-4 px-1">
         <div>
-          <h3 className="text-2xl sm:text-3xl font-bold text-zinc-950 tracking-tighter">Active Rules</h3>
-          <p className="text-[13px] font-medium text-zinc-500 mt-1">Manage your auto-reply keywords and messages</p>
+          <h3 className="text-xl sm:text-2xl font-bold text-zinc-950 tracking-tight">Active Rules</h3>
+          <p className="text-[12px] font-medium text-zinc-550 mt-0.5">Manage your auto-reply keywords and DM messages</p>
         </div>
 
         <div className="flex items-center gap-3">
-          <span className={`text-[12px] font-bold px-4 py-2 rounded-xl shadow-sm border ${isMasterActive ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-zinc-100 text-zinc-500 border-zinc-200'}`}>
+          <span className={`hidden sm:inline-flex text-[11px] font-black px-3.5 py-2 rounded-xl border ${isMasterActive ? 'bg-emerald-50 text-emerald-700 border-emerald-150 shadow-sm' : 'bg-zinc-50 text-zinc-500 border-zinc-200'}`}>
             {triggers.length} Rules {isMasterActive ? 'Active' : 'Paused'}
           </span>
+          <button
+            onClick={onCreateNew}
+            className="flex items-center gap-1.5 text-xs font-bold text-white bg-[#6366F1] hover:bg-[#4f46e5] px-4 py-2.5 rounded-xl transition-all shadow-md hover:shadow-indigo-500/10 cursor-pointer animate-in fade-in duration-300"
+          >
+            <Plus size={14} strokeWidth={2.5} /> Create Rule
+          </button>
         </div>
       </div>
 
@@ -282,7 +351,7 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
               {/* Top Row: Keyword and Badges */}
               <div className="flex items-center gap-2.5 flex-wrap">
                 <span className="bg-[#6366F1]/10 text-[#6366F1] font-mono text-[13px] font-bold px-3 py-1 rounded-lg border border-[#6366F1]/20">
-                  {t.keyword}
+                  {t.keyword?.toUpperCase()}
                 </span>
                 <span className="px-2.5 py-1 bg-zinc-100 text-zinc-600 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 border border-zinc-200">
                   {t.type === "COMMENT" ? "Comment" : t.type === "DM" ? "DM" : "Story"}

@@ -99,7 +99,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="relative w-full max-w-xl bg-white border border-border rounded-[20px] sm:rounded-[40px] shadow-2xl overflow-hidden"
+        className="relative w-full max-w-xl bg-white border border-border rounded-xl shadow-2xl overflow-hidden"
       >
         {/* Confetti shows up ONLY in Step 4 (Celebration) */}
         {step === 4 && <Confetti />}
@@ -128,7 +128,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                   </div>
                 ) : (
                   <>
-                    <div className="mx-auto w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center overflow-hidden rounded-[20px] sm:rounded-[24px]">
+                    <div className="mx-auto w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center overflow-hidden rounded-xl">
                       <img
                         src="/logo.png"
                         alt="Automixa Logo"

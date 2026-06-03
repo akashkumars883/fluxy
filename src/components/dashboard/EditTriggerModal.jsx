@@ -1,10 +1,20 @@
 "use client";
 
-import { AnimatePresence,motion } from "framer-motion";
-import { ArrowRight,Clock,Rocket,Save,ShieldCheck,X } from "lucide-react";
-import { useEffect,useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { 
+  Clock, Link as LinkIcon, MessageSquare, Rocket, Save, ShieldCheck, Sparkles, Trash2, X 
+} from "lucide-react";
+import { useEffect, useState } from "react";
 
-export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, currentPlan = "free", onUpgradeClick }) {
+export default function EditTriggerModal({ 
+  trigger, 
+  isOpen, 
+  onClose, 
+  onSave, 
+  onDelete, 
+  currentPlan = "free", 
+  onUpgradeClick 
+}) {
   const [keyword, setKeyword] = useState("");
   const [response, setResponse] = useState("");
   const [type, setType] = useState("DM");
@@ -17,12 +27,11 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
   const [buttonText, setButtonText] = useState("");
   const [buttonLink, setButtonLink] = useState("");
   const [campaignName, setCampaignName] = useState("");
-  const [step, setStep] = useState(1);
 
   useEffect(() => {
     if (trigger && isOpen) {
       const t = setTimeout(() => {
-        setKeyword(trigger.keyword || "");
+        setKeyword((trigger.keyword || "").toUpperCase());
         setResponse(trigger.response || "");
         let initialType = trigger.type || "DM";
         if (initialType.startsWith("STORY")) {
@@ -38,7 +47,6 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
         setButtonText(trigger.metadata?.button_text || "");
         setButtonLink(trigger.metadata?.button_link || "");
         setCampaignName(trigger.metadata?.campaign_name || "");
-        setStep(1);
       }, 0);
       return () => clearTimeout(t);
     }
@@ -52,7 +60,7 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
       finalType = trigger.type;
     }
     onSave(trigger.id, {
-      keyword,
+      keyword: keyword.trim().toUpperCase(),
       response,
       type: finalType,
       metadata: {
@@ -74,10 +82,20 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
     });
   };
 
+  const handleDelete = () => {
+    if (onDelete && trigger) {
+      if (confirm(`Are you sure you want to delete this auto-reply rule (${keyword || "Untitled"})? This action cannot be undone.`)) {
+        onDelete(trigger.id);
+        onClose();
+      }
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4">
+          {/* Backdrop */}
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -86,249 +104,294 @@ export default function EditTriggerModal({ trigger, isOpen, onClose, onSave, cur
             className="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm" 
           />
           
+          {/* Modal Container */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.96, y: 10 }}
+            initial={{ opacity: 0, scale: 0.98, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 10 }}
-            className="relative w-full max-w-xl bg-white border border-zinc-200/80 rounded-[20px] sm:rounded-[32px] shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
+            exit={{ opacity: 0, scale: 0.98, y: 10 }}
+            className="relative w-full max-w-xl bg-white border border-zinc-200/80 rounded-xl shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
           >
             {/* Header */}
-            <div className="px-5 sm:px-8 py-5 sm:py-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50 shrink-0">
-               <div className="space-y-1.5">
-                  <div className="flex items-center gap-2.5">
+            <div className="px-5 sm:px-6 py-4 border-b border-zinc-150 flex items-center justify-between bg-zinc-50/50 shrink-0">
+               <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-xl bg-indigo-50 text-[#6366F1] flex items-center justify-center shadow-sm border border-indigo-100">
                       <Rocket size={16} />
                     </div>
-                    <span className="text-[13px] font-medium text-[#6366F1]">Step {step} of 2</span>
+                    <span className="text-[13px] font-bold text-[#6366F1] tracking-tight">Edit Automation Rule</span>
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-semibold text-zinc-900 tracking-tight mt-1">
-                    {step === 1 ? "Configure Trigger" : "Design Response"}
+                  <h2 className="text-lg font-bold text-zinc-900 tracking-tight mt-0.5">
+                    Customize your Keyword Trigger
                   </h2>
                </div>
                <button 
                  onClick={onClose}
-                 className="p-2.5 bg-white border border-zinc-200 rounded-xl text-zinc-500 hover:text-zinc-900 transition-all shadow-sm cursor-pointer hover:bg-zinc-50"
+                 className="p-2 bg-white border border-zinc-200 rounded-xl text-zinc-550 hover:text-zinc-900 transition-all shadow-sm cursor-pointer hover:bg-zinc-50"
                >
-                 <X size={18} />
+                 <X size={16} />
                </button>
             </div>
 
-            <div className="p-4 sm:p-8 space-y-6 sm:space-y-8 overflow-y-auto flex-1 min-h-0 no-scrollbar">
-              <AnimatePresence mode="wait">
-                {step === 1 ? (
-                  <motion.div 
-                    key="step1"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
-                    className="space-y-7"
-                  >
-                    <div className="space-y-3">
-                      <label className="text-sm font-medium text-zinc-700">Trigger Type</label>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        {[
-                          { id: 'COMMENT', label: 'Comment / Reel' },
-                          { id: 'DM', label: 'Inbox DM' },
-                          { id: 'STORY', label: 'Story Tag' }
-                        ].map((t) => {
-                          const isLocked = t.id === 'STORY' && currentPlan === 'free';
-                          return (
-                            <button
-                              key={t.id}
-                              onClick={() => {
-                                if (isLocked) {
-                                  onUpgradeClick?.("story_automator");
-                                  return;
-                                }
-                                setType(t.id);
-                              }}
-                              className={`relative px-4 py-3 rounded-xl text-[14px] font-medium transition-all border ${
-                                type === t.id ? 'bg-[#6366F1] text-white border-[#6366F1] shadow-md shadow-[#6366F1]/20' : 'bg-white text-zinc-600 border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50'
-                              } ${isLocked ? 'opacity-80' : ''}`}
-                            >
-                              <div className="flex items-center justify-center gap-1.5">
-                                {t.label}
-                                {isLocked && <span className="text-[10px]">👑</span>}
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <label className="text-sm font-medium text-zinc-700">Target Keyword</label>
-                      <input 
-                        type="text" 
-                        value={keyword}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setKeyword(val);
-                        }}
-                        placeholder="e.g. ready"
-                        className="w-full bg-white border border-zinc-200 rounded-xl p-3.5 text-base font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm placeholder:text-zinc-400"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-3 p-4 bg-zinc-50/80 rounded-2xl border border-zinc-200/80 hover:border-zinc-300 transition-all">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3.5">
-                          <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-zinc-500 shadow-sm">
-                            <ShieldCheck size={20} strokeWidth={1.5} />
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold text-zinc-900">Follower Gate</p>
-                            <p className="text-[13px] text-zinc-500 font-medium">Only trigger for your followers</p>
-                          </div>
-                        </div>
-                        <button 
+            {/* Scrollable Form Content */}
+            <div className="flex-1 overflow-y-auto no-scrollbar p-5 sm:p-6 space-y-5">
+              
+              {/* SECTION 1: TRIGGER SETUP */}
+              <div className="bg-zinc-50/40 border border-zinc-200/80 rounded-2xl p-4 sm:p-5 space-y-4 hover:border-zinc-300 transition-all">
+                <h3 className="text-xs font-black text-zinc-800 uppercase tracking-wider flex items-center gap-2 border-b border-zinc-100 pb-2.5">
+                  <Sparkles size={14} className="text-[#6366F1]" /> 1. Trigger Setup
+                </h3>
+                
+                {/* Trigger Type Selection */}
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wide">Trigger Type</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { id: 'COMMENT', label: 'Comment' },
+                      { id: 'DM', label: 'Direct DM' },
+                      { id: 'STORY', label: 'Story Tag' }
+                    ].map((t) => {
+                      const isLocked = t.id === 'STORY' && currentPlan === 'free';
+                      return (
+                        <button
+                          key={t.id}
                           type="button"
-                          onClick={() => setFollowerGate(!followerGate)}
-                          className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${followerGate ? 'bg-[#6366F1]' : 'bg-zinc-300'}`}
-                        >
-                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-all ${followerGate ? 'left-6' : 'left-1'}`} />
-                        </button>
-                      </div>
-                      {followerGate && (
-                        <div className="pt-3 border-t border-zinc-200/60 space-y-1.5 animate-in fade-in duration-200">
-                          <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block">
-                            Custom Follow Gate Message
-                          </label>
-                          <input 
-                            type="text"
-                            value={followGateMessage}
-                            onChange={(e) => setFollowGateMessage(e.target.value)}
-                            placeholder="One final step to unlock! 🎁"
-                            className="w-full bg-white border border-zinc-200 rounded-xl p-3 text-sm font-medium outline-none focus:border-[#6366F1] transition-all shadow-sm"
-                          />
-                        </div>
-                      )}
-                    </div>
-
-                    {type === "STORY" && (
-                      <div className="flex items-center justify-between p-4 bg-zinc-50/80 rounded-2xl border border-zinc-200/80 hover:border-zinc-300 transition-all animate-in fade-in slide-in-from-top-2">
-                        <div className="flex items-center gap-3.5">
-                          <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-zinc-500 shadow-sm relative">
-                            <Clock size={20} strokeWidth={1.5} />
-                            {currentPlan === 'free' && <span className="absolute -top-1 -right-1 text-[10px]">👑</span>}
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold text-zinc-900">24-Hour Cooldown</p>
-                            <p className="text-[13px] text-zinc-500 font-medium">Reply once per 24h per user</p>
-                          </div>
-                        </div>
-                        <button 
                           onClick={() => {
-                            if (currentPlan === 'free') {
-                              onUpgradeClick?.("cooldown");
+                            if (isLocked) {
+                              onUpgradeClick?.("story_automator");
                               return;
                             }
-                            setCooldownGate(!cooldownGate);
+                            setType(t.id);
                           }}
-                          className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${cooldownGate ? 'bg-[#6366F1]' : 'bg-zinc-300'}`}
+                          className={`relative py-2.5 rounded-xl text-xs font-semibold transition-all border flex items-center justify-center gap-1.5 cursor-pointer ${
+                            type === t.id 
+                              ? 'bg-[#6366F1] text-white border-[#6366F1] shadow-md shadow-indigo-500/10' 
+                              : 'bg-white text-zinc-600 border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50'
+                          }`}
                         >
-                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-all ${cooldownGate ? 'left-6' : 'left-1'}`} />
+                          <span>{t.label}</span>
+                          {isLocked && <span className="text-[10px]" title="Premium Feature">👑</span>}
                         </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Target Keyword */}
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wide">Target Keyword</label>
+                  <input 
+                    type="text" 
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value.toUpperCase())}
+                    placeholder="e.g. READY"
+                    className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all shadow-sm placeholder:text-zinc-400 uppercase"
+                  />
+                </div>
+
+                {/* Toggles (Follower Gate & Cooldown Gate) */}
+                <div className="grid grid-cols-1 gap-2.5 pt-1">
+                  {/* Follower Gate Toggle */}
+                  <div className="flex flex-col gap-2 p-3 bg-white border border-zinc-200/80 rounded-xl">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-500 shrink-0">
+                          <ShieldCheck size={16} />
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-zinc-800 leading-tight">Follower Gate</p>
+                          <p className="text-[10px] text-zinc-400 font-medium">Only trigger for your followers</p>
+                        </div>
+                      </div>
+                      <button 
+                        type="button"
+                        onClick={() => setFollowerGate(!followerGate)}
+                        className={`w-9 h-5.5 rounded-full transition-all relative shrink-0 ${followerGate ? 'bg-[#6366F1]' : 'bg-zinc-300'}`}
+                      >
+                        <div className={`absolute top-0.5 w-4.5 h-4.5 bg-white rounded-full shadow-sm transition-all ${followerGate ? 'left-4' : 'left-0.5'}`} />
+                      </button>
+                    </div>
+                    {followerGate && (
+                      <div className="pt-2 border-t border-zinc-100 space-y-1 animate-in fade-in duration-200">
+                        <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Custom Follow Gate Message</label>
+                        <input 
+                          type="text"
+                          value={followGateMessage}
+                          onChange={(e) => setFollowGateMessage(e.target.value)}
+                          placeholder="One final step to unlock! 🎁"
+                          className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:border-[#6366F1] focus:bg-white transition-all shadow-xs"
+                        />
                       </div>
                     )}
-                  </motion.div>
-                ) : (
-                  <motion.div 
-                    key="step2"
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 10 }}
-                    className="space-y-7"
-                  >
-                    {type === 'COMMENT' && (
-                      <>
-                        <div className="space-y-3">
-                          <label className="text-sm font-medium text-zinc-700">Public Comment Reply</label>
-                          <input 
-                            type="text" 
-                            value={publicReply}
-                            onChange={(e) => setPublicReply(e.target.value)}
-                            placeholder="Check your DMs! 🚀"
-                            className="w-full bg-white border border-zinc-200 rounded-xl p-3.5 text-[15px] font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm placeholder:text-zinc-400"
-                          />
-                        </div>
+                  </div>
 
-                        <div className="space-y-3">
-                          <label className="text-sm font-medium text-zinc-700">Intro DM Message (Greeting)</label>
-                          <textarea 
-                            rows={2}
-                            value={introTitle}
-                            onChange={(e) => setIntroTitle(e.target.value)}
-                            placeholder="Hey {name}! 👋 Thanks for the comment! Tap the button below..."
-                            className="w-full bg-white border border-zinc-200 rounded-xl p-3.5 text-[15px] font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm resize-none placeholder:text-zinc-400"
-                          />
-                        </div>
+                  {/* Cooldown Gate Toggle */}
+                  <div className="flex items-center justify-between p-3 bg-white border border-zinc-200/80 rounded-xl">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-500 shrink-0">
+                        <Clock size={16} />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-zinc-800 leading-tight">Cooldown Gate (24h)</p>
+                        <p className="text-[10px] text-zinc-400 font-medium">Limit triggers per user to once a day</p>
+                      </div>
+                    </div>
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        if (currentPlan === "free") {
+                          onUpgradeClick?.("cooldown");
+                          return;
+                        }
+                        setCooldownGate(!cooldownGate);
+                      }}
+                      className={`w-9 h-5.5 rounded-full transition-all relative shrink-0 ${cooldownGate ? 'bg-[#6366F1]' : 'bg-zinc-300'} ${currentPlan === "free" ? "opacity-60" : ""}`}
+                    >
+                      <div className={`absolute top-0.5 w-4.5 h-4.5 bg-white rounded-full shadow-sm transition-all ${cooldownGate ? 'left-4' : 'left-0.5'}`} />
+                      {currentPlan === "free" && <span className="absolute -top-1 -right-1 text-[8px]">👑</span>}
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-                        <div className="space-y-3">
-                          <label className="text-sm font-medium text-zinc-700">Intro Button Text</label>
-                          <input 
-                            type="text" 
-                            maxLength={20}
-                            value={introButtonText}
-                            onChange={(e) => setIntroButtonText(e.target.value)}
-                            placeholder="Send me the access"
-                            className="w-full bg-white border border-zinc-200 rounded-xl p-3.5 text-[15px] font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm placeholder:text-zinc-400"
-                          />
-                        </div>
-                      </>
-                    )}
+              {/* SECTION 2: AUTOMATION RESPONSE */}
+              <div className="bg-zinc-50/40 border border-zinc-200/80 rounded-2xl p-4 sm:p-5 space-y-4 hover:border-zinc-300 transition-all">
+                <h3 className="text-xs font-black text-zinc-800 uppercase tracking-wider flex items-center gap-2 border-b border-zinc-100 pb-2.5">
+                  <MessageSquare size={14} className="text-[#6366F1]" /> 2. Automation Response
+                </h3>
 
-                    <div className="space-y-3">
-                      <label className="text-sm font-medium text-zinc-700">DM Response Message</label>
+                {type === 'COMMENT' && (
+                  <>
+                    {/* Public Reply to Comment */}
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wide">Public Comment Reply</label>
+                      <input 
+                        type="text" 
+                        value={publicReply}
+                        onChange={(e) => setPublicReply(e.target.value)}
+                        placeholder="e.g. Check your DMs! 🚀"
+                        className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all shadow-sm"
+                      />
+                      <p className="text-[10px] text-zinc-400 font-medium">This reply will be published directly under the follower&apos;s comment.</p>
+                    </div>
+
+                    {/* Intro Greeting DM Message */}
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wide">Intro DM Greeting Message</label>
                       <textarea 
-                        rows={5}
-                        value={response}
-                        onChange={(e) => setResponse(e.target.value)}
-                        placeholder="Type your message here..."
-                        className="w-full bg-white border border-zinc-200 rounded-2xl p-4 text-[15px] font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm resize-none placeholder:text-zinc-400"
+                        rows={2.5}
+                        value={introTitle}
+                        onChange={(e) => setIntroTitle(e.target.value)}
+                        placeholder="Hey {name}! 👋 Tap the button below to claim..."
+                        className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all shadow-sm resize-none"
+                      />
+                      <p className="text-[10px] text-zinc-400 font-medium">Variables: Use <code className="bg-zinc-100 px-1 py-0.5 rounded font-mono text-[9px]">{'{name}'}</code> to personalize.</p>
+                    </div>
+
+                    {/* Intro Button Text */}
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wide">Intro Button Label</label>
+                      <input 
+                        type="text" 
+                        maxLength={20}
+                        value={introButtonText}
+                        onChange={(e) => setIntroButtonText(e.target.value)}
+                        placeholder="Send me the access"
+                        className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all shadow-sm"
                       />
                     </div>
-
-                    <div className="space-y-3 pt-2">
-                       <label className="text-sm font-medium text-zinc-700">Call to Action (Optional)</label>
-                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          <input 
-                            type="text" 
-                            placeholder="Button Text"
-                            value={buttonText}
-                            onChange={(e) => setButtonText(e.target.value)}
-                            className="bg-white border border-zinc-200 rounded-xl p-3.5 text-[14px] font-medium outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm placeholder:text-zinc-400"
-                          />
-                          <input 
-                            type="text" 
-                            placeholder="Link URL"
-                            value={buttonLink}
-                            onChange={(e) => setButtonLink(e.target.value)}
-                            className="bg-white border border-zinc-200 rounded-xl p-3.5 text-[14px] font-medium outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all shadow-sm placeholder:text-zinc-400"
-                          />
-                       </div>
-                    </div>
-                  </motion.div>
+                  </>
                 )}
-              </AnimatePresence>
+
+                {/* Main DM Response Message */}
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wide">
+                    {type === 'COMMENT' ? 'DM Deliverable Message' : 'DM Response Message'}
+                  </label>
+                  <textarea 
+                    rows={4.5}
+                    value={response}
+                    onChange={(e) => setResponse(e.target.value)}
+                    placeholder="Type your message here..."
+                    className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all shadow-sm resize-none"
+                  />
+                </div>
+              </div>
+
+              {/* SECTION 3: CALL TO ACTION */}
+              <div className="bg-zinc-50/40 border border-zinc-200/80 rounded-2xl p-4 sm:p-5 space-y-4 hover:border-zinc-300 transition-all pb-6">
+                <h3 className="text-xs font-black text-zinc-800 uppercase tracking-wider flex items-center gap-2 border-b border-zinc-100 pb-2.5">
+                  <LinkIcon size={14} className="text-[#6366F1]" /> 3. Call to Action (Optional)
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wide">Button Text</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. Claim Discount"
+                      value={buttonText}
+                      onChange={(e) => setButtonText(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-xs sm:text-sm font-medium outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all shadow-sm"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wide">Button Link URL</label>
+                    <input 
+                      type="url" 
+                      placeholder="https://yourstore.com/deal"
+                      value={buttonLink}
+                      onChange={(e) => setButtonLink(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-xs sm:text-sm font-medium outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all shadow-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wide">Campaign Name (Internal)</label>
+                  <input 
+                    type="text" 
+                    placeholder="e.g. Summer Promo 2026"
+                    value={campaignName}
+                    onChange={(e) => setCampaignName(e.target.value)}
+                    className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all shadow-sm"
+                  />
+                </div>
+              </div>
+
             </div>
 
             {/* Footer */}
-            <div className="px-5 sm:px-8 py-4 sm:py-5 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between shrink-0 rounded-b-[20px] sm:rounded-b-[32px]">
-              <button 
-                onClick={() => step === 1 ? onClose() : setStep(1)}
-                className="px-5 py-2.5 text-[14px] font-medium text-zinc-500 hover:text-zinc-800 hover:bg-zinc-200/50 rounded-xl transition-all cursor-pointer"
-              >
-                {step === 1 ? "Cancel" : "Back"}
-              </button>
+            <div className="px-5 sm:px-6 py-4 bg-zinc-50 border-t border-zinc-150 flex items-center justify-between shrink-0 rounded-b-xl">
+              {/* Optional Delete Button */}
+              {onDelete ? (
+                <button 
+                  type="button"
+                  onClick={handleDelete}
+                  className="px-4 py-2.5 bg-white border border-rose-200 hover:border-rose-300 hover:bg-rose-50 rounded-xl text-xs font-semibold text-rose-600 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                >
+                  <Trash2 size={14} /> <span className="hidden sm:inline">Delete Rule</span>
+                </button>
+              ) : (
+                <div />
+              )}
               
-              <button 
-                onClick={() => step === 1 ? setStep(2) : handleSave()}
-                className="px-6 py-3 bg-[#6366F1] text-white rounded-xl text-[14px] font-medium shadow-md shadow-[#6366F1]/20 hover:shadow-lg hover:shadow-[#6366F1]/30 hover:bg-[#5356e3] hover:-translate-y-0.5 transition-all flex items-center gap-2 cursor-pointer"
-              >
-                {step === 1 ? "Continue" : "Save Automation"}
-                {step === 1 ? <ArrowRight size={16} /> : <Save size={16} />}
-              </button>
+              <div className="flex items-center gap-2.5">
+                <button 
+                  type="button"
+                  onClick={onClose}
+                  className="px-5 py-2.5 text-xs font-bold text-zinc-500 hover:text-zinc-800 hover:bg-zinc-200/50 rounded-xl transition-all cursor-pointer"
+                >
+                  Cancel
+                </button>
+                
+                <button 
+                  type="button"
+                  onClick={handleSave}
+                  className="px-6 py-2.5 bg-[#6366F1] hover:bg-[#4f46e5] text-white rounded-xl text-xs font-bold shadow-md shadow-[#6366F1]/10 hover:shadow-lg hover:shadow-indigo-500/20 hover:-translate-y-0.5 transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  Save Automation <Save size={14} />
+                </button>
+              </div>
             </div>
           </motion.div>
         </div>

@@ -5,7 +5,7 @@ import { ArrowRight, Check, Clock, Copy, ExternalLink, Trash2, Users, Link as Li
 import { useEffect, useState } from "react";
 import * as logger from "@/lib/logger";
 
-export default function PartnerDashboard({ currentPlan = "free" }) {
+export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick }) {
   const [appStatus, setAppStatus] = useState("approved");
 
   const updateAppStatus = (status) => {
@@ -238,7 +238,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
 
       {/* STATE 1: UNAPPLIED */}
       {appStatus === "unapplied" && (
-        <div className="bg-white border border-zinc-200/80 rounded-2xl p-10 shadow-sm text-center space-y-4 max-w-2xl mx-auto">
+        <div className="bg-white border border-zinc-200/80 rounded-xl p-10 shadow-md shadow-zinc-200/5 text-center space-y-4 max-w-2xl mx-auto">
           <div className="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto border border-indigo-100">
             <Users size={26} />
           </div>
@@ -259,7 +259,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
 
       {/* STATE 2: PENDING */}
       {appStatus === "pending" && (
-        <div className="bg-white border border-amber-200/80 rounded-2xl p-8 shadow-sm text-center space-y-4 max-w-xl mx-auto relative overflow-hidden">
+        <div className="bg-white border border-amber-200/80 rounded-xl p-8 shadow-md shadow-zinc-200/5 text-center space-y-4 max-w-xl mx-auto relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-amber-400" />
           <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto border border-amber-100">
             <Clock size={26} className="animate-pulse" />
@@ -278,7 +278,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
         <div className="space-y-4">
 
           {/* Hero Banner */}
-          <div className="relative rounded-[20px] sm:rounded-[24px] p-4 sm:p-8 text-white shadow-md flex flex-col justify-center overflow-hidden group mb-2">
+          <div className="relative rounded-xl p-4 sm:p-8 text-white shadow-md flex flex-col justify-center overflow-hidden group mb-2">
             <div className="absolute inset-0 z-0">
               <div className="absolute inset-0 bg-gradient-to-r from-[#6366F1] via-indigo-800 to-purple-900" />
               <div className="absolute inset-0 bg-black/10 mix-blend-overlay" />
@@ -306,8 +306,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
 
           {/* Metrics Row (Overview Style) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-500/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
+            <div className="bg-white rounded-xl p-4 sm:p-5 flex flex-col justify-between shadow-md shadow-zinc-200/10 border border-zinc-200/80 hover:shadow-lg transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
               <div className="flex items-center justify-between mb-4 relative z-10">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-emerald-200 shadow-sm transition-all duration-500 group-hover:scale-110 text-emerald-600 bg-emerald-50">
                   <DollarSign size={18} />
@@ -323,8 +322,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
               </div>
             </div>
 
-            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 flex flex-col justify-between shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-500/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
+            <div className="bg-white rounded-xl p-4 sm:p-5 flex flex-col justify-between shadow-md shadow-zinc-200/10 border border-zinc-200/80 hover:shadow-lg transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
               <div className="flex items-center justify-between mb-4 relative z-10">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-blue-200 shadow-sm transition-all duration-500 group-hover:scale-110 text-blue-600 bg-blue-50">
                   <Users size={18} />
@@ -345,7 +343,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 items-stretch">
 
             {/* Left Card: Promotion & Links */}
-            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-transparent">
+            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-md shadow-zinc-200/5 border border-zinc-200/80 hover:shadow-lg transition-all duration-300 flex flex-col h-full relative">
               <h3 className="font-bold text-xl text-zinc-950 tracking-tight flex items-center gap-2 mb-6 border-b border-zinc-100 pb-4">
                 <LinkIcon size={20} className="text-[#6366F1]" /> Promotion & Links
               </h3>
@@ -440,13 +438,13 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
                                 <div className="flex items-center justify-end gap-1.5">
                                   <button
                                     onClick={() => handleCopyCode(item.code)}
-                                    className="p-1.5 text-zinc-400 hover:text-indigo-600 bg-white border border-zinc-200 hover:border-indigo-200 rounded-lg transition-colors shadow-sm"
+                                    className="p-1.5 text-zinc-400 hover:text-indigo-600 bg-white border border-zinc-200 hover:border-indigo-200 rounded-xl transition-colors shadow-sm"
                                   >
                                     {copiedCode === item.code ? <Check size={13} /> : <Copy size={13} />}
                                   </button>
                                   <button
                                     onClick={() => handleDeleteCode(item.code)}
-                                    className="p-1.5 text-zinc-400 hover:text-rose-600 bg-white border border-zinc-200 hover:border-rose-200 rounded-lg transition-colors shadow-sm"
+                                    className="p-1.5 text-zinc-400 hover:text-rose-600 bg-white border border-zinc-200 hover:border-rose-200 rounded-xl transition-colors shadow-sm"
                                   >
                                     <Trash2 size={13} />
                                   </button>
@@ -463,7 +461,7 @@ export default function PartnerDashboard({ currentPlan = "free" }) {
             </div>
 
             {/* Right Card: Earnings & Tiers */}
-            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 shadow-lg shadow-zinc-200/20 hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-transparent">
+            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-md shadow-zinc-200/5 border border-zinc-200/80 hover:shadow-lg transition-all duration-300 flex flex-col h-full relative">
               <h3 className="font-bold text-xl text-zinc-950 tracking-tight flex items-center justify-between gap-2 mb-6 border-b border-zinc-100 pb-4">
                 <div className="flex items-center gap-2">
                   <Award size={20} className="text-emerald-500" /> Earnings & Tiers
