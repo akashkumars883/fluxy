@@ -69,7 +69,7 @@ const AUTOMATION_TYPES = [
 
 const KEYWORD_SUGGESTIONS = ["*", "price", "link", "guide", "yes", "vip", "info"];
 const DM_SUGGESTIONS = ["Here is the link! 🔗", "Sent it to you 📬", "Check your DMs!", "Happy to help! 😊"];
-const PUBLIC_REPLY_SUGGESTIONS = ["Sent! Check DMs 📬", "Done! ✅", "Just messaged you!", "Check your request!"];
+const PUBLIC_REPLY_SUGGESTIONS = ["Check your DMs", "Check your message requests", "Just messaged you", "Check your inbox"];
 
 export default function CampaignWizard({
   onPublish,
@@ -118,7 +118,7 @@ export default function CampaignWizard({
   const [tempBtnText, setTempBtnText] = useState("");
   const [tempBtnLink, setTempBtnLink] = useState("");
   const [tempPublicReply, setTempPublicReply] = useState("");
-  const [publicReplyVariants, setPublicReplyVariants] = useState(["Sent! Check DMs 📬"]);
+  const [publicReplyVariants, setPublicReplyVariants] = useState(["Check your DMs"]);
   const [tempFaqs, setTempFaqs] = useState([{ q: "", a: "" }]);
   const [storyCondition, setStoryCondition] = useState("ANY");
   const [storyTriggerType, setStoryTriggerType] = useState("REPLY");
@@ -195,7 +195,7 @@ export default function CampaignWizard({
         onChange({
           keyword: (data.keyword || "OFFER").toUpperCase(),
           response: data.response || "Here is your access!",
-          publicReply: [data.publicReply || "Done! Check your DMs 📬"],
+          publicReply: [data.publicReply || "Check your DMs"],
           buttonText: data.buttonText || "Get Access",
           buttonLink: data.buttonLink || "https://example.com",
           followerGate: !!data.followerGate,
@@ -210,7 +210,7 @@ export default function CampaignWizard({
         setTempBtnText("");
         setTempBtnLink("");
         setTempPublicReply("");
-        setPublicReplyVariants([data.publicReply || "Done! Check your DMs 📬"]);
+        setPublicReplyVariants([data.publicReply || "Check your DMs"]);
 
         setAiBuildPrompt("");
 
