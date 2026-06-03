@@ -107,13 +107,22 @@ export async function GET(request) {
     const username = profile.username || `instagram_${instagramId}`;
     const accountType = "BUSINESS";
 
-    // 6. Subscribe the Facebook Page to Webhooks
+    // 6. Subscribe the Facebook Page to Webhooks (for DMs via FB Messenger)
     console.log(`Subscribing Facebook Page ID: ${pageId} to Webhooks...`);
     const subscriptionResult = await MetaService.subscribePageToWebhooks(pageId, pageToken);
     if (!subscriptionResult.success) {
-      console.warn(`⚠️ Webhook Subscription Warning for ${username}:`, subscriptionResult.error);
+      console.warn(`⚠️ FB Page Webhook Subscription Warning for ${username}:`, subscriptionResult.error);
     } else {
-      console.log(`✅ Webhook Subscription Successful for ${username} (${instagramId})`);
+      console.log(`✅ FB Page Webhook Subscription Successful for ${username}`);
+    }
+
+    // 7. Subscribe the Instagram Business Account to Webhooks (for Comments + IG DMs)
+    console.log(`Subscribing Instagram Business Account ID: ${instagramId} to Webhooks...`);
+    const igSubscriptionResult = await MetaService.subscribeIgToWebhooks(instagramId, pageToken);
+    if (!igSubscriptionResult.success) {
+      console.warn(`⚠️ IG Webhook Subscription Warning for ${username}:`, igSubscriptionResult.error);
+    } else {
+      console.log(`✅ IG Webhook Subscription Successful for ${username} (${instagramId})`);
     }
 
     const encryptedToken = encryptToken(pageToken);

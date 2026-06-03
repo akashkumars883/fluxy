@@ -3,12 +3,15 @@ const BASE_URL = `https://graph.facebook.com/${GRAPH_API_VERSION}`;
 const INSTAGRAM_AUTH_URL = "https://api.instagram.com/oauth/access_token";
 const INSTAGRAM_GRAPH_BASE_URL = `https://graph.instagram.com/${GRAPH_API_VERSION}`;
 const DEFAULT_TIMEOUT_MS = 15000;
+// Fields valid for Facebook Page webhook subscription
+// Note: "comments" is NOT valid here — Instagram comments come via Instagram-level subscription
 const PAGE_WEBHOOK_SUBSCRIBED_FIELDS = [
   "messages",
   "messaging_postbacks",
   "messaging_optins",
   "message_reactions",
   "feed",
+  "mention",
 ];
 
 function getGraphBaseUrl(token) {
@@ -638,6 +641,35 @@ export const MetaService = {
       return { success: true, data };
     } catch (error) {
       console.error("Meta API - subscribePageToWebhooks Error:", error.message);
+      return { success: false, error: error.message };
+    }
+  },
+
+  /**
+   * Subscribe the Instagram Business account to Instagram-level webhooks.
+   * This is required for comments + DM events from Instagram (separate from FB Page subscription).
+   */
+  subscribeIgToWebhooks: async (igBusinessId, pageToken) => {
+    try {
+      const { response, data } = await fetchJson(
+        `${INSTAGRAM_GRAPH_BASE_URL}/${igBusinessId}/subscribed_apps`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            access_token: pageToken,
+            subscribed_fields: "comments,messages,messaging_postbacks,message_reactions"
+          })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(data?.error?.message || "Failed to subscribe IG account to webhooks");
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      console.error("Meta API - subscribeIgToWebhooks Error:", error.message);
       return { success: false, error: error.message };
     }
   }

@@ -47,7 +47,7 @@ export async function GET(request) {
   });
 
   // Use traditional Facebook Login flow matching the approved Meta Developer permissions
-  const fbAuthUrl = `https://www.facebook.com/v19.0/dialog/oauth?${authParams.toString()}`;
+  const fbAuthUrl = `https://www.facebook.com/v21.0/dialog/oauth?${authParams.toString()}`;
 
   const response = NextResponse.redirect(fbAuthUrl);
   response.cookies.set("automixa_meta_oauth_state", nonce, {
