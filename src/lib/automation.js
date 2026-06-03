@@ -422,8 +422,23 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         match = triggers.find(t => t.keyword === "*" || t.keyword === "DEFAULT");
       }
     }
+    if (!match) {
+      try {
+        await supabaseAdmin.from("automation_history").insert({
+          automation_id: automation.id,
+          sender_id: senderId,
+          sender_name: userName || "there",
+          type: type || "COMMENT",
+          keyword: text ? text.substring(0, 100) : "NO_MATCH",
+          status: "NO_MATCH",
+          metadata: { error: "No matching trigger rules found.", text: text, comment_id: commentId, media_id: mediaId }
+        });
+      } catch (e) {
+        console.error("❌ Failed logging no_match event:", e.message);
+      }
 
-    if (!match) return { success: false, reason: "no_trigger_match" };
+      return { success: false, reason: "no_trigger_match" };
+    }
 
     // --- STORY/CAMPAIGN COOLDOWN CHECK (24-Hour Cooldown) ---
     if (match.metadata?.cooldown_gate === true) {

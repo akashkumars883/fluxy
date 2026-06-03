@@ -652,7 +652,7 @@ export const MetaService = {
   subscribeIgToWebhooks: async (igBusinessId, pageToken) => {
     try {
       const { response, data } = await fetchJson(
-        `${INSTAGRAM_GRAPH_BASE_URL}/${igBusinessId}/subscribed_apps`,
+        `${BASE_URL}/${igBusinessId}/subscribed_apps`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

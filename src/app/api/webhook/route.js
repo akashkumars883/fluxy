@@ -55,12 +55,12 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
-  // console.log("📥 [Incoming Webhook] Received POST request at /api/webhook");
+  console.log("📥 [Incoming Webhook] Received POST request at /api/webhook");
 
   let rawBodyBuffer;
   try {
     rawBodyBuffer = Buffer.from(await req.arrayBuffer());
-    // console.log("📥 [Incoming Webhook] Payload:", rawBody);
+    console.log("📥 [Incoming Webhook] Payload:", rawBodyBuffer.toString("utf8"));
   } catch (err) {
     console.error("❌ [Incoming Webhook] Failed to read body:", err.message);
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
