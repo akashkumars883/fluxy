@@ -66,6 +66,7 @@ function getInitialOnboardingState() {
       connectedAccount: {
         username: params.get("account") || "instagram",
         igBusinessId: params.get("ig") || "",
+        profilePictureUrl: params.get("profile_pic") || "",
       },
     };
   }

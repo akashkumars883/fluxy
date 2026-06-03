@@ -152,7 +152,7 @@ export async function GET(request) {
     }
 
     return NextResponse.redirect(
-      `${origin}/dashboard?success=instagram_connected&account=${encodeURIComponent(username)}&ig=${encodeURIComponent(instagramId)}&automation=${encodeURIComponent(savedAutomation?.id || "")}`
+      `${origin}/dashboard?success=instagram_connected&account=${encodeURIComponent(username)}&ig=${encodeURIComponent(instagramId)}&automation=${encodeURIComponent(savedAutomation?.id || "")}&profile_pic=${encodeURIComponent(profile.profile_picture_url || "")}`
     );
 
   } catch (err) {

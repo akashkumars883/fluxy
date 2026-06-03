@@ -8,42 +8,86 @@ import * as logger from "@/lib/logger";
 
 // Custom premium CSS-based confetti using Framer Motion
 const Confetti = () => {
-  const colors = ["#6366F1", "#EC4899", "#10B981", "#F59E0B", "#3B82F6", "#B4D3B2"];
-  return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-50">
-      {Array.from({ length: 50 }).map((_, i) => {
-        const size = ((i * 7) % 10) + 6;
-        const color = colors[i % colors.length];
-        const delay = ((i * 11) % 15) / 10;
-        const duration = ((i * 13) % 25) / 10 + 2;
-        const xStart = (i * 19) % 100;
-        const rotation = ((i * 29) % 720) - 360;
+  const colors = ["#6366F1", "#EC4899", "#10B981", "#F59E0B", "#3B82F6", "#EF4444", "#A855F7"];
+  
+  // We generate 80 paper cutting particles
+  const particles = Array.from({ length: 80 }).map((_, i) => {
+    // Random angle from 0 to 360 degrees (spread in all directions)
+    const angle = Math.random() * 2 * Math.PI;
+    // Radial burst distance from center (100px to 450px)
+    const distance = Math.random() * 320 + 60;
+    const xDest = Math.cos(angle) * distance;
+    const yDest = Math.sin(angle) * distance;
+    
+    // Gravity simulation: after initial burst, it drifts down
+    const gravity = Math.random() * 150 + 150;
+    
+    // Rectangular paper-cutting dimensions
+    const width = Math.random() * 6 + 10;   // 10px to 16px
+    const height = Math.random() * 4 + 5;   // 5px to 9px
+    const color = colors[i % colors.length];
+    
+    // Random staggered delay to make it look like an explosion with trailing pieces
+    const delay = Math.random() * 0.2;
+    const duration = Math.random() * 1.5 + 1.2; // 1.2s to 2.7s
+    const rotation = Math.random() * 1080 - 540; // up to 3 full spins
 
-        return (
-          <motion.div
-            key={i}
-            initial={{ y: -20, x: `${xStart}%`, scale: 0, rotate: 0, opacity: 1 }}
-            animate={{
-              y: 700,
-              rotate: rotation,
-              opacity: [1, 1, 0],
-              scale: [0, 1, 1, 0.5]
-            }}
-            transition={{
-              duration: duration,
-              delay: delay,
-              ease: "easeOut",
-              repeat: Infinity
-            }}
-            className="absolute rounded-sm"
-            style={{
-              width: size,
-              height: size,
-              backgroundColor: color,
-            }}
-          />
-        );
-      })}
+    return {
+      id: i,
+      xDest,
+      yDest,
+      yFinal: yDest + gravity,
+      width,
+      height,
+      color,
+      delay,
+      duration,
+      rotation,
+    };
+  });
+
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
+      {particles.map((p) => (
+        <motion.div
+          key={p.id}
+          initial={{ 
+            x: 0, 
+            y: 0, 
+            scale: 0.1, 
+            rotate: 0, 
+            rotateX: 0, 
+            rotateY: 0, 
+            opacity: 1,
+            left: "50%",
+            top: "50%"
+          }}
+          animate={{
+            x: p.xDest,
+            // Array keyframes: shoots outward to yDest, then drifts down to yFinal
+            y: [p.yDest, p.yFinal],
+            scale: [0.1, 1, 1, 0.6],
+            rotate: p.rotation,
+            rotateX: p.rotation * 1.2,
+            rotateY: p.rotation * 0.8,
+            opacity: [1, 1, 0.7, 0]
+          }}
+          transition={{
+            duration: p.duration,
+            delay: p.delay,
+            ease: "easeOut",
+            repeat: 0 // play only once
+          }}
+          className="absolute"
+          style={{
+            width: p.width,
+            height: p.height,
+            backgroundColor: p.color,
+            borderRadius: "1px", // rectangular paper cuts
+            transformOrigin: "center"
+          }}
+        />
+      ))}
     </div>
   );
 };
@@ -94,6 +138,9 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
         className="fixed inset-0 bg-zinc-950/40 backdrop-blur-xl"
       />
 
+      {/* Confetti shows up ONLY in Step 4 (Celebration) */}
+      {step === 4 && <Confetti />}
+
       {/* Modal Content */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -101,9 +148,6 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         className="relative w-full max-w-xl bg-white border border-border rounded-xl shadow-2xl overflow-hidden"
       >
-        {/* Confetti shows up ONLY in Step 4 (Celebration) */}
-        {step === 4 && <Confetti />}
-
         {/* Glow effects */}
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-[80px] pointer-events-none" />
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink/5 rounded-full blur-[80px] pointer-events-none" />
@@ -182,14 +226,29 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                 exit={{ opacity: 0 }}
                 className="space-y-5 sm:space-y-6 text-center py-2 sm:py-6 z-20 relative"
               >
-                {/* Glowing Success Checkmark */}
+                {/* Connected Account Profile Picture / Avatar */}
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 12 }}
-                  className="w-20 h-20 sm:w-24 sm:h-24 bg-emerald-500 text-white rounded-full mx-auto flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.4)]"
+                  className="relative w-24 h-24 mx-auto"
                 >
-                  <CheckCircle2 className="w-10 h-10 sm:w-14 sm:h-14 stroke-[2.5]" />
+                  <div className="w-full h-full rounded-full overflow-hidden border-[4px] border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.3)] bg-zinc-50 flex items-center justify-center">
+                    <img
+                      src={connectedAccount?.profilePictureUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(connectedAccount?.username || "User")}&background=6366f1&color=fff&size=150`}
+                      alt={connectedAccount?.username || "Connected Account"}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(connectedAccount?.username || "User")}&background=6366f1&color=fff&size=150`;
+                      }}
+                    />
+                  </div>
+                  {/* Small Success Badge */}
+                  <div className="absolute bottom-0 right-0 w-8 h-8 bg-emerald-500 rounded-full border-4 border-white flex items-center justify-center shadow-md">
+                    <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
                 </motion.div>
 
                 <div className="space-y-2 sm:space-y-3">
