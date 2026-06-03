@@ -573,7 +573,6 @@ export default function Dashboard() {
     { id: "audience", label: "Audience", icon: Users, reqPlan: "free" },
     { id: "store", label: "Mini Store", icon: Package, reqPlan: "creator_pro" },
     { id: "smart_bio", label: "Smart Bio", icon: Link2, reqPlan: "creator_pro" },
-    { id: "analytics", label: "Analytics", icon: BarChart2, reqPlan: "free" },
     { id: "partner", label: "Partner Program", icon: Sparkles, reqPlan: "free" },
     { id: "settings", label: "Settings", icon: Settings, reqPlan: "free" },
   ].map(item => {
@@ -613,10 +612,9 @@ export default function Dashboard() {
         : activeTab === "store" ? "Mini Store"
           : activeTab === "smart_bio" ? "Smart Bio"
             : activeTab === "crm" ? "CRM"
-              : activeTab === "analytics" ? "Analytics"
-                : activeTab === "settings" ? "Settings"
-                  : activeTab === "partner" ? "Partner Program"
-                    : activeTab;
+              : activeTab === "settings" ? "Settings"
+                : activeTab === "partner" ? "Partner Program"
+                  : activeTab;
 
   return (
     <AppShell>
@@ -748,33 +746,7 @@ export default function Dashboard() {
                       </Button>
                     )}
 
-                    {activeTab === "analytics" && (
-                      <div className="flex items-center gap-2">
-                        <div className="bg-white border border-zinc-200 rounded-xl p-0.5 flex items-center shadow-sm">
-                          {[
-                            { id: "7d", label: "7d" },
-                            { id: "30d", label: "30d" },
-                            { id: "all", label: "All" }
-                          ].map((t) => (
-                            <button
-                              key={t.id}
-                              onClick={() => setTimeRange(t.id)}
-                              className={`px-2 py-0.5 rounded-xl text-[9px] font-bold uppercase tracking-wide transition-all ${timeRange === t.id ? "bg-zinc-950 text-white shadow-sm" : "text-zinc-400 hover:text-zinc-800"
-                                }`}
-                            >
-                              {t.label}
-                            </button>
-                          ))}
-                        </div>
-                        <Button
-                          onClick={handleExportAnalytics}
-                          variant="primary"
-                          className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] shrink-0"
-                        >
-                          <Download size={12} /> Export
-                        </Button>
-                      </div>
-                    )}
+
 
                     {activeTab === "home" && (
                       <button
@@ -974,26 +946,6 @@ export default function Dashboard() {
                         accountId={selectedAccount.id} 
                         history={realtimeHistory} 
                         currentPlan={currentPlan} 
-                        onUpgradeClick={(reason) => {
-                          setUpgradeReason(reason || "general");
-                          setIsSubscriptionOpen(true);
-                        }}
-                      />
-                    </div>
-                  )
-                }
-                {
-                  activeTab === "analytics" && (
-                    <div
-                      onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                      className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
-                    >
-                      <AnalyticsDashboard 
-                        account={selectedAccount} 
-                        realtimeStats={realtimeStats} 
-                        history={realtimeHistory} 
-                        triggers={triggersList} 
-                        currentPlan={currentPlan}
                         onUpgradeClick={(reason) => {
                           setUpgradeReason(reason || "general");
                           setIsSubscriptionOpen(true);
