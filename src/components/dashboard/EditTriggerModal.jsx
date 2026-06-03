@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { 
-  Clock, Link as LinkIcon, MessageSquare, Rocket, Save, ShieldCheck, Sparkles, Trash2, X 
+  Link as LinkIcon, MessageSquare, Rocket, Save, ShieldCheck, Sparkles, Trash2, X 
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -22,7 +22,6 @@ export default function EditTriggerModal({
   const [followGateMessage, setFollowGateMessage] = useState("");
   const [introTitle, setIntroTitle] = useState("");
   const [introButtonText, setIntroButtonText] = useState("");
-  const [cooldownGate, setCooldownGate] = useState(false);
   const [publicReply, setPublicReply] = useState("");
   const [buttonText, setButtonText] = useState("");
   const [buttonLink, setButtonLink] = useState("");
@@ -42,7 +41,6 @@ export default function EditTriggerModal({
         setFollowGateMessage(trigger.metadata?.follow_gate_message || "One final step to unlock! 🎁");
         setIntroTitle(trigger.metadata?.intro_title || "Hey {name}! 👋 Thanks for the comment! Tap the button below and I'll send you the access right away. ⚡");
         setIntroButtonText(trigger.metadata?.intro_button_text || "Send me the access");
-        setCooldownGate(trigger.metadata?.cooldown_gate || false);
         setPublicReply(trigger.variants?.public?.[0] || "");
         setButtonText(trigger.metadata?.button_text || "");
         setButtonLink(trigger.metadata?.button_link || "");
@@ -68,7 +66,6 @@ export default function EditTriggerModal({
         follow_gate_message: followerGate ? followGateMessage : "",
         intro_title: type === 'COMMENT' ? introTitle : null,
         intro_button_text: type === 'COMMENT' ? introButtonText : null,
-        cooldown_gate: cooldownGate,
         button_text: buttonLink ? (buttonText || "Get Access") : null,
         button_link: buttonLink,
         campaign_name: campaignName || null,
@@ -188,7 +185,7 @@ export default function EditTriggerModal({
                   />
                 </div>
 
-                {/* Toggles (Follower Gate & Cooldown Gate) */}
+                {/* Toggle (Follower Gate) */}
                 <div className="grid grid-cols-1 gap-2.5 pt-1">
                   {/* Follower Gate Toggle */}
                   <div className="flex flex-col gap-2 p-3 bg-white border border-zinc-200/80 rounded-xl">
@@ -222,33 +219,6 @@ export default function EditTriggerModal({
                         />
                       </div>
                     )}
-                  </div>
-
-                  {/* Cooldown Gate Toggle */}
-                  <div className="flex items-center justify-between p-3 bg-white border border-zinc-200/80 rounded-xl">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-500 shrink-0">
-                        <Clock size={16} />
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-zinc-800 leading-tight">Cooldown Gate (24h)</p>
-                        <p className="text-[10px] text-zinc-400 font-medium">Limit triggers per user to once a day</p>
-                      </div>
-                    </div>
-                    <button 
-                      type="button"
-                      onClick={() => {
-                        if (currentPlan === "free") {
-                          onUpgradeClick?.("cooldown");
-                          return;
-                        }
-                        setCooldownGate(!cooldownGate);
-                      }}
-                      className={`w-9 h-5.5 rounded-full transition-all relative shrink-0 ${cooldownGate ? 'bg-[#6366F1]' : 'bg-zinc-300'} ${currentPlan === "free" ? "opacity-60" : ""}`}
-                    >
-                      <div className={`absolute top-0.5 w-4.5 h-4.5 bg-white rounded-full shadow-sm transition-all ${cooldownGate ? 'left-4' : 'left-0.5'}`} />
-                      {currentPlan === "free" && <span className="absolute -top-1 -right-1 text-[8px]">👑</span>}
-                    </button>
                   </div>
                 </div>
               </div>

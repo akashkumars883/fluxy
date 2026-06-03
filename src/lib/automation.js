@@ -441,21 +441,21 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     }
 
     // --- STORY/CAMPAIGN COOLDOWN CHECK (24-Hour Cooldown) ---
-    if (match.metadata?.cooldown_gate === true) {
-      try {
-        const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-        const { count: recentHistoryCount } = await supabaseAdmin
-          .from("automation_history")
-          .select("id", { count: "exact", head: true })
-          .eq("automation_id", automation.id)
-          .eq("sender_id", senderId)
-          .eq("keyword", match.keyword)
-          .eq("status", "SUCCESS")
-          .gt("created_at", oneDayAgo);
+    try {
+      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      const { count: recentHistoryCount } = await supabaseAdmin
+        .from("automation_history")
+        .select("id", { count: "exact", head: true })
+        .eq("automation_id", automation.id)
+        .eq("sender_id", senderId)
+        .eq("keyword", match.keyword)
+        .eq("status", "SUCCESS")
+        .gt("created_at", oneDayAgo);
 
-        if (recentHistoryCount && recentHistoryCount > 0) {
-          console.log(`⏳ [COOLDOWN GATE] Blocked trigger for sender ${senderId} - Cooldown active (last message sent within 24h).`);
-          
+      if (recentHistoryCount && recentHistoryCount > 0) {
+        console.log(`⏳ [COOLDOWN GATE] Blocked trigger for sender ${senderId} - Cooldown active (last message sent within 24h).`);
+        
+        try {
           await supabaseAdmin.from("automation_history").insert({
             automation_id: automation.id,
             sender_id: senderId,
@@ -464,13 +464,15 @@ export async function processAutomation(senderId, text, type, recipientId, comme
             keyword: match.keyword,
             status: "COOLDOWN_ACTIVE",
             metadata: { error: "User is in 24-hour cooldown period.", limit: "1 reply/24 hours" }
-          }).catch((e) => console.error("❌ Failed logging cooldown block:", e.message));
-
-          return { success: false, reason: "cooldown_active" };
+          });
+        } catch (e) {
+          console.error("❌ Failed logging cooldown block:", e.message);
         }
-      } catch (cooldownCheckErr) {
-        console.error("⚠️ [COOLDOWN CHECK FAILED] Skipping cooldown check to avoid user block:", cooldownCheckErr.message);
+
+        return { success: false, reason: "cooldown_active" };
       }
+    } catch (cooldownCheckErr) {
+      console.error("⚠️ [COOLDOWN CHECK FAILED] Skipping cooldown check to avoid user block:", cooldownCheckErr.message);
     }
 
     // --- PHASE 1: INITIAL COMMENT ENTRY (Premium Card Style) ---
