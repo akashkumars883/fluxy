@@ -131,7 +131,12 @@ export default function PublicNavigation() {
               className={`mt-[2px] object-contain transition-all duration-300 shrink-0 ${showScrolledStyle ? "" : "brightness-0 invert"}`}
               priority
             />
-            <span className={`text-xl font-semibold tracking-normal transition-colors ${showScrolledStyle ? "text-foreground" : "text-white"}`}>automixa</span>
+            <span 
+              className={`text-xl font-bold tracking-tight transition-colors ${showScrolledStyle ? "text-foreground" : "text-white"}`}
+              style={{ fontFamily: 'var(--font-space-grotesk), sans-serif' }}
+            >
+              automixa
+            </span>
           </Link>
 
           {/* Center: Desktop Navigation Links with Hover Megamenus */}

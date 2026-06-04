@@ -34,7 +34,7 @@ export default function Footer() {
       
       {/* --- LARGE BACKGROUND WATERMARK (Optimized for Mobile & Desktop - Touch-free alignment) --- */}
       <div className="absolute left-1/2 bottom-[-7px] sm:bottom-[-50px] -translate-x-1/2 select-none pointer-events-none z-0">
-         <span className="text-[18vw] sm:text-[24vw] font-black text-white/[0.02] tracking-tighter leading-none whitespace-nowrap lowercase">
+         <span className="text-[18vw] sm:text-[24vw] font-black text-white/[0.06] tracking-tighter leading-none whitespace-nowrap lowercase">
             automixa
          </span>
       </div>
@@ -50,14 +50,17 @@ export default function Footer() {
               alt="Automixa Logo" 
               width={32}
               height={32}
-              className="object-contain group-hover/logo:scale-110 transition-transform duration-500" 
+              className="object-contain group-hover/logo:scale-110 transition-transform duration-500 brightness-0 invert" 
             />
-            <span className="text-2xl font-bold text-white">
+            <span 
+              className="text-2xl font-bold text-white tracking-tight"
+              style={{ fontFamily: 'var(--font-space-grotesk), sans-serif' }}
+            >
               automixa
             </span>
           </div>
           <p className="text-zinc-400 text-sm sm:text-base font-normal leading-relaxed">
-            The intelligent automation cockpit for modern creators, high-growth brands, and fast-scaling digital agencies.
+            Automixa is India&apos;s #1 Instagram DM automation and comment auto-reply tool. Scale your lead generation, automatically reply to comments with DMs, and grow your followers 24/7 with the best Meta-approved ManyChat alternative.
           </p>
           
           {/* Aligned Contact & Socials */}
