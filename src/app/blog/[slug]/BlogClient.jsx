@@ -319,27 +319,16 @@ export default function BlogPostPage({ initialPost, relatedPosts = [] }) {
           }
         }
         .blog-content-container ul {
-          list-style-type: none;
-          padding-left: 0;
+          list-style-type: disc;
+          padding-left: 1.5rem;
           margin-bottom: 1.5rem;
-          space-y: 0.5rem;
         }
         .blog-content-container ul li {
-          position: relative;
-          padding-left: 1.75rem;
           margin-bottom: 0.5rem;
           font-family: var(--font-outfit), sans-serif;
           font-size: 1rem;
           color: #4b5563;
           line-height: 1.7;
-        }
-        .blog-content-container ul li::before {
-          content: "✓";
-          position: absolute;
-          left: 0;
-          color: #10b981;
-          font-weight: 900;
-          font-size: 1rem;
         }
         .blog-content-container ol {
           list-style-type: decimal;
