@@ -36,8 +36,18 @@ export async function GET(req) {
     if (simulated && isLocalhost) {
       console.log("PhonePe Local Simulation: marking transaction as verified");
       paymentVerified = true;
-      // Get mock amount for plans
-      transactionAmount = planId === "viral_scale" ? (isAnnual ? 19190 : 1999) : (isAnnual ? 8630 : 899);
+      // Get base mock amount for plans (pre-discount)
+      const basePlanAmt = planId === "viral_scale" ? (isAnnual ? 19190 : 1999) : (isAnnual ? 8630 : 899);
+      let discPercent = 0;
+      if (promoCode) {
+        const code = promoCode.trim().toUpperCase();
+        if (code === "AUTOMIXA30") discPercent = 30;
+        else if (code === "CREATORVIP") discPercent = 20;
+        else discPercent = 10;
+      }
+      const priceBeforeGst = Math.round(basePlanAmt * ((100 - discPercent) / 100));
+      const gstAmt = Math.round(priceBeforeGst * 0.18);
+      transactionAmount = priceBeforeGst + gstAmt;
     } else {
       const merchantId = process.env.PHONEPE_MERCHANT_ID?.trim() || "PGTESTPAYUAT";
       const saltKey = process.env.PHONEPE_SALT_KEY?.trim() || "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399";
@@ -149,7 +159,9 @@ export async function GET(req) {
           }
         }
 
-        const commissionEarned = Math.round(transactionAmount * commissionRate);
+        // Compute commission on pre-tax amount (excluding 18% GST)
+        const priceExGst = transactionAmount / 1.18;
+        const commissionEarned = Math.round(priceExGst * commissionRate);
 
         // Record log
         await supabase.from("referral_attributions").insert({

@@ -119,7 +119,9 @@ export async function POST(req) {
       }
     }
 
-    const finalPrice = Math.round(basePrice * ((100 - discountPercent) / 100));
+    const priceBeforeGst = Math.round(basePrice * ((100 - discountPercent) / 100));
+    const gstAmount = Math.round(priceBeforeGst * 0.18);
+    const finalPrice = priceBeforeGst + gstAmount;
     const amountInPaise = finalPrice * 100; // PhonePe expects amount in paise
 
     // PhonePe Configuration
