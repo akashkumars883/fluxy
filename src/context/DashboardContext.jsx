@@ -87,17 +87,17 @@ const THEME_COLORS = {
   }
 };
 
-export function DashboardProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [allAccounts, setAllAccounts] = useState([]);
-  const [loading, setLoading] = useState(true);
+export function DashboardProvider({ children, initialData = null }) {
+  const [user, setUser] = useState(initialData?.session?.user || null);
+  const [allAccounts, setAllAccounts] = useState(initialData?.accounts || []);
+  const [loading, setLoading] = useState(initialData?.session ? false : true);
   const [activeTab, setActiveTab] = useState("home");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [currentPlan, setCurrentPlan] = useState("free");
+  const [currentPlan, setCurrentPlan] = useState(initialData?.currentPlan || "free");
   const [upgradeReason, setUpgradeReason] = useState("");
 
   // Workspaces State
-  const [workspaces, setWorkspaces] = useState([]);
+  const [workspaces, setWorkspaces] = useState(initialData?.workspaces || []);
   const [selectedWorkspace, setSelectedWorkspace] = useState(null);
 
   // Collaboration / Team members state
@@ -125,7 +125,38 @@ export function DashboardProvider({ children }) {
 
   const accounts = allAccounts.filter(acc => getAccountWorkspaceId(acc) === selectedWorkspace?.id);
 
-  // Initialize and load workspaces & accounts
+  // Client-side initialization for local storage fallbacks and workspace selection
+  useEffect(() => {
+    let workspacesData = workspaces;
+
+    if (initialData?.session) {
+      workspacesData = initialData.workspaces || [];
+    }
+
+    if (workspacesData.length === 0) {
+      const localWs = JSON.parse(localStorage.getItem("automixa_workspaces") || "[]");
+      if (localWs.length === 0) {
+        const defaultWs = [
+          { id: "personal", name: "Personal Workspace", avatar_color: "bg-indigo-600", created_at: new Date().toISOString() }
+        ];
+        localStorage.setItem("automixa_workspaces", JSON.stringify(defaultWs));
+        workspacesData = defaultWs;
+      } else {
+        workspacesData = localWs;
+      }
+    }
+
+    setWorkspaces(workspacesData);
+
+    const activeWsId = localStorage.getItem("automixa_active_workspace_id");
+    const foundWs = workspacesData.find(w => w.id === activeWsId) || workspacesData[0];
+    if (foundWs) {
+      setSelectedWorkspace(foundWs);
+      localStorage.setItem("automixa_active_workspace_id", foundWs.id);
+    }
+  }, [initialData]);
+
+  // Initialize and load workspaces & accounts (if not server-hydrated)
   useEffect(() => {
     logger.log("DashboardContext: Effect Started");
     const supabaseClient = createClient();
@@ -269,61 +300,69 @@ export function DashboardProvider({ children }) {
       }
     };
 
-    // 1. Initial Session Check (Immediate)
-    supabaseClient.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        logger.log("DashboardContext: Initial Session Found");
-        loadData(session);
-      } else {
-        const isLocalDev = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
-        if (isLocalDev) {
-          logger.log("DashboardContext: Local dev mode - simulating session");
-          const mockUser = {
-            id: "mock-user-uuid-12345",
-            email: "test_creator@automixa.in",
-            user_metadata: {
-              full_name: "Automixa Tester",
-              avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-              onboarding_completed: true
-            },
-            app_metadata: { provider: "Email" }
-          };
-          setUser(mockUser);
-          
-          const mockWs = [
-            { id: "personal", name: "Personal Workspace", avatar_color: "bg-indigo-600", created_at: new Date().toISOString() }
-          ];
-          setWorkspaces(mockWs);
-          setSelectedWorkspace(mockWs[0]);
-          
-          const mockAccounts = [
-            {
-              id: "mock-account-uuid-12345",
-              user_id: mockUser.id,
-              ig_username: "automixa_creator",
-              page_name: "Automixa Creator Page",
-              name: "Automixa Creator",
-              is_active: true,
-              persona: "content_creator",
-              workspace_id: "personal",
-              profile_pic: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-              created_at: new Date().toISOString()
-            }
-          ];
-          setAllAccounts(mockAccounts);
-          setCurrentPlan("creator_pro");
-          setLoading(false);
+    if (initialData?.session) {
+      logger.log("DashboardContext: Hydrated using Server-side hydration data");
+    } else {
+      // 1. Initial Session Check (Immediate)
+      supabaseClient.auth.getSession().then(({ data: { session } }) => {
+        if (session) {
+          logger.log("DashboardContext: Initial Session Found");
+          loadData(session);
         } else {
-          setTimeout(() => setLoading(false), 3000);
+          const isLocalDev = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+          if (isLocalDev) {
+            logger.log("DashboardContext: Local dev mode - simulating session");
+            const mockUser = {
+              id: "mock-user-uuid-12345",
+              email: "test_creator@automixa.in",
+              user_metadata: {
+                full_name: "Automixa Tester",
+                avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+                onboarding_completed: true
+              },
+              app_metadata: { provider: "Email" }
+            };
+            setUser(mockUser);
+            
+            const mockWs = [
+              { id: "personal", name: "Personal Workspace", avatar_color: "bg-indigo-600", created_at: new Date().toISOString() }
+            ];
+            setWorkspaces(mockWs);
+            setSelectedWorkspace(mockWs[0]);
+            
+            const mockAccounts = [
+              {
+                id: "mock-account-uuid-12345",
+                user_id: mockUser.id,
+                ig_username: "automixa_creator",
+                page_name: "Automixa Creator Page",
+                name: "Automixa Creator",
+                is_active: true,
+                persona: "content_creator",
+                workspace_id: "personal",
+                profile_pic: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+                created_at: new Date().toISOString()
+              }
+            ];
+            setAllAccounts(mockAccounts);
+            setCurrentPlan("creator_pro");
+            setLoading(false);
+          } else {
+            setTimeout(() => setLoading(false), 3000);
+          }
         }
-      }
-    });
+      });
+    }
 
     // 2. Auth State Change Listener
     const { data: { subscription } } = supabaseClient.auth.onAuthStateChange(async (event, session) => {
       logger.log("DashboardContext: Auth Event ->", event);
       if (session) {
-        loadData(session);
+        if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+          loadData(session);
+        } else {
+          setUser(session.user);
+        }
       } else {
         const isLocalDev = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
         if (isLocalDev) {
@@ -348,7 +387,7 @@ export function DashboardProvider({ children }) {
     return () => {
       if (subscription) subscription.unsubscribe();
     };
-  }, []);
+  }, [initialData]);
 
   // Update selected account when selectedWorkspace or allAccounts change
   useEffect(() => {

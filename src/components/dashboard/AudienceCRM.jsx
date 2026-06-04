@@ -15,17 +15,47 @@ Sparkles
 } from "lucide-react";
 import { useEffect,useState } from "react";
 import { createPortal } from "react-dom";
+import { useDashboard } from "@/context/DashboardContext";
 
 export default function AudienceCRM({ history = [], currentPlan = "free", onUpgradeClick }) {
+  const { selectedAccount } = useDashboard();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [selectedUser, setSelectedUser] = useState(null);
   const [mounted, setMounted] = useState(false);
+  const [modalProfilePic, setModalProfilePic] = useState(null);
+  const [profilePicLoading, setProfilePicLoading] = useState(false);
 
   useEffect(() => {
     const id = setTimeout(() => setMounted(true), 0);
     return () => clearTimeout(id);
   }, []);
+
+  // Fetch real-time Instagram profile picture on demand when modal opens
+  useEffect(() => {
+    if (!selectedUser || !selectedAccount) {
+      setModalProfilePic(null);
+      return;
+    }
+
+    setModalProfilePic(selectedUser.avatar);
+
+    const isLocalDev = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+    if (isLocalDev || selectedUser.id.startsWith("mock") || !selectedAccount.id) {
+      return;
+    }
+
+    setProfilePicLoading(true);
+    fetch(`/api/media/profile-pic?automationId=${selectedAccount.id}&senderId=${selectedUser.id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.profilePic) {
+          setModalProfilePic(data.profilePic);
+        }
+      })
+      .catch((err) => console.error("Error loading profile pic:", err))
+      .finally(() => setProfilePicLoading(false));
+  }, [selectedUser, selectedAccount]);
 
   // Build real audience map from history
   const realAudienceMap = new Map();
@@ -345,11 +375,18 @@ export default function AudienceCRM({ history = [], currentPlan = "free", onUpgr
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-zinc-100 pb-5 shrink-0">
               <div className="flex items-center gap-3">
-                <img
-                  src={selectedUser.avatar}
-                  alt={selectedUser.name}
-                  className="w-12 h-12 rounded-xl object-cover border border-zinc-200 shadow-sm shrink-0"
-                />
+                <div className="relative shrink-0 w-12 h-12">
+                  <img
+                    src={modalProfilePic || selectedUser.avatar}
+                    alt={selectedUser.name}
+                    className="w-12 h-12 rounded-xl object-cover border border-zinc-200 shadow-sm"
+                  />
+                  {profilePicLoading && (
+                    <div className="absolute inset-0 bg-white/60 flex items-center justify-center rounded-xl">
+                      <div className="w-4 h-4 border-2 border-[#6366F1] border-t-transparent rounded-full animate-spin" />
+                    </div>
+                  )}
+                </div>
                 <div>
                   <h3 className="text-lg font-bold text-zinc-900 tracking-tight flex items-center gap-1.5">
                     @{selectedUser.username} <UserCheck size={14} className="text-blue-500" />

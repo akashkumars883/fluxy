@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server';
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse } from "next/server";
 
 export const config = {
   matcher: [
@@ -13,29 +14,100 @@ export const config = {
   ],
 };
 
-export function proxy(req) {
+export async function proxy(req) {
   const url = req.nextUrl.clone();
   
-  // Get hostname from request headers
-  const hostname = req.headers.get('host') || '';
+  // 1. Establish the response object and Supabase server client to manage authentication
+  let response = NextResponse.next({
+    request: {
+      headers: req.headers,
+    },
+  });
 
-  // Determine if it's a subdomain
-  // For dev: username.localhost:3000
-  // For prod: username.automixa.in
-  const isLocalhost = hostname.includes('localhost');
-  const domain = isLocalhost ? 'localhost:3000' : 'automixa.in';
-  
-  // Clean the hostname by removing the domain
-  const subdomain = hostname.replace(`.${domain}`, '');
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        get(name) {
+          return req.cookies.get(name)?.value;
+        },
+        set(name, value, options) {
+          req.cookies.set({
+            name,
+            value,
+            ...options,
+          });
+          response = NextResponse.next({
+            request: {
+              headers: req.headers,
+            },
+          });
+          response.cookies.set({
+            name,
+            value,
+            ...options,
+          });
+        },
+        remove(name, options) {
+          req.cookies.set({
+            name,
+            value: "",
+            ...options,
+          });
+          response = NextResponse.next({
+            request: {
+              headers: req.headers,
+            },
+          });
+          response.cookies.set({
+            name,
+            value: "",
+            ...options,
+          });
+        },
+      },
+    }
+  );
 
-  // If there's a valid subdomain (and it's not the root domain or www)
-  if (subdomain && subdomain !== hostname && subdomain !== 'www' && subdomain !== domain) {
-    // Rewrite the request to our dynamic bio page route
-    // e.g. username.automixa.in/ -> /bio/username
-    // e.g. username.automixa.in/contact -> /bio/username/contact
-    url.pathname = `/bio/${subdomain}${url.pathname === '/' ? '' : url.pathname}`;
-    return NextResponse.rewrite(url);
+  // Authenticate user session against Supabase Auth API
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const pathname = req.nextUrl.pathname;
+  const isLocalDev = req.nextUrl.hostname === 'localhost' || req.nextUrl.hostname === '127.0.0.1';
+
+  // Protect /dashboard
+  if (pathname.startsWith("/dashboard")) {
+    if (!user && !isLocalDev) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
   }
 
-  return NextResponse.next();
+  // Redirect authenticated users away from /login
+  if (pathname.startsWith("/login")) {
+    if (user) {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+  }
+
+  // 2. Original Subdomain / Bio Rewriting Logic
+  const hostname = req.headers.get('host') || '';
+  const isLocalhost = hostname.includes('localhost');
+  const domain = isLocalhost ? 'localhost:3000' : 'automixa.in';
+  const subdomain = hostname.replace(`.${domain}`, '');
+
+  if (subdomain && subdomain !== hostname && subdomain !== 'www' && subdomain !== domain) {
+    url.pathname = `/bio/${subdomain}${url.pathname === '/' ? '' : url.pathname}`;
+    const rewriteResponse = NextResponse.rewrite(url);
+    
+    // Copy any set-cookie headers from Supabase response to the rewritten response
+    response.headers.forEach((value, key) => {
+      if (key.toLowerCase() === 'set-cookie') {
+        rewriteResponse.headers.append(key, value);
+      }
+    });
+    return rewriteResponse;
+  }
+
+  return response;
 }
