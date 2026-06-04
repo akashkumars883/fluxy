@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 
 // `params` is a plain object provided by Next.js; do not `await` it
 export async function generateMetadata({ params }) {
-  const { slug } = params;
+  const { slug } = await params;
   const supabase = createClient();
 
   const post = await fetchBlogBySlug(supabase, slug);
@@ -48,7 +48,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Page({ params }) {
-  const { slug } = params;
+  const { slug } = await params;
   const supabase = createClient();
 
   const post = await fetchBlogBySlug(supabase, slug);
