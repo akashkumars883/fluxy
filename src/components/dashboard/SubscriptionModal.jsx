@@ -180,80 +180,12 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
         throw new Error(orderData.error || "Failed to initiate payment");
       }
 
-      // 2. Load Razorpay Script dynamically
-      const loadRzpScript = () => {
-        return new Promise((resolve) => {
-          if (window.Razorpay) {
-            resolve(true);
-            return;
-          }
-          const script = document.createElement("script");
-          script.src = "https://checkout.razorpay.com/v1/checkout.js";
-          script.async = true;
-          script.onload = () => resolve(true);
-          script.onerror = () => resolve(false);
-          document.body.appendChild(script);
-        });
-      };
-
-      const isLoaded = await loadRzpScript();
-      if (!isLoaded) {
-        alert("Failed to load Razorpay Checkout SDK. Please try again.");
-        return;
+      // 2. Redirect to PhonePe payment page (or local simulation callback)
+      if (orderData.redirectUrl) {
+        window.location.href = orderData.redirectUrl;
+      } else {
+        throw new Error("Invalid payment gateway URL returned.");
       }
-
-      const options = {
-        key: orderData.keyId,
-        amount: orderData.amount,
-        currency: orderData.currency,
-        name: "Automixa AI",
-        description: `Upgrade to ${selectedPlanId.replace('_', ' ').toUpperCase()} ${isAnnual ? 'Annual' : 'Monthly'}`,
-        image: "/logo.png",
-        order_id: orderData.isSimulated ? undefined : orderData.orderId,
-        handler: async function (response) {
-          try {
-            // Call success webhook verification
-            const res = await fetch("/api/checkout/success", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_order_id: orderData.isSimulated ? orderData.orderId : response.razorpay_order_id,
-                razorpay_signature: response.razorpay_signature,
-                plan_id: selectedPlanId,
-                user_id: user.id,
-                amount: (orderData.amount / 100).toString(),
-                currency: orderData.currency,
-                email: user.email,
-                name: user.user_metadata?.full_name || "Automixa User",
-                partner_id: orderData.partnerId
-              }),
-            });
-
-            const result = await res.json();
-            if (result.success) {
-              alert(`Payment Successful! Invoice: ${result.invoiceNumber}`);
-              setCurrentPlan(selectedPlanId);
-              onClose();
-            } else {
-              alert("Payment verification failed: " + (result.error || "Unknown error"));
-            }
-          } catch (err) {
-            logger.error("SubscriptionModal: Success verification error:", err);
-            alert("Error verifying transaction. Please contact support.");
-          }
-        },
-        prefill: {
-          name: orderData.userName || "",
-          email: orderData.userEmail || "",
-        },
-        theme: {
-          color: "#6366F1",
-        },
-      };
-
-      const rzp = new window.Razorpay(options);
-      rzp.open();
     } catch (err) {
       logger.error("SubscriptionModal: Checkout launch error:", err);
       alert("Could not start checkout process: " + err.message);
@@ -418,7 +350,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                     </button>
 
                     <p className="text-center text-[11px] text-zinc-400 font-medium pt-2">
-                      🔒 secure checkout powered by razorpay subscriptions api
+                      🔒 secure checkout powered by PhonePe payment gateway
                     </p>
                   </div>
                 )}

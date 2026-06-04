@@ -241,9 +241,22 @@ export default function Dashboard() {
       setTimeout(() => setIsSubscriptionOpen(true), 0);
       shouldClean = true;
     }
-    if (params.get("success") === "instagram_connected") {
+    
+    const successParam = params.get("success");
+    if (successParam === "instagram_connected") {
+      toast.success("Instagram account connected successfully! 🔗");
+      shouldClean = true;
+    } else if (successParam === "subscribed") {
+      toast.success("Subscription upgraded successfully! 🚀 Welcome to Creator Pro!");
       shouldClean = true;
     }
+
+    const errorParam = params.get("error");
+    if (errorParam) {
+      toast.error(decodeURIComponent(errorParam));
+      shouldClean = true;
+    }
+
     if (shouldClean) {
       // Clean up the URL completely to prevent repeat alerts/modals on refresh
       window.history.replaceState({}, '', window.location.pathname);

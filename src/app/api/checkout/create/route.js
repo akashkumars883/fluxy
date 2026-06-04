@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase";
-import Razorpay from "razorpay";
+import crypto from "crypto";
 
 export const dynamic = "force-dynamic";
 
@@ -120,78 +120,85 @@ export async function POST(req) {
     }
 
     const finalPrice = Math.round(basePrice * ((100 - discountPercent) / 100));
-    const amountInPaise = finalPrice * 100; // Razorpay expects amount in paise
+    const amountInPaise = finalPrice * 100; // PhonePe expects amount in paise
 
-    // 4. Initialize Razorpay and Create Order
-    const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID?.trim();
-    const keySecret = process.env.RAZORPAY_KEY_SECRET?.trim();
+    // PhonePe Configuration
+    const merchantId = process.env.PHONEPE_MERCHANT_ID?.trim() || "PGTESTPAYUAT";
+    const saltKey = process.env.PHONEPE_SALT_KEY?.trim() || "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399";
+    const saltIndex = process.env.PHONEPE_SALT_INDEX?.trim() || "1";
+    const phonepeEnv = process.env.PHONEPE_ENV?.trim() || "sandbox";
 
-    const missingKeys = !keyId || !keySecret;
+    // 4. Initialize PhonePe and Create Checkout Redirect Link
+    const transactionId = `TXN${Date.now()}${currentUser.id.substring(0, 6)}`.toUpperCase();
 
-    if (missingKeys) {
-      if (!isDevHost) {
-        return NextResponse.json(
-          { error: "Razorpay keys are not configured (NEXT_PUBLIC_RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET)" },
-          { status: 500 }
-        );
-      }
-      console.log("Razorpay Dev Sandbox Mode: Missing keys on localhost. Returning simulated order.");
+    // Check if PhonePe is configured, otherwise simulate transaction for localhost
+    const hasKeys = !!process.env.PHONEPE_MERCHANT_ID;
+    if (isDevHost && (!hasKeys || process.env.PHONEPE_SIMULATED === "true")) {
+      console.log("PhonePe Dev Sandbox Mode: Returning simulated order redirect.");
+      const redirectUrl = `/api/checkout/phonepe-callback?transactionId=${transactionId}&userId=${currentUser.id}&planId=${planId}&isAnnual=${isAnnual}&promoCode=${promoCode || ""}&partnerId=${partnerId || ""}&simulated=true`;
+      
       return NextResponse.json({
         success: true,
         isSimulated: true,
-        orderId: `order_sim_${Math.random().toString(36).substring(2, 10)}`,
-        amount: amountInPaise,
-        currency: "INR",
-        keyId: keyId || "",
-        userName: currentUser.user_metadata?.full_name || "Automixa User",
-        userEmail: currentUser.email || "",
+        redirectUrl,
         planId,
-        isAnnual: !!isAnnual,
-        promoCode: promoCode || null,
-        partnerId
+        amount: amountInPaise
       });
     }
 
+    const callbackUrl = `${reqUrl.origin}/api/webhooks/phonepe`;
+    const redirectUrl = `${reqUrl.origin}/api/checkout/phonepe-callback?transactionId=${transactionId}&userId=${currentUser.id}&planId=${planId}&isAnnual=${isAnnual}&promoCode=${promoCode || ""}&partnerId=${partnerId || ""}`;
+
+    const payload = {
+      merchantId,
+      merchantTransactionId: transactionId,
+      merchantUserId: currentUser.id,
+      amount: amountInPaise,
+      redirectUrl,
+      redirectMode: "REDIRECT",
+      callbackUrl,
+      paymentInstrument: {
+        type: "PAY_PAGE"
+      }
+    };
+
+    const base64Payload = Buffer.from(JSON.stringify(payload)).toString("base64");
+    const signText = base64Payload + "/pg/v1/pay" + saltKey;
+    const signature = crypto.createHash("sha256").update(signText).digest("hex");
+    const xVerify = signature + "###" + saltIndex;
+
     try {
-      const razorpay = new Razorpay({
-        key_id: keyId,
-        key_secret: keySecret,
+      const phonepeUrl = phonepeEnv === "production"
+        ? "https://api.phonepe.com/apis/hermes/pg/v1/pay"
+        : "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay";
+
+      const response = await fetch(phonepeUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-VERIFY": xVerify
+        },
+        body: JSON.stringify({ request: base64Payload })
       });
 
-      const orderOptions = {
-        amount: amountInPaise,
-        currency: "INR",
-        receipt: `rcpt_${Date.now()}_${currentUser.id.substring(0, 8)}`,
-        notes: {
-          userId: currentUser.id,
-          planId: planId,
-          isAnnual: String(isAnnual),
-          promoCode: promoCode || "",
-          partnerId: partnerId || ""
-        }
-      };
+      const resData = await response.json();
 
-      const order = await razorpay.orders.create(orderOptions);
+      if (response.ok && resData.success && resData.data?.instrumentResponse?.redirectInfo?.url) {
+        return NextResponse.json({
+          success: true,
+          isSimulated: false,
+          redirectUrl: resData.data.instrumentResponse.redirectInfo.url,
+          transactionId
+        });
+      } else {
+        console.error("PhonePe API response failure:", resData);
+        return NextResponse.json({ error: resData.message || "Failed to initiate PhonePe payment order." }, { status: 400 });
+      }
 
-      return NextResponse.json({
-        success: true,
-        isSimulated: false,
-        orderId: order.id,
-        amount: order.amount,
-        currency: order.currency,
-        keyId: keyId || "",
-        userName: currentUser.user_metadata?.full_name || "Automixa User",
-        userEmail: currentUser.email || "",
-        planId,
-        isAnnual: !!isAnnual,
-        promoCode: promoCode || null,
-        partnerId
-      });
-
-    } catch (razorpayErr) {
-      console.warn("Razorpay API creation failed:", razorpayErr.message);
+    } catch (phonepeErr) {
+      console.warn("PhonePe API payment call failed:", phonepeErr.message);
       return NextResponse.json(
-        { error: "Failed to create Razorpay order" },
+        { error: "Failed to connect with PhonePe payment gateway." },
         { status: 502 }
       );
     }
