@@ -40,7 +40,6 @@ export default function SitemapPage() {
       title: "Resources",
       links: [
         { label: "Blog & Playbook", href: "/blog" },
-        { label: "Support Desk", href: "/dashboard/support" },
       ]
     },
     {
