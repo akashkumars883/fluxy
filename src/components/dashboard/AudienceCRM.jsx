@@ -16,6 +16,7 @@ Sparkles
 import { useEffect,useState } from "react";
 import { createPortal } from "react-dom";
 import { useDashboard } from "@/context/DashboardContext";
+import AudienceAvatar from "./AudienceAvatar";
 
 export default function AudienceCRM({ history = [], currentPlan = "free", onUpgradeClick }) {
   const { selectedAccount } = useDashboard();
@@ -321,9 +322,10 @@ export default function AudienceCRM({ history = [], currentPlan = "free", onUpgr
                   className="w-full flex items-center justify-between p-3 sm:p-3.5 bg-zinc-50/80 hover:bg-white border border-zinc-100 hover:border-[#6366F1]/20 hover:shadow-md rounded-2xl transition-all duration-200 group text-left"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <img
-                      src={usr.avatar}
-                      alt={usr.name}
+                    <AudienceAvatar
+                      senderId={usr.id}
+                      defaultAvatar={usr.avatar}
+                      automationId={selectedAccount?.id}
                       className="w-10 h-10 rounded-xl object-cover border border-zinc-200 shadow-sm shrink-0"
                     />
                     <div className="min-w-0">

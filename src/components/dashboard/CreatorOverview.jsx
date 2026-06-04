@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import * as logger from "@/lib/logger";
 import { createPortal } from "react-dom";
 import { useDashboard } from "@/context/DashboardContext";
+import AudienceAvatar from "./AudienceAvatar";
 
 export default function CreatorOverview({ stats = {}, history = [], topTriggers = [], automationId, hideHeader = false, onSimulateLocal, isActive = true, onViewAudience, onCreateAutoReply, onToggleTriggerActive, currentPlan = "free", onUpgradeClick }) {
   const [isSyncing, setIsSyncing] = useState(false);
@@ -317,9 +318,10 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
               history.map((log, index) => (
                 <div key={log.id} className="flex items-center justify-between py-3 group cursor-default">
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <img
-                      src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${log.sender_id || log.id}`}
-                      alt={log.sender_username || log.sender_name || "unknown"}
+                    <AudienceAvatar
+                      senderId={log.sender_id}
+                      defaultAvatar={`https://api.dicebear.com/7.x/avataaars/svg?seed=${log.sender_id || log.id}`}
+                      automationId={automationId}
                       className="w-8 h-8 rounded-full object-cover border border-zinc-150 shrink-0"
                     />
                     <div className="space-y-0.5 min-w-0">
