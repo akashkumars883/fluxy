@@ -114,19 +114,6 @@ export default function BlogPage() {
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.5 }}
               >
-                {/* Header Title Section */}
-                <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 md:mb-20 gap-6">
-                  <div className="max-w-2xl">
-                    <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] mb-3 flex items-center gap-2">
-                      <Sparkles size={12} className="text-[#6366F1]" />
-                      Automixa Journal
-                    </p>
-                    <h1 className="text-4xl md:text-6xl font-semibold text-foreground tracking-normal leading-[1.1]">
-                      The Automation <br />
-                      <span className="text-sage font-normal">Playbook</span>
-                    </h1>
-                  </div>
-                </div>
 
                 {/* Featured Post Card (Visible only when 'All' category or first tab) */}
                 {isLoading ? (
