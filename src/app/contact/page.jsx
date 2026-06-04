@@ -2,7 +2,7 @@
 
 import PageTransition from "@/components/ui/PageTransition";
 import { motion } from "framer-motion";
-import { ArrowRight,Mail,ShieldCheck,Ticket } from "lucide-react";
+import { Mail,ShieldCheck } from "lucide-react";
 import { useState } from "react";
 
 import FAQ from "@/components/marketing/FAQ";
@@ -58,8 +58,8 @@ export default function ContactPage() {
             </p>
           </div>
 
-          {/* Sleek 2-Card Support Hub Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch mb-24 max-w-4xl mx-auto">
+          {/* Sleek Centered Support Hub */}
+          <div className="max-w-md mx-auto mb-24">
              
              {/* CARD 1: Email Support */}
              <motion.div 
@@ -95,39 +95,6 @@ export default function ContactPage() {
                      className="w-full text-center py-2 text-xs text-zinc-400 hover:text-[#6366F1] transition-colors font-medium block"
                    >
                      Or open mail app directly
-                   </a>
-                </div>
-             </motion.div>
-
-             {/* CARD 2: Helpdesk Tickets */}
-             <motion.div 
-               whileHover={{ y: -6 }}
-               className="group bg-white/40 backdrop-blur-xl border border-white/60 hover:border-white rounded-[32px] p-8 lg:p-10 shadow-xl shadow-zinc-100/40 hover:shadow-2xl hover:shadow-zinc-200/40 transition-all duration-500 flex flex-col justify-between relative overflow-hidden"
-             >
-                {/* Subtle hover glow matching the pricing hover card */}
-                <div className="absolute top-1/2 -left-16 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -translate-y-1/2" />
-                
-                <div className="space-y-6">
-                   <div className="w-12 h-12 bg-white/80 border border-white rounded-2xl flex items-center justify-center text-[#6366F1] shadow-md shadow-zinc-100/50 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shrink-0">
-                      <Ticket size={22} />
-                   </div>
-                   <div className="space-y-2">
-                      <h3 className="text-xl sm:text-2xl font-bold text-zinc-800 tracking-tight leading-tight">
-                        Helpdesk Tickets
-                      </h3>
-                      <p className="text-zinc-500 text-sm leading-relaxed font-normal">
-                        Active customers can open a trackable technical ticket directly from their dashboard for high-priority engineering support.
-                      </p>
-                   </div>
-                </div>
-
-                <div className="pt-8 relative z-10">
-                   <a 
-                     href="/dashboard/support" 
-                     className="w-full py-3.5 bg-[#6366F1] hover:bg-indigo-600 text-white font-bold rounded-full flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-500/10 text-xs sm:text-sm hover:scale-[1.02]"
-                   >
-                     Go to Support Panel
-                     <ArrowRight size={14} />
                    </a>
                 </div>
              </motion.div>
