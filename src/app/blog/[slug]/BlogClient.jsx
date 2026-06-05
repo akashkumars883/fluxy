@@ -45,7 +45,7 @@ export default function BlogPostPage({ initialPost, relatedPosts = [] }) {
   };
 
   return (
-    <main className="min-h-screen text-foreground overflow-x-clip relative font-sans pt-24 pb-16 selection:bg-sage/20">
+    <main className="min-h-screen text-foreground overflow-x-clip relative font-sans pt-20 pb-10 selection:bg-sage/20">
       {selectedPost && (
         <div className="fixed top-0 left-0 right-0 h-1 z-[110] bg-zinc-100">
           <div
@@ -197,7 +197,7 @@ export default function BlogPostPage({ initialPost, relatedPosts = [] }) {
                   </div>
 
                   {/* Article Share Footer Banner */}
-                  <div className="border-t border-zinc-200/50 pt-10 mt-16 flex flex-col sm:flex-row items-center justify-between gap-6">
+                  <div className="border-t border-zinc-200/50 pt-6 mt-10 flex flex-col sm:flex-row items-center justify-between gap-6">
                     <div className="space-y-1 text-center sm:text-left">
                       <h4 className="text-sm font-bold text-zinc-800">Did you find this strategy helpful?</h4>
                       <p className="text-xs text-zinc-400">Share this article with your community of creators and marketers.</p>
@@ -224,7 +224,7 @@ export default function BlogPostPage({ initialPost, relatedPosts = [] }) {
                   </div>
 
                   {/* Related Articles Showcase */}
-                  <div className="border-t border-zinc-200/50 pt-16 mt-16 pb-8">
+                  <div className="border-t border-zinc-200/50 pt-10 mt-10 pb-8">
                     <h3 className="text-xl sm:text-2xl font-bold text-zinc-800 tracking-tight mb-8">
                       Related Articles
                     </h3>

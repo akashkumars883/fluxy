@@ -98,9 +98,9 @@ export default function BlogPage() {
   };
 
   return (
-    <main className="min-h-screen text-foreground overflow-x-clip relative font-sans pt-24 pb-16 selection:bg-sage/20">
+    <main className="min-h-screen text-foreground overflow-x-clip relative font-sans pt-20 pb-10 selection:bg-sage/20">
       <PageTransition>
-        <div className="max-w-7xl mx-auto px-6 md:px-10 mt-16 relative z-10">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 mt-6 relative z-10">
           
           <AnimatePresence mode="wait">
             {(
@@ -139,7 +139,7 @@ export default function BlogPage() {
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                      className="mb-20"
+                      className="mb-10"
                     >
                     <Link 
                       href={`/blog/${featuredPost.id}`}
@@ -202,7 +202,7 @@ export default function BlogPage() {
                 ))}
 
                 {/* Filter and Search Bar Container */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 border-b border-zinc-200/50 pb-8">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 border-b border-zinc-200/50 pb-6">
                   {/* Category Filter Tabs */}
                   <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 w-full">
                     {categories.map((cat) => {
@@ -244,7 +244,7 @@ export default function BlogPage() {
 
                 {/* Articles Grid */}
                 {isLoading ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                     {[1, 2, 3].map((n) => (
                       <div key={n} className="animate-pulse bg-white/20 border border-white/40 rounded-[32px] p-5 h-[480px] flex flex-col justify-between">
                         <div>
@@ -272,7 +272,7 @@ export default function BlogPage() {
                   <>
                     <motion.div 
                       layout
-                      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24"
+                      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"
                     >
                       <AnimatePresence>
                         {paginatedPosts.map((post, idx) => (
@@ -349,7 +349,7 @@ export default function BlogPage() {
 
                     {/* Premium Pagination Controls */}
                     {totalPages > 1 && (
-                      <div className="flex items-center justify-center gap-2 mt-8 mb-24">
+                      <div className="flex items-center justify-center gap-2 mt-4 mb-12">
                         {/* Previous Page Button */}
                         <button
                           onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
@@ -423,7 +423,7 @@ export default function BlogPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="relative rounded-[24px] sm:rounded-[32px] md:rounded-[40px] px-6 sm:px-10 md:px-14 py-12 md:py-16 bg-gradient-to-br from-[#0c0c14] via-[#05050a] to-[#010103] border border-white/[0.06] shadow-none overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-8 sm:gap-10 group/main mb-20"
+                  className="relative rounded-[24px] sm:rounded-[32px] md:rounded-[40px] px-6 sm:px-10 md:px-14 py-12 md:py-16 bg-gradient-to-br from-[#0c0c14] via-[#05050a] to-[#010103] border border-white/[0.06] shadow-none overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-8 sm:gap-10 group/main mb-12"
                 >
                   {/* SVG Noise Overlay */}
                   <div
@@ -493,7 +493,7 @@ export default function BlogPage() {
                 </motion.div>
 
                 {/* Blog Reader FAQs */}
-                <div className="mb-20">
+                <div className="mb-12">
                   <FAQ 
                     customFaqs={[
                       {
