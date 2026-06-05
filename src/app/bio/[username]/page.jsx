@@ -2,8 +2,18 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
 import { User, Download, ExternalLink, AtSign, Play, Globe, Users2, Link2 } from 'lucide-react';
+import ShareButton from '@/components/bio/ShareButton';
 
 export const dynamic = 'force-dynamic';
+
+const ensureAbsoluteUrl = (url) => {
+  if (!url) return '';
+  let trimmed = url.trim();
+  if (!/^https?:\/\//i.test(trimmed)) {
+    return `https://${trimmed}`;
+  }
+  return trimmed;
+};
 
 const THEMES = [
   {
@@ -170,13 +180,27 @@ export default async function BioPage({ params }) {
       style={{ backgroundColor: theme.pageBg }}
     >
       <div 
-        className="w-full max-w-md flex flex-col min-h-screen sm:min-h-0 sm:h-[85vh] sm:rounded-[36px] sm:shadow-2xl border-0 sm:border animate-in fade-in slide-in-from-bottom-4 duration-700 pb-10 relative overflow-y-auto overflow-x-hidden"
+        className="w-full max-w-md flex flex-col min-h-screen sm:min-h-0 sm:h-[85vh] sm:rounded-xl sm:shadow-2xl border-0 sm:border animate-in fade-in slide-in-from-bottom-4 duration-700 pb-10 relative overflow-y-auto overflow-x-hidden"
         style={{ 
           backgroundColor: theme.pageBg,
           borderColor: theme.buttonBorder,
         }}
       >
         
+        {/* Floating Header Actions */}
+        <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-20">
+          <a 
+            href="https://automixa.in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 flex items-center justify-center transition-all hover:scale-105 shadow-sm"
+            title="Powered by Automixa"
+          >
+            <img src="/logo.png" alt="Automixa Logo" className="w-4.5 h-4.5 object-contain brightness-0 invert" />
+          </a>
+          <ShareButton />
+        </div>
+
         {/* Cover Image / Hero Section */}
         <div 
           className="relative h-44 w-full shrink-0" 
@@ -229,10 +253,10 @@ export default async function BioPage({ params }) {
             {profileTitle}
           </h1>
           <p 
-            className="text-xs font-bold uppercase tracking-[0.12em] mt-1"
+            className="text-xs font-bold lowercase tracking-[0.12em] mt-1"
             style={{ color: theme.textSub }}
           >
-            @{mockAccount.ig_username}
+            @{mockAccount.ig_username?.toLowerCase()}
           </p>
           {bioText && (
             <p 
@@ -250,7 +274,7 @@ export default async function BioPage({ params }) {
             {socialLinks.map(link => (
               <a 
                 key={link.id} 
-                href={link.url} 
+                href={ensureAbsoluteUrl(link.url)} 
                 target="_blank" 
                 rel="noreferrer" 
                 className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm border transition-transform hover:scale-110"
@@ -272,10 +296,10 @@ export default async function BioPage({ params }) {
             {standardLinks.map((link) => (
               <a 
                 key={link.id} 
-                href={link.url} 
+                href={ensureAbsoluteUrl(link.url)} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="w-full py-3.5 px-5 rounded-2xl flex items-center justify-center transition-all hover:-translate-y-0.5 hover:shadow-md border"
+                className="w-full py-3.5 px-5 rounded-xl flex items-center justify-center transition-all hover:-translate-y-0.5 hover:shadow-md border"
                 style={{ 
                   backgroundColor: theme.buttonBg, 
                   borderColor: theme.buttonBorder, 
@@ -302,7 +326,7 @@ export default async function BioPage({ params }) {
                 <a 
                   key={p.id} 
                   href={`/pay/${p.id}`} 
-                  className="w-full p-3 rounded-2xl flex items-center gap-4 transition-all hover:-translate-y-0.5 hover:shadow-md border"
+                  className="w-full p-3 rounded-xl flex items-center gap-4 transition-all hover:-translate-y-0.5 hover:shadow-md border"
                   style={{ 
                     backgroundColor: theme.buttonBg, 
                     borderColor: theme.buttonBorder, 
@@ -310,7 +334,7 @@ export default async function BioPage({ params }) {
                   }}
                 >
                   <div 
-                    className="w-14 h-14 rounded-xl shrink-0 overflow-hidden flex items-center justify-center border"
+                    className="w-14 h-14 rounded-lg shrink-0 overflow-hidden flex items-center justify-center border"
                     style={{ 
                       backgroundColor: theme.pageBg,
                       borderColor: theme.buttonBorder 
@@ -339,8 +363,8 @@ export default async function BioPage({ params }) {
 
         {/* Footer */}
         <div className="mt-auto pt-8 pb-4 text-center space-y-3 px-6">
-          <p className="text-[9px] font-black uppercase tracking-widest" style={{ color: theme.footerText }}>
-            Powered by Automixa
+          <p className="text-[9px] font-black lowercase tracking-widest" style={{ color: theme.footerText }}>
+            powered by automixa
           </p>
           <div className="flex items-center justify-center gap-4 text-[9px] font-bold" style={{ color: theme.footerText }}>
             <a href="#" className="hover:underline underline-offset-4">Privacy Policy</a>

@@ -96,6 +96,15 @@ const getSocialMeta = (url) => {
   return null;
 };
 
+const ensureAbsoluteUrl = (url) => {
+  if (!url) return '';
+  let trimmed = url.trim();
+  if (!/^https?:\/\//i.test(trimmed)) {
+    return `https://${trimmed}`;
+  }
+  return trimmed;
+};
+
 // ─── MAIN COMPONENT ────────────────────────────────────────────────────────
 export default function SmartBio({ accountId, account, currentPlan = "free", onUpgradeClick }) {
   const [activeTab, setActiveTab] = useState("links");
@@ -448,8 +457,8 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                 <h2 className="text-[17px] font-extrabold tracking-tight mt-1 text-center" style={{ color: theme.textPrimary }}>
                   {displayName || "Your Name"}
                 </h2>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] mt-0.5 text-center" style={{ color: theme.textSub }}>
-                  @{igUsername}
+                <p className="text-[10px] font-semibold lowercase tracking-[0.12em] mt-0.5 text-center" style={{ color: theme.textSub }}>
+                  @{igUsername?.toLowerCase()}
                 </p>
                 {/* Bio */}
                 {bioText && (
@@ -480,20 +489,23 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                     </div>
                   )}
                   {standardLinks.map(link => (
-                    <div
+                    <a
                       key={link.id}
-                      className="w-full py-3 px-4 rounded-2xl border text-center text-[12px] font-bold transition-all"
+                      href={ensureAbsoluteUrl(link.url)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-3 px-4 rounded-xl border text-center text-[12px] font-bold transition-all block"
                       style={{ background: theme.buttonBg, borderColor: theme.buttonBorder, color: theme.buttonText }}
                     >
                       {link.title || "Link Title"}
-                    </div>
+                    </a>
                   ))}
                 </div>
 
                 {/* Footer */}
                 <div className="mt-auto pt-10 text-center space-y-1.5">
-                  <p className="text-[9px] font-black uppercase tracking-widest" style={{ color: theme.footerText }}>
-                    Powered by Automixa
+                  <p className="text-[9px] font-black lowercase tracking-widest" style={{ color: theme.footerText }}>
+                    powered by automixa
                   </p>
                   <div className="flex items-center justify-center gap-2 text-[8px] font-bold" style={{ color: theme.footerText }}>
                     <span>Privacy Policy</span>
