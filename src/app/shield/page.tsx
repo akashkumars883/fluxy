@@ -323,7 +323,7 @@ export default function ShieldPage() {
         </div>
       </PageTransition>
 
-      <FAQ customFaqs={securityFaqs} />
+      <FAQ customFaqs={securityFaqs as any} />
       
       <div className="mt-16">
         <CTA />
