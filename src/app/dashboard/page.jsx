@@ -585,7 +585,7 @@ export default function Dashboard() {
     { id: "automations", label: "Automations", icon: Cpu, reqPlan: "free" },
     { id: "audience", label: "Audience", icon: Users, reqPlan: "free" },
     { id: "store", label: "Mini Store", icon: Package, reqPlan: "creator_pro" },
-    { id: "smart_bio", label: "Smart Bio", icon: Link2, reqPlan: "creator_pro" },
+    { id: "smart_bio", label: "Smart Bio", icon: Link2, reqPlan: "free" },
     { id: "partner", label: "Partner Program", icon: Sparkles, reqPlan: "free" },
     { id: "settings", label: "Settings", icon: Settings, reqPlan: "free" },
   ].map(item => {
