@@ -43,7 +43,7 @@ export default function ComparePage({ params: paramsPromise }) {
               animate={{ opacity: 1, y: 0 }}
               className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold uppercase tracking-wider mb-6 shadow-sm border border-[#6366F1]/20"
             >
-              <Sparkles size={12} /> Creator-First Alternative
+              <Sparkles size={12} /> Business Messaging Alternative
             </motion.div>
 
             <motion.h1 
@@ -83,7 +83,7 @@ export default function ComparePage({ params: paramsPromise }) {
               
               <div className="flex items-center gap-2 text-zinc-400 text-xs font-semibold">
                 <ShieldCheck size={18} className="text-emerald-500" />
-                Official Meta Approved API
+                Meta API based connection
               </div>
             </motion.div>
           </div>
@@ -155,7 +155,7 @@ export default function ComparePage({ params: paramsPromise }) {
             </motion.div>
             
             <h2 className="text-3xl sm:text-5xl font-semibold text-zinc-900 tracking-tight leading-[1.15]">
-              Why creators switch from {data.name} to Automixa
+              Why teams switch from {data.name} to Automixa
             </h2>
           </div>
 

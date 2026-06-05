@@ -27,8 +27,8 @@ export default function CommentAutoResponderPage() {
     },
     {
       title: "Spam Guard & Reply Rotator",
-      tagline: "100% Account Safety",
-      description: "Instagram has strict limits on repetitive replies. Automixa lets you configure up to 5 unique reply variations (Spintax) and rotates them randomly, keeping your account 100% shadowban-proof.",
+      tagline: "Account Safety",
+      description: "Instagram has strict limits on repetitive replies. Automixa lets you configure multiple reply variations and timing controls to keep business responses natural and within platform rules.",
       bullets: [
         "Anti-spam reply rotation engine",
         "Human-like timing intervals",
@@ -55,12 +55,12 @@ export default function CommentAutoResponderPage() {
 
   const faqs = [
     {
-      q: "How does the Instagram comment auto responder help grow my account?",
-      a: "By replying to comments automatically, you drastically boost your post engagement. Instagram's algorithm sees hundreds of comments and replies and pushes your Reels or posts to the Explore page, giving you massive organic reach."
+      q: "How does the Instagram comment auto responder help my business?",
+      a: "It helps you answer common customer comments faster, route interested users to the correct resource, and keep a record of conversations in your dashboard."
     },
     {
       q: "Is Automixa safe for my Instagram account?",
-      a: "Yes! Automixa is a 100% official Meta Developer Partner. We build strictly on top of the official Meta Graph API. Unlike unofficial scraper bots, we don't ask for your password, keeping your account safe from bans."
+      a: "Yes. Automixa uses official Meta APIs and secure OAuth. We do not ask for your Instagram password or use unofficial browser scraping."
     },
     {
       q: "Can I set multiple keywords for the same post?",
@@ -103,7 +103,7 @@ export default function CommentAutoResponderPage() {
               </h1>
               
               <p className="text-zinc-600 text-base sm:text-lg leading-relaxed max-w-xl">
-                Stop losing customers to manual bio links. Reply to comments on your Reels and posts automatically, sending direct checkout links, discount codes, or files straight to their Instagram DM. Scale your sales with the best <strong className="text-zinc-900 font-semibold">Instagram automation tool</strong>.
+                Stop losing customer questions in comment threads. Reply to comments automatically, send approved checkout links, discount codes, or files to Instagram DMs, and keep business conversations organized.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
@@ -131,7 +131,7 @@ export default function CommentAutoResponderPage() {
                   <span className="w-8 h-8 rounded-full bg-emerald-100 border-2 border-white flex items-center justify-center font-bold text-[10px] text-emerald-600">C</span>
                 </div>
                 <div className="text-xs text-zinc-500 font-medium">
-                  Trusted by <span className="text-zinc-950 font-bold">12,000+</span> creators & e-commerce brands worldwide.
+                  Trusted by businesses, educators, and e-commerce teams for customer messaging.
                 </div>
               </div>
             </motion.div>
@@ -159,13 +159,13 @@ export default function CommentAutoResponderPage() {
                         <TrendingUp className="text-indigo-400" size={20} />
                       </div>
                       <div>
-                        <h4 className="font-bold text-white text-xs">Engagement Boost</h4>
+                        <h4 className="font-bold text-white text-xs">Responses Sent</h4>
                         <p className="text-[10px] text-zinc-400">Automatic responses sent today</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-lg font-bold text-emerald-400 font-display">+412%</div>
-                      <div className="text-[9px] text-zinc-400 font-semibold">1,402 Comments</div>
+                      <div className="text-lg font-bold text-emerald-400 font-display">1,402</div>
+                      <div className="text-[9px] text-zinc-400 font-semibold">Customer comments</div>
                     </div>
                   </div>
                 </div>
@@ -178,10 +178,10 @@ export default function CommentAutoResponderPage() {
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
               <span className="text-indigo-600 font-bold uppercase tracking-widest text-xs">Core Capabilities</span>
               <h2 className="text-3xl sm:text-5xl font-bold text-zinc-900 tracking-tight leading-tight">
-                Engage every follower without lifting a finger
+                Answer customer comments without manual copy-paste
               </h2>
               <p className="text-zinc-500 text-sm sm:text-base">
-                Discover the powerful comment automation features that make Automixa the #1 Instagram comment responder.
+                Discover the comment automation features that help teams reply faster and deliver resources consistently.
               </p>
             </div>
 

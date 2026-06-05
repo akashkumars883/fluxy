@@ -247,7 +247,7 @@ export default function Dashboard() {
       toast.success("Instagram account connected successfully! 🔗");
       shouldClean = true;
     } else if (successParam === "subscribed") {
-      toast.success("Subscription upgraded successfully! 🚀 Welcome to Creator Pro!");
+      toast.success("Subscription upgraded successfully! Welcome to Business Pro!");
       shouldClean = true;
     }
 

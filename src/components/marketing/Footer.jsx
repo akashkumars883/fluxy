@@ -19,7 +19,7 @@ export default function Footer() {
   ];
 
   const solutionsLinks = [
-    { label: "For Creators", href: "/solutions/creators" },
+    { label: "For Digital Products", href: "/solutions/creators" },
     { label: "For Brands", href: "/solutions/brands" },
     { label: "Partner Program", href: "/partners", badge: "Beta" }
   ];
@@ -61,7 +61,7 @@ export default function Footer() {
             </span>
           </div>
           <p className="text-zinc-400 text-sm sm:text-base font-normal leading-relaxed">
-            Automixa is India&apos;s #1 Instagram DM automation and comment auto-reply tool. Scale your lead generation, automatically reply to comments with DMs, and grow your followers 24/7 with the best Meta-approved ManyChat alternative.
+            Automixa is a business messaging automation platform for Instagram comments, DMs, story replies, lead capture, smart bio links, and customer support workflows.
           </p>
           
           {/* Aligned Contact & Socials */}
@@ -249,6 +249,14 @@ export default function Footer() {
             <span className="text-zinc-800 hidden sm:inline">•</span>
             <Link href="/terms" className="hover:text-white transition-colors duration-300">
               Terms & Conditions
+            </Link>
+            <span className="text-zinc-800 hidden sm:inline">•</span>
+            <Link href="/refund-policy" className="hover:text-white transition-colors duration-300">
+              Refund Policy
+            </Link>
+            <span className="text-zinc-800 hidden sm:inline">•</span>
+            <Link href="/shipping-delivery" className="hover:text-white transition-colors duration-300">
+              Delivery Policy
             </Link>
             <span className="text-zinc-800 hidden sm:inline">•</span>
             <Link href="/sitemap" className="hover:text-[#6366F1] transition-colors duration-300">

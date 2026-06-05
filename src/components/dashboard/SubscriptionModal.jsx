@@ -80,7 +80,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
     },
     {
       id: 'creator_pro',
-      name: 'Creator Pro',
+      name: 'Business Pro',
       price_inr: '899',
       price_usd: '14',
       features: ['15k AI Credits', 'Unlimited Automations', 'Story Mentions'],
@@ -88,7 +88,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
     },
     {
       id: 'viral_scale',
-      name: 'Viral Scale',
+      name: 'Business Scale',
       price_inr: '1,999',
       price_usd: '29',
       features: ['50k AI Credits', 'Custom Persona', 'Priority SLA'],
@@ -116,12 +116,12 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
 
   const getReasonMessage = () => {
     switch (upgradeReason) {
-      case "multiple_accounts": return "Upgrade to Creator Pro to connect multiple Instagram accounts.";
-      case "multiple_workspaces": return "Upgrade to Creator Pro to create multiple workspaces.";
+      case "multiple_accounts": return "Upgrade to Business Pro to connect multiple Instagram accounts.";
+      case "multiple_workspaces": return "Upgrade to Business Pro to create multiple workspaces.";
       case "wildcard_keyword": return "Upgrade to unlock Wildcard (*) auto-replies.";
       case "cooldown": return "Upgrade to unlock 24-Hour Cooldown gates.";
       case "story_automator": return "Upgrade to unlock Story Mention automations.";
-      case "automation_limit": return "You've reached your limit! Upgrade to create unlimited automations.";
+      case "automation_limit": return "You've reached your limit. Upgrade to create more business workflows.";
       case "mini_store": return "Upgrade to unlock the Mini Store feature.";
       case "smart_bio": return "Upgrade to unlock the Smart Bio feature.";
       default: return "";
@@ -270,7 +270,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                   <Sparkles size={14} />
                 </div>
                 <div>
-                  <h4 className="text-xs font-semibold text-indigo-900 uppercase tracking-wide">Creator Pro Feature</h4>
+                  <h4 className="text-xs font-semibold text-indigo-900 uppercase tracking-wide">Business Pro Feature</h4>
                   <p className="text-xs font-semibold text-indigo-700 mt-0.5">{getReasonMessage()}</p>
                 </div>
               </div>

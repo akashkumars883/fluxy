@@ -32,7 +32,7 @@ export default function SitemapPage() {
     {
       title: "Solutions",
       links: [
-        { label: "For Creators & Influencers", href: "/solutions/creators" },
+        { label: "For Service Teams", href: "/solutions/creators" },
         { label: "For Brands & E-commerce", href: "/solutions/brands" },
       ]
     },
@@ -47,6 +47,8 @@ export default function SitemapPage() {
       links: [
         { label: "Privacy Policy", href: "/privacy" },
         { label: "Terms & Conditions", href: "/terms" },
+        { label: "Refund Policy", href: "/refund-policy" },
+        { label: "Shipping & Digital Delivery", href: "/shipping-delivery" },
         { label: "Data Deletion Instructions", href: "/data-deletion" },
       ]
     }

@@ -24,7 +24,7 @@ export default function TermsOfService() {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold text-foreground tracking-normal">2. Use License</h2>
         <p>
-          Permission is granted to use Automixa for the purpose of automating Instagram account engagement. This is the grant of a license, not a transfer of title, and under this license you may not:
+          Permission is granted to use Automixa for the purpose of managing business messaging workflows, customer support replies, lead capture, and approved resource delivery. This is the grant of a license, not a transfer of title, and under this license you may not:
         </p>
           <ul className="list-disc pl-5 space-y-2 font-normal">
             <li>Attempt to decompile or reverse engineer any software contained on Automixa&apos;s website.</li>
@@ -50,6 +50,13 @@ export default function TermsOfService() {
       <section className="space-y-4">
          <h2 className="text-xl font-semibold text-foreground tracking-normal">5. Meta Compliance</h2>
          <p>Automixa uses Meta APIs. You must comply with Meta&apos;s Community Standards and Platform Terms at all times. Failure to do so may result in termination of your access to Automixa.</p>
+      </section>
+
+      <section className="space-y-4">
+         <h2 className="text-xl font-semibold text-foreground tracking-normal">6. Billing, Refunds, and Delivery</h2>
+         <p>
+          Paid subscriptions, cancellations, refunds, and digital delivery are governed by our Refund & Cancellation Policy and Shipping & Digital Delivery Policy. These policies are available from the website footer.
+         </p>
       </section>
     </LegalLayout>
   );

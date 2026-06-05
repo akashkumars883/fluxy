@@ -45,8 +45,8 @@ export default function Hero() {
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="text-4xl sm:text-6xl md:text-7xl font-bold text-white leading-[1.1] tracking-tight font-display drop-shadow-sm"
           >
-            Grow Your Audience with Smart <br className="hidden sm:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-rose-400 drop-shadow-lg">Instagram Automation.</span>
+            Customer Conversations, <br className="hidden sm:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-rose-400 drop-shadow-lg">Handled Automatically.</span>
           </motion.h1>
 
           <motion.p 
@@ -55,7 +55,7 @@ export default function Hero() {
             transition={{ duration: 1, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="text-sm md:text-xl text-zinc-200 font-normal leading-relaxed max-w-2xl mt-6 drop-shadow-md"
           >
-            Turn followers into loyal customers while you sleep. Automixa instantly auto-replies to comments and DMs, captures leads, and scales your engagement 24/7.
+            Automixa helps businesses respond to Instagram comments, DMs, and story replies, capture customer details, and deliver approved resources without manual copy-pasting.
           </motion.p>
 
           <motion.div 
@@ -76,7 +76,7 @@ export default function Hero() {
             
             <div className="flex items-center gap-2 text-zinc-300 text-xs font-semibold drop-shadow">
               <ShieldCheck size={18} className="text-emerald-400" />
-              Official Meta Approved API
+              Built on official Meta APIs
             </div>
           </motion.div>
         </div>

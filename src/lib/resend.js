@@ -345,7 +345,7 @@ export function getWelcomeHtml(name) {
               Hi ${name || 'there'},
             </p>
             <p style="font-size: 14px; line-height: 1.6; color: #52525b; margin: 0 0 20px 0;">
-              Thank you for signing up! Automixa is designed to help you turn your Instagram comments, story mentions, and DMs into automatic conversions and leads.
+              Thank you for signing up! Automixa is designed to help you manage Instagram comments, story mentions, and DMs through approved business messaging workflows.
             </p>
             <p style="font-size: 14px; line-height: 1.6; color: #52525b; margin: 0 0 20px 0;">
               To get started, the first step is to connect your Instagram Business account. It takes less than a minute.
@@ -391,7 +391,7 @@ export function getNudge2hHtml(name) {
     <div style="font-family: sans-serif; font-size: 15px; color: #18181b; line-height: 1.6; max-width: 550px;">
       <p>Hi ${name || 'there'},</p>
       <p>I noticed you logged into Automixa, but you haven't connected your Instagram or created your first automation yet.</p>
-      <p>Connecting your account takes less than a minute and starts auto-replying to comments and DMs instantly so you don't lose leads.</p>
+      <p>Connecting your account takes less than a minute and lets you set up approved replies for common comments and DMs.</p>
       <p style="margin: 24px 0;">
         <a href="https://automixa.in/dashboard" style="background: #6366F1; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block; border: 1px solid #6366F1;">
           Connect Instagram & Get Started
@@ -421,14 +421,14 @@ export function getCaseStudyHtml(name) {
     <div style="font-family: sans-serif; font-size: 15px; color: #18181b; line-height: 1.6; max-width: 550px;">
       <p>Hi ${name || 'there'},</p>
       <p>Are you still replying to your Instagram comments and DMs manually? 🥵</p>
-      <p>Manual replies are slow and meta algorithms penalize pages that don't respond to active messages immediately. That means you are missing out on potential sales and profile reach every single day.</p>
-      <p>By connecting Automixa, you can instantly reply to comment keywords like <em>"INFO"</em> or <em>"LINK"</em>, sending a direct message with details inside 1.5 seconds. Our creators are seeing a <strong>30% to 40% increase in conversions</strong> in their first week alone.</p>
+      <p>Manual replies are slow, especially when customers ask the same questions across comments and DMs. Automixa helps you respond consistently and keep inquiries organized.</p>
+      <p>By connecting Automixa, you can create keyword-based workflows like <em>"INFO"</em> or <em>"LINK"</em>, then send approved details, resources, or product links from your dashboard.</p>
       <p style="margin: 24px 0;">
         <a href="https://automixa.in/dashboard" style="background: #6366F1; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block; border: 1px solid #6366F1;">
-          Start Automating Your Instagram
+          Set Up My Messaging Workflow
         </a>
       </p>
-      <p>Connecting takes 60 seconds and requires no password. If you need a demo or help setting it up, feel free to reply directly to this email.</p>
+      <p>Connecting takes about 60 seconds and requires no Instagram password. If you need a demo or help setting it up, feel free to reply directly to this email.</p>
       <br/>
       <p>Best,<br/><strong>Akash</strong><br/>Founder, Automixa</p>
     </div>
@@ -468,7 +468,7 @@ export const sendOnboardingEmail = async ({ email, name, type }) => {
       subject = 'Quick question about your Automixa setup';
       htmlContent = getNudge2hHtml(name);
     } else if (type === 'case_study_24h') {
-      subject = 'Stop replying manually: increase your conversions by 40%';
+      subject = 'A faster way to manage customer replies';
       htmlContent = getCaseStudyHtml(name);
     } else if (type === 'feedback_72h') {
       subject = 'Quick question from the founder of Automixa';
@@ -489,4 +489,3 @@ export const sendOnboardingEmail = async ({ email, name, type }) => {
     return null;
   }
 };
-

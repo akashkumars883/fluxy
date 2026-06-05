@@ -39,7 +39,7 @@ export default function JsonLd() {
     "legalName": "Akash Enterprises",
     "url": "https://automixa.in",
     "logo": "https://automixa.in/icon.png",
-    "description": "Automate your Instagram comments and DMs with AI. Scale your growth, generate leads, and boost engagement safely with official APIs.",
+    "description": "Manage Instagram customer comments, DMs, story replies, lead capture, smart bio links, and support workflows with secure API-based automation.",
     "founder": {
       "@type": "Person",
       "name": "Akash Kumar",

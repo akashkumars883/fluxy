@@ -742,7 +742,7 @@ export default function AutomationPreview({
                  <div className="text-[10px] font-semibold text-zinc-900">1,234 likes</div>
                  <div className="text-[10px] leading-relaxed font-normal text-zinc-700">
                     <span className="font-semibold text-zinc-900 mr-1.5">{activeUsername}</span>
-                    <span>Automate your growth with Automixa 🚀</span>
+                    <span>Automate customer replies with Automixa</span>
                  </div>
 
                  {/* Render dynamic mock comments */}

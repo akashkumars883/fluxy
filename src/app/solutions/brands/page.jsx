@@ -11,12 +11,12 @@ export default function BrandsSolutionPage() {
   const benefits = [
     {
       title: "Auto-Deliver Coupon Codes",
-      tagline: "Increase Conversion Rates",
-      description: "Encourage Reels viewers to comment a specific keyword like 'DEAL' or 'DISCOUNT' and instantly send them a checkout coupon code in their DMs. Boost direct sales automatically.",
+      tagline: "Send Approved Discounts",
+      description: "Let customers comment a keyword like 'DEAL' or 'DISCOUNT' and receive a configured checkout coupon code in their DMs.",
       bullets: [
         "Works seamlessly with Shopify & WooCommerce",
         "Triggers checkout redirects in 1-click",
-        "Increase Reels sales conversions by up to 4.2X"
+        "Track coupon delivery inside your dashboard"
       ],
       icon: DollarSign,
       image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=1200&auto=format&fit=crop",
@@ -27,7 +27,7 @@ export default function BrandsSolutionPage() {
       tagline: "Zero Comment Friction",
       description: "Stop wasting hours copy-pasting links manually. Automatically detect customer inquiries like 'price' or 'link' on your posts and send the exact checkout page link via DMs instantly.",
       bullets: [
-        "Official Meta approved safe API response rules",
+        "Secure Meta API response rules",
         "Integrates directly with Shopify product catalog URLs",
         "Real-time CTR tracking metrics inside your dashboard"
       ],
@@ -38,7 +38,7 @@ export default function BrandsSolutionPage() {
     {
       title: "Automate Customer FAQs",
       tagline: "24/7 E-commerce Assistant",
-      description: "Build automated responses for customer inquiries (e.g. shipping times, refund policies, order tracking) inside Instagram DMs. Keep your support team relaxed while sales grow.",
+      description: "Build automated responses for customer inquiries, including shipping times, refund policies, order tracking, and handoff instructions inside Instagram DMs.",
       bullets: [
         "Answer shipping questions in under 2 seconds",
         "Auto-qualify leads before human agent handoff",
@@ -53,7 +53,7 @@ export default function BrandsSolutionPage() {
   const faqs = [
     {
       q: "How can e-commerce brands use Automixa?",
-      a: "Brands use Automixa to instantly send product links and discount codes via DM when followers comment on their posts. This removes friction and drives immediate sales."
+      a: "Brands use Automixa to send product links, discount codes, and support replies via DM when customers comment on posts or message the account."
     },
     {
       q: "Can I automate customer support FAQs?",
@@ -65,7 +65,7 @@ export default function BrandsSolutionPage() {
     },
     {
       q: "Is it safe for my brand's Instagram account?",
-      a: "100% safe. We only use Meta's official API for Business accounts. There is zero risk of being banned, unlike unauthorized scraper bots."
+      a: "Automixa uses secure OAuth and Meta APIs for supported business messaging features. We do not ask for Instagram passwords or use unauthorized scraper bots."
     }
   ];
 
@@ -94,11 +94,11 @@ export default function BrandsSolutionPage() {
                 For Brands & E-commerce
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-zinc-900 leading-[1.1]">
-                Turn Followers Into <br className="hidden sm:block" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-pink-600 to-amber-500 font-bold">Customers.</span>
+                Turn Comments Into <br className="hidden sm:block" />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-pink-600 to-amber-500 font-bold">Customer Workflows.</span>
               </h1>
               <p className="text-zinc-600 text-base sm:text-lg leading-relaxed max-w-lg">
-                Automate your Instagram sales funnel. Reply to Reels comments with discount codes, send product links via DMs instantly, and skyrocket your store conversion rates with the best <strong className="text-zinc-900 font-semibold">Instagram automation tool</strong>.
+                Reply to customer comments with discount codes, send product links via DMs, and keep support conversations organized from one business messaging dashboard.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
@@ -120,7 +120,7 @@ export default function BrandsSolutionPage() {
                 </div>
                 <div className="text-xs text-zinc-500 font-medium leading-tight">
                   <span className="font-bold text-zinc-800 text-sm block">1,500+ Brands</span>
-                  already boosting ROI.
+                  using Automixa for customer messaging.
                 </div>
               </div>
             </motion.div>

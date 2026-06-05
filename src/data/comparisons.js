@@ -2,346 +2,345 @@ export const competitorsData = {
   manychat: {
     name: "ManyChat",
     title: "Automixa vs ManyChat",
-    tagline: "The complex flow builder vs the modern creator tool.",
-    desc: "ManyChat is an incredibly powerful, official Meta-approved tool, but it's built for enterprise marketing teams with complex node-based flow charts, gets expensive fast as your contact list grows, and requires manual setup for unique comment reply variations. Automixa is built strictly for creators—offering flat pricing, automated AI comment rephrasing, and an integrated Smart Bio link.",
-    metaTitle: "ManyChat Alternative for Instagram | Automixa vs ManyChat",
-    metaDesc: "Factual comparison of Automixa vs ManyChat. Discover how Automixa simplifies Instagram automation for creators with flat pricing and built-in AI reply variation.",
+    tagline: "Advanced flow builder vs focused business messaging.",
+    desc: "ManyChat is a broad automation platform for teams that need complex multi-channel flows. Automixa is focused on Instagram business messaging workflows, with simple comment-to-DM replies, contact capture, approved resource delivery, and a built-in Smart Bio page.",
+    metaTitle: "ManyChat Alternative for Instagram Business Messaging | Automixa",
+    metaDesc: "A factual comparison of Automixa and ManyChat for Instagram business messaging, comment replies, DM workflows, Smart Bio pages, and predictable pricing.",
     features: [
       {
         name: "Official Meta Connection",
-        automixa: "100% Meta API Compliant (Secure, official integration with no password required)",
-        competitor: "100% Meta API Compliant (Secure, official integration with no password required)",
+        automixa: "Meta Graph API based connection with no Instagram password required",
+        competitor: "Meta Graph API based connection with no Instagram password required",
         winner: "tie"
       },
       {
-        name: "AI Reply Randomization",
-        automixa: "AI Text Changer (Automatically rephrases comment replies so each response looks unique and natural)",
-        competitor: "Static Templates (Sends the exact same text string unless you manually write multiple variants)",
+        name: "Reply Variation",
+        automixa: "AI Text Changer helps prepare natural reply variants for customer conversations",
+        competitor: "Template variations can be configured manually in flows",
         winner: "automixa"
       },
       {
         name: "Pricing Model",
-        automixa: "Flat Creator Pricing (Grow your audience freely with unlimited contacts under one flat fee)",
-        competitor: "Tiered by Contacts (Pricing scales up automatically as your active subscriber database grows)",
+        automixa: "Predictable plans for business messaging, contacts, and automation usage",
+        competitor: "Pricing can vary by contacts, channels, and plan limits",
         winner: "automixa"
       },
       {
         name: "Integrated Bio Link",
-        automixa: "Smart Bio Included (Customizable link-in-bio page with conversion tracking included in your plan)",
-        competitor: "Not Provided (Requires third-party subscriptions like Linktree, Beacons, or custom hosts)",
+        automixa: "Smart Bio page included with link tracking and contact collection",
+        competitor: "Often handled with separate third-party link-in-bio tools",
         winner: "automixa"
       },
       {
         name: "Setup Interface",
-        automixa: "One-Click Creator Presets (Launch standard goals like 'Reels Comment to DM' in 2 minutes)",
-        competitor: "Visual Flow Builder (Extremely customizable but has a steep learning curve for simple setups)",
+        automixa: "Guided presets for common comment, DM, and story reply workflows",
+        competitor: "Flexible visual flow builder with more configuration depth",
         winner: "automixa"
       }
     ],
     whySwitch: [
       {
-        title: "Predictable, Safe Billing",
-        desc: "ManyChat's tier-based pricing means you get penalized with higher bills just for growing your follower base. Automixa offers a flat creator rate with unlimited contacts."
+        title: "Predictable Billing",
+        desc: "Automixa keeps pricing easier to understand for small teams that need Instagram messaging, contact capture, and resource delivery without configuring a full enterprise stack."
       },
       {
-        title: "Automated Algorithmic Safety",
-        desc: "Instagram's spam detectors flag high volumes of identical comments. Automixa's AI Text Changer solves this by slightly rephrasing your replies automatically."
+        title: "Clean Customer Conversations",
+        desc: "Reply variations and guardrails help teams avoid repetitive messages while staying within official platform capabilities."
       },
       {
-        title: "Zero Setup Fatigue",
-        desc: "No need to build complex block-diagram flowcharts. Choose a creator preset, customize your link, and turn it on instantly."
+        title: "Fast Setup",
+        desc: "Choose a workflow preset, add your message, attach a link or resource, and start managing customer conversations from one dashboard."
       }
     ],
     faqs: [
       {
-        q: "Is Automixa as safe and compliant as ManyChat?",
-        a: "Yes, 100%. Both Automixa and ManyChat connect using Meta's official Graph API. We never ask for your Instagram password, ensuring your account is fully protected under official Meta Platform Terms."
+        q: "Is Automixa as secure as ManyChat?",
+        a: "Both platforms can connect through Meta Graph APIs. Automixa never asks for your Instagram password and is designed around official permission-based access."
       },
       {
-        q: "How does the pricing differ between Automixa and ManyChat?",
-        a: "ManyChat charges you based on the number of active contacts in your database—as your audience grows, your monthly bill increases automatically. Automixa offers a flat, creator-friendly pricing structure with unlimited contacts, so you never get surprise bills for going viral."
+        q: "How does pricing differ between Automixa and ManyChat?",
+        a: "ManyChat pricing can depend on plan limits and contact tiers. Automixa presents simpler plans for Instagram messaging workflows, contact capture, and Smart Bio usage."
       },
       {
-        q: "Do I still need a tool like Linktree if I use Automixa?",
-        a: "No! ManyChat does not offer a link-in-bio tool, forcing you to pay for extra tools. Automixa has a beautiful, trackable Smart Bio page built natively into your dashboard at no extra cost."
+        q: "Do I need a separate link-in-bio tool?",
+        a: "Automixa includes a Smart Bio page with tracking, so many teams can manage bio links and messaging workflows in the same workspace."
       },
       {
         q: "What makes Automixa simpler to set up?",
-        a: "ManyChat is a powerful, highly complex workflow tool designed for corporate marketing agencies. Automixa is built specifically for creators, replacing complex node maps with simple, ready-to-run presets like 'Comment to DM' or 'Story Mentions'."
+        a: "Automixa focuses on common Instagram business workflows such as comment replies, DM responses, story replies, and resource delivery instead of requiring a full visual flow map for every use case."
       }
     ]
   },
   chatfuel: {
     name: "Chatfuel",
     title: "Automixa vs Chatfuel",
-    tagline: "Enterprise complexity vs Creator-first speed.",
-    desc: "Chatfuel is a solid platform that focuses heavily on corporate WhatsApp automation, enterprise retail brands, and customer service desks. If you are an organic creator, coach, or personal brand looking for high-converting comment automation on Reels and a built-in link-in-bio hub, Chatfuel's corporate bloat and lack of automated text rephrasers make it overly complex.",
-    metaTitle: "Chatfuel Alternative for Instagram | Automixa vs Chatfuel",
-    metaDesc: "Factual comparison of Automixa vs Chatfuel. Learn why creators choose Automixa for lightweight Reels comment-automation and built-in bio links.",
+    tagline: "Broad commerce automation vs Instagram-first workflows.",
+    desc: "Chatfuel supports larger commerce and support use cases across channels. Automixa is built for businesses that want a focused Instagram workspace for comment replies, DMs, story responses, Smart Bio links, and lead capture.",
+    metaTitle: "Chatfuel Alternative for Instagram Business Messaging | Automixa",
+    metaDesc: "Compare Automixa and Chatfuel for Instagram comment replies, DM automation, Smart Bio pages, contact capture, and customer support workflows.",
     features: [
       {
         name: "Primary Focus",
-        automixa: "Creators, Coaches & Personal Brands (Optimized for Reels comment automation and lead delivery)",
-        competitor: "Enterprise E-commerce & WhatsApp (Built for retail support agents and corporate CRMs)",
+        automixa: "Instagram business messaging, lead capture, and approved resource delivery",
+        competitor: "Commerce, support desks, and broader automation use cases",
         winner: "automixa"
       },
       {
         name: "Official Meta Connection",
-        automixa: "100% Meta API Compliant (Secure, official integration with no password required)",
-        competitor: "100% Meta API Compliant (Secure, official integration with no password required)",
+        automixa: "Meta Graph API based connection with no Instagram password required",
+        competitor: "Meta Graph API based connection with no Instagram password required",
         winner: "tie"
       },
       {
-        name: "AI Text Rephrasing",
-        automixa: "AI Text Changer (Automatically rephrases replies so comment logs look unique and organic)",
-        competitor: "Manual Template Entries (Requires you to manually write every reply variation yourself)",
+        name: "Reply Variation",
+        automixa: "AI Text Changer helps draft natural response variants",
+        competitor: "Manual template and flow configuration",
         winner: "automixa"
       },
       {
         name: "Link Hub Integration",
-        automixa: "Smart Bio Included (Customizable creator landing page with conversion tracking)",
-        competitor: "Not Provided (Requires separate external tools for hosting your bio links)",
+        automixa: "Smart Bio page included with conversion and click tracking",
+        competitor: "May require a separate external bio link workflow",
         winner: "automixa"
       },
       {
-        name: "Platform Setup Time",
-        automixa: "Under 2 Minutes (Clean, creator-focused dashboard with intuitive presets)",
-        competitor: "Moderate to High (Requires sorting through enterprise dashboard settings and corporate tabs)",
+        name: "Setup Time",
+        automixa: "Guided dashboard for common Instagram conversation workflows",
+        competitor: "More settings for broader business operations",
         winner: "automixa"
       }
     ],
     whySwitch: [
       {
-        title: "Built for Creators, Not Corporate Desks",
-        desc: "Chatfuel is bloated with support desk features and multi-channel ticketing systems. Automixa is lightweight, focused entirely on turning your Reels views into comments, DMs, and sales."
+        title: "Focused Workspace",
+        desc: "Automixa keeps the dashboard centered on Instagram customer conversations, resource links, contact collection, and workflow performance."
       },
       {
-        title: "Clean Creator Analytics",
-        desc: "Get crystal-clear data showing exactly which Reels generated the most comments, DMs, and bio link clicks—without sorting through complex enterprise sales pipelines."
+        title: "Clear Analytics",
+        desc: "See which rules, messages, links, and bio actions are producing customer conversations and captured contacts."
       },
       {
-        title: "Automated Comment Spinning",
-        desc: "Avoid algorithmic spam blocks effortlessly. Automixa's built-in AI rephraser automatically spins comment replies so they never trigger duplicate text penalties."
+        title: "Natural Replies",
+        desc: "AI-assisted reply variants help teams avoid sending the same customer-facing text repeatedly."
       }
     ],
     faqs: [
       {
-        q: "Why should creators choose Automixa over Chatfuel?",
-        a: "Chatfuel is a robust tool, but its core focus is WhatsApp automation and enterprise-level customer service desks for retail brands. Automixa is laser-focused on digital creators, coaches, and personal brands, offering simpler setups, creator analytics, and dynamic AI reply variants."
+        q: "Why choose Automixa over Chatfuel?",
+        a: "Choose Automixa if your main requirement is a focused Instagram messaging workspace with comment replies, DMs, story replies, Smart Bio links, and simple contact capture."
       },
       {
-        q: "Does Chatfuel have built-in link-in-bio pages?",
-        a: "No. Chatfuel does not provide a customizable creator landing page or link hub. Creators using Chatfuel must set up and manage a separate bio link service like Linktree, whereas Automixa includes it natively."
+        q: "Does Chatfuel include Smart Bio pages?",
+        a: "Automixa includes Smart Bio natively. With other platforms, teams may need a separate link-in-bio tool depending on their setup."
       },
       {
-        q: "Are both platforms safe for my Instagram account?",
-        a: "Yes! Both Automixa and Chatfuel connect using official, Meta-compliant Graph APIs. They are 100% safe, do not require your Instagram password, and follow Meta's strict platform developer guidelines."
+        q: "Are both platforms secure?",
+        a: "Both can use official Meta API connections. Automixa does not ask for your Instagram password and uses permission-based account access."
       }
     ]
   },
   instachamp: {
     name: "InstaChamp",
     title: "Automixa vs InstaChamp",
-    tagline: "Basic auto-replies vs professional creator engine.",
-    desc: "InstaChamp (by MobileMonkey/Customers.ai) was originally designed as a basic DM tool for creators, but its parent company has shifted focus toward B2B database prospecting. As a result, InstaChamp lacks modern creator essentials like automated AI reply rephrasers, active surge protection, and a built-in link-in-bio hub, requiring creators to buy multiple extra tools.",
-    metaTitle: "InstaChamp Alternative for Creators | Automixa vs InstaChamp",
-    metaDesc: "Factual comparison of Automixa vs InstaChamp. Learn how Automixa's AI reply spin and integrated Smart Bio provide a safer, more complete creator tool.",
+    tagline: "Basic replies vs complete messaging workspace.",
+    desc: "InstaChamp offers DM and comment automation features. Automixa adds a broader business messaging workspace with Smart Bio, contact capture, reply variations, webhook support, and usage guardrails.",
+    metaTitle: "InstaChamp Alternative for Business Messaging | Automixa",
+    metaDesc: "Compare Automixa and InstaChamp for Instagram DM replies, comment automation, Smart Bio, CRM, contact capture, and workflow guardrails.",
     features: [
       {
         name: "Official Meta Connection",
-        automixa: "100% Meta API Compliant (Secure, official integration with no password required)",
-        competitor: "100% Meta API Compliant (Secure, official integration with no password required)",
+        automixa: "Meta Graph API based connection with no Instagram password required",
+        competitor: "Meta Graph API based connection with no Instagram password required",
         winner: "tie"
       },
       {
-        name: "AI Text Rephrasing",
-        automixa: "AI Text Changer (Automatically rephrases replies so comment logs look unique and organic)",
-        competitor: "Manual Templates Only (Requires manually writing each alternate response)",
+        name: "Reply Variation",
+        automixa: "AI Text Changer helps create customer-friendly response variants",
+        competitor: "Manual templates for alternate responses",
         winner: "automixa"
       },
       {
         name: "Link Hub Integration",
-        automixa: "Smart Bio Included (Customizable creator landing page with conversion tracking)",
-        competitor: "Not Provided (Requires separate external tools to hold and trace bio links)",
+        automixa: "Smart Bio page included with tracking",
+        competitor: "Usually handled with external bio link tools",
         winner: "automixa"
       },
       {
-        name: "Security Surge Buffer",
-        automixa: "Automixa Shield (Rand-delays and circuit-breaker surge block to prevent spam rate-limits)",
-        competitor: "Basic Timing (Simple send delays with no active defense against sudden comment surges)",
+        name: "Usage Guardrails",
+        automixa: "Automixa Shield helps pause workflows during unusual spikes",
+        competitor: "Basic timing controls",
         winner: "automixa"
       },
       {
-        name: "Lead CRM Analytics",
-        automixa: "Leads Dashboard (Automatically captures and logs emails, phone numbers, and clicks natively)",
-        competitor: "Basic Triggers (Simple log history showing only that a message was sent)",
+        name: "Lead CRM",
+        automixa: "Contact panel for captured emails, phone numbers, and clicked links",
+        competitor: "Basic trigger and message history",
         winner: "automixa"
       }
     ],
     whySwitch: [
       {
-        title: "All-in-One Creator Toolkit",
-        desc: "Why pay for InstaChamp, Linktree, and a leads spreadsheet separately? Automixa packages your DM auto-replies, smart bio links, and contact CRM under one simple subscription."
+        title: "All-in-One Workspace",
+        desc: "Automixa combines auto-replies, Smart Bio links, contact capture, and simple CRM views under one subscription."
       },
       {
-        title: "Active Algorithmic Defense",
-        desc: "InstaChamp lacks spam surge blockers. If a bot attacks your post with triggers, InstaChamp will fire continuous replies, exposing your channel. Automixa Shield actively detects and blocks bot surge attacks."
+        title: "Operational Guardrails",
+        desc: "Automixa Shield can pause messaging rules during unusual activity so teams can review what is happening."
       },
       {
-        title: "Hands-Free Reply Variation",
-        desc: "Instead of writing five different reply comments manually to avoid Instagram duplication flags, Automixa's built-in AI handles rephrasing dynamically on the fly."
+        title: "Reply Variants",
+        desc: "AI-assisted variants reduce repetitive customer-facing copy without requiring teams to write every option manually."
       }
     ],
     faqs: [
       {
-        q: "What makes Automixa a safer alternative to InstaChamp?",
-        a: "InstaChamp relies on basic API triggers but does not include advanced spam surge buffers. If automated bot accounts spam your keywords, InstaChamp keeps firing replies, which can lead to Instagram rate-limiting your page. Automixa Shield features active circuit breakers that pause replies during spam surges, keeping your channel safe."
+        q: "What makes Automixa different from InstaChamp?",
+        a: "Automixa is designed as a complete Instagram business messaging workspace with Smart Bio, contact capture, reply variants, and workflow guardrails."
       },
       {
-        q: "Does InstaChamp offer a customizable bio link?",
-        a: "No. InstaChamp is strictly a basic direct message automation tool. Creators are forced to pay for and configure third-party services like Linktree or Beacons, whereas Automixa bundles its trackable Smart Bio for free."
+        q: "Does InstaChamp offer a bio link page?",
+        a: "Automixa includes a trackable Smart Bio page. Other tools may require a separate service for bio links."
       },
       {
-        q: "Are both integrations secure and Meta-compliant?",
-        a: "Yes. Both tools utilize official Meta Graph APIs for connection. Neither tool asks for your password, and both are fully compliant with Meta Developer Policies, ensuring absolute account security."
+        q: "Are both integrations secure?",
+        a: "Automixa connects through permission-based Meta APIs and never asks for your Instagram password."
       }
     ]
   },
   convertdm: {
     name: "ConvertDM",
     title: "Automixa vs ConvertDM",
-    tagline: "Basic templates vs AI-powered creator engines.",
-    desc: "ConvertDM is a budget option in the Indian market, but it lacks advanced features like automated AI text rephrasers, active surge protection, and advanced outbound webhooks. Automixa is built for professional creators and growing brands—offering a robust leads CRM, built-in Smart Bio page, and enterprise-grade security.",
-    metaTitle: "ConvertDM Alternative for Instagram | Automixa vs ConvertDM",
-    metaDesc: "Factual comparison of Automixa vs ConvertDM. Discover how Automixa provides smarter comment auto-replies, better analytics, and official Meta API security.",
+    tagline: "Template replies vs connected customer workflows.",
+    desc: "ConvertDM is a lightweight option for message automation. Automixa is designed for teams that need business messaging workflows, contact capture, Smart Bio pages, outbound webhooks, and response guardrails.",
+    metaTitle: "ConvertDM Alternative for Instagram Business Messaging | Automixa",
+    metaDesc: "Compare Automixa and ConvertDM for Instagram comment replies, DMs, Smart Bio pages, lead capture, webhooks, and secure account connections.",
     features: [
       {
         name: "Official Meta Connection",
-        automixa: "100% Meta API Compliant (Secure, official integration with no password required)",
-        competitor: "100% Meta API Compliant (Secure, official integration with no password required)",
+        automixa: "Meta Graph API based connection with no Instagram password required",
+        competitor: "Meta Graph API based connection with no Instagram password required",
         winner: "tie"
       },
       {
-        name: "AI Reply Randomization",
-        automixa: "AI Text Changer (Automatically rephrases replies so comment logs look unique and organic)",
-        competitor: "Static Templates Only (Requires manually writing each alternate response)",
+        name: "Reply Variation",
+        automixa: "AI-assisted response variants for customer conversations",
+        competitor: "Static templates and manual alternates",
         winner: "automixa"
       },
       {
         name: "Link Hub Integration",
-        automixa: "Smart Bio Included (Customizable creator landing page with conversion tracking)",
-        competitor: "Not Provided (Requires separate external tools to hold and trace bio links)",
+        automixa: "Smart Bio page with link tracking",
+        competitor: "May require separate tools for bio links",
         winner: "automixa"
       },
       {
         name: "Outbound Webhooks",
-        automixa: "Advanced Webhooks (Outbound webhooks with test suites built-in for Make/Zapier)",
-        competitor: "Limited / No Direct Outbound Integration (Requires manual data exports)",
+        automixa: "Outbound webhooks with testing support for Make, Zapier, and custom endpoints",
+        competitor: "Limited or manual export workflows",
         winner: "automixa"
       },
       {
-        name: "Security Surge Buffer",
-        automixa: "Automixa Shield (Rand-delays and circuit-breaker surge block to prevent spam rate-limits)",
-        competitor: "Basic Timing (Simple send delays with no active defense against sudden comment surges)",
+        name: "Usage Guardrails",
+        automixa: "Automixa Shield helps pause rules during unusual spikes",
+        competitor: "Basic timing controls",
         winner: "automixa"
       }
     ],
     whySwitch: [
       {
-        title: "All-in-One Lead Hub",
-        desc: "Why pay for ConvertDM, Linktree, and Zapier separately? Automixa packages your DM auto-replies, smart bio links, and contact CRM under one simple subscription with native outbound webhook support."
+        title: "Connected Lead Hub",
+        desc: "Automixa combines messaging, Smart Bio, contact records, and webhook delivery for teams that want a more connected workflow."
       },
       {
-        title: "Avoid Duplicate Reply Bans",
-        desc: "Instagram's spam algorithms penalize identical replies. Automixa's AI Text Changer automatically spins comment replies so they look fresh and natural, avoiding duplication bans."
+        title: "Cleaner Message Operations",
+        desc: "Reply variants help keep customer-facing responses natural and less repetitive."
       },
       {
-        title: "Active Algorithmic Defense",
-        desc: "ConvertDM lacks active circuit breakers. If automated bots spam your keywords, Automixa Shield automatically pauses replies during surge attacks, protecting your channel."
+        title: "Workflow Guardrails",
+        desc: "Automixa Shield helps teams review unusual message spikes before workflows continue."
       }
     ],
     faqs: [
       {
-        q: "What makes Automixa a safer alternative to ConvertDM?",
-        a: "ConvertDM relies on basic API triggers but does not include advanced spam surge buffers. If automated bot accounts spam your keywords, ConvertDM keeps firing replies, which can lead to Instagram rate-limiting your page. Automixa Shield features active circuit breakers that pause replies during spam surges, keeping your channel safe."
+        q: "What makes Automixa different from ConvertDM?",
+        a: "Automixa adds Smart Bio, contact capture, outbound webhooks, response variants, and workflow guardrails around core Instagram messaging automation."
       },
       {
-        q: "Do I get a link-in-bio tool with ConvertDM?",
-        a: "No. ConvertDM does not provide a customizable creator landing page or link hub. Creators must set up and manage a separate bio link service like Linktree, whereas Automixa includes it natively."
+        q: "Do I get a link-in-bio tool?",
+        a: "Yes. Automixa includes a Smart Bio page with click tracking and contact collection features."
       },
       {
         q: "Do both platforms support official APIs?",
-        a: "Yes. Both tools connect using official, Meta-compliant Graph APIs. They are 100% safe, do not require your Instagram password, and follow Meta's strict platform developer guidelines."
+        a: "Automixa is designed around permission-based Meta API access and does not require Instagram passwords."
       }
     ]
   },
   whosedm: {
     name: "WhoseDM",
     title: "Automixa vs WhoseDM",
-    tagline: "White-label setup vs Creator-first speed.",
-    desc: "WhoseDM offers decent comment automation but its setup dashboard is complex, and it is positioned more as an agency-first white-label solution. Automixa is designed directly for creators and coaches—offering one-click automation wizards, a simpler creator interface, and native AI-powered content builders.",
-    metaTitle: "WhoseDM Alternative for Instagram | Automixa vs WhoseDM",
-    metaDesc: "Compare Automixa vs WhoseDM. Learn why creators and personal brands choose Automixa's simplified setups, AI reply variations, and built-in Smart Bio.",
+    tagline: "Agency setup vs focused business workspace.",
+    desc: "WhoseDM is often positioned around agency and white-label setups. Automixa focuses on direct business use cases: Instagram comment replies, DMs, story responses, Smart Bio pages, contact capture, and workflow tracking.",
+    metaTitle: "WhoseDM Alternative for Instagram Business Messaging | Automixa",
+    metaDesc: "Compare Automixa and WhoseDM for Instagram business messaging, comment replies, DMs, Smart Bio, contact capture, and workflow setup.",
     features: [
       {
         name: "Setup Interface",
-        automixa: "One-Click Creator Presets (Launch standard goals like 'Reels Comment to DM' in 2 minutes)",
-        competitor: "Agency Dashboard (Complex configuration panel with high setup learning curve)",
+        automixa: "Guided presets for common customer conversation workflows",
+        competitor: "Agency-style dashboard with white-label configuration",
         winner: "automixa"
       },
       {
         name: "Official Meta Connection",
-        automixa: "100% Meta API Compliant (Secure, official integration with no password required)",
-        competitor: "100% Meta API Compliant (Secure, official integration with no password required)",
+        automixa: "Meta Graph API based connection with no Instagram password required",
+        competitor: "Meta Graph API based connection with no Instagram password required",
         winner: "tie"
       },
       {
-        name: "AI Reply Randomization",
-        automixa: "AI Text Changer (Automatically rephrases replies so comment logs look unique and organic)",
-        competitor: "Manual Template Entries (Requires you to manually write every reply variation yourself)",
+        name: "Reply Variation",
+        automixa: "AI Text Changer helps prepare natural response variants",
+        competitor: "Manual template entries",
         winner: "automixa"
       },
       {
         name: "Link Hub Integration",
-        automixa: "Smart Bio Included (Customizable creator landing page with conversion tracking)",
-        competitor: "Not Provided (Requires separate external tools to hold and trace bio links)",
+        automixa: "Smart Bio included with tracking",
+        competitor: "May require a separate external link hub",
         winner: "automixa"
       },
       {
         name: "Setup Time",
-        automixa: "Under 2 Minutes (Launch-ready presets for quick reels and story setup)",
-        competitor: "Moderate to High (Requires custom workflow setup and white-label configs)",
+        automixa: "Fast setup for comment, DM, story, and resource delivery workflows",
+        competitor: "More configuration for agency workflows",
         winner: "automixa"
       }
     ],
     whySwitch: [
       {
-        title: "Designed for Creators, Not Agencies",
-        desc: "WhoseDM is built for agency white-label clients, making the dashboard overly complex. Automixa is lightweight, focused entirely on helping creators turn Reels views into leads."
+        title: "Designed for Operators",
+        desc: "Automixa is built for teams that want to manage Instagram customer conversations without agency-level configuration overhead."
       },
       {
-        title: "Smart Bio Integration",
-        desc: "Automixa has a beautiful, trackable Smart Bio page built natively into your dashboard at no extra cost. WhoseDM does not provide a customizable creator landing page or link hub."
+        title: "Smart Bio Included",
+        desc: "The Smart Bio page gives teams a trackable destination for links, forms, product pages, and resource delivery."
       },
       {
-        title: "Automatic Text Spin",
-        desc: "Avoid duplicate comment penalties from Instagram effortlessly. Automixa's built-in AI rephraser automatically spins comment replies so they never trigger duplicate text penalties."
+        title: "Response Variants",
+        desc: "AI-assisted variants help teams keep replies natural while maintaining consistent messaging."
       }
     ],
     faqs: [
       {
-        q: "How does the interface compare between Automixa and WhoseDM?",
-        a: "WhoseDM is built as a white-label dashboard for agencies, making the interface overly complex for single creators and brands. Automixa is built specifically for creators, with clean presets that let you launch campaigns in under 2 minutes."
+        q: "How does the interface compare?",
+        a: "WhoseDM may suit agency-style setups. Automixa is simpler for teams that need direct Instagram messaging workflows and Smart Bio tracking."
       },
       {
         q: "Does WhoseDM offer AI reply variants?",
-        a: "WhoseDM requires you to manually write separate text responses. Automixa has a built-in AI Text Changer that rephrases your replies automatically so they look natural and protect your account from spam filters."
+        a: "Automixa includes an AI Text Changer to help create response variants. Availability in other tools depends on their current feature set."
       },
       {
-        q: "Are both integrations secure and Meta-compliant?",
-        a: "Yes. Both tools utilize official Meta Graph APIs for connection. Neither tool asks for your password, and both are fully compliant with Meta Developer Policies, ensuring absolute account security."
+        q: "Are both integrations secure?",
+        a: "Automixa uses permission-based Meta API access and does not ask for Instagram passwords."
       }
     ]
   }
 };
-

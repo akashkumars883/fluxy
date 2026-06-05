@@ -19,8 +19,8 @@ export default function FAQ({ customFaqs = null }) {
       a: "Absolutely! Automixa handles both public comment replies and direct messages. You can set it to automatically send a DM containing a resource link, guide, or custom reply whenever someone comments on your reels or posts."
     },
     {
-      q: "How does the 'Follower-Gate' check work?",
-      a: "Follower-Gate is a powerful organic growth loop. When active, Automixa verifies if the commenter is following your Instagram account. If they are, it instantly delivers the resource. If not, it politely asks them to follow you first to unlock the reward!"
+      q: "How does the access condition check work?",
+      a: "Access conditions let a business decide when a configured resource should be delivered. Automixa can check available account relationship signals through supported APIs and then send the appropriate message or instruction."
     },
     {
       q: "Can I try Automixa for free before upgrading?",

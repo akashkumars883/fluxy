@@ -63,8 +63,8 @@ export default function DMAutoReplyPage() {
       a: "Yes! The AI agent automatically detects the language of the incoming message (Hindi, English, Spanish, etc.) and replies in the exact same language automatically."
     },
     {
-      q: "Will Instagram shadowban my account for using DM automation?",
-      a: "No. Automixa is built strictly on top of the official Meta Instagram API and is an approved partner. We do not use scrapers or ask for passwords, ensuring your account safety is 100% guaranteed."
+      q: "Is Automixa safe for my Instagram account?",
+      a: "Automixa uses secure OAuth and supported Meta APIs. We do not use scrapers or ask for passwords, and users must follow Meta's platform rules when configuring replies."
     },
     {
       q: "Can I set up quick-reply buttons inside the DM?",
@@ -103,7 +103,7 @@ export default function DMAutoReplyPage() {
               </h1>
               
               <p className="text-zinc-600 text-base sm:text-lg leading-relaxed max-w-xl">
-                Convert direct messages into checkout orders automatically. Automixa triggers 2-second responses, handles customer support with AI FAQ agents, and captures emails/phones on autopilot. Save hours of manual copy-pasting with this powerful <strong className="text-zinc-900 font-semibold">Instagram automation tool</strong>.
+                Convert direct messages into organized customer workflows. Automixa handles common questions, sends approved checkout links, and captures customer details so your team can avoid repetitive copy-pasting.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
@@ -129,7 +129,7 @@ export default function DMAutoReplyPage() {
                   <ShieldCheck className="text-amber-600" size={20} />
                 </div>
                 <div className="text-xs text-zinc-500 font-medium">
-                  Official Meta Developer Partner. Shadowban-proof API calls. UPI-friendly Billing.
+                  Secure API-based workflows. UPI-friendly billing.
                 </div>
               </div>
             </motion.div>

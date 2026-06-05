@@ -18,7 +18,7 @@ export default function PartnersPage() {
 
   // Application Modal State
   const [showApplyModal, setShowApplyModal] = useState(false);
-  const [formData, setFormData] = useState({ platform: "instagram", followers: "10k-50k", handle: "", plan: "" });
+  const [formData, setFormData] = useState({ platform: "instagram", audienceRange: "10k-50k", handle: "", plan: "" });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
 
@@ -33,9 +33,9 @@ export default function PartnersPage() {
           id: user.id,
           application_status: "pending",
           primary_platform: formData.platform,
-          audience_tier: formData.followers,
+          audience_tier: formData.audienceRange,
           social_handle: formData.handle,
-          master_tracking_link: `https://automixa.com/?ref=${formData.handle.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() || 'creator'}_${Date.now().toString().slice(-4)}`
+          master_tracking_link: `https://automixa.com/?ref=${formData.handle.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() || 'partner'}_${Date.now().toString().slice(-4)}`
         });
       }
     } catch (err) {
@@ -52,13 +52,13 @@ export default function PartnersPage() {
   const steps = [
     {
       title: "Apply & Get Vetted",
-      desc: "Submit your creator profile or agency website. Our team reviews applications within 24 hours.",
+      desc: "Submit your business profile, agency website, or content channel. Our team reviews applications within 24 hours.",
       icon: LinkIcon,
       color: "text-[#6366F1] bg-[#6366F1]/10"
     },
     {
       title: "Share with Audience",
-      desc: "Promote Automixa on Instagram, YouTube, your blog, or directly to your clients.",
+      desc: "Share Automixa with businesses, agencies, and teams that manage customer conversations.",
       icon: Users,
       color: "text-amber-500 bg-amber-500/10"
     },
@@ -105,7 +105,7 @@ export default function PartnersPage() {
     },
     {
       q: "Can I create my own custom promo codes?",
-      a: "Yes! Once you reach the Gold Tier (11+ referrals), you can create custom vanity promo codes (e.g., 'CREATOR20') that give your audience a discount and track your commission."
+      a: "Yes! Once you reach the Gold Tier (11+ referrals), you can create custom vanity promo codes (for example, 'PARTNER20') that give your audience a discount and track your commission."
     },
     {
       q: "Is there a limit to how much I can earn?",
@@ -150,7 +150,7 @@ export default function PartnersPage() {
               transition={{ delay: 0.2 }}
               className="text-zinc-500 text-lg sm:text-xl leading-relaxed max-w-2xl"
             >
-              Join the Automixa Ambassadors program. Refer creators and brands to the best Instagram automation tool and earn up to 25% recurring commission + 10% customer discounts every single month.
+              Join the Automixa partner program. Refer businesses and agencies to our customer messaging workspace and earn up to 25% recurring commission plus customer discounts.
             </motion.p>
             
             <motion.div 
@@ -250,7 +250,7 @@ export default function PartnersPage() {
           {/* TIERS SECTION */}
           <div className="py-20">
             <div className="text-center mb-16">
-               <span className="text-[#6366F1] font-bold uppercase tracking-widest text-xs">Growth Paths</span>
+               <span className="text-[#6366F1] font-bold uppercase tracking-widest text-xs">Partner Tiers</span>
               <h2 className="text-3xl sm:text-4xl font-bold text-zinc-900 mt-2 tracking-tight">
                 The more you refer, the more you earn.
               </h2>
@@ -328,8 +328,8 @@ export default function PartnersPage() {
                         <Sparkles size={20} />
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold text-zinc-900 tracking-tight">Partner Application</h3>
-                        <p className="text-xs text-zinc-500 font-normal">Join Automixa Ambassadors Program</p>
+                  <h3 className="text-lg font-bold text-zinc-900 tracking-tight">Partner Application</h3>
+                        <p className="text-xs text-zinc-500 font-normal">Join the Automixa Partner Program</p>
                       </div>
                     </div>
                     <button 
@@ -349,18 +349,18 @@ export default function PartnersPage() {
                         onChange={(e) => setFormData({...formData, platform: e.target.value})}
                         className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs font-semibold text-zinc-900 outline-none focus:border-[#6366F1]"
                       >
-                        <option value="instagram">Instagram Creator</option>
-                        <option value="youtube">YouTube Creator</option>
-                        <option value="agency">Marketing / Growth Agency</option>
+                        <option value="instagram">Instagram Business Page</option>
+                        <option value="youtube">YouTube Channel</option>
+                        <option value="agency">Marketing / Support Agency</option>
                         <option value="blog">Blog / Website</option>
                       </select>
                     </div>
 
                     <div>
-                      <label className="text-xs font-semibold text-zinc-700 block mb-1.5">Audience Size</label>
+                      <label className="text-xs font-semibold text-zinc-700 block mb-1.5">Audience / Client Reach</label>
                       <select 
-                        value={formData.followers}
-                        onChange={(e) => setFormData({...formData, followers: e.target.value})}
+                        value={formData.audienceRange}
+                        onChange={(e) => setFormData({...formData, audienceRange: e.target.value})}
                         className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs font-semibold text-zinc-900 outline-none focus:border-[#6366F1]"
                       >
                         <option value="under_10k">Under 10,000</option>
@@ -387,7 +387,7 @@ export default function PartnersPage() {
                       <textarea 
                         rows={3}
                         required
-                        placeholder="e.g. In my YouTube videos, Instagram reels, or directly to my marketing agency clients."
+                        placeholder="e.g. In my product tutorials, newsletter, agency proposals, or directly to business clients."
                         value={formData.plan}
                         onChange={(e) => setFormData({...formData, plan: e.target.value})}
                         className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs font-semibold text-zinc-900 outline-none focus:border-[#6366F1] resize-none"
@@ -414,7 +414,7 @@ export default function PartnersPage() {
                   <div>
                     <h3 className="text-xl font-bold text-zinc-900 tracking-tight">Application Received!</h3>
                     <p className="text-xs sm:text-sm text-zinc-600 font-normal mt-2 leading-relaxed max-w-sm mx-auto">
-                      Thank you for applying to the Automixa Ambassadors Program. Our team will review your profile and activate your dashboard within 24 hours.
+                      Thank you for applying to the Automixa Partner Program. Our team will review your profile and activate your dashboard within 24 hours.
                     </p>
                   </div>
                   <div className="pt-4">

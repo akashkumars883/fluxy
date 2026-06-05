@@ -52,12 +52,12 @@ export default function Pricing({ isModal = false } = {}) {
       popular: false
     },
     {
-      name: "Creator Pro",
+      name: "Business Pro",
       price_inr: "899",
       price_usd: "14",
       raw_inr: 899,
       raw_usd: 14,
-      desc: "The sweet spot for Indian creators.",
+      desc: "For growing businesses and teams.",
       features: [
         "Multiple Connected Accounts",
         "Multiple Workspaces",
@@ -70,25 +70,25 @@ export default function Pricing({ isModal = false } = {}) {
         "CRM Unlimited + CSV Leads Export",
         "Ambassador Split Access (20%)"
       ],
-      button: "Get Creator Pro",
+      button: "Get Business Pro",
       popular: true
     },
     {
-      name: "Viral Scale",
+      name: "Business Scale",
       price_inr: "1,999",
       price_usd: "29",
       raw_inr: 1999,
       raw_usd: 29,
-      desc: "For viral influencers & D2C brands.",
+      desc: "For higher-volume business messaging.",
       features: [
         "2,000,000 AI Credits (100X)",
-        "Everything in Creator Pro",
+        "Everything in Business Pro",
         "Auto-Fetch Profile Training",
         "Custom Brand Persona",
         "VIP Ambassador Split (25%)",
         "Priority WhatsApp Founder SLA"
       ],
-      button: "Go Viral Scale",
+      button: "Get Business Scale",
       popular: false
     }
   ]);
@@ -105,14 +105,14 @@ export default function Pricing({ isModal = false } = {}) {
         
         if (data && !error && data.length > 0) {
           const formattedTiers = data.map(plan => ({
-            name: plan.name,
+            name: plan.plan_id === "viral_scale" ? "Business Scale" : plan.plan_id === "creator_pro" ? "Business Pro" : plan.name,
             price_inr: plan.price_inr_monthly.toLocaleString('en-IN'),
             price_usd: plan.price_usd_monthly.toString(),
             raw_inr: plan.price_inr_monthly,
             raw_usd: plan.price_usd_monthly,
-            desc: plan.description,
+            desc: plan.plan_id === "viral_scale" ? "For higher-volume business messaging." : plan.plan_id === "creator_pro" ? "For growing businesses and teams." : plan.description,
             features: typeof plan.features === 'string' ? JSON.parse(plan.features) : (plan.features || []),
-            button: plan.plan_id === "free" ? "Start Free" : `Get ${plan.name}`,
+            button: plan.plan_id === "free" ? "Start Free" : `Get ${plan.plan_id === "viral_scale" ? "Business Scale" : plan.plan_id === "creator_pro" ? "Business Pro" : plan.name}`,
             popular: plan.is_popular
           }));
           setTiers(formattedTiers);
@@ -185,7 +185,7 @@ export default function Pricing({ isModal = false } = {}) {
   const handleCheckoutSimulate = async () => {
     setCheckoutLoading(true);
     setPromoError(null);
-    const planId = selectedPlan.name === "Viral Scale" ? "viral_scale" : "creator_pro";
+    const planId = selectedPlan.name === "Business Scale" ? "viral_scale" : "creator_pro";
 
     try {
       const supabase = createClient();
@@ -310,7 +310,7 @@ export default function Pricing({ isModal = false } = {}) {
       return;
     }
     // Redirect to dashboard with plan info to trigger the real modal
-    const planId = tier.name === "Viral Scale" ? "viral_scale" : "creator_pro";
+    const planId = tier.name === "Business Scale" ? "viral_scale" : "creator_pro";
     window.location.assign(`/dashboard?upgrade=${planId}`);
   };
 
@@ -338,7 +338,7 @@ export default function Pricing({ isModal = false } = {}) {
               </h2>
             </div>
             <p className="text-zinc-500 text-sm md:text-lg max-w-sm font-normal leading-relaxed">
-              Start free with 25,000 AI Credits. Upgrade anytime to unlock unlimited growth flows.
+              Start free with 25,000 AI credits. Upgrade anytime for higher message quotas, CRM exports, and team workflows.
             </p>
           </div>
         )}
@@ -502,7 +502,7 @@ export default function Pricing({ isModal = false } = {}) {
                         🎉 Promo Code &apos;{appliedPromo.code}&apos; Applied! ({appliedPromo.discountPercent}% Off)
                       </span>
                       <p className="text-[10px] text-emerald-700/80 mt-0.5 leading-normal">
-                        Affiliate commission attributed to creator partner via Razorpay Split.
+                        Partner discount attributed for billing and reporting.
                       </p>
                     </div>
                   </div>
@@ -536,7 +536,7 @@ export default function Pricing({ isModal = false } = {}) {
                 <div className="p-4 bg-white/60 border border-zinc-200/80 rounded-2xl flex items-center gap-3">
                   <CreditCard size={20} className="text-[#6366F1] shrink-0" />
                   <span className="text-xs font-semibold text-zinc-600">
-                    Secured by <strong className="text-zinc-900">Razorpay Subscriptions API</strong>. Automatic monthly recurring payments.
+                    Secure checkout for Automixa SaaS subscriptions. GST invoices are generated for paid plans.
                   </span>
                 </div>
               </div>
@@ -554,7 +554,7 @@ export default function Pricing({ isModal = false } = {}) {
                   onClick={handleCheckoutSimulate}
                   className="flex-1 px-8 py-4 bg-[#6366F1] hover:bg-[#5356e2] disabled:opacity-50 text-white rounded-2xl font-semibold text-xs sm:text-sm shadow-lg transition-all flex items-center justify-center gap-2"
                 >
-                  {checkoutLoading ? "Connecting to Razorpay..." : checkoutSuccess ? "Subscription Active! Redirecting..." : "Proceed to Razorpay Checkout"}
+                  {checkoutLoading ? "Connecting to payment gateway..." : checkoutSuccess ? "Subscription Active! Redirecting..." : "Proceed to Secure Checkout"}
                   {!checkoutLoading && !checkoutSuccess && <ArrowRight size={16} />}
                 </button>
               </div>

@@ -267,7 +267,7 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
           <div className="space-y-1">
             <h2 className="text-xl font-semibold text-zinc-900">Application under review</h2>
             <p className="text-sm text-zinc-500 leading-relaxed max-w-sm mx-auto">
-              Our growth team evaluates creator profiles within 24 hours. We&apos;ll notify you once approved.
+              Our partner team evaluates applications within 24 hours. We&apos;ll notify you once approved.
             </p>
           </div>
         </div>

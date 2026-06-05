@@ -124,6 +124,18 @@ export default async function sitemap() {
       changeFrequency: 'yearly',
       priority: 0.3,
     },
+    {
+      url: `${baseUrl}/refund-policy`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/shipping-delivery`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
   ];
 
   return [...staticEntries, ...blogEntries];

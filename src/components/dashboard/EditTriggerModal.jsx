@@ -195,8 +195,8 @@ export default function EditTriggerModal({
                           <ShieldCheck size={16} />
                         </div>
                         <div>
-                          <p className="text-xs font-bold text-zinc-800 leading-tight">Follower Gate</p>
-                          <p className="text-[10px] text-zinc-400 font-medium">Only trigger for your followers</p>
+                          <p className="text-xs font-bold text-zinc-800 leading-tight">Access Check</p>
+                          <p className="text-[10px] text-zinc-400 font-medium">Only trigger when the access condition is met</p>
                         </div>
                       </div>
                       <button 
@@ -209,7 +209,7 @@ export default function EditTriggerModal({
                     </div>
                     {followerGate && (
                       <div className="pt-2 border-t border-zinc-100 space-y-1 animate-in fade-in duration-200">
-                        <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Custom Follow Gate Message</label>
+                        <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Custom Access Message</label>
                         <input 
                           type="text"
                           value={followGateMessage}

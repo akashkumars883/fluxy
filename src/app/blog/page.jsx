@@ -17,7 +17,7 @@ import Link from "next/link";
 import { useEffect,useMemo,useState } from "react";
 
 // Available categories
-const categories = ["All", "Instagram Automation", "Marketing Tips", "Product Updates", "Creator Growth"];
+const categories = ["All", "Business Messaging", "Marketing Tips", "Product Updates", "Customer Workflows"];
 
 export default function BlogPage() {
   const [blogPosts, setBlogPosts] = useState([]);
@@ -446,13 +446,13 @@ export default function BlogPage() {
 
                     {/* Main Title */}
                     <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-tight">
-                      Grow your Instagram <br className="hidden sm:inline" />
+                      Improve customer replies <br className="hidden sm:inline" />
                       <span className="text-sage font-normal">with Automixa</span>
                     </h2>
 
                     {/* Description */}
                     <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed font-normal">
-                      Join over 3,000+ creators and marketers. Subscribe to receive our weekly growth strategies, funnel templates, and product updates.
+                      Join teams using Automixa for messaging workflows, customer support ideas, funnel templates, and product updates.
                     </p>
                   </div>
 
@@ -498,7 +498,7 @@ export default function BlogPage() {
                     customFaqs={[
                       {
                         q: "How often do you publish new articles?",
-                        a: "We publish deep-dive automation strategies and product updates every Tuesday. Join our newsletter to get them directly in your inbox."
+                        a: "We publish business messaging strategies and product updates every Tuesday. Join our newsletter to get them directly in your inbox."
                       },
                       {
                         q: "Are the automation templates mentioned in blogs free?",
@@ -506,7 +506,7 @@ export default function BlogPage() {
                       },
                       {
                         q: "Can I contribute an article to the Automixa Playbook?",
-                        a: "We love hearing from growth hackers and creators. If you have a unique Instagram automation strategy, reach out to us at info@automixa.in."
+                        a: "We love hearing from operators, marketers, and support teams. If you have a useful messaging workflow, reach out to us at info@automixa.in."
                       }
                     ]} 
                   />

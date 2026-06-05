@@ -80,7 +80,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
           <span className="absolute -top-2 -right-2 text-2xl">👑</span>
         </div>
         <div>
-          <h3 className="text-2xl font-black text-zinc-900 tracking-tight mb-2">Unlock Mini Store with Creator Pro</h3>
+          <h3 className="text-2xl font-black text-zinc-900 tracking-tight mb-2">Unlock Mini Store with Business Pro</h3>
           <p className="text-sm text-zinc-500 max-w-sm mx-auto leading-relaxed">
             Sell digital products directly through Instagram DMs automatically. Upgrade to start monetizing!
           </p>
@@ -104,7 +104,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
             </div>
             <div>
               <h4 className="text-xs sm:text-sm font-bold tracking-tight mb-0.5">
-                {currentPlan === 'free' ? "Scale Your Automations with Creator Pro ⚡" : "Upgrade to Viral Scale Plan 🚀"}
+                {currentPlan === 'free' ? "Upgrade Automations with Business Pro" : "Upgrade to Business Scale"}
               </h4>
               <p className="text-[11px] text-indigo-100 font-medium leading-normal max-w-xl">
                 {currentPlan === 'free' 
@@ -240,7 +240,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5 col-span-2 sm:col-span-1">
                     <label className="text-xs font-bold text-zinc-700">Product Name <span className="text-rose-500">*</span></label>
-                    <input type="text" required value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Instagram Growth Guide" className="w-full px-3 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm outline-none focus:border-[#6366F1] focus:bg-white transition-colors" />
+                    <input type="text" required value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Product Guide PDF" className="w-full px-3 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm outline-none focus:border-[#6366F1] focus:bg-white transition-colors" />
                   </div>
                   <div className="space-y-1.5 col-span-2 sm:col-span-1">
                     <label className="text-xs font-bold text-zinc-700">Price (INR) <span className="text-rose-500">*</span></label>

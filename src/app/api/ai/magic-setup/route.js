@@ -12,49 +12,25 @@ export async function POST(req) {
 
     const apiKey = process.env.GROQ_API_KEY;
     const isKeyConfigured = apiKey && apiKey !== "gsk_your_key_goes_here";
-
-    // Prepare simulated IG Bio & caption dataset based on handle to simulate Meta Graph API scrapers
     const handleLower = ig_handle.toLowerCase().trim();
-    let simulatedIgData = {
-      bio: `Premium brand workspace mapped to @${ig_handle}`,
+
+    const simulatedIgData = {
+      bio: `Business messaging workspace mapped to @${ig_handle}`,
       recentCaptions: [
-        "Check out our latest collections. Click the link to grab exclusive entry access!",
-        "Level up your workflow with our smart setups. DM for waitlist access ⚡",
-        "Full tutorial launching this Friday! Drop a comment to get the private workbook link sent directly."
+        "Check out our latest collection. Comment INFO to receive product details.",
+        "New customer guide is live. DM us or comment GUIDE for the workbook link.",
+        "Support slots are open this week. Comment HELP to receive the booking page."
       ]
     };
 
-    if (handleLower.includes("fit") || handleLower.includes("coach") || handleLower.includes("gym") || handleLower.includes("train")) {
-      simulatedIgData.bio = "💪 Fitness Coach & CRO Specialist | Helping you build lean muscle & high performance. 🏋️‍♂️ Custom 1:1 Coaching open below!";
-      simulatedIgData.recentCaptions = [
-        "Want my complete 4-week fat loss checklist for free? Comment 'SHRED' and I will DM you the PDF checklist immediately! 🔥",
-        "Stop making these 3 posture mistakes on bench press. Full coaching slots open for next month. Link in bio!",
-        "Double tap if you're hitting legs today! 🦵 Drop a comment to join my private community group."
-      ];
-    } else if (handleLower.includes("shop") || handleLower.includes("wear") || handleLower.includes("store") || handleLower.includes("brand") || handleLower.includes("stitch")) {
-      simulatedIgData.bio = "✨ Premium Streetwear & Minimalist Fits. 🌿 100% heavy-weight organic cotton. Crafted for comfort. Ships worldwide.";
-      simulatedIgData.recentCaptions = [
-        "Our highly anticipated oversized hoodies drop tonight! Comment 'DROP' to get an exclusive early bird 20% discount code! 🛍️✨",
-        "Behind the scenes at our tailoring studio. Quality you can feel. Tap shop link below.",
-        "What color should we drop next? Comment your choice and win a free tee!"
-      ];
-    } else if (handleLower.includes("agency") || handleLower.includes("dev") || handleLower.includes("design") || handleLower.includes("growth")) {
-      simulatedIgData.bio = "🚀 Growth & Development Agency. We build high-converting SaaS apps and modern UI/UX landing designs. Let's scale!";
-      simulatedIgData.recentCaptions = [
-        "How we scaled our client's CRM conversion by 420% in 30 days. Comment 'SCALE' to get the full case study workbook! 📊📚",
-        "Is your landing page leaking money? Book a free audit slot. Link below.",
-        "Tips for hiring high-performing engineers in 2026. Bookmark this thread!"
-      ];
-    }
-
     if (isKeyConfigured) {
-      console.log(`🔮 Auto-Profile Magic Scanner: Processing @${ig_handle} using Groq LLM...`);
+      console.log(`Auto-Profile Magic Scanner: Processing @${ig_handle} using Groq LLM`);
       const groq = new Groq({ apiKey });
 
       const systemPrompt = `
-      You are a world-class Social Media Profile Intelligence analyst.
-      Your task is to analyze a connected Instagram handle, simulated Bio, and recent published Post Captions.
-      Based on this data, auto-configure their brand voice persona and generate a hyper-targeted starting set of automation triggers.
+      You are a customer messaging workflow analyst.
+      Analyze the connected Instagram handle, bio, and recent post captions.
+      Generate a brand voice persona and a safe starting set of customer reply workflows.
 
       CONNECTED PROFILE DATA:
       Handle: @${ig_handle}
@@ -64,24 +40,24 @@ export async function POST(req) {
 
       STRICT JSON OUTPUT FORMAT:
       {
-        "brand_name": "string (perfect polished name, e.g. Red Stitch, Gym Elite)",
-        "tone": "Friendly" | "Professional" | "Witty" | "Luxury" | "Helpful" (pick the absolute best fit),
-        "business_description": "string (1-2 sentences of highly professional brand description for AI memory)",
+        "brand_name": "string",
+        "tone": "Friendly" | "Professional" | "Witty" | "Luxury" | "Helpful",
+        "business_description": "string (1-2 sentences for AI memory)",
         "templates": {
-          "intro_title": "string (highly personalized dynamic private message starting prompt, e.g. Hey {name}! Thanks for the love on my post...)",
-          "follow_gate_title": "string (personalized lock gate title, e.g. Hold on, {name}! 🎁)"
+          "intro_title": "string (helpful private message starting prompt, e.g. Hey {name}! Thanks for reaching out...)",
+          "follow_gate_title": "string (access condition title, e.g. One more step before we send this resource.)"
         },
         "suggested_faqs": [
           {
-            "keyword": "string (single uppercase word, e.g. SHRED, SCALE, VIP, SHOP)",
-            "response": "string (creative dynamic reply message under 200 chars, no raw links inside)",
-            "button_text": "string (dynamic button label, under 15 chars, e.g. Get Code 🎁, Get Checklist 📖)",
-            "button_link": "string (relevant dynamic placeholder link based on context)",
+            "keyword": "string (single uppercase word, e.g. INFO, GUIDE, SHOP)",
+            "response": "string (helpful reply message under 200 chars, no raw links inside)",
+            "button_text": "string (button label under 15 chars)",
+            "button_link": "string (relevant placeholder link based on context)",
             "type": "DM" or "COMMENT",
-            "campaign_name": "string (friendly name, e.g. Early Bird Drop, Free Shred Guide)"
+            "campaign_name": "string"
           },
           {
-            "keyword": "string (second trigger keyword)",
+            "keyword": "string",
             "response": "string",
             "button_text": "string",
             "button_link": "string",
@@ -93,7 +69,8 @@ export async function POST(req) {
 
       RULES:
       1. Return STRICTLY valid JSON only. No markdown formatting, no descriptions.
-      2. Choose the suggested tone and description to perfectly match the IG profile theme.
+      2. Do not promise audience expansion, boosted metrics, unusual reach, platform penalty avoidance, or guaranteed conversions.
+      3. Keep all copy focused on customer support, product information, booking links, approved resources, and lead capture.
       `;
 
       const response = await groq.chat.completions.create({
@@ -113,87 +90,83 @@ export async function POST(req) {
       }
     }
 
-    // --- HEURISTIC FALLBACK (Out-of-the-box standard fallback) ---
-    console.log(`🔮 Auto-Profile Magic Scanner: Fallback heuristics activated`);
-    
-    let fallbackResult = {
+    console.log("Auto-Profile Magic Scanner: Fallback heuristics activated");
+
+    const fallbackResult = {
       brand_name: brand_name || "My Brand Studio",
-      tone: "Friendly",
-      business_description: "We help customers automate workflows and engage their target audience beautifully.",
+      tone: "Helpful",
+      business_description: "We help customers find the right information, resources, and support links through structured Instagram messaging workflows.",
       templates: {
-        intro_title: "Hey {name}! ⚡ Thanks for your awesome comment. Tap below to get your private access!",
-        follow_gate_title: "Unlock your gift card! 🎁"
+        intro_title: "Hey {name}! Thanks for reaching out. Tap below to get the details.",
+        follow_gate_title: "One more step before we send this resource."
       },
       suggested_faqs: [
         {
-          keyword: "ACCESS",
-          response: "Hi {name}! Click below to claim your immediate early access workbook code!",
-          button_text: "Get Workbook ⚡",
-          button_link: "https://automixa.in/access",
+          keyword: "INFO",
+          response: "Hi {name}! Here are the details you requested. Tap below to open the information page.",
+          button_text: "Open Info",
+          button_link: "https://automixa.in/info",
           type: "DM",
-          campaign_name: "Instant Access Lead"
+          campaign_name: "Information Request"
         },
         {
-          keyword: "SPECIAL",
-          response: "Hey {name}! You've unlocked our community prize package. Register below!",
-          button_text: "Claim Spot 🎁",
-          button_link: "https://automixa.in/special",
+          keyword: "GUIDE",
+          response: "Hey {name}! Tap below to download the guide and review the next steps.",
+          button_text: "Open Guide",
+          button_link: "https://automixa.in/guide",
           type: "DM",
-          campaign_name: "Community Offer"
+          campaign_name: "Guide Delivery"
         }
       ]
     };
 
-    if (handleLower.includes("fit") || handleLower.includes("coach") || handleLower.includes("gym") || handleLower.includes("train")) {
-      fallbackResult.brand_name = brand_name || "FitPro Coach";
-      fallbackResult.tone = "Helpful";
-      fallbackResult.business_description = "Online physical training academy delivering actionable fat-loss checklists and coaching.";
-      fallbackResult.templates.intro_title = "Hey {name}! 💪 Awesome effort hitting my posts. I've compiled your custom guides below!";
+    if (handleLower.includes("shop") || handleLower.includes("wear") || handleLower.includes("store") || handleLower.includes("brand")) {
+      fallbackResult.brand_name = brand_name || "Store Workspace";
+      fallbackResult.tone = "Professional";
+      fallbackResult.business_description = "Retail workspace for answering product questions, sending catalog links, and collecting interested customer details.";
       fallbackResult.suggested_faqs = [
         {
-          keyword: "SHRED",
-          response: "Boom {name}! 🏋️‍♂️ Here is my premium 4-week fat-loss and tracking guide checklist. Let's build!",
-          button_text: "Download PDF 📚",
-          button_link: "https://automixa.in/shred-guide.pdf",
-          type: "DM",
-          campaign_name: "Fat-Loss Checklist"
-        },
-        {
-          keyword: "COACH",
-          response: "Hey {name}! Ready to take it to the next level? Apply to my 1-on-1 coaching team below!",
-          button_text: "Apply Now 🏋️‍♂️",
-          button_link: "https://automixa.in/apply",
-          type: "DM",
-          campaign_name: "Coaching Application"
-        }
-      ];
-    } else if (handleLower.includes("shop") || handleLower.includes("wear") || handleLower.includes("store") || handleLower.includes("brand") || handleLower.includes("stitch")) {
-      fallbackResult.brand_name = brand_name || "Stitch Couture";
-      fallbackResult.tone = "Luxury";
-      fallbackResult.business_description = "High-fidelity, sustainable minimalist apparel and tailor-made streetwear fits.";
-      fallbackResult.templates.intro_title = "Welcome to the family, {name}. ✨ Your custom early-bird code is compiled below.";
-      fallbackResult.suggested_faqs = [
-        {
-          keyword: "DROP",
-          response: "Hey {name}! 🛍️ Enjoy an exclusive 20% discount on our entire organic heavyweight collection drop!",
-          button_text: "Save 20% 🎁",
+          keyword: "SHOP",
+          response: "Hey {name}! Tap below to view the product catalog and current availability.",
+          button_text: "View Catalog",
           button_link: "https://automixa.in/shop",
           type: "DM",
-          campaign_name: "Early-Bird Promo"
+          campaign_name: "Catalog Request"
         },
         {
-          keyword: "STYLE",
-          response: "Hey {name}! Check out our seasonal lookbook guide to see our tailor-made Oversized Fits in action!",
-          button_text: "Open Lookbook 🌿",
-          button_link: "https://automixa.in/lookbook",
+          keyword: "PRICE",
+          response: "Hi {name}! Here are the pricing details and order options.",
+          button_text: "See Pricing",
+          button_link: "https://automixa.in/pricing",
           type: "DM",
-          campaign_name: "Seasonal Lookbook"
+          campaign_name: "Pricing Inquiry"
+        }
+      ];
+    } else if (handleLower.includes("coach") || handleLower.includes("consult") || handleLower.includes("agency") || handleLower.includes("service")) {
+      fallbackResult.brand_name = brand_name || "Service Workspace";
+      fallbackResult.tone = "Helpful";
+      fallbackResult.business_description = "Service workflow for sending booking links, guides, and support resources to interested customers.";
+      fallbackResult.suggested_faqs = [
+        {
+          keyword: "BOOK",
+          response: "Hi {name}! Tap below to view available booking slots.",
+          button_text: "Book Slot",
+          button_link: "https://automixa.in/book",
+          type: "DM",
+          campaign_name: "Booking Request"
+        },
+        {
+          keyword: "HELP",
+          response: "Hey {name}! Here is the support page with the next steps.",
+          button_text: "Get Help",
+          button_link: "https://automixa.in/help",
+          type: "DM",
+          campaign_name: "Support Request"
         }
       ];
     }
 
     return NextResponse.json({ success: true, source: "fallback-heuristics", ...fallbackResult });
-
   } catch (err) {
     console.error("Magic Profile Setup API Error:", err);
     return NextResponse.json({ error: err.message || "Failed to process magic scan" }, { status: 500 });

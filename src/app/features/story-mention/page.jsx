@@ -13,13 +13,13 @@ import CTA from "@/components/marketing/CTA";
 export default function StoryMentionPage() {
   const benefits = [
     {
-      title: "Boost Word-of-Mouth Sales",
-      tagline: "Organic Viral Loops",
-      description: "Encourage your customers to share their purchase or tag your product in their stories by offering automatic rewards. Deliver discount codes, exclusive templates, or download links straight to their DM the instant they tag you.",
+      title: "Handle Story Tag Responses",
+      tagline: "Customer Message Workflows",
+      description: "When customers tag your product in stories, Automixa can deliver configured discount codes, templates, or download links to their DM using a controlled workflow.",
       bullets: [
         "Automatically detects @mentions in public stories",
         "Deliver discount codes or checkout links instantly",
-        "Increases organic user-generated content by up to 10x"
+        "Keeps campaign response handling consistent"
       ],
       icon: Users,
       image: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1200&auto=format&fit=crop",
@@ -28,7 +28,7 @@ export default function StoryMentionPage() {
     {
       title: "Smart 24h Cooldown Limits",
       tagline: "Spam Prevention Logic",
-      description: "Keep your communications friendly and natural. If a follower tags you in multiple stories throughout the day, our smart cooldown logic ensures they only receive a single DM reward every 24 hours.",
+      description: "Keep your communications friendly and natural. If a user tags you in multiple stories throughout the day, cooldown logic ensures they only receive the configured message once per period.",
       bullets: [
         "Configurable custom interval limits",
         "Protects account from sending redundant spam",
@@ -98,12 +98,12 @@ export default function StoryMentionPage() {
               </div>
               
               <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-zinc-900 leading-[1.1]">
-                Reward Followers for <br className="hidden sm:block" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-green-500 font-bold">Tagging Your Brand.</span>
+                Reply to Story Tags <br className="hidden sm:block" />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-green-500 font-bold">With Helpful DMs.</span>
               </h1>
               
               <p className="text-zinc-600 text-base sm:text-lg leading-relaxed max-w-xl">
-                Amplify your organic reach on autopilot. Automatically send a direct message with discount codes, guides, or thank you cards the second someone mentions your handle in their Instagram Story. Grow your word-of-mouth with India&apos;s #1 <strong className="text-zinc-900 font-semibold">Instagram automation tool</strong>.
+                Automatically send a direct message with configured discount codes, guides, or thank-you notes when someone mentions your handle in an Instagram Story.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
@@ -129,7 +129,7 @@ export default function StoryMentionPage() {
                   <ShieldCheck className="text-emerald-600" size={20} />
                 </div>
                 <div className="text-xs text-zinc-500 font-medium">
-                  Approved Meta API Integration. Safe and compliant with Instagram Guidelines.
+                  Built with Meta API integration and secure OAuth.
                 </div>
               </div>
             </motion.div>
@@ -157,7 +157,7 @@ export default function StoryMentionPage() {
                     </div>
                     <div>
                       <h4 className="font-bold text-white text-xs">Story Tag Detected</h4>
-                      <p className="text-[10px] text-zinc-400">15% Discount Code sent to follower automatically.</p>
+                      <p className="text-[10px] text-zinc-400">15% discount code sent through the configured workflow.</p>
                     </div>
                   </div>
                 </div>
@@ -170,10 +170,10 @@ export default function StoryMentionPage() {
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
               <span className="text-emerald-500 font-bold uppercase tracking-widest text-xs">Core Capabilities</span>
               <h2 className="text-3xl sm:text-5xl font-bold text-zinc-900 tracking-tight leading-tight">
-                Turn your followers into your marketing team
+                Turn story mentions into organized support workflows
               </h2>
               <p className="text-zinc-500 text-sm sm:text-base">
-                Discover the story tag reward capabilities that make Automixa the #1 organic growth marketing tool.
+                Discover story tag response capabilities for customer support, coupons, and resource delivery.
               </p>
             </div>
 

@@ -9,28 +9,28 @@ export default function Testimonials() {
       handle: "@ishaan_vlogs",
       avatarBg: "bg-indigo-100 text-indigo-600",
       initials: "IM",
-      quote: "Automixa completely changed how I run my Reels. Set up a keyword 'GUIDE' on my last reel, got over 1.2k comments, and every single one got a safe DM instantly! Follower-gate got me 350+ new followers too. Simply unreal."
+      quote: "Automixa changed how I handle campaign replies. I set up a keyword for a guide, and every interested customer received the right DM without my team copying links all day."
     },
     {
       name: "Riya Sen",
       handle: "@riya_style_co",
       avatarBg: "bg-emerald-100 text-emerald-600",
       initials: "RS",
-      quote: "Unbelievable tool! I used to sit for hours copying and pasting links to people's comments. Now, it runs on autopilot. 100% safe, official API, and my engagement rate is up by 180% in just two weeks."
+      quote: "I used to spend hours copying and pasting links into replies. Now Automixa handles common questions, sends the right links, and keeps the inbox organized."
     },
     {
       name: "Kabir Malhotra",
       handle: "@kabir.creates",
       avatarBg: "bg-amber-100 text-amber-600",
       initials: "KM",
-      quote: "The setup is what blew me away. Hooked up my Meta profile in under a minute, set an AI response sequence, and saw conversion on my e-book double in the first week. Highly recommended for creators."
+      quote: "The setup is what blew me away. Hooked up my Meta profile in under a minute, created an AI response sequence, and our e-book inquiries became much easier to manage."
     },
     {
       name: "Ananya Gupta",
       handle: "@ananya.social",
       avatarBg: "bg-pink-100 text-pink-600",
       initials: "AG",
-      quote: "As a social media agency head, this is a lifesaver. Running client campaigns with custom keyword triggers has increased our average lead capture rate by 4x. Clean dashboard and great support!"
+      quote: "As a social media agency head, this is a lifesaver. Running client campaigns with custom keyword triggers keeps every inquiry organized. Clean dashboard and great support!"
     }
   ];
 
@@ -40,28 +40,28 @@ export default function Testimonials() {
       handle: "@vikram_clicks",
       avatarBg: "bg-sky-100 text-sky-600",
       initials: "VR",
-      quote: "I was skeptical about shadowbans, but since Automixa uses official Meta Graph APIs, it's 100% compliant. My account health remains perfectly green, and my audience loves the instant delivery of links."
+      quote: "I was skeptical about automation, but Automixa uses permission-based Meta API access and never asks for passwords. The link delivery workflow is clean and reliable."
     },
     {
       name: "Priya Sharma",
       handle: "@priya_designs",
       avatarBg: "bg-purple-100 text-purple-600",
       initials: "PS",
-      quote: "Follower-Gate is literally a cheat code for organic growth. People actually follow to unlock the Canva templates, and it's all automated. If you're a creator in India, you need this right now!"
+      quote: "The access condition workflow is useful for resource delivery. People get clear instructions, and our team can keep every campaign consistent."
     },
     {
       name: "Rohan Das",
       handle: "@rohan_tech_tips",
       avatarBg: "bg-teal-100 text-teal-600",
       initials: "RD",
-      quote: "Highly premium glass interface! The custom quotas and ease of keyword matching makes other automation platforms look ancient. Saves me at least 10 hours a week answering comments."
+      quote: "Highly premium interface. The custom quotas and keyword matching make campaign replies easy to manage. Saves me hours every week answering repeated comments."
     },
     {
       name: "Meera Iyer",
       handle: "@meera_wellness",
       avatarBg: "bg-rose-100 text-rose-600",
       initials: "MI",
-      quote: "The pricing in INR is extremely fair. Compared to international tools charging $100s, Automixa is tailor-made for Indian creators and works flawlessly. Simple, clean, and highly effective."
+      quote: "The pricing in INR is extremely fair. Compared to international tools charging $100s, Automixa is practical for Indian businesses. Simple, clean, and highly effective."
     }
   ];
 
@@ -103,11 +103,11 @@ export default function Testimonials() {
               Testimonials
             </p>
             <h2 className="text-4xl md:text-6xl font-semibold text-foreground tracking-normal leading-[1.1]">
-              Loved by modern <span className="text-sage font-normal">creators.</span>
+              Loved by modern <span className="text-sage font-normal">teams.</span>
             </h2>
           </div>
           <p className="text-zinc-500 text-base sm:text-lg max-w-md font-normal leading-relaxed">
-            See how creators and brands are scaling their engagement and automating workflows with Automixa.
+            See how businesses and independent teams are automating customer conversations with Automixa.
           </p>
         </div>
       </div>

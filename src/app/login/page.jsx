@@ -224,14 +224,14 @@ export default function LoginPage() {
               {/* Pitch & Badge pushed to the bottom */}
               <div className="mt-auto mb-0 z-10 space-y-3">
                 <span className="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider bg-white/15 border border-white/10 text-indigo-200 inline-flex items-center gap-1 shadow-inner backdrop-blur-md">
-                  <Sparkles size={10} className="animate-pulse" /> #1 Instagram Automation Tool
+                  <Sparkles size={10} className="animate-pulse" /> Business Messaging Workspace
                 </span>
                 <div className="space-y-1.5">
                   <h1 className="text-3xl font-bold leading-tight tracking-tight text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                    Automate DMs, Replies & Drive Sales.
+                    Automate Replies & Customer Follow-Ups.
                   </h1>
                   <p className="text-zinc-300 text-xs font-medium leading-relaxed">
-                    Save hours of manual effort by automating Instagram comments and messages. Safe, Meta-compliant, and built to scale your conversions.
+                    Save hours of manual effort with approved Instagram comment, DM, and story reply workflows.
                   </p>
                 </div>
               </div>
@@ -259,7 +259,7 @@ export default function LoginPage() {
                 </h2>
                 <p className="text-zinc-500 text-xs font-medium">
                   {isSignUp 
-                    ? "Start growing your Instagram with AI today" 
+                    ? "Start managing customer conversations with AI today" 
                     : "Enter your credentials to access your dashboard"}
                 </p>
               </div>

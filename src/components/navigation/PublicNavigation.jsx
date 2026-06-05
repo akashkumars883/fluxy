@@ -93,7 +93,7 @@ export default function PublicNavigation() {
 
   const solutionsDropdown = [
     {
-      title: "For Creators & Influencers",
+      title: "For Digital Product Teams",
       desc: "Deliver courses, ebooks, and digital products automatically.",
       href: "/solutions/creators",
       icon: Users,

@@ -200,7 +200,7 @@ export default function BlogPostPage({ initialPost, relatedPosts = [] }) {
                   <div className="border-t border-zinc-200/50 pt-6 mt-10 flex flex-col sm:flex-row items-center justify-between gap-6">
                     <div className="space-y-1 text-center sm:text-left">
                       <h4 className="text-sm font-bold text-zinc-800">Did you find this strategy helpful?</h4>
-                      <p className="text-xs text-zinc-400">Share this article with your community of creators and marketers.</p>
+                      <p className="text-xs text-zinc-400">Share this article with your team, clients, or marketing community.</p>
                     </div>
 
                     <div className="flex items-center gap-2">

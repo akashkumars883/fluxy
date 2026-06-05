@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS referral_attributions (
     customer_user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE SET NULL,
     promo_code_used VARCHAR(30) REFERENCES promo_codes(code) ON DELETE SET NULL,
     partner_id UUID NOT NULL REFERENCES partner_profiles(id) ON DELETE CASCADE,
-    subscription_plan TEXT NOT NULL, -- e.g., 'growth_monthly'
+    subscription_plan TEXT NOT NULL, -- e.g., 'business_monthly'
     transaction_amount NUMERIC(10, 2) NOT NULL, -- e.g., 1399.00
     commission_earned NUMERIC(10, 2) NOT NULL, -- e.g., 279.80
     transaction_id TEXT NOT NULL UNIQUE, -- Razorpay Payment ID / Subscription ID

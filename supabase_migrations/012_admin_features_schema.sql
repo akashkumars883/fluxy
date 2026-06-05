@@ -22,8 +22,8 @@ CREATE TABLE public.pricing_plans (
 INSERT INTO public.pricing_plans (plan_id, name, description, price_inr_monthly, price_usd_monthly, price_inr_annual, price_usd_annual, features, is_popular, display_order)
 VALUES 
 ('free', 'Free Plan', 'Perfect to test automated chat flows.', 0, 0, 0, 0, '["1 Instagram Account", "1 Personal Workspace", "25,000 AI Credits/mo", "5 Active Automations", "1,000 Auto-DMs & Replies/mo", "Follow before DM Gate", "Basic CRM (100 Contacts)", "Keyword Triggers Only"]', false, 1),
-('creator_pro', 'Creator Pro', 'The sweet spot for Indian creators.', 899, 14, 8630, 134, '["Multiple Connected Accounts", "Multiple Workspaces", "250,000 AI Credits (10X)", "Unlimited Automations", "AI Intent & Smart AI Mode", "AI Human Mimicry Mode", "Story Mention Responder", "Smart Bio & Mini Store Access", "CRM Unlimited + CSV Leads Export", "Ambassador Split Access (20%)"]', true, 2),
-('viral_scale', 'Viral Scale', 'For viral influencers & D2C brands.', 1999, 29, 19190, 278, '["2,000,000 AI Credits (100X)", "Everything in Creator Pro", "Auto-Fetch Profile Training", "Custom Brand Persona", "VIP Ambassador Split (25%)", "Priority WhatsApp Founder SLA"]', false, 3);
+('creator_pro', 'Business Pro', 'For growing teams managing customer conversations.', 899, 14, 8630, 134, '["Multiple Connected Accounts", "Multiple Workspaces", "250,000 AI Credits (10X)", "Unlimited Automations", "AI Intent & Smart AI Mode", "AI Human Mimicry Mode", "Story Mention Responder", "Smart Bio & Mini Store Access", "CRM Unlimited + CSV Leads Export", "Partner Split Access (20%)"]', true, 2),
+('viral_scale', 'Business Scale', 'For high-volume businesses and D2C brands.', 1999, 29, 19190, 278, '["2,000,000 AI Credits (100X)", "Everything in Business Pro", "Auto-Fetch Profile Training", "Custom Brand Persona", "VIP Partner Split (25%)", "Priority WhatsApp Founder SLA"]', false, 3);
 
 -- 2. Global Settings Table
 CREATE TABLE public.global_settings (

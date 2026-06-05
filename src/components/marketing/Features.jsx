@@ -22,8 +22,8 @@ const features = [
   {
     id: "comments",
     title: "Comment Auto-Responder",
-    tagline: "Grow From Comments",
-    desc: "Convert public comments on your Reels into private sales. Automixa replies to comments AND sends a DM with your link automatically.",
+    tagline: "Respond From Comments",
+    desc: "Turn public customer questions into private conversations. Automixa replies to comments and can send a configured DM with your approved link.",
     bullets: [
       "Auto-reply to public comments",
       "Send links via DMs instantly",
@@ -50,12 +50,12 @@ const features = [
   {
     id: "stories",
     title: "Story Auto-Reply",
-    tagline: "Turn Views Into Customers",
-    desc: "Automatically send a DM whenever a follower tags your brand in an Instagram Story or replies to your stories. Grow reach organically.",
+    tagline: "Handle Story Replies",
+    desc: "Automatically send a helpful DM whenever someone tags your brand in a story or replies to your stories.",
     bullets: [
-      "Auto-reward story tags & mentions",
+      "Reply to story tags & mentions",
       "Automatic cooldown spam limits",
-      "Official Instagram API approved"
+      "Official Instagram API integration"
     ],
     image: "/images/instagram-stories.png",
     color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
@@ -108,7 +108,7 @@ export default function Features() {
             </h2>
           </div>
           <p className="text-zinc-500 text-sm md:text-lg max-w-sm font-normal leading-relaxed">
-            Every tool you need to turn your audience into a high-converting growth machine.
+            Every tool you need to respond faster, organize leads, and deliver approved resources.
           </p>
         </div>
 

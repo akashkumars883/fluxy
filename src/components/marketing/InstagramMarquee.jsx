@@ -11,7 +11,7 @@ const postsColumn1 = [
   },
   {
     likes: "1,830",
-    caption: "How I got 10k followers in 14 days using reels",
+    caption: "How we answered every pricing question from one reel",
     gradient: "from-indigo-600 via-purple-600 to-pink-600",
   },
   {
@@ -124,7 +124,7 @@ export default function InstagramMarquee() {
             See automixa in action.
           </h2>
           <p className="text-zinc-500 text-xs sm:text-sm max-w-lg leading-relaxed font-normal">
-            Real Instagram reels automated and secured 24/7 with zero account warnings.
+            Real Instagram comment and DM workflows handled through approved business messaging automation.
           </p>
         </div>
 

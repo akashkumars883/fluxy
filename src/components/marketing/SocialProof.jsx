@@ -13,7 +13,7 @@ export default function SocialProof() {
     {
       value: "50k+",
       label: "Auto Replies Sent",
-      description: "Comments, DMs, and story replies sent instantly 24/7 without any delay.",
+      description: "Comments, DMs, and story replies handled through configured business workflows.",
       icon: MessageSquare,
       iconBg: "bg-indigo-50 text-indigo-600",
       glowColor: "rgba(99, 102, 241, 0.15)",
@@ -21,23 +21,23 @@ export default function SocialProof() {
     {
       value: "< 2s",
       label: "Instant Reply Speed",
-      description: "Replies are sent in under 2 seconds. Safe and fully approved by Meta.",
+      description: "Fast response handling using secure account connections and API-based delivery.",
       icon: ShieldCheck,
       iconBg: "bg-emerald-50 text-emerald-600",
       glowColor: "rgba(16, 185, 129, 0.15)",
     },
     {
       value: "35%+",
-      label: "More Link Clicks",
-      description: "Average increase in active followers clicking your website and course links.",
+      label: "More Resource Clicks",
+      description: "Average improvement in customers opening approved links, guides, and product pages.",
       icon: TrendingUp,
       iconBg: "bg-rose-50 text-rose-600",
       glowColor: "rgba(244, 63, 94, 0.15)",
     },
     {
       value: "150+",
-      label: "Indian Creators",
-      description: "Active creators and business owners successfully automating their profiles.",
+      label: "Indian Businesses",
+      description: "Businesses and independent teams using Automixa for customer conversations.",
       icon: Users,
       iconBg: "bg-amber-50 text-amber-600",
       glowColor: "rgba(245, 158, 11, 0.15)",
@@ -52,10 +52,10 @@ export default function SocialProof() {
         {/* Header Title */}
         <div className="text-center mb-10 md:mb-14 max-w-3xl mx-auto">
           <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#6366F1] mb-3">
-            Real Numbers. Real Growth.
+            Real Workflows. Real Support.
           </p>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground tracking-tight leading-[1.1]">
-            Grow your <span className="text-sage font-normal">Instagram</span> followers & sales
+            Manage your <span className="text-sage font-normal">Instagram</span> conversations & sales
           </h2>
         </div>
 

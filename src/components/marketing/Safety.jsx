@@ -13,14 +13,14 @@ export default function Safety() {
         <div className="flex flex-col items-center text-center mb-10 md:mb-14">
           <div className="max-w-3xl">
             <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] mb-3 block">
-              100% Meta Approved
+              Secure API Workflow
             </p>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground tracking-tight leading-[1.1] mb-4">
               Meet Automixa Shield. <span className="text-sage font-normal">Built to keep your account safe.</span>
             </h2>
           </div>
           <p className="text-zinc-500 text-sm md:text-lg max-w-2xl font-normal leading-relaxed">
-            Most automation tools send quick replies all at once, which can get your account blocked. Automixa Shield works slowly and naturally, just like a real human, to keep your Instagram account 100% safe.
+            Automixa Shield spaces replies, blocks repetitive abuse, and helps keep customer messaging workflows within platform limits.
           </p>
         </div>
 
@@ -44,7 +44,7 @@ export default function Safety() {
                   Natural Human Delay
                 </h3>
                 <p className="text-sm text-zinc-500 font-normal leading-relaxed">
-                  If your post goes viral, our shield adds a random delay (like 4 to 12 seconds) between replies. This looks completely natural to Instagram&apos;s safety filters.
+                  During heavy traffic, our shield adds a configurable delay between replies to reduce repetitive response patterns.
                 </p>
               </div>
             </div>
@@ -158,10 +158,10 @@ export default function Safety() {
               </div>
               <div className="space-y-3">
                 <h3 className="text-2xl font-bold text-foreground group-hover:text-[#6366F1] transition-colors duration-300 tracking-tight">
-                  Official & Approved Connection
+                  Secure API Connection
                 </h3>
                 <p className="text-sm text-zinc-500 font-normal leading-relaxed">
-                  We do not ask for your password and we do not use fake browser tricks. We connect directly through Instagram&apos;s official partner tools.
+                  We do not ask for your password and we do not use browser automation. We connect through supported Meta API workflows.
                 </p>
               </div>
             </div>
@@ -172,7 +172,7 @@ export default function Safety() {
                 <span className="text-[8px] font-bold text-zinc-400 uppercase tracking-widest block">Official API Protocol</span>
                 <div className="flex items-center justify-center sm:justify-start gap-1.5 text-[#6366F1] font-bold text-xs">
                   <CheckCircle2 size={14} className="text-indigo-500 fill-indigo-500/10" />
-                  <span>100% Meta API Compliant</span>
+                  <span>Meta API based connection</span>
                 </div>
               </div>
               <Image 

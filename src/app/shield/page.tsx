@@ -27,8 +27,8 @@ export default function ShieldPage() {
     },
     {
       title: "Human-Like Intelligent Pacing",
-      tagline: "Organic Response Queue",
-      description: "Our cloud engine spaces out replies naturally, mimicking human typing speeds to pass undetected by Instagram's automated spam filters. The system dynamically adapts based on current server traffic.",
+      tagline: "Response Queue",
+      description: "Our cloud engine spaces out replies and adapts delivery timing based on current traffic, reducing repetitive response patterns during busy campaigns.",
       bullets: [
         "Natural Human Delay (randomized typing delay of 2s–12s between replies)",
         "Adaptive Surge Throttling (delays automatically stretch under high traffic spikes)",
@@ -39,9 +39,9 @@ export default function ShieldPage() {
       color: "text-orange-600 bg-orange-500/10 border-orange-500/20",
     },
     {
-      title: "Official Meta Compliance",
-      tagline: "100% Approved Integration",
-      description: "We communicate server-to-server exclusively through secure HTTPS API calls to Meta's verified Graph API endpoints. Zero password storage or security warning alerts.",
+      title: "Meta API Based Connection",
+      tagline: "Secure Integration",
+      description: "We communicate server-to-server through secure HTTPS API calls to Meta Graph API endpoints. No Instagram password storage is required.",
       bullets: [
         "100% Password-Free secure Meta OAuth connection",
         "Directly uses Meta's Official Instagram Developer APIs",
@@ -55,20 +55,20 @@ export default function ShieldPage() {
 
   const securityFaqs = [
     {
-      q: "Will my Instagram account get banned using Automixa?",
-      a: "No. Automixa Shield™ operates 100% within the official Meta Graph API guidelines. Meta actively encourages automation through their official partner APIs to help businesses grow. We do not use web scraping, custom browser logins, or spam techniques that trigger Instagram blocks."
+      q: "How does Automixa reduce account safety risk?",
+      a: "Automixa uses supported Meta API workflows, secure OAuth, and rate-aware delivery controls. We do not use web scraping, custom browser logins, or password-based automation."
     },
     {
       q: "Do you need my Instagram password?",
       a: "Never. We authenticate your account using official Meta/Facebook OAuth secure login. We never see, ask for, or store your Instagram password. You can revoke access at any time directly from your Facebook settings."
     },
     {
-      q: "How does the 'Human-Like Delay' system work?",
-      a: "If a post goes viral and receives hundreds of comments, traditional automation tools reply to all of them instantly, triggering Instagram's spam filters. Automixa Shield automatically queues replies and adds randomized typing delays (between 4 to 12 seconds), mimicking natural human typing speed."
+      q: "How does the reply delay system work?",
+      a: "During busy campaigns, Automixa Shield queues replies and adds randomized delivery delays. This helps avoid repetitive bursts and keeps response handling controlled."
     },
     {
       q: "Is Automixa compliant with Meta's developer terms?",
-      a: "Yes, 100%. Our platform communicates server-to-server exclusively through secure HTTPS API calls to Meta's verified endpoints. Because we are fully compliant, your automations are safe from API deprecation and account flags."
+      a: "Automixa is designed around supported Meta API workflows and secure HTTPS requests. Users must also follow Meta's platform rules and avoid spam, deceptive, or prohibited content."
     }
   ];
 
@@ -98,12 +98,12 @@ export default function ShieldPage() {
               </div>
               
               <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-zinc-900 leading-[1.1]">
-                100% Safe Instagram <br className="hidden sm:block" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 font-bold">Zero Account Risk.</span>
+                Safer Instagram <br className="hidden sm:block" />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 font-bold">Message Workflows.</span>
               </h1>
               
               <p className="text-zinc-600 text-base sm:text-lg leading-relaxed max-w-xl">
-                Say goodbye to action blocks, shadowbans, and suspicious login warnings. Our proprietary safety engine protects your account around the clock using Meta-approved official API workflows and dynamic human simulation.
+                Automixa Shield adds pacing, duplicate protection, and abuse detection to help businesses run customer messaging workflows responsibly.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
@@ -129,7 +129,7 @@ export default function ShieldPage() {
                   <ShieldCheck className="text-amber-600" size={20} />
                 </div>
                 <div className="text-xs text-zinc-500 font-medium">
-                  Official Meta Developer Partner. Shadowban-proof API calls. Zero Password Storage.
+                  Secure OAuth connection. No Instagram password storage.
                 </div>
               </div>
             </motion.div>
@@ -173,7 +173,7 @@ export default function ShieldPage() {
                 8 Layers of Active Protection
               </h2>
               <p className="text-zinc-500 text-sm sm:text-base">
-                Discover the advanced cloud-based algorithms protecting your brand reputation and account status.
+                Discover the cloud-based controls that protect your brand reputation and message quality.
               </p>
             </div>
 
@@ -304,7 +304,7 @@ export default function ShieldPage() {
                       "Communicates directly via Meta's Official Partner APIs",
                       "Simulates organic typing delays and random timings",
                       "Fully compliant with official Instagram platform policies",
-                      "Proven track record of zero account warnings or bans"
+                    "Designed for controlled, rate-aware response handling"
                     ].map((text, idx) => (
                       <div key={idx} className="flex items-start gap-3 text-xs text-zinc-800 font-bold">
                         <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
@@ -314,7 +314,7 @@ export default function ShieldPage() {
                   </div>
                 </div>
                 <div className="pt-6 border-t border-zinc-150 flex items-center justify-center text-xs font-bold text-emerald-600 bg-emerald-50/50 py-3 rounded-2xl">
-                  🛡️ 100% COMPLIANT AND ACCOUNT SAFE
+                  API-BASED AND RATE-AWARE
                 </div>
               </motion.div>
             </div>

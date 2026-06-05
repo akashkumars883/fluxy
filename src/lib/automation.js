@@ -255,7 +255,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
             await sendLimitExceededEmail({
               email: userEmail,
               name: userDisplayName,
-              planName: userPlan === "free" ? "Free" : userPlan === "creator_pro" ? "Creator Pro" : "Agency Scale",
+              planName: userPlan === "free" ? "Free" : userPlan === "creator_pro" ? "Business Pro" : "Agency Scale",
               limitAmount: maxReplies
             });
             console.log(`✉️ [LIMIT EMAIL SENT] Quota limit email sent successfully to: ${userEmail}`);
@@ -282,7 +282,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
           type: type,
           keyword: "STORY_TRIGGER_BLOCKED",
           status: "LIMIT_EXCEEDED",
-          metadata: { error: "Story mention responder is a Premium feature. Please upgrade to Creator Pro.", plan: userPlan }
+          metadata: { error: "Story mention responder is a Premium feature. Please upgrade to Business Pro.", plan: userPlan }
         });
       } catch (e) {
         console.error("❌ Failed logging story plan restriction:", e.message);

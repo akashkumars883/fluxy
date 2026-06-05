@@ -31,8 +31,8 @@ export async function generateMetadata(): Promise<Metadata> {
     }
   }
 
-  const siteTitle = settingsMap.site_title || "Automixa | #1 Instagram Automation & AI DM Tool";
-  const metaDesc = settingsMap.meta_description || "Automate your Instagram comments and DMs with AI. Scale your growth, generate leads, and boost engagement with Automixa's smart shield technology.";
+  const siteTitle = settingsMap.site_title || "Automixa | Business Messaging Automation";
+  const metaDesc = settingsMap.meta_description || "Automixa helps businesses manage Instagram comments, DMs, story replies, lead capture, smart bio links, and customer support workflows using secure API-based automation.";
   const ogImage = settingsMap.og_image || "/og-image.png";
   const twitterHandle = settingsMap.twitter_handle || "@automixa";
 
@@ -47,22 +47,17 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description: metaDesc,
     keywords: [
-      "Instagram automation tool",
-      "Instagram automation tool India",
-      "Instagram DM automation",
-      "Instagram DM automation India",
-      "Instagram DM auto reply tool",
-      "Instagram comment auto reply",
-      "Comment to DM automation",
-      "Auto DM tool India",
-      "Instagram lead generation tool",
-      "AI DM bot",
-      "Meta Graph API automation",
-      "ManyChat alternative India",
-      "Chatfuel alternative",
-      "DMFlow alternative",
-      "Instagram DM marketing",
-      "UPI billing SaaS India",
+      "business messaging automation",
+      "customer support automation",
+      "Instagram business messaging",
+      "Instagram customer support",
+      "comment response workflow",
+      "DM response workflow",
+      "lead capture CRM",
+      "smart bio link",
+      "digital product delivery",
+      "Meta Graph API integration",
+      "SaaS billing India",
     ],
     authors: [{ name: "Akash Kumar" }, { name: "Automixa Team" }],
     creator: "Akash Kumar",

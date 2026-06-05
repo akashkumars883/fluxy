@@ -228,7 +228,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
         <div className="flex items-center justify-between">
           <h4 className="text-sm font-semibold text-zinc-900">API quota usage</h4>
           <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-full text-[10px] font-bold">
-            {currentPlan === "viral_scale" ? "Viral Scale" : currentPlan === "creator_pro" ? "Creator Pro" : "Free"}
+            {currentPlan === "viral_scale" ? "Business Scale" : currentPlan === "creator_pro" ? "Business Pro" : "Free"}
           </span>
         </div>
         <div className="space-y-2">
@@ -485,7 +485,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
             </div>
             <div>
               <h4 className="text-xs sm:text-sm font-bold tracking-tight mb-0.5">
-                {currentPlan === 'free' ? "Scale Your Automations with Creator Pro ⚡" : "Upgrade to Viral Scale Plan 🚀"}
+                {currentPlan === 'free' ? "Upgrade Automations with Business Pro" : "Upgrade to Business Scale"}
               </h4>
               <p className="text-[11px] text-indigo-100 font-medium leading-normal max-w-xl">
                 {currentPlan === 'free' 

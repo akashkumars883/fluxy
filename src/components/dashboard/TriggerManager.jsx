@@ -303,7 +303,7 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
             </div>
             <div>
               <h4 className="text-xs sm:text-sm font-bold tracking-tight mb-0.5">
-                {currentPlan === 'free' ? "Scale Your Automations with Creator Pro ⚡" : "Upgrade to Viral Scale Plan 🚀"}
+                {currentPlan === 'free' ? "Upgrade Automations with Business Pro" : "Upgrade to Business Scale"}
               </h4>
               <p className="text-[11px] text-indigo-100 font-medium leading-normal max-w-xl">
                 {currentPlan === 'free' 
