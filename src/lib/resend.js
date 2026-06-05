@@ -358,6 +358,19 @@ export function getWelcomeHtml(name) {
               </a>
             </div>
             
+            <!-- Troubleshooting helper -->
+            <div style="margin-top: 32px; padding: 20px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 24px;">
+              <h4 style="margin: 0 0 8px 0; font-size: 13px; font-weight: 700; color: #0f172a;">Stuck with Facebook connection? 🛠️</h4>
+              <p style="margin: 0 0 8px 0; font-size: 12px; color: #475569; line-height: 1.5;">
+                Make sure of these 3 requirements to avoid integration errors:
+              </p>
+              <ul style="margin: 0; padding-left: 18px; font-size: 12px; color: #475569; line-height: 1.6;">
+                <li>Your Instagram is a <strong>Business or Creator</strong> profile (Personal accounts don't support API integrations).</li>
+                <li>Your Instagram is linked to a <strong>Facebook Page</strong> that you own or manage.</li>
+                <li>When Facebook login window pops up, click <strong>"Select All"</strong> and allow all page permissions.</li>
+              </ul>
+            </div>
+
             <p style="font-size: 14px; line-height: 1.6; color: #52525b; margin: 0;">
               If you have any questions or get stuck along the way, simply reply to this email. I read and respond to every message personally.
             </p>
@@ -384,6 +397,18 @@ export function getNudge2hHtml(name) {
           Connect Instagram & Get Started
         </a>
       </p>
+
+      <!-- Troubleshooting helper -->
+      <div style="margin-top: 24px; margin-bottom: 24px; padding: 16px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #475569;">
+        <strong style="color: #0f172a; display: block; margin-bottom: 6px;">Facing Facebook Connection Issues? 🛠️</strong>
+        Make sure of these 3 details:
+        <ul style="margin: 6px 0 0 0; padding-left: 18px; line-height: 1.5;">
+          <li>Your Instagram profile must be a <strong>Creator or Business</strong> account (Personal accounts won't work).</li>
+          <li>Your Instagram must be linked to a <strong>Facebook Page</strong> you manage.</li>
+          <li>Give <strong>all permissions</strong> to Automixa during the Facebook login authorization.</li>
+        </ul>
+      </div>
+
       <p>If you got stuck or have any questions about how to set it up, just reply directly to this email. I'm here to help!</p>
       <br/>
       <p>Best,<br/><strong>Akash</strong><br/>Founder, Automixa</p>
