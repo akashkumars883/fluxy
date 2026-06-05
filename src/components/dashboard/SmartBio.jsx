@@ -128,11 +128,9 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
           setProfileTitle(settingsRes.data.profile_title || "");
           setBioText(settingsRes.data.bio_text || "");
           setThemeId(settingsRes.data.theme_preset || "ivory");
-          if (settingsRes.data.is_published) {
-            setPublished(true);
-            const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-            setPublishedLink(isLocal ? `${window.location.origin}/bio/${igUsername}` : `https://${igUsername}.automixa.in`);
-          }
+          setPublished(true);
+          const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+          setPublishedLink(isLocal ? `${window.location.origin}/${igUsername}` : `https://automixa.in/${igUsername}`);
         } else {
           // Pre-fill from account
           setProfileTitle(account?.page_name || account?.name || "");
@@ -161,31 +159,36 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
       const supabase = createClient();
 
       // Upsert settings
-      await supabase.from("smart_bio_settings").upsert({
+      const { error: settingsError } = await supabase.from("smart_bio_settings").upsert({
         automation_id: accountId,
         profile_title: profileTitle,
         bio_text: bioText,
         theme_preset: themeId,
-        is_published: true,
         updated_at: new Date().toISOString()
       }, { onConflict: "automation_id" });
 
+      if (settingsError) throw new Error(settingsError.message);
+
       // Delete old links and re-insert
-      await supabase.from("smart_bio_links").delete().eq("automation_id", accountId);
+      const { error: deleteError } = await supabase.from("smart_bio_links").delete().eq("automation_id", accountId);
+      if (deleteError) throw new Error(deleteError.message);
+
       const validLinks = links.filter(l => l.title && l.url);
       if (validLinks.length > 0) {
-        await supabase.from("smart_bio_links").insert(
+        const { error: insertError } = await supabase.from("smart_bio_links").insert(
           validLinks.map((l, i) => ({ automation_id: accountId, title: l.title, url: l.url, sort_order: i }))
         );
+        if (insertError) throw new Error(insertError.message);
       }
 
       const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-      const link = isLocal ? `${window.location.origin}/bio/${igUsername}` : `https://${igUsername}.automixa.in`;
+      const link = isLocal ? `${window.location.origin}/${igUsername}` : `https://automixa.in/${igUsername}`;
       setPublishedLink(link);
       setPublished(true);
       toast.success("Smart Bio published successfully!");
     } catch (err) {
-      toast.error("Failed to publish. Please try again.");
+      console.error("Publishing failed:", err);
+      toast.error(`Failed to publish: ${err.message || "Please check console logs."}`);
     } finally {
       setPublishing(false);
     }
@@ -200,25 +203,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
   const socialLinks = links.filter(l => getSocialMeta(l.url));
   const standardLinks = links.filter(l => !getSocialMeta(l.url));
 
-  if (currentPlan === "free") {
-    return (
-      <div className="flex flex-col items-center justify-center py-32 gap-5 text-center animate-in fade-in zoom-in-95 duration-500">
-        <div className="w-20 h-20 rounded-3xl bg-[#6366F1]/10 flex items-center justify-center border border-[#6366F1]/20 shadow-xl shadow-[#6366F1]/5 relative">
-          <Globe size={32} className="text-[#6366F1]" />
-          <span className="absolute -top-2 -right-2 text-2xl">👑</span>
-        </div>
-        <div>
-          <h3 className="text-2xl font-black text-zinc-900 tracking-tight mb-2">Unlock Smart Bio with Creator Pro</h3>
-          <p className="text-sm text-zinc-500 max-w-sm mx-auto leading-relaxed">
-            Create stunning, high-converting link-in-bio pages directly from Automixa and supercharge your traffic.
-          </p>
-        </div>
-        <button onClick={() => onUpgradeClick?.("smart_bio")} className="mt-4 px-8 py-3.5 bg-zinc-950 hover:bg-[#6366F1] text-white text-sm font-bold rounded-xl shadow-lg transition-all flex items-center gap-2">
-          Upgrade Plan
-        </button>
-      </div>
-    );
-  }
+
 
   const isComingSoon = true;
 
@@ -285,10 +270,11 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
             </div>
 
             <button
-              disabled={true}
-              className="px-5 py-2 bg-zinc-200 text-zinc-500 rounded-xl text-xs font-bold shadow-sm cursor-not-allowed flex items-center gap-2"
+              onClick={handlePublish}
+              disabled={publishing}
+              className="px-5 py-2 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
-              Coming Soon
+              {publishing ? "Publishing..." : "Publish"}
             </button>
           </div>
 

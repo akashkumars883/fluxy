@@ -25,8 +25,29 @@ function RefTracker() {
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   
-  // Dashboard, Auth, and Checkout pages par marketing nav/footer nahi dikhana hai
-  const hideGlobalElements = pathname?.startsWith('/dashboard') || pathname?.startsWith('/login') || pathname?.startsWith('/pay');
+  // Define marketing pages that should show navigation and footer
+  const isMarketingPage = 
+    pathname === '/' ||
+    pathname?.startsWith('/pricing') ||
+    pathname?.startsWith('/solutions') ||
+    pathname?.startsWith('/features') ||
+    pathname?.startsWith('/compare') ||
+    pathname?.startsWith('/contact') ||
+    pathname?.startsWith('/privacy') ||
+    pathname?.startsWith('/terms') ||
+    pathname?.startsWith('/partners') ||
+    pathname?.startsWith('/blog') ||
+    pathname?.startsWith('/data-deletion') ||
+    pathname?.startsWith('/sitemap') ||
+    pathname?.startsWith('/shield');
+
+  // Hide global elements on dashboard, login, checkout, bio pages, and dynamic usernames
+  const hideGlobalElements = 
+    pathname?.startsWith('/dashboard') || 
+    pathname?.startsWith('/login') || 
+    pathname?.startsWith('/pay') ||
+    pathname?.startsWith('/bio') ||
+    !isMarketingPage;
 
   return (
     <>
