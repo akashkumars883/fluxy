@@ -2,7 +2,7 @@
 
 import { useDashboard } from "@/context/DashboardContext";
 import { motion } from "framer-motion";
-import { ChevronDown, Lock as LucideLock, PanelTopOpen, Plus, HelpCircle, Zap } from "lucide-react";
+import { ChevronDown, Lock as LucideLock, PanelTopOpen, Plus, HelpCircle, Zap, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 
 export default function DashboardSidebar({
@@ -237,6 +237,29 @@ export default function DashboardSidebar({
               </div>
             )}
           </button>
+        )}
+
+        {/* Protected by Automixa Shield */}
+        {selectedAccount && (
+          <div className="w-full mb-1">
+            {isSidebarCollapsed ? (
+              <div 
+                className="group relative flex items-center justify-center mx-auto rounded-xl transition-all duration-200 h-10 w-10 text-red-500 hover:text-red-600"
+                title="Powered by Automixa Shield"
+              >
+                <ShieldCheck size={18} />
+                <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-zinc-800 text-white text-[11px] font-medium rounded-md opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none transition-all duration-200 whitespace-nowrap z-50 shadow-lg flex items-center">
+                  Powered by Automixa Shield
+                  <div className="absolute top-1/2 -left-1 -mt-1 border-[4px] border-transparent border-r-zinc-800" />
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-1.5 py-2 text-[11px] font-medium text-zinc-400 select-none">
+                <ShieldCheck size={13} className="text-red-500" />
+                <span>Powered by Automixa Shield</span>
+              </div>
+            )}
+          </div>
         )}
 
         {/* Account Switcher */}
