@@ -4,6 +4,14 @@
 - [ ] **Cookie Consent Banner 🍪**
   - Implement a modern floating glassmorphic cookie consent banner
   - Save user preferences in `localStorage` and conditionally load Google Analytics based on consent
+- [ ] **User Onboarding & Activation Email Sequence 📧**
+  - Integrate automatic DB checks (cron jobs/queues) for user onboarding state
+  - Create Resend email templates for:
+    - Immediate Welcome Email (Sign up confirmation + next steps)
+    - 2-Hour Setup Nudge (Triggered if Instagram is not connected)
+    - 24-Hour Social Proof/Case Study Email (To build trust and show value)
+    - 72-Hour Feedback Email (Direct check-in from founder if not activated)
+  - Track email delivery states in database (`nudge_sent`, etc.) to prevent duplicate sending
 
 
 ## ✅ Completed Refinements

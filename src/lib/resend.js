@@ -313,3 +313,155 @@ export const sendLimitExceededEmail = async ({ email, name, planName, limitAmoun
     return null;
   }
 };
+
+export function getWelcomeHtml(name) {
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+          body, table, td, div, p, a, span {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+          }
+          h1, h2 {
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+          }
+        </style>
+      </head>
+      <body style="margin: 0; padding: 0; background-color: #fafafa;">
+        <div style="font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px 20px; color: #18181b; max-width: 580px; margin: 0 auto; background: #fafafa; border-radius: 24px; border: 1px solid #e4e4e7; margin-top: 20px; margin-bottom: 20px;">
+          <!-- Header -->
+          <div style="text-align: center; margin-bottom: 32px;">
+            <h1 style="color: #09090b; font-size: 36px; font-weight: 600; margin: 0; letter-spacing: -2px; line-height: 1;">Automixa</h1>
+            <p style="color: #71717a; font-size: 11px; font-weight: 500; margin: 8px 0 0 0; text-transform: lowercase; letter-spacing: -0.2px;">conversations that convert, automatically</p>
+          </div>
+
+          <!-- Main Content Card -->
+          <div style="background: #ffffff; padding: 36px; border-radius: 20px; border: 1px solid #e4e4e7; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.02), 0 4px 6px -4px rgba(0, 0, 0, 0.02);">
+            <h2 style="font-size: 22px; font-weight: 800; color: #09090b; margin-top: 0; margin-bottom: 12px; letter-spacing: -0.5px;">Welcome to Automixa! 🎉</h2>
+            <p style="font-size: 14px; line-height: 1.6; color: #52525b; margin: 0 0 20px 0;">
+              Hi ${name || 'there'},
+            </p>
+            <p style="font-size: 14px; line-height: 1.6; color: #52525b; margin: 0 0 20px 0;">
+              Thank you for signing up! Automixa is designed to help you turn your Instagram comments, story mentions, and DMs into automatic conversions and leads.
+            </p>
+            <p style="font-size: 14px; line-height: 1.6; color: #52525b; margin: 0 0 20px 0;">
+              To get started, the first step is to connect your Instagram Business account. It takes less than a minute.
+            </p>
+            
+            <!-- Call to Action -->
+            <div style="text-align: center; margin-top: 28px; margin-bottom: 24px;">
+              <a href="https://automixa.in/dashboard" style="background: #6366F1; color: #ffffff; padding: 14px 36px; border-radius: 14px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-block; border: 1px solid #6366F1; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);">
+                Connect Instagram Now
+              </a>
+            </div>
+            
+            <p style="font-size: 14px; line-height: 1.6; color: #52525b; margin: 0;">
+              If you have any questions or get stuck along the way, simply reply to this email. I read and respond to every message personally.
+            </p>
+            <p style="font-size: 14px; line-height: 1.6; color: #52525b; margin: 24px 0 0 0;">
+              Best,<br/>
+              <strong>Akash</strong><br/>
+              Founder, Automixa
+            </p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+}
+
+export function getNudge2hHtml(name) {
+  return `
+    <div style="font-family: sans-serif; font-size: 15px; color: #18181b; line-height: 1.6; max-width: 550px;">
+      <p>Hi ${name || 'there'},</p>
+      <p>I noticed you logged into Automixa, but you haven't connected your Instagram or created your first automation yet.</p>
+      <p>Connecting your account takes less than a minute and starts auto-replying to comments and DMs instantly so you don't lose leads.</p>
+      <p style="margin: 24px 0;">
+        <a href="https://automixa.in/dashboard" style="background: #6366F1; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block; border: 1px solid #6366F1;">
+          Connect Instagram & Get Started
+        </a>
+      </p>
+      <p>If you got stuck or have any questions about how to set it up, just reply directly to this email. I'm here to help!</p>
+      <br/>
+      <p>Best,<br/><strong>Akash</strong><br/>Founder, Automixa</p>
+    </div>
+  `;
+}
+
+export function getCaseStudyHtml(name) {
+  return `
+    <div style="font-family: sans-serif; font-size: 15px; color: #18181b; line-height: 1.6; max-width: 550px;">
+      <p>Hi ${name || 'there'},</p>
+      <p>Are you still replying to your Instagram comments and DMs manually? 🥵</p>
+      <p>Manual replies are slow and meta algorithms penalize pages that don't respond to active messages immediately. That means you are missing out on potential sales and profile reach every single day.</p>
+      <p>By connecting Automixa, you can instantly reply to comment keywords like <em>"INFO"</em> or <em>"LINK"</em>, sending a direct message with details inside 1.5 seconds. Our creators are seeing a <strong>30% to 40% increase in conversions</strong> in their first week alone.</p>
+      <p style="margin: 24px 0;">
+        <a href="https://automixa.in/dashboard" style="background: #6366F1; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block; border: 1px solid #6366F1;">
+          Start Automating Your Instagram
+        </a>
+      </p>
+      <p>Connecting takes 60 seconds and requires no password. If you need a demo or help setting it up, feel free to reply directly to this email.</p>
+      <br/>
+      <p>Best,<br/><strong>Akash</strong><br/>Founder, Automixa</p>
+    </div>
+  `;
+}
+
+export function getFeedbackHtml(name) {
+  return `
+    <div style="font-family: sans-serif; font-size: 15px; color: #18181b; line-height: 1.6; max-width: 550px;">
+      <p>Hi ${name || 'there'},</p>
+      <p>Akash here (founder of Automixa).</p>
+      <p>I noticed you signed up for Automixa a few days ago, but didn't connect your Instagram account. I wanted to check in personally to see if you faced any issues or if the tool wasn't a good fit for you.</p>
+      <p>We are constantly improving Automixa, and your honest feedback is incredibly valuable. If you got stuck during setup, or if you found the product too complex, please let me know by replying directly to this email.</p>
+      <p>If you just got busy and want to give it another try, you can jump back in here:</p>
+      <p style="margin: 24px 0;">
+        <a href="https://automixa.in/dashboard" style="background: #6366F1; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block; border: 1px solid #6366F1;">
+          Connect My Account
+        </a>
+      </p>
+      <p>Thank you for your time, and I look forward to hearing your thoughts!</p>
+      <br/>
+      <p>Best,<br/><strong>Akash</strong><br/>Founder, Automixa</p>
+    </div>
+  `;
+}
+
+export const sendOnboardingEmail = async ({ email, name, type }) => {
+  try {
+    let subject = '';
+    let htmlContent = '';
+    let from = 'Akash from Automixa <info@automixa.in>'; // Personal touch sender
+
+    if (type === 'welcome') {
+      subject = 'Welcome to Automixa! 🎉 Let\'s get you set up';
+      htmlContent = getWelcomeHtml(name);
+    } else if (type === 'nudge_2h') {
+      subject = 'Quick question about your Automixa setup';
+      htmlContent = getNudge2hHtml(name);
+    } else if (type === 'case_study_24h') {
+      subject = 'Stop replying manually: increase your conversions by 40%';
+      htmlContent = getCaseStudyHtml(name);
+    } else if (type === 'feedback_72h') {
+      subject = 'Quick question from the founder of Automixa';
+      htmlContent = getFeedbackHtml(name);
+    } else {
+      throw new Error(`Invalid email type: ${type}`);
+    }
+
+    const data = await resend.emails.send({
+      from,
+      to: [email],
+      subject,
+      html: htmlContent,
+    });
+    return data;
+  } catch (error) {
+    console.error(`Failed to send onboarding email (${type}):`, error);
+    return null;
+  }
+};
+
