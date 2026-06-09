@@ -141,8 +141,8 @@ export default function DMAutoReplyPage() {
               transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="w-full lg:w-1/2 relative"
             >
-              <div className="relative rounded-[40px] overflow-hidden shadow-2xl border border-white bg-white/40 p-3 backdrop-blur-md">
-                <div className="relative rounded-[32px] overflow-hidden aspect-[4/3] bg-zinc-950 border border-zinc-800">
+              <div className="relative rounded-xl overflow-hidden shadow-2xl border border-white bg-white/40 p-3 backdrop-blur-md">
+                <div className="relative rounded-xl overflow-hidden aspect-[4/3] bg-zinc-950 border border-zinc-800">
                   <img 
                     src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop" 
                     alt="Instagram DM automation tool" 
@@ -216,8 +216,8 @@ export default function DMAutoReplyPage() {
                     
                     {/* Right: Glassmorphic Image Frame */}
                     <div className="w-full lg:w-1/2">
-                      <div className="rounded-[40px] overflow-hidden bg-white/40 p-3 border border-white shadow-2xl relative group">
-                        <div className="rounded-[32px] overflow-hidden aspect-[4/3] relative">
+                      <div className="rounded-xl overflow-hidden bg-white/40 p-3 border border-white shadow-2xl relative group">
+                        <div className="rounded-xl overflow-hidden aspect-[4/3] relative">
                           <img 
                             src={benefit.image} 
                             alt={benefit.title} 

@@ -73,10 +73,10 @@ export default function ComparePage({ params: paramsPromise }) {
             >
               <Link
                 href="/login"
-                className="inline-flex items-center justify-between gap-4 bg-zinc-950 text-white pl-8 pr-3 py-3.5 rounded-full font-bold hover:scale-[1.03] active:scale-[0.98] transition-all w-full sm:w-fit text-sm group"
+                className="inline-flex items-center justify-between gap-4 bg-indigo-600 text-white pl-8 pr-3 py-3.5 rounded-xl font-bold hover:bg-indigo-500 transition-all w-full sm:w-fit text-sm group"
               >
                 Start Free Trial
-                <div className="bg-white/10 text-white rounded-full p-2 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-rotate-45">
+                <div className="bg-white/20 text-white rounded-xl p-2 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-rotate-45">
                   <ArrowRight size={16} />
                 </div>
               </Link>
@@ -93,12 +93,12 @@ export default function ComparePage({ params: paramsPromise }) {
 
       {/* 2. Side-by-Side Premium Grid Table */}
       <section className="py-12 max-w-7xl mx-auto px-6 sm:px-10 relative z-10">
-        <div className="bg-white/40 backdrop-blur-3xl border border-white/60 rounded-[48px] shadow-2xl shadow-zinc-200/20 p-6 sm:p-10 overflow-x-auto">
+        <div className="bg-white/40 backdrop-blur-3xl border border-white/60 rounded-xl shadow-2xl shadow-zinc-200/20 p-6 sm:p-10 overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[700px]">
             <thead>
               <tr className="border-b border-zinc-200/50 text-zinc-400 text-[10px] font-black uppercase tracking-widest">
                 <th className="py-4 pl-4 w-1/3">Core Features</th>
-                <th className="py-4 pl-6 text-center w-1/3 bg-[#6366F1]/5 text-[#6366F1] rounded-t-[32px] border-x border-t border-[#6366F1]/20">
+                <th className="py-4 pl-6 text-center w-1/3 bg-[#6366F1]/5 text-[#6366F1] rounded-t-xl border-x border-t border-[#6366F1]/20">
                   ⚡ Automixa (Safe & Smart)
                 </th>
                 <th className="py-4 text-center w-1/3 text-zinc-500">
@@ -164,10 +164,10 @@ export default function ComparePage({ params: paramsPromise }) {
             {data.whySwitch.map((item, idx) => (
               <div 
                 key={idx}
-                className="bg-white border border-zinc-200/40 p-8 rounded-[36px] shadow-sm hover:shadow-md hover:border-zinc-200 transition-all duration-300 flex flex-col justify-between"
+                className="bg-white border border-zinc-200/40 p-8 rounded-xl shadow-sm hover:shadow-md hover:border-zinc-200 transition-all duration-300 flex flex-col justify-between"
               >
                 <div className="space-y-4">
-                  <div className="w-10 h-10 rounded-2xl bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center font-bold text-sm">
+                  <div className="w-10 h-10 rounded-xl bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center font-bold text-sm">
                     {idx + 1}
                   </div>
                   <h3 className="text-lg font-bold text-zinc-950 tracking-tight">
