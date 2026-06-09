@@ -127,7 +127,7 @@ export default function Testimonials() {
             {[...row1, ...row1, ...row1].map((item, index) => (
               <div 
                 key={index}
-                className="w-[300px] sm:w-[360px] shrink-0 p-6 sm:p-8 rounded-[28px] bg-white/40 backdrop-blur-xl border border-white/60 hover:border-indigo-500/20 hover:bg-white/60 transition-all duration-300 flex flex-col justify-between whitespace-normal select-none shadow-sm hover:shadow-md"
+                className="w-[300px] sm:w-[360px] shrink-0 p-6 sm:p-8 rounded-xl bg-white border border-zinc-200 hover:border-indigo-300 transition-all duration-300 flex flex-col justify-between whitespace-normal select-none shadow-sm hover:shadow-md"
               >
                 {/* Rating & Platform */}
                 <div className="flex items-center justify-between mb-4">
@@ -171,7 +171,7 @@ export default function Testimonials() {
             {[...row2, ...row2, ...row2].map((item, index) => (
               <div 
                 key={index}
-                className="w-[300px] sm:w-[360px] shrink-0 p-6 sm:p-8 rounded-[28px] bg-white/40 backdrop-blur-xl border border-white/60 hover:border-indigo-500/20 hover:bg-white/60 transition-all duration-300 flex flex-col justify-between whitespace-normal select-none shadow-sm hover:shadow-md"
+                className="w-[300px] sm:w-[360px] shrink-0 p-6 sm:p-8 rounded-xl bg-white border border-zinc-200 hover:border-indigo-300 transition-all duration-300 flex flex-col justify-between whitespace-normal select-none shadow-sm hover:shadow-md"
               >
                 {/* Rating & Platform */}
                 <div className="flex items-center justify-between mb-4">

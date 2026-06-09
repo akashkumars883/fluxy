@@ -1,6 +1,8 @@
 import Hero from "@/components/marketing/Hero";
+import Stats from "@/components/marketing/Stats";
 import HowItWorks from "@/components/marketing/HowItWorks";
 import Features from "@/components/marketing/Features";
+import Testimonials from "@/components/marketing/Testimonials";
 import Pricing from "@/components/marketing/Pricing";
 import FAQ from "@/components/marketing/FAQ";
 import CTA from "@/components/marketing/CTA";
@@ -63,8 +65,10 @@ export default async function Home({ searchParams }: PageProps) {
       <main>
         <JsonLd />
         <Hero />
+        <Stats />
         <HowItWorks />
         <Features />
+        <Testimonials />
         <Pricing />
         <FAQ />
         <CTA />
