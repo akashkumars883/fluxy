@@ -102,7 +102,11 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
     totalDms = 0,
     autoReplies = 0,
     engagementRate = "0%",
-  } = stats;
+  } = stats || {};
+
+  // Defensive defaults to prevent "Cannot read properties of null (reading 'length')" crash
+  const safeHistory = Array.isArray(history) ? history : [];
+  const safeTopTriggers = Array.isArray(topTriggers) ? topTriggers : [];
 
   const formatTime = (dateStr) => {
     if (!dateStr) return "Just now";
@@ -116,8 +120,8 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
     return date.toLocaleDateString();
   };
 
-  const activeKeywords = topTriggers && topTriggers.length > 0
-    ? topTriggers.map((t) => {
+  const activeKeywords = safeTopTriggers.length > 0
+    ? safeTopTriggers.map((t) => {
       return {
         id: t.id,
         keyword: (t.keyword || "AUTO").toUpperCase(),
@@ -132,7 +136,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
     { label: "Automated Comments", value: autoReplies, icon: MessageSquare, color: "text-[#6366F1]" },
     { label: "Messages Sent", value: totalDms, icon: Zap, color: "text-amber-500" },
     { label: "Conversion Rate", value: engagementRate, icon: TrendingUp, color: "text-emerald-500" },
-    { label: "Active Rules", value: topTriggers.length, icon: Cpu, color: "text-purple-500" },
+    { label: "Active Rules", value: safeTopTriggers.length, icon: Cpu, color: "text-purple-500" },
   ];
 
   return (
