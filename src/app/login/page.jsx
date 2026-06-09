@@ -448,7 +448,7 @@ export default function LoginPage() {
                   </span>
                 ) : (
                   <span>
-                    Don't have an account?{" "}
+                    Don&apos;t have an account?{" "}
                     <button
                       type="button"
                       onClick={() => setIsSignUp(true)}

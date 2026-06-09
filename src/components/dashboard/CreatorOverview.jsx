@@ -148,7 +148,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
           Welcome back, {userName}! 👋
         </h2>
         <p className="text-sm text-zinc-500 font-medium mt-0.5">
-          Here is what's happening with your automations today.
+          Here is what&apos;s happening with your automations today.
         </p>
       </div>
 

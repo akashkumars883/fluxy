@@ -224,7 +224,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                     className="w-full bg-zinc-50 border-2 border-zinc-200 rounded-xl px-5 py-4 text-[15px] font-medium text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all"
                   />
                   <p className="text-[12px] text-zinc-400 font-medium px-1">
-                    Don't worry about the type - Automixa AI will ask you what you want to automate.
+                    Don&apos;t worry about the type - Automixa AI will ask you what you want to automate.
                   </p>
                 </div>
                 <button

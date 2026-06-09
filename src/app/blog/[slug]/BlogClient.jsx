@@ -46,7 +46,7 @@ export default function BlogPostPage({ initialPost, relatedPosts = [] }) {
     } catch {
       return [];
     }
-  }, [selectedPost?.content]);
+  }, [selectedPost]);
 
   // Add IDs to headings inside the rendered content after mount
   useEffect(() => {
