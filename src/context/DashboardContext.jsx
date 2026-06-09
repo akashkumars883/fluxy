@@ -124,18 +124,25 @@ export function DashboardProvider({ children, initialData = null }) {
 
   // Derived filtered accounts based on active workspace
   const getAccountWorkspaceId = (account) => {
+    if (!account || typeof account !== "object") return "personal";
     if (account.workspace_id) return account.workspace_id;
     if (typeof window !== "undefined") {
-      const localMappings = safeJSONParse(localStorage.getItem("automixa_account_workspace_mappings"), {});
-      return localMappings[account.id] || "personal";
+      try {
+        const localMappings = safeJSONParse(localStorage.getItem("automixa_account_workspace_mappings"), {});
+        return localMappings[account.id] || "personal";
+      } catch {
+        return "personal";
+      }
     }
     return "personal";
   };
 
   // Fix Issue 15: When no workspace is selected, show all accounts instead of empty
+  // Also filter out null/invalid accounts to prevent "Cannot read properties of null" crash
+  const validAllAccounts = allAccounts.filter(acc => acc != null && typeof acc === "object" && acc.id);
   const accounts = selectedWorkspace
-    ? allAccounts.filter(acc => getAccountWorkspaceId(acc) === selectedWorkspace.id)
-    : allAccounts;
+    ? validAllAccounts.filter(acc => getAccountWorkspaceId(acc) === selectedWorkspace.id)
+    : validAllAccounts;
 
   // Client-side initialization for local storage fallbacks and workspace selection
   useEffect(() => {
@@ -420,10 +427,10 @@ export function DashboardProvider({ children, initialData = null }) {
   // Update selected account when selectedWorkspace or allAccounts change
   useEffect(() => {
     if (selectedWorkspace) {
-      const workspaceAccounts = allAccounts.filter(acc => getAccountWorkspaceId(acc) === selectedWorkspace.id);
+      const workspaceAccounts = allAccounts.filter(acc => acc != null && typeof acc === "object" && acc.id && getAccountWorkspaceId(acc) === selectedWorkspace.id);
 
       // If selectedAccount doesn't belong to the active workspace, switch to first account or null
-      if (!selectedAccount || !workspaceAccounts.some(acc => acc.id === selectedAccount.id)) {
+      if (!selectedAccount || !workspaceAccounts.some(acc => acc && acc.id === selectedAccount.id)) {
         setSelectedAccount(workspaceAccounts.length > 0 ? workspaceAccounts[0] : null);
       }
     } else {
