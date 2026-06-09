@@ -308,7 +308,7 @@ export default function Dashboard() {
               const mediaRes = await res.json();
               if (mediaRes) {
                 if (mediaRes.media) setInstagramMedia(mediaRes.media);
-                if (mediaRes.stories) setInstagramStories(mediaRes.stories);z
+                if (mediaRes.stories) setInstagramStories(mediaRes.stories);
               }
             } catch (err) {
               logger.warn("Dashboard: Media fetch failed ->", err?.message || err);
