@@ -143,18 +143,18 @@ export default function BlogPage() {
                     >
                     <Link 
                       href={`/blog/${featuredPost.id}`}
-                      className="group block bg-white/40 backdrop-blur-xl border border-white/60 hover:border-[#6366F1]/50 rounded-[32px] p-6 md:p-8 lg:p-10 shadow-xl shadow-zinc-100/40 hover:shadow-2xl hover:shadow-[#6366F1]/20 hover:-translate-y-2 transition-all duration-500 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative overflow-hidden"
+                      className="group block bg-white border border-zinc-200 hover:border-indigo-300 rounded-xl p-6 md:p-8 lg:p-10 shadow-md hover:shadow-xl transition-all duration-300 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative overflow-hidden"
                     >
                       {/* Interactive glow overlay */}
                       <div className="absolute top-1/2 left-0 w-80 h-80 bg-[#6366F1]/15 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -translate-y-1/2" />
                       <div className="absolute bottom-0 right-0 w-80 h-80 bg-pink-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                      <div className="lg:col-span-7 rounded-[24px] overflow-hidden aspect-[16/10] md:aspect-[16/9] relative shadow-md">
+                      <div className="lg:col-span-7 rounded-xl overflow-hidden aspect-[16/10] md:aspect-[16/9] relative shadow-md">
                         <img 
                           src={featuredPost.image} 
                           alt={featuredPost.title}
                           className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700"
                         />
-                        <div className="absolute top-4 left-4 bg-[#6366F1] text-white text-[11px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
+                        <div className="absolute top-4 left-4 bg-indigo-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider">
                           Featured Article
                         </div>
                       </div>
@@ -162,7 +162,7 @@ export default function BlogPage() {
                       {/* Right: Text content (lg:col-span-5) */}
                       <div className="lg:col-span-5 flex flex-col justify-between h-full py-2 z-10">
                         <div className="space-y-4">
-                          <span className="text-xs font-bold text-[#6366F1] uppercase tracking-wider bg-[#6366F1]/5 px-3 py-1.5 rounded-full">
+                          <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-3 py-1.5 rounded-xl">
                             {featuredPost.category}
                           </span>
                           <h2 className="text-2xl sm:text-3xl font-bold text-zinc-800 tracking-tight leading-snug group-hover:text-[#6366F1] transition-colors duration-300">
@@ -287,14 +287,14 @@ export default function BlogPage() {
                           >
                             <Link
                               href={`/blog/${post.id}`}
-                              className="group block bg-white/40 backdrop-blur-xl border border-white/60 hover:border-[#6366F1]/40 rounded-[32px] p-5 shadow-lg shadow-zinc-100/40 hover:shadow-2xl hover:shadow-[#6366F1]/10 hover:-translate-y-2 transition-all duration-500 flex flex-col justify-between overflow-hidden relative h-full"
+                              className="group block bg-white border border-zinc-200 hover:border-indigo-300 rounded-xl p-5 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden relative h-full"
                             >
                               {/* Inner soft card glow */}
                               <div className="absolute top-1/3 left-0 w-48 h-48 bg-[#6366F1]/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -translate-y-1/2" />
                               
                               <div className="space-y-4 relative z-10">
                                 {/* Card Image Cover */}
-                                <div className="rounded-[22px] overflow-hidden aspect-[16/10] relative mb-5 shadow-sm">
+                                <div className="rounded-xl overflow-hidden aspect-[16/10] relative mb-5 shadow-sm">
                                   <img 
                                     src={post.image} 
                                     alt={post.title}
@@ -305,7 +305,7 @@ export default function BlogPage() {
                                 {/* Info */}
                                 <div className="space-y-3 px-1">
                                   <div className="flex items-center gap-2">
-                                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#6366F1] bg-[#6366F1]/5 px-2.5 py-1 rounded-md">
+                                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md">
                                       {post.category}
                                     </span>
                                   </div>
