@@ -25,13 +25,13 @@ export default function BlogPostPage({ initialPost, relatedPosts = [] }) {
   const [activeSection, setActiveSection] = useState(null);
   const contentRef = useRef(null);
 
-  // Extract TOC headings from the content
+  // Extract TOC headings from the content - only H2 (top-level sections)
   const tableOfContents = useMemo(() => {
     if (!selectedPost?.content) return [];
     try {
       const parser = new DOMParser();
       const doc = parser.parseFromString(selectedPost.content, "text/html");
-      const headings = Array.from(doc.querySelectorAll("h2, h3"));
+      const headings = Array.from(doc.querySelectorAll("h2"));
       return headings.map((h, idx) => {
         const text = (h.textContent || "").trim();
         if (!text) return null;
@@ -40,8 +40,8 @@ export default function BlogPostPage({ initialPost, relatedPosts = [] }) {
           .replace(/[^\w\s-]/g, "")
           .replace(/\s+/g, "-")
           .replace(/-+/g, "-")
-          .substring(0, 60);
-        return { id: `h-${idx}-${slug}`, text, level: h.tagName === "H3" ? 3 : 2 };
+          .substring(0, 50);
+        return { id: `h-${idx}-${slug}`, text };
       }).filter(Boolean);
     } catch {
       return [];
@@ -192,24 +192,25 @@ export default function BlogPostPage({ initialPost, relatedPosts = [] }) {
               </div>
 
               {/* 3-Column Layout: TOC + Content + CTA */}
-              <div className="lg:grid lg:grid-cols-[220px_minmax(0,1fr)_220px] lg:gap-8 max-w-6xl mx-auto">
-                {/* LEFT: Table of Contents (sticky) */}
+              <div className="lg:grid lg:grid-cols-[180px_minmax(0,1fr)_200px] xl:grid-cols-[200px_minmax(0,1fr)_220px] lg:gap-6 xl:gap-8 max-w-7xl mx-auto">
+                {/* LEFT: Table of Contents (sticky, compact) */}
                 {tableOfContents.length > 0 && (
                   <aside className="hidden lg:block">
-                    <div className="sticky top-24 space-y-2">
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-3 flex items-center gap-1.5">
-                        <BookOpen size={11} /> On this page
+                    <div className="sticky top-20 space-y-2">
+                      <p className="text-[9px] font-black uppercase tracking-[0.15em] text-zinc-400 mb-2 flex items-center gap-1">
+                        <BookOpen size={10} /> Contents
                       </p>
-                      <nav className="space-y-1 max-h-[calc(100vh-150px)] overflow-y-auto pr-2">
+                      <nav className="space-y-0.5 max-h-[calc(100vh-140px)] overflow-y-auto pr-1">
                         {tableOfContents.map((item) => (
                           <button
                             key={item.id}
                             onClick={() => scrollToHeading(item.id)}
-                            className={`block w-full text-left text-xs leading-snug py-1.5 px-2.5 rounded-md transition-all cursor-pointer ${
+                            title={item.text}
+                            className={`block w-full text-left text-[11px] leading-tight py-1.5 px-2 rounded-md transition-all cursor-pointer truncate ${
                               activeSection === item.id
                                 ? "text-indigo-600 bg-indigo-50 font-bold"
                                 : "text-zinc-500 hover:text-zinc-800 hover:bg-zinc-50"
-                            } ${item.level === 3 ? "pl-5" : ""}`}
+                            }`}
                           >
                             {item.text}
                           </button>
