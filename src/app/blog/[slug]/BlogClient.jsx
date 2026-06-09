@@ -137,51 +137,8 @@ export default function BlogPostPage({ initialPost, relatedPosts = [] }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             >
-              {/* Back Button */}
-              <Link
-                href="/blog"
-                prefetch={false}
-                className="group inline-flex items-center gap-2.5 text-xs sm:text-sm font-bold text-zinc-500 hover:text-foreground transition-colors cursor-pointer mb-6 bg-white px-4 py-2 rounded-xl border border-zinc-200"
-              >
-                <ArrowLeft size={16} className="transition-transform duration-300 group-hover:-translate-x-1" />
-                Back to All Articles
-              </Link>
-
-              {/* Article Top Meta - Centered */}
-              <div className="max-w-3xl mx-auto space-y-4 mb-6 text-center">
-                <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-3 py-1.5 rounded-xl inline-block">
-                  {selectedPost.category}
-                </span>
-
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-zinc-800 leading-tight">
-                  {selectedPost.title}
-                </h1>
-
-                <div className="flex flex-wrap items-center justify-center gap-4 text-xs sm:text-sm text-zinc-500 font-medium pt-2">
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={selectedPost.authorAvatar}
-                      alt={selectedPost.author}
-                      loading="lazy"
-                      className="w-8 h-8 rounded-full object-cover border border-zinc-200"
-                    />
-                    <span className="font-bold text-zinc-700">{selectedPost.author}</span>
-                  </div>
-                  <span>•</span>
-                  <div className="flex items-center gap-1.5">
-                    <Calendar size={13} className="text-zinc-400" />
-                    <span>{selectedPost.date}</span>
-                  </div>
-                  <span>•</span>
-                  <div className="flex items-center gap-1.5">
-                    <Clock size={13} className="text-zinc-400" />
-                    <span>{selectedPost.readTime}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Hero Cover Image */}
-              <div className="max-w-4xl mx-auto rounded-xl overflow-hidden aspect-[16/9] shadow-lg border border-zinc-200/60 mb-8 relative">
+              {/* Hero Cover Image with Heading Overlay (Mobile Optimized) */}
+              <div className="max-w-6xl xl:max-w-7xl mx-auto mt-4 sm:mt-6 rounded-xl overflow-hidden aspect-[4/3] sm:aspect-[24/10] md:aspect-[20/9] shadow-lg border border-zinc-200/60 mb-4 relative">
                 <img
                   src={selectedPost.image}
                   alt={selectedPost.title}
@@ -189,6 +146,40 @@ export default function BlogPostPage({ initialPost, relatedPosts = [] }) {
                   decoding="async"
                   className="w-full h-full object-cover"
                 />
+                {/* Dark gradient overlay for text readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/40 to-transparent" />
+                {/* Heading + category overlay */}
+                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-8 lg:p-10 flex flex-col items-start gap-2 sm:gap-4 backdrop-blur-md bg-zinc-950/10">
+                  <span className="text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider bg-indigo-600/90 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl">
+                    {selectedPost.category}
+                  </span>
+                  <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-white leading-[1.15] sm:leading-[1.1] drop-shadow-lg max-w-4xl">
+                    {selectedPost.title}
+                  </h1>
+                </div>
+              </div>
+
+              {/* Author + Date + Read Time - Just below image (left aligned) */}
+              <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-start gap-4 text-xs sm:text-sm text-zinc-500 font-medium mb-8">
+                <div className="flex items-center gap-2">
+                  <img
+                    src={selectedPost.authorAvatar}
+                    alt={selectedPost.author}
+                    loading="lazy"
+                    className="w-8 h-8 rounded-full object-cover border border-zinc-200"
+                  />
+                  <span className="font-bold text-zinc-700">{selectedPost.author}</span>
+                </div>
+                <span>•</span>
+                <div className="flex items-center gap-1.5">
+                  <Calendar size={13} className="text-zinc-400" />
+                  <span>{selectedPost.date}</span>
+                </div>
+                <span>•</span>
+                <div className="flex items-center gap-1.5">
+                  <Clock size={13} className="text-zinc-400" />
+                  <span>{selectedPost.readTime}</span>
+                </div>
               </div>
 
               {/* 3-Column Layout: TOC + Content + CTA */}
@@ -206,11 +197,10 @@ export default function BlogPostPage({ initialPost, relatedPosts = [] }) {
                             key={item.id}
                             onClick={() => scrollToHeading(item.id)}
                             title={item.text}
-                            className={`block w-full text-left text-[11px] leading-tight py-1.5 px-2 rounded-md transition-all cursor-pointer truncate ${
-                              activeSection === item.id
+                            className={`block w-full text-left text-[11px] leading-tight py-1.5 px-2 rounded-md transition-all cursor-pointer truncate ${activeSection === item.id
                                 ? "text-indigo-600 bg-indigo-50 font-bold"
                                 : "text-zinc-500 hover:text-zinc-800 hover:bg-zinc-50"
-                            }`}
+                              }`}
                           >
                             {item.text}
                           </button>
@@ -221,13 +211,14 @@ export default function BlogPostPage({ initialPost, relatedPosts = [] }) {
                 )}
 
                 {/* CENTER: Article Content */}
-                <div className="min-w-0">
+                <div className="min-w-0 max-w-full overflow-hidden">
                   <div
                     ref={contentRef}
-                    className="prose prose-zinc prose-lg max-w-none text-zinc-700 leading-relaxed font-normal blog-content-container"
+                    className="prose prose-zinc prose-base max-w-full text-zinc-700 leading-relaxed font-normal blog-content-container break-words [&_h2]:text-2xl [&_h2]:sm:text-[1.85rem] [&_h2]:md:text-[2.1rem] [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:text-zinc-900 [&_h3]:text-xl [&_h3]:sm:text-2xl [&_h3]:font-bold [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:text-zinc-900 [&_p]:text-base [&_p]:sm:text-[1.0625rem] [&_p]:leading-[1.8] [&_p]:my-3"
                     style={{
-                      fontSize: "1.0625rem",
                       fontFamily: "var(--font-outfit), sans-serif",
+                      wordBreak: "break-word",
+                      overflowWrap: "anywhere",
                     }}
                     dangerouslySetInnerHTML={{ __html: sanitizeHtml(selectedPost.content || "") }}
                   />

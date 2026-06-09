@@ -141,9 +141,9 @@ export default function BlogPage() {
                       transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                       className="mb-10"
                     >
-                    <Link 
+                    <Link
                       href={`/blog/${featuredPost.id}`}
-                      className="group block bg-white border border-zinc-200 hover:border-indigo-300 rounded-xl p-6 md:p-8 lg:p-10 shadow-md hover:shadow-xl transition-all duration-300 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative overflow-hidden"
+                      className="group block bg-transparent border-0 hover:opacity-90 transition-all duration-300 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative overflow-hidden mb-10"
                     >
                       {/* Interactive glow overlay */}
                       <div className="absolute top-1/2 left-0 w-80 h-80 bg-[#6366F1]/15 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -translate-y-1/2" />
@@ -287,7 +287,7 @@ export default function BlogPage() {
                           >
                             <Link
                               href={`/blog/${post.id}`}
-                              className="group block bg-white border border-zinc-200 hover:border-indigo-300 rounded-xl p-5 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden relative h-full"
+                              className="group block bg-transparent border-0 hover:opacity-90 transition-all duration-300 flex flex-col justify-between overflow-hidden relative h-full"
                             >
                               {/* Inner soft card glow */}
                               <div className="absolute top-1/3 left-0 w-48 h-48 bg-[#6366F1]/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -translate-y-1/2" />
