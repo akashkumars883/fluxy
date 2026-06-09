@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase";
 import crypto from "crypto";
+import { getRequestOrigin } from "@/lib/request";
 
 export const dynamic = "force-dynamic";
 
@@ -148,8 +149,9 @@ export async function POST(req) {
       });
     }
 
-    const callbackUrl = `${reqUrl.origin}/api/webhooks/phonepe`;
-    const redirectUrl = `${reqUrl.origin}/api/checkout/phonepe-callback?transactionId=${transactionId}&userId=${currentUser.id}&planId=${planId}&isAnnual=${isAnnual}&promoCode=${promoCode || ""}&partnerId=${partnerId || ""}`;
+    const origin = getRequestOrigin(req);
+    const callbackUrl = `${origin}/api/webhooks/phonepe`;
+    const redirectUrl = `${origin}/api/checkout/phonepe-callback?transactionId=${transactionId}&userId=${currentUser.id}&planId=${planId}&isAnnual=${isAnnual}&promoCode=${promoCode || ""}&partnerId=${partnerId || ""}`;
 
     const payload = {
       merchantId,

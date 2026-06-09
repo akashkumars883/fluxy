@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server' // Line 1: Response handle karne ke liye
 import { createClient } from '@/lib/supabase' // Line 2: Supabase setup
+import { getRequestOrigin } from '@/lib/request'
 
 function safeInternalPath(value) {
   if (!value || !value.startsWith("/") || value.startsWith("//")) {
@@ -9,7 +10,8 @@ function safeInternalPath(value) {
 }
 
 export async function GET(request) {
-  const { searchParams, origin } = new URL(request.url)
+  const origin = getRequestOrigin(request)
+  const { searchParams } = new URL(request.url)
   const code = searchParams.get('code')
   const next = safeInternalPath(searchParams.get('next'))
 

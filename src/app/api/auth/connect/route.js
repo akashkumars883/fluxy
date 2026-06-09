@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase';
 import crypto from "node:crypto";
+import { getRequestOrigin } from '@/lib/request';
 
 export async function GET(request) {
   const supabase = createClient();
@@ -14,7 +15,8 @@ export async function GET(request) {
     console.warn("Auth check failed in connect, checking local dev bypass");
   }
 
-  const { searchParams, origin } = new URL(request.url);
+  const origin = getRequestOrigin(request);
+  const { searchParams } = new URL(request.url);
   if (!user) {
     if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
       user = { id: 'dev-bypass' };

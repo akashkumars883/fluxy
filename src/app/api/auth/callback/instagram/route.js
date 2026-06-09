@@ -3,9 +3,11 @@ import { createClient, createAdminClient } from '@/lib/supabase';
 import { MetaService } from '@/lib/meta';
 import { encryptToken } from '@/lib/security';
 import { cookies } from "next/headers";
+import { getRequestOrigin } from '@/lib/request';
 
 export async function GET(request) {
-  const { searchParams, origin } = new URL(request.url);
+  const origin = getRequestOrigin(request);
+  const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
   const error = searchParams.get('error');
   const errorDescription = searchParams.get('error_description') || searchParams.get('error_reason');

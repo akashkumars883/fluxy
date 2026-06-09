@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 import { createClient as createSupabaseAdminClient } from "@supabase/supabase-js";
 import { sendInvoiceEmail } from "@/lib/resend";
 import crypto from "crypto";
+import { getRequestOrigin } from "@/lib/request";
 
 const PLAN_IDS = new Set(["creator_pro", "viral_scale"]);
 
 export async function GET(req) {
+  const origin = getRequestOrigin(req);
   const reqUrl = new URL(req.url);
   
   // Extract checkout parameters from the redirect query string
@@ -21,11 +23,11 @@ export async function GET(req) {
 
   try {
     if (!transactionId || !userId || !planId) {
-      return NextResponse.redirect(new URL("/dashboard?error=Missing+transaction+details", req.url));
+      return NextResponse.redirect(`${origin}/dashboard?error=Missing+transaction+details`);
     }
 
     if (!PLAN_IDS.has(planId)) {
-      return NextResponse.redirect(new URL("/dashboard?error=Invalid+plan", req.url));
+      return NextResponse.redirect(`${origin}/dashboard?error=Invalid+plan`);
     }
 
     let paymentVerified = false;
@@ -79,12 +81,12 @@ export async function GET(req) {
         transactionAmount = resData.data.amount / 100; // convert paise to rupees
       } else {
         console.error("PhonePe status check failed:", resData);
-        return NextResponse.redirect(new URL(`/dashboard?error=${encodeURIComponent(resData.message || "Payment verification failed")}`, req.url));
+        return NextResponse.redirect(`${origin}/dashboard?error=${encodeURIComponent(resData.message || "Payment verification failed")}`);
       }
     }
 
     if (!paymentVerified) {
-      return NextResponse.redirect(new URL("/dashboard?error=Payment+could+not+be+verified", req.url));
+      return NextResponse.redirect(`${origin}/dashboard?error=Payment+could+not+be+verified`);
     }
 
     const supabase = createSupabaseAdminClient(
@@ -215,10 +217,10 @@ export async function GET(req) {
     }
 
     // Redirect to dashboard with success query param
-    return NextResponse.redirect(new URL("/dashboard?success=subscribed", req.url));
+    return NextResponse.redirect(`${origin}/dashboard?success=subscribed`);
 
   } catch (error) {
     console.error("PhonePe callback processing error:", error);
-    return NextResponse.redirect(new URL(`/dashboard?error=${encodeURIComponent(error.message || "Internal server error")}`, req.url));
+    return NextResponse.redirect(`${origin}/dashboard?error=${encodeURIComponent(error.message || "Internal server error")}`);
   }
 }
