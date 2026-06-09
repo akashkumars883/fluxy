@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight,CheckCircle2,Layout,MessageSquare,Target,Zap,ShoppingBag,Sparkles,Rocket } from "lucide-react";
+import { ArrowRight,CheckCircle2,Layout,MessageSquare,Target,Zap,ShoppingBag,Sparkles } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const features = [
   {
@@ -16,7 +17,7 @@ const features = [
       "Instant setup in a single step"
     ],
     image: "/images/instagram-dm.png",
-    color: "text-purple-500 bg-purple-500/10 border-purple-500/20",
+    color: "text-indigo-600 bg-indigo-500/10 border-indigo-500/20",
     icon: Sparkles
   },
   {
@@ -30,7 +31,7 @@ const features = [
       "Multiple reply variations to avoid spam limits"
     ],
     image: "/images/instagram-comments-v2.png",
-    color: "text-indigo-500 bg-indigo-500/10 border-indigo-500/20",
+    color: "text-indigo-600 bg-indigo-500/10 border-indigo-500/20",
     icon: MessageSquare
   },
   {
@@ -44,7 +45,7 @@ const features = [
       "Automatic AI FAQ & Sales Agents"
     ],
     image: "/images/smart-bio-solid.png",
-    color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
+    color: "text-indigo-600 bg-indigo-500/10 border-indigo-500/20",
     icon: Zap
   },
   {
@@ -58,7 +59,7 @@ const features = [
       "Official Instagram API integration"
     ],
     image: "/images/instagram-stories.png",
-    color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
+    color: "text-indigo-600 bg-indigo-500/10 border-indigo-500/20",
     icon: Target
   },
   {
@@ -72,7 +73,7 @@ const features = [
       "Unlimited custom links"
     ],
     image: "/images/smart-bio-solid.png",
-    color: "text-rose-500 bg-rose-500/10 border-rose-500/20",
+    color: "text-indigo-600 bg-indigo-500/10 border-indigo-500/20",
     icon: Layout,
     isComingSoon: true
   },
@@ -87,7 +88,7 @@ const features = [
       "Automated delivery on Instagram"
     ],
     image: "/images/mini-store.png",
-    color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
+    color: "text-indigo-600 bg-indigo-500/10 border-indigo-500/20",
     icon: ShoppingBag
   }
 ];
@@ -123,7 +124,7 @@ export default function Features() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="group relative flex flex-col rounded-[48px] bg-white/40 backdrop-blur-3xl border border-white/60 hover:border-[#6366F1]/30 transition-all duration-500 shadow-xl shadow-zinc-200/20 hover:shadow-2xl hover:shadow-[#6366F1]/5 overflow-hidden"
+                className="group relative flex flex-col rounded-xl bg-white border border-zinc-200/80 hover:border-indigo-300 transition-all duration-300 shadow-md hover:shadow-xl hover:shadow-indigo-500/10 overflow-hidden"
               >
                 {/* Visual Area (Top) - Full Bleed */}
                 <div className="relative h-72 sm:h-80 w-full flex items-center justify-center bg-zinc-50 overflow-hidden border-b border-white/60">
@@ -133,7 +134,7 @@ export default function Features() {
                     className="w-full h-full object-cover z-10 transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent z-20 pointer-events-none" />
-                  <div className={`absolute top-6 left-6 w-12 h-12 rounded-2xl flex items-center justify-center border shadow-xl z-30 backdrop-blur-md ${feature.color}`}>
+                  <div className={`absolute top-6 left-6 w-12 h-12 rounded-xl flex items-center justify-center border shadow-lg z-30 backdrop-blur-md bg-white ${feature.color}`}>
                     <Icon size={20} />
                   </div>
                 </div>
@@ -155,10 +156,10 @@ export default function Features() {
                   </div>
                   <Link
                     href={feature.isComingSoon ? "#" : "/login"}
-                    className={`mt-auto flex items-center justify-center gap-2.5 py-4 rounded-3xl font-bold text-xs transition-all duration-300 shadow-lg ${
-                      feature.isComingSoon 
-                        ? "bg-zinc-200 text-zinc-500 cursor-not-allowed shadow-none" 
-                        : "bg-zinc-950 text-white hover:bg-[#6366F1] shadow-zinc-200"
+                    className={`mt-auto flex items-center justify-center gap-2.5 py-3.5 rounded-xl font-bold text-xs transition-all duration-300 ${
+                      feature.isComingSoon
+                        ? "bg-zinc-100 text-zinc-400 cursor-not-allowed"
+                        : "bg-indigo-600 text-white hover:bg-indigo-500 shadow-md shadow-indigo-600/20"
                     }`}
                     onClick={(e) => feature.isComingSoon && e.preventDefault()}
                   >

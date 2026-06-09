@@ -61,7 +61,7 @@ export default function HowItWorks() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: index * 0.15, ease: [0.16, 1, 0.3, 1] }}
-              className="group bg-white/60 backdrop-blur-3xl border border-white/80 hover:border-[#6366F1]/30 hover:bg-white/80 hover:shadow-2xl hover:shadow-[#6366F1]/5 rounded-[48px] overflow-hidden transition-all duration-500 flex flex-col h-full shadow-xl shadow-zinc-200/20"
+              className="group bg-white border border-zinc-200/80 hover:border-indigo-300 hover:shadow-xl hover:shadow-indigo-500/10 rounded-xl overflow-hidden transition-all duration-300 flex flex-col h-full"
             >
               {/* Step Image */}
               <div className="relative h-64 md:h-80 w-full overflow-hidden bg-zinc-50/30">
@@ -74,7 +74,7 @@ export default function HowItWorks() {
                 />
 
                 {/* Floating Icon - Better Placement */}
-                <div className="absolute top-6 left-6 w-12 h-12 rounded-2xl bg-white/95 backdrop-blur-xl border border-zinc-100 shadow-xl shadow-black/5 flex items-center justify-center z-10 transition-transform duration-500 group-hover:scale-110">
+                <div className="absolute top-6 left-6 w-12 h-12 rounded-xl bg-white border border-zinc-100 shadow-lg flex items-center justify-center z-10 transition-transform duration-300 group-hover:scale-110">
                   {step.icon}
                 </div>
               </div>

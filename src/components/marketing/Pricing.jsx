@@ -1,10 +1,10 @@
 "use client";
 
 import { createClient } from "@/lib/supabase";
-import { AnimatePresence,motion } from "framer-motion";
-import { ArrowRight,CheckCircle2,CreditCard,Tag,X,Zap } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight, CheckCircle2, CreditCard, Tag, X, Zap } from "lucide-react";
 import Link from "next/link";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 export default function Pricing({ isModal = false } = {}) {
@@ -102,7 +102,7 @@ export default function Pricing({ isModal = false } = {}) {
           .select("*")
           .eq("is_active", true)
           .order("display_order", { ascending: true });
-        
+
         if (data && !error && data.length > 0) {
           const formattedTiers = data.map(plan => ({
             name: plan.plan_id === "viral_scale" ? "Business Scale" : plan.plan_id === "creator_pro" ? "Business Pro" : plan.name,
@@ -134,10 +134,10 @@ export default function Pricing({ isModal = false } = {}) {
     if (code === "AUTOMIXA30" || code === "CREATORVIP") {
       const discountPercent = code === "AUTOMIXA30" ? 30 : 20;
       const discountFactor = (100 - discountPercent) / 100;
-      
+
       const newPriceInr = Math.round(selectedPlan.raw_inr * discountFactor);
       const newPriceUsd = Math.round(selectedPlan.raw_usd * discountFactor);
-      
+
       setAppliedPromo({
         code,
         discountPercent,
@@ -165,10 +165,10 @@ export default function Pricing({ isModal = false } = {}) {
 
       const discountPercent = data.customer_discount_percent || 10;
       const discountFactor = (100 - discountPercent) / 100;
-      
+
       const newPriceInr = Math.round(selectedPlan.raw_inr * discountFactor);
       const newPriceUsd = Math.round(selectedPlan.raw_usd * discountFactor);
-      
+
       setAppliedPromo({
         code,
         discountPercent,
@@ -352,10 +352,10 @@ export default function Pricing({ isModal = false } = {}) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className={`group flex flex-col justify-between transition-all duration-500 relative ${isModal ? 'rounded-2xl p-4 sm:p-5' : 'rounded-[48px] p-8 sm:p-10'
+              className={`group flex flex-col justify-between transition-all duration-300 relative ${isModal ? 'rounded-xl p-4 sm:p-5' : 'rounded-xl p-8 sm:p-10'
                 } ${tier.popular
-                  ? "bg-white/40 backdrop-blur-3xl border-2 border-[#6366F1] shadow-2xl shadow-indigo-500/20 scale-[1.02] z-10"
-                  : "bg-white/40 backdrop-blur-3xl border border-white/60 hover:border-[#6366F1]/30 shadow-2xl shadow-zinc-200/10"
+                  ? "bg-white border-2 border-indigo-500 shadow-xl shadow-indigo-500/20 scale-[1.02] z-10"
+                  : "bg-white border border-zinc-200 hover:border-indigo-300 shadow-md hover:shadow-xl"
                 }`}
             >
               {/* Popular Badge */}
@@ -394,9 +394,9 @@ export default function Pricing({ isModal = false } = {}) {
               <div className="relative z-10">
                 <button
                   onClick={() => handlePlanClick(tier)}
-                  className={`w-full ${isModal ? 'py-2.5 text-xs' : 'py-3 text-xs sm:text-sm'} rounded-full font-bold transition-all flex items-center justify-center gap-2 group/btn ${tier.popular
-                      ? "bg-[#6366F1] text-white hover:bg-indigo-600 hover:scale-[1.02] shadow-lg shadow-indigo-500/20"
-                      : "bg-zinc-950 text-white hover:bg-zinc-900 hover:scale-[1.02] shadow-sm"
+                  className={`w-full ${isModal ? 'py-2.5 text-xs' : 'py-3 text-xs sm:text-sm'} rounded-xl font-bold transition-all flex items-center justify-center gap-2 group/btn ${tier.popular
+                      ? "bg-indigo-600 text-white hover:bg-indigo-500 shadow-md shadow-indigo-500/20"
+                      : "bg-zinc-900 text-white hover:bg-zinc-800"
                     }`}
                 >
                   {tier.button}
@@ -414,7 +414,7 @@ export default function Pricing({ isModal = false } = {}) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="group w-full mt-6 sm:mt-10 bg-white/40 backdrop-blur-xl border border-white/60 hover:border-white rounded-[24px] p-6 sm:p-8 lg:p-10 shadow-xl shadow-zinc-100/40 hover:shadow-2xl hover:shadow-zinc-200/40 transition-all duration-500 flex flex-col md:flex-row md:items-center md:justify-between gap-6 relative overflow-hidden"
+            className="group w-full mt-6 sm:mt-10 bg-white border border-zinc-200 hover:border-indigo-300 rounded-xl p-6 sm:p-8 lg:p-10 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col md:flex-row md:items-center md:justify-between gap-6 relative overflow-hidden"
           >
             <div className="absolute top-1/2 -left-16 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -translate-y-1/2" />
 
@@ -433,7 +433,7 @@ export default function Pricing({ isModal = false } = {}) {
             <div className="relative z-10 shrink-0">
               <Link
                 href="/login"
-                className="inline-flex items-center gap-3 bg-zinc-950 text-white pl-6 pr-5 py-3 rounded-full font-bold text-xs sm:text-sm hover:scale-[1.02] transition-all group/btn"
+                className="inline-flex items-center gap-3 bg-zinc-950 text-white pl-6 pr-5 py-3 rounded-xl font-bold text-xs sm:text-sm hover:bg-zinc-800 transition-all group/btn"
               >
                 Talk to Founders
                 <ArrowRight size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
@@ -453,7 +453,7 @@ export default function Pricing({ isModal = false } = {}) {
               onClick={() => setSelectedPlan(null)}
             />
 
-            <div className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto bg-white border border-zinc-200 rounded-[40px] shadow-2xl p-6 sm:p-8 flex flex-col gap-8 animate-in zoom-in-95 duration-500 z-10">
+            <div className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto bg-white border border-zinc-200 rounded-xl shadow-2xl p-6 sm:p-8 flex flex-col gap-8 animate-in zoom-in duration-500 z-10">
 
               {/* Modal Header */}
               <div className="flex items-center justify-between border-b border-zinc-200/50 pb-6 shrink-0">
