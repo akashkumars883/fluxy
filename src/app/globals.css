@@ -57,6 +57,18 @@
 .fade-in { animation-name: fadeIn; }
 .zoom-in { animation-name: zoomIn; }
 .slide-up { animation-name: slideUp; }
+.slide-in-from-top-4 { animation-name: slideInFromTop; }
+.slide-in-from-bottom-4 { animation-name: slideInFromBottom; }
+
+@keyframes slideInFromTop {
+  from { opacity: 0; transform: translateY(-16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInFromBottom {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 body {
   background: var(--background);
@@ -108,6 +120,17 @@ h6{
 /* Native-like active button scaling */
 .active-scale:active {
   transform: scale(0.96);
+}
+
+/* Keyboard focus ring for interactive elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  ring: 2px solid var(--indigo-accent);
+  ring-offset: 2px;
 }
 
 

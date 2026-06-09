@@ -30,7 +30,7 @@ export default function DashboardSidebar({
   const settingsItem = navigationItems.find(item => item.id === "settings");
 
   return (
-    <aside className={`bg-[#FCFDFE] border-r border-[#e9e9eb] hidden md:flex flex-col justify-between select-none transition-all duration-500 ease-[0.16,1,0.3,1] z-30 shrink-0 h-full sticky top-0 overflow-visible ${isSidebarCollapsed ? "w-[72px] px-2 py-3 items-center" : "w-60 p-5"
+    <aside className={`bg-[#FCFDFE] border-r border-[#e9e9eb] hidden md:flex flex-col justify-between select-none transition-all duration-300 ease-[0.16,1,0.3,1] z-30 shrink-0 h-full sticky top-0 overflow-visible ${isSidebarCollapsed ? "w-[72px] px-2 py-3 items-center" : "w-60 p-5"
       }`}>
 
       {/* Top Nav */}

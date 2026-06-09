@@ -50,11 +50,11 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
         const supabase = createClient();
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          let { data: profile } = await supabase.from("partner_profiles").select("*").eq("id", user.id).single();
+          let { data: profile } = await supabase.from("partner_profiles").select("*").eq("id", user.id).maybeSingle();
 
           if (!profile) {
             const defaultLink = `https://automixa.in/?ref=partner_${user.id.slice(0, 6)}`;
-            const { data: newProfile } = await supabase.from("partner_profiles").insert({
+            const { data: newProfile } = await supabase.from("partner_profiles").upsert({
               id: user.id,
               application_status: "approved",
               master_tracking_link: defaultLink,

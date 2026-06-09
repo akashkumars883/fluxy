@@ -84,66 +84,75 @@ export async function POST(req) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  if (body.object === "instagram") {
-    for (const entry of body.entry || []) {
-      for (const messagingItem of entry.messaging || []) {
-        const senderId = messagingItem.sender?.id;
-        const recipientId = messagingItem.recipient?.id;
-        const message = messagingItem.message;
-        const postback = messagingItem.postback;
+  // FIX: Previously only "instagram" object was handled, which broke the
+  // Facebook Login flow where events come through with object === "page".
+  // We now support both "instagram" and "page" object types.
+  const SUPPORTED_OBJECTS = new Set(["instagram", "page"]);
 
-        // 1. Handle Postback (Follow-Gate Verification Click)
-        if (senderId && recipientId && postback) {
-          const payload = postback.payload;
-          // type "DM" is used for processing these structured interactions
-          await processAutomation(senderId, "POSTBACK_CLICKED", "DM", recipientId, null, null, null, payload);
-          continue;
-        }
+  if (!SUPPORTED_OBJECTS.has(body.object)) {
+    return NextResponse.json({ status: "not found" }, { status: 404 });
+  }
 
-        if (message) {
-          if (message.is_echo) {
-            continue;
-          }
-          let text = message.text || "";
-          
-          // Detect shared reel/post (e.g. "Send this reel in DM to get the link")
-          if (message.attachments && message.attachments.length > 0) {
-            const attachment = message.attachments[0];
-            if (attachment.type === "share" && attachment.payload?.url) {
-              text = (text + " " + attachment.payload.url).trim();
-            }
-          }
-          
-          const mid = message.mid;
-          const quickReplyPayload = message.quick_reply?.payload;
-          let type = "DM";
-          
-          // --- STORY LOGIC ---
-          const isStoryReply = message.reply_to?.item_type === "story";
-          const isStoryMention = message.story_mention;
+  for (const entry of body.entry || []) {
+    // 1. Handle Direct Messages (Instagram + Facebook Page Messenger)
+    for (const messagingItem of entry.messaging || []) {
+      const senderId = messagingItem.sender?.id;
+      const recipientId = messagingItem.recipient?.id;
+      const message = messagingItem.message;
+      const postback = messagingItem.postback;
 
-          if (isStoryMention) {
-             type = "STORY_MENTION";
-             console.log(`Story Mention from ${senderId}`);
-          } else if (isStoryReply) {
-             type = "STORY_REPLY";
-             console.log(`Story Reply from ${senderId}: ${text}`);
-          }
-
-          if (senderId && recipientId) {
-            await processAutomation(senderId, text, type, recipientId, null, null, mid, quickReplyPayload);
-          }
-        }
+      // Postback (Follow-Gate Verification Click)
+      if (senderId && recipientId && postback) {
+        const payload = postback.payload;
+        await processAutomation(senderId, "POSTBACK_CLICKED", "DM", recipientId, null, null, null, payload);
+        continue;
       }
 
-      // 2. Handle Comments
+      if (message) {
+        if (message.is_echo) {
+          continue;
+        }
+        let text = message.text || "";
+
+        // Detect shared reel/post (e.g. "Send this reel in DM to get the link")
+        if (message.attachments && message.attachments.length > 0) {
+          const attachment = message.attachments[0];
+          if (attachment.type === "share" && attachment.payload?.url) {
+            text = (text + " " + attachment.payload.url).trim();
+          }
+        }
+
+        const mid = message.mid;
+        const quickReplyPayload = message.quick_reply?.payload;
+        let type = "DM";
+
+        // --- STORY LOGIC (Instagram only) ---
+        const isStoryReply = message.reply_to?.item_type === "story";
+        const isStoryMention = message.story_mention;
+
+        if (isStoryMention) {
+           type = "STORY_MENTION";
+           console.log(`Story Mention from ${senderId}`);
+        } else if (isStoryReply) {
+           type = "STORY_REPLY";
+           console.log(`Story Reply from ${senderId}: ${text}`);
+        }
+
+        if (senderId && recipientId) {
+          await processAutomation(senderId, text, type, recipientId, null, null, mid, quickReplyPayload);
+        }
+      }
+    }
+
+    // 2. Handle Comments (Instagram only — Facebook Page posts don't auto-trigger here)
+    if (body.object === "instagram") {
       for (const change of entry.changes || []) {
         if (change.field === "comments") {
           const commentId = change.value?.id;
           const text = change.value?.text || "";
           const senderId = change.value?.from?.id;
           const senderUsername = change.value?.from?.username;
-          const recipientId = entry.id; 
+          const recipientId = entry.id;
           const mediaId = change.value?.media?.id;
 
           if (senderId && recipientId && commentId && mediaId) {
@@ -152,8 +161,6 @@ export async function POST(req) {
         }
       }
     }
-    return NextResponse.json({ status: "ok" });
   }
-
-  return NextResponse.json({ status: "not found" }, { status: 404 });
+  return NextResponse.json({ status: "ok" });
 }

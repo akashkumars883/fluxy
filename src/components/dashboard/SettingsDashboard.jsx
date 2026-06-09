@@ -70,13 +70,15 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
 
   // Sync account ref changes
   const [prevAccount, setPrevAccount] = useState(account);
-  if (account !== prevAccount) {
-    setPrevAccount(account);
-    setWebhookUrl(account?.metadata?.webhook_url || "");
-    setWebhookEnabled(account?.metadata?.webhook_enabled || false);
-    setTestWebhookResult(null);
-    setTestWebhookMessage("");
-  }
+  useEffect(() => {
+    if (account !== prevAccount) {
+      setPrevAccount(account);
+      setWebhookUrl(account?.metadata?.webhook_url || "");
+      setWebhookEnabled(account?.metadata?.webhook_enabled || false);
+      setTestWebhookResult(null);
+      setTestWebhookMessage("");
+    }
+  }, [account, prevAccount]);
 
   // Load payout details
   useEffect(() => {

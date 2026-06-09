@@ -27,6 +27,20 @@ export async function generateMetadata({ params }) {
         "Meta Graph API automation",
         "Customer messaging tool India",
       ],
+      openGraph: {
+        title: "Instagram Automation Comparison | Automixa",
+        description: "Compare Automixa with other Instagram business messaging platforms for comment replies, DMs, Smart Bio, and customer workflow management.",
+        url: `https://automixa.in/compare/${competitor}`,
+        siteName: "Automixa",
+        type: "website",
+        images: [{ url: "https://automixa.in/og-image.png", width: 1200, height: 630, alt: "Automixa vs Competitors Comparison" }],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: "Instagram Automation Comparison | Automixa",
+        description: "Compare Automixa with other Instagram business messaging platforms.",
+        images: ["https://automixa.in/og-image.png"],
+      },
     };
   }
 
@@ -42,6 +56,20 @@ export async function generateMetadata({ params }) {
       `${competitor} alternative`,
       `Automixa vs ${competitor}`,
     ],
+    openGraph: {
+      title: data.metaTitle,
+      description: data.metaDesc,
+      url: `https://automixa.in/compare/${competitor}`,
+      siteName: "Automixa",
+      type: "website",
+      images: [{ url: "https://automixa.in/og-image.png", width: 1200, height: 630, alt: `Automixa vs ${competitor} Comparison` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: data.metaTitle,
+      description: data.metaDesc,
+      images: ["https://automixa.in/og-image.png"],
+    },
     alternates: {
       canonical: `https://automixa.in/compare/${competitor}`,
     }

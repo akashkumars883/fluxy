@@ -4,6 +4,12 @@ import { useState } from "react";
 import { ChevronDown, HelpCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+/**
+ * @typedef {{ q: string, a: string }} FaqItem
+ * @typedef {{ customFaqs?: FaqItem[] | null }} FAQProps
+ */
+
+/** @param {FAQProps} props */
 export default function FAQ({ customFaqs = null }) {
   const defaultFaqs = [
     {

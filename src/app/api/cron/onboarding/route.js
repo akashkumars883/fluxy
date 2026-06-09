@@ -8,7 +8,15 @@ export async function GET(req) {
     const authHeader = req.headers.get("authorization");
     const secret = reqUrl.searchParams.get("secret") || (authHeader ? authHeader.replace("Bearer ", "") : "");
 
-    const cronSecret = process.env.CRON_SECRET || "automixa_cron_secret_key_2026";
+    const cronSecret = process.env.CRON_SECRET;
+
+    // SECURITY: Reject if no CRON_SECRET is configured in environment.
+    // Previously the code fell back to a hardcoded default which is a critical
+    // vulnerability (anyone could trigger bulk emails).
+    if (!cronSecret) {
+      console.error("CRON_SECRET environment variable is not set. Rejecting request.");
+      return new Response("Server misconfigured", { status: 500 });
+    }
 
     if (!secret || secret !== cronSecret) {
       return new Response("Unauthorized", { status: 401 });
@@ -95,7 +103,7 @@ export async function GET(req) {
       if (emailTypeToSend) {
         // Fetch user from auth to get email and metadata
         const { data: authUserObj, error: userError } = await supabase.auth.admin.getUserById(userId);
-        
+
         if (userError || !authUserObj?.user) {
           console.warn(`Could not fetch auth details for user ${userId}:`, userError?.message);
           continue;

@@ -1,63 +1,13 @@
 "use client";
 
-import { HelpCircle, Search, X, Clock, Zap, ArrowRight, Users, BarChart2, Settings } from "lucide-react";
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { HelpCircle, Search, Users, BarChart2, Settings } from "lucide-react";
 import NotificationDropdown from "@/components/dashboard/NotificationDropdown";
 import ProfileDropdown from "@/components/dashboard/ProfileDropdown";
 import { useDashboard } from "@/context/DashboardContext";
 import WorkspaceSwitcher from "@/components/dashboard/WorkspaceSwitcher";
 
-
 export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, realtimeStats, onAccountSettingsClick, onSubscriptionClick, onMenuClick }) {
   const { user, setActiveTab, isSidebarCollapsed } = useDashboard();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  // Keyboard shortcut for search
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      // Check for Ctrl+K or Cmd+K
-      if ((e.metaKey || e.ctrlKey) && e.code === 'KeyK') {
-        e.preventDefault();
-        setIsSearchOpen(prev => !prev);
-        return;
-      }
-
-      // Close on Escape
-      if (e.key === 'Escape') {
-        setIsSearchOpen(false);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown, true);
-    return () => window.removeEventListener('keydown', handleKeyDown, true);
-  }, []);
-
-  const recentSearches = [
-    "Instagram Campaign 2024",
-    "Story Auto-Reply Setup",
-    "Lead Gen Analytics"
-  ];
-
-  const quickActions = [
-    { name: "Create New Campaign", icon: Zap, tab: "automations" },
-    { name: "View CRM", icon: Zap, tab: "audience" },
-    { name: "Settings", icon: Zap, tab: "settings" }
-  ];
-
-  const searchableItems = [
-    { title: "Comment-to-DM Setup", type: "Automation", url: "automations", icon: Zap },
-    { title: "Story Auto-Reply Setup", type: "Automation", url: "automations", icon: Zap },
-    { title: "Instagram Campaign 2024", type: "Campaign", url: "automations", icon: Zap },
-    { title: "Lead Gen Analytics", type: "Analytics", url: "analytics", icon: BarChart2 },
-    { title: "Audience CRM", type: "Contacts", url: "audience", icon: Users },
-    { title: "Account Settings", type: "Settings", url: "settings", icon: Settings },
-  ];
-
-  const filteredResults = searchQuery.length > 0
-    ? searchableItems.filter(item => item.title.toLowerCase().includes(searchQuery.toLowerCase()) || item.type.toLowerCase().includes(searchQuery.toLowerCase()))
-    : [];
 
   return (
     <nav className={`sticky top-0 z-50 transition-all duration-300 border-b px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between shrink-0 ${isScrolled
@@ -65,7 +15,6 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
         : "bg-white border-transparent shadow-none"
       }`}>
       <div className="flex items-center gap-1.5 sm:gap-3 overflow-hidden">
-
         <div className="flex items-center gap-2.5 cursor-pointer group" onClick={() => window.location.href = '/?home=true'}>
           <img
             src="/logo.png"
@@ -82,7 +31,7 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
 
       <div className="flex items-center gap-2 sm:gap-4 shrink-0">
         <div className="hidden lg:flex items-center w-64 mr-2">
-          <div className="relative w-full group cursor-pointer" onClick={() => setIsSearchOpen(true)}>
+          <div className="relative w-full group cursor-pointer" onClick={onMenuClick}>
             <div className="w-full bg-zinc-50/80 hover:bg-white backdrop-blur-xl border border-zinc-200 hover:border-zinc-300 rounded-[14px] pl-10 pr-12 py-2 text-[13px] font-medium text-zinc-400 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] hover:shadow-sm flex items-center h-[38px] group-hover:ring-4 group-hover:ring-zinc-50">
               Search Automixa...
             </div>
@@ -96,7 +45,6 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
           </div>
         </div>
 
-        {/* Workspace Switcher next to search bar on the right */}
         <div className="hidden md:block mr-1">
           <WorkspaceSwitcher variant="minimal" onUpgradeClick={onSubscriptionClick} />
         </div>
@@ -113,142 +61,6 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
           onSubscriptionClick={onSubscriptionClick}
         />
       </div>
-
-      <AnimatePresence>
-        {isSearchOpen && (
-          <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[10vh] px-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsSearchOpen(false)}
-              className="absolute inset-0 bg-zinc-950/40 backdrop-blur-xl"
-            />
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: -20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -20 }}
-              className="relative w-full max-w-2xl bg-white rounded-[32px] shadow-2xl border border-zinc-200/60 overflow-hidden"
-            >
-              <div className="p-6 border-b border-zinc-100 flex items-center gap-4">
-                <Search className="text-[#6366F1]" size={24} />
-                <input
-                  autoFocus
-                  type="text"
-                  placeholder="Search campaigns, users, or automation logs..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-1 bg-transparent border-none outline-none text-lg font-medium text-zinc-900 placeholder:text-zinc-400"
-                />
-                <button
-                  onClick={() => setIsSearchOpen(false)}
-                  className="p-2 hover:bg-zinc-100 rounded-full transition-colors text-zinc-400"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-
-              <div className="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
-                {searchQuery.length === 0 ? (
-                  <div className="space-y-8">
-                    <div>
-                      <h3 className="text-[10px] font-semibold text-zinc-400 mb-4">Quick Actions</h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {quickActions.map((action, i) => (
-                          <button
-                            key={i}
-                            onClick={() => {
-                              setActiveTab(action.tab);
-                              setIsSearchOpen(false);
-                            }}
-                            className="flex items-center justify-between p-4 rounded-2xl bg-zinc-50 border border-zinc-100 hover:border-[#6366F1]/30 hover:bg-[#6366F1]/5 transition-all group"
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-[#6366F1]">
-                                <action.icon size={18} />
-                              </div>
-                              <span className="text-sm font-semibold text-zinc-700 group-hover:text-zinc-900">{action.name}</span>
-                            </div>
-                            <ArrowRight size={16} className="text-zinc-300 group-hover:text-[#6366F1] transition-colors" />
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-[10px] font-semibold text-zinc-400 mb-4">Recent Searches</h3>
-                      <div className="space-y-2">
-                        {recentSearches.map((search, i) => (
-                          <button
-                            key={i}
-                            onClick={() => setSearchQuery(search)}
-                            className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-50 transition-colors text-sm text-zinc-600 group"
-                          >
-                            <Clock size={16} className="text-zinc-300 group-hover:text-zinc-500" />
-                            {search}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    {filteredResults.length > 0 ? (
-                      <>
-                        <h3 className="text-[10px] font-semibold text-zinc-400 mb-4 px-2">Search Results</h3>
-                        {filteredResults.map((result, i) => (
-                          <button
-                            key={i}
-                            onClick={() => {
-                              setActiveTab(result.url);
-                              setIsSearchOpen(false);
-                            }}
-                            className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-zinc-50 transition-colors text-sm group"
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-500">
-                                <result.icon size={18} />
-                              </div>
-                              <div className="text-left">
-                                <div className="font-semibold text-zinc-900">{result.title}</div>
-                                <div className="text-xs text-zinc-500">{result.type}</div>
-                              </div>
-                            </div>
-                            <ArrowRight size={16} className="text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity" />
-                          </button>
-                        ))}
-                      </>
-                    ) : (
-                      <div className="py-12 text-center">
-                        <div className="w-16 h-16 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <Search className="text-zinc-300" size={32} />
-                        </div>
-                        <h3 className="text-zinc-900 font-semibold mb-1">{`No results for "${searchQuery}"`}</h3>
-                        <p className="text-sm text-zinc-500">Try searching for campaigns, keywords, or account settings.</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="p-4 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1.5 text-[10px] text-zinc-400">
-                    <span className="px-1.5 py-0.5 bg-white border border-zinc-200 rounded shadow-sm text-zinc-500 font-bold">ESC</span>
-                    <span>to close</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-[10px] text-zinc-400">
-                    <span className="px-1.5 py-0.5 bg-white border border-zinc-200 rounded shadow-sm text-zinc-500 font-bold">↵</span>
-                    <span>to select</span>
-                  </div>
-                </div>
-                <span className="text-[10px] font-semibold text-zinc-300">Automixa Search v1.0</span>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </nav>
   );
 }

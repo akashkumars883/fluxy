@@ -73,7 +73,7 @@ export default function ShieldPage() {
   ];
 
   return (
-    <main className="min-h-screen text-foreground bg-[#FBFBFD] overflow-hidden relative font-sans pt-24 pb-6 selection:bg-amber-500/20">
+    <main className="min-h-screen text-foreground bg-[#FBFBFD] overflow-hidden relative font-sans pt-32 pb-6 selection:bg-[#6366F1]/20">
       
       {/* Background ambient glowing orbs */}
       <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-[140px] pointer-events-none" />
@@ -92,7 +92,7 @@ export default function ShieldPage() {
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="w-full lg:w-1/2 space-y-6"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 text-amber-700 text-xs font-black uppercase tracking-widest border border-amber-500/20 shadow-sm">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 text-amber-700 text-xs font-black uppercase tracking-[0.3em] border border-amber-500/20 shadow-sm">
                 <Shield size={14} className="animate-pulse text-amber-500" />
                 Automixa Shield™
               </div>
@@ -323,7 +323,7 @@ export default function ShieldPage() {
         </div>
       </PageTransition>
 
-      <FAQ customFaqs={securityFaqs as any} />
+      <FAQ customFaqs={securityFaqs} />
       
       <div className="mt-16">
         <CTA />

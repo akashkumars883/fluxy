@@ -89,12 +89,12 @@ export default function CreatorsSolutionPage() {
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="w-full lg:w-1/2 space-y-6"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#6366F1]/10 text-[#6366F1] text-xs font-bold uppercase tracking-widest border border-[#6366F1]/20">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#6366F1]/10 text-[#6366F1] text-xs font-black uppercase tracking-[0.3em] border border-[#6366F1]/20">
                 <Users size={14} />
                 For Digital Product Teams
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-zinc-900 leading-[1.1]">
-                Deliver Your <span className="text-[#6366F1]">Resources</span> <br className="hidden sm:block" /> Automatically.
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-foreground leading-[1.1]">
+                Deliver Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-rose-400">Resources</span> <br className="hidden sm:block" /> Automatically.
               </h1>
               <p className="text-zinc-600 text-base sm:text-lg leading-relaxed max-w-lg">
                 Stop manually replying to &ldquo;Link in bio&rdquo; requests. Automatically deliver your courses, ebooks, and digital products directly into interested users&apos; DMs with a secure business messaging workflow.
@@ -102,7 +102,7 @@ export default function CreatorsSolutionPage() {
               
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Link href="/login" className="px-8 py-4.5 bg-zinc-950 text-white font-bold rounded-full hover:bg-[#6366F1] hover:scale-[1.03] active:scale-[0.98] transition-all shadow-xl shadow-indigo-100 flex items-center justify-center gap-2 group text-sm">
-                Start Free
+                  Start Free
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link href="#features-list" className="px-8 py-4.5 bg-white border border-zinc-200 text-zinc-800 font-bold rounded-full hover:bg-zinc-50 transition-all flex items-center justify-center gap-2 text-sm shadow-sm">
@@ -156,9 +156,9 @@ export default function CreatorsSolutionPage() {
           {/* DYNAMIC ALTERNATING BENEFITS SECTION */}
           <div id="features-list" className="py-16 md:py-24 border-t border-zinc-200/60 scroll-mt-20">
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-              <span className="text-[#6366F1] font-bold uppercase tracking-widest text-xs">Resource Delivery Workflows</span>
-              <h2 className="text-3xl sm:text-5xl font-bold text-zinc-900 tracking-tight leading-tight">
-                Turn repeated questions into trackable customer workflows
+              <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] block">Resource Delivery Workflows</p>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground tracking-tight leading-[1.1]">
+                Turn repeated questions into <span className="text-sage font-normal">trackable customer workflows.</span>
               </h2>
             </div>
 
@@ -181,8 +181,8 @@ export default function CreatorsSolutionPage() {
                       <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-2 border shadow-sm ${benefit.color}`}>
                         <Icon size={26} />
                       </div>
-                      <span className="text-[10px] font-bold text-[#6366F1] uppercase tracking-widest block">{benefit.tagline}</span>
-                      <h3 className="text-2xl sm:text-4xl font-bold text-zinc-900 leading-tight tracking-tight">
+                      <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] block">{benefit.tagline}</p>
+                      <h3 className="text-2xl sm:text-4xl font-bold text-foreground leading-tight tracking-tight">
                         {benefit.title}
                       </h3>
                       <p className="text-zinc-500 text-base sm:text-lg leading-relaxed font-normal">

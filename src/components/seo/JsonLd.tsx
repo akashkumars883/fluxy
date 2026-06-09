@@ -47,7 +47,8 @@ export default function JsonLd() {
       "url": "https://automixa.in",
       "sameAs": [
         "https://instagram.com/automixa",
-        "https://twitter.com/automixa"
+        "https://twitter.com/automixa",
+        "https://linkedin.com/in/akashkumars883"
       ]
     },
     "contactPoint": {
@@ -65,7 +66,22 @@ export default function JsonLd() {
     },
     "sameAs": [
       "https://instagram.com/automixa",
-      "https://twitter.com/automixa"
+      "https://twitter.com/automixa",
+      "https://linkedin.com/company/automixa"
+    ]
+  };
+
+  const personSchema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Akash Kumar",
+    "jobTitle": "Founder & CEO",
+    "url": "https://automixa.in",
+    "description": "Founder of Automixa — Instagram Business Messaging Automation Platform",
+    "sameAs": [
+      "https://instagram.com/automixa",
+      "https://twitter.com/automixa",
+      "https://linkedin.com/in/akashkumars883"
     ]
   };
 
@@ -113,6 +129,10 @@ export default function JsonLd() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
       />
       <script
         type="application/ld+json"

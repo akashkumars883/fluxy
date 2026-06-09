@@ -33,7 +33,7 @@ export default function MobileSidebar({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 z-[100] bg-black/20 backdrop-blur-sm md:hidden"
+            className="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm md:hidden"
           />
           
           <motion.aside
@@ -41,7 +41,7 @@ export default function MobileSidebar({
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-x-0 bottom-0 top-auto h-auto max-h-[85vh] w-full rounded-t-[32px] bg-white/95 backdrop-blur-2xl z-[101] p-6 pt-8 flex flex-col gap-5 md:hidden select-none border-t border-white"
+            className="fixed inset-x-0 bottom-0 top-auto h-auto max-h-[85vh] w-full rounded-t-[32px] bg-white/95 backdrop-blur-2xl z-50 p-6 pt-8 flex flex-col gap-5 md:hidden select-none border-t border-white"
           >
             {/* Drag Handle */}
             <div className="absolute top-3 left-1/2 -translate-x-1/2 w-12 h-1.5 rounded-full bg-zinc-300" />
@@ -138,7 +138,7 @@ export default function MobileSidebar({
             </div>
 
             {/* Main Menu Links */}
-            <div className="space-y-1 overflow-y-auto pr-1 flex-1 pb-safe">
+            <div className="space-y-1 overflow-y-auto pr-1 flex-1 pb-safe-area-inset-bottom">
               <p className="text-xs font-medium text-zinc-500 tracking-normal capitalize px-3 mb-2">Main Menu</p>
               {navigationItems.map((item) => {
                 const Icon = item.icon;

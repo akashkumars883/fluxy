@@ -22,15 +22,18 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncReport, setSyncReport] = useState(null);
   const [mounted, setMounted] = useState(false);
-  
+
   const { user } = useDashboard();
   const userName = user?.user_metadata?.full_name || "Creator";
 
+  // `mounted` is needed because `createPortal` cannot run on the server.
+  // The synchronous setTimeout(0) was flagged as a cascading render;
+  // the effect below only upgrades to `true` on real browser, never
+  // back to `false`, so the value is stable for the rest of the lifecycle.
   useEffect(() => {
-    const timer = setTimeout(() => {
+    if (typeof window !== "undefined") {
       setMounted(true);
-    }, 0);
-    return () => clearTimeout(timer);
+    }
   }, []);
 
   const handleSimulateTrigger = async (type) => {
@@ -114,12 +117,11 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
   };
 
   const activeKeywords = topTriggers && topTriggers.length > 0
-    ? topTriggers.map((t, idx) => {
-      const triggerTypes = ["Post Comment", "Reel Comment", "Direct Inbox", "Story Reply"];
+    ? topTriggers.map((t) => {
       return {
         id: t.id,
         keyword: (t.keyword || "AUTO").toUpperCase(),
-        triggerType: triggerTypes[idx % triggerTypes.length],
+        triggerType: t.type === "COMMENT" ? "Post Comment" : t.type === "STORY_REPLY" ? "Story Reply" : t.type === "DM" ? "Direct Inbox" : "Reel Comment",
         isActive: t.metadata?.is_active !== false,
         comments: t.count
       };
@@ -134,14 +136,14 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
   ];
 
   return (
-    <div className="space-y-4 sm:space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-700 w-full max-w-[1400px] mx-auto pb-8">
-      
+    <div className="space-y-4 sm:space-y-5 animate-in fade-in duration-700 w-full max-w-[1400px] mx-auto pb-8">
+
       {/* Welcome Back Header */}
       <div className="mb-2">
         <h2 className="text-xl sm:text-2xl font-bold text-zinc-950 tracking-tight">
           Welcome back, {userName}! 👋
         </h2>
-        <p className="text-xs text-zinc-400 font-semibold mt-1">
+        <p className="text-sm text-zinc-500 font-medium mt-0.5">
           Here is what's happening with your automations today.
         </p>
       </div>
@@ -185,7 +187,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
                 {currentPlan === 'free' ? "Upgrade Automations with Business Pro" : "Upgrade to Business Scale"}
               </h4>
               <p className="text-[11px] text-indigo-100 font-medium leading-normal max-w-xl">
-                {currentPlan === 'free' 
+                {currentPlan === 'free'
                   ? "Get unlimited automated replies, unlock the Mini Digital Store to sell directly inside DMs, and build premium Link-in-Bio landing pages."
                   : "Get up to 50,000 monthly automated replies, advanced CRM tracking, and full agency multi-workspace collaboration features."
                 }
@@ -203,9 +205,9 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
 
       {/* Main Content Columns: Automations & Activity List */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
-        
+
         {/* Left Column: Active Automations */}
-        <div className="lg:col-span-2 bg-white border border-zinc-200/80 rounded-xl p-5 sm:p-6 shadow-md shadow-zinc-200/5 flex flex-col relative overflow-hidden h-[380px]">
+        <div className="lg:col-span-2 bg-white border border-zinc-200/80 rounded-xl p-5 sm:p-6 shadow-md shadow-zinc-200/5 flex flex-col relative overflow-hidden min-h-[280px] lg:min-h-[380px]">
           <div className="flex items-center justify-between mb-3 shrink-0 border-b border-zinc-100 pb-4">
             <div className="space-y-1">
               <h3 className="font-bold text-lg sm:text-xl text-zinc-950 tracking-tight flex items-center gap-2">
@@ -216,7 +218,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
 
             <div className="flex items-center gap-3">
               {/* Simple Meta Sync Badge */}
-              <button 
+              <button
                 onClick={handleMetaSync}
                 disabled={isSyncing}
                 className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-50 border border-zinc-200 rounded-lg text-[10px] font-bold text-zinc-500 hover:bg-zinc-100 transition-all cursor-pointer"
@@ -229,8 +231,8 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
                   </>
                 ) : (
                   <>
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    Meta: Connected
+                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-300"></span>
+                    Meta: Not Verified
                   </>
                 )}
               </button>
@@ -277,9 +279,9 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
                   <div className="flex items-center gap-3">
                     <div
                       onClick={() => onToggleTriggerActive && onToggleTriggerActive(item.id, item.isActive)}
-                      className={`w-8 h-4.5 rounded-full relative cursor-pointer hover:opacity-95 transition-all duration-300 ${item.isActive ? "bg-[#6366F1]" : "bg-zinc-200"}`}
+                      className={`w-8 h-[18px] rounded-full relative cursor-pointer hover:opacity-95 transition-all duration-300 ${item.isActive ? "bg-[#6366F1]" : "bg-zinc-200"}`}
                     >
-                      <div className={`w-3.5 h-3.5 bg-white rounded-full absolute top-0.5 shadow-sm transition-all duration-300 ${item.isActive ? "right-0.5" : "left-0.5"}`} />
+                      <div className={`w-3.5 h-3.5 bg-white rounded-full absolute top-[1px] shadow-sm transition-all duration-300 ${item.isActive ? "right-0.5" : "left-0.5"}`} />
                     </div>
                   </div>
                 </div>
@@ -289,7 +291,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
         </div>
 
         {/* Right Column: Live Feed */}
-        <div className="bg-white border border-zinc-200/80 rounded-xl p-5 sm:p-6 shadow-md shadow-zinc-100/40 hover:shadow-lg transition-all duration-500 flex flex-col relative h-[380px]">
+        <div className="bg-white border border-zinc-200/80 rounded-xl p-5 sm:p-6 shadow-md shadow-zinc-100/40 hover:shadow-lg transition-all duration-500 flex flex-col relative min-h-[280px] lg:min-h-[380px]">
           <div className="flex items-center justify-between mb-5 border-b border-zinc-100 pb-4 shrink-0">
             <div className="space-y-1">
               <h3 className="font-bold text-lg sm:text-xl text-zinc-950 tracking-tight flex items-center gap-2">
@@ -322,7 +324,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
                       senderId={log.sender_id}
                       defaultAvatar={`https://api.dicebear.com/7.x/avataaars/svg?seed=${log.sender_id || log.id}`}
                       automationId={automationId}
-                      className="w-8 h-8 rounded-full object-cover border border-zinc-150 shrink-0"
+                      className="w-8 h-8 rounded-full object-cover border border-zinc-200 shrink-0"
                     />
                     <div className="space-y-0.5 min-w-0">
                       <div className="flex items-center gap-1.5">
@@ -330,7 +332,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
                           @{log.sender_username || log.sender_name || "unknown"}
                         </span>
                         {log.keyword && (
-                          <span className="px-1.5 py-0.2 bg-zinc-50 border border-zinc-200/60 text-zinc-500 rounded text-[8px] font-bold leading-none shrink-0">
+                          <span className="px-1.5 py-0.5 bg-zinc-50 border border-zinc-200/60 text-zinc-500 rounded text-[8px] font-bold leading-none shrink-0">
                             #{log.keyword}
                           </span>
                         )}
@@ -339,7 +341,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
                         {log.type === "COMMENT" ? "commented on post" : "replied to story"}
                         {log.response && (
                           <span className="text-zinc-500 font-medium block truncate mt-0.5 italic">
-                            "{log.response}"
+                            &ldquo;{log.response}&rdquo;
                           </span>
                         )}
                       </span>
@@ -347,9 +349,9 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
                     <span className="text-[9px] font-bold text-zinc-300">{formatTime(log.created_at)}</span>
-                    <button 
+                    <button
                       onClick={onViewAudience}
-                      className="opacity-0 group-hover:opacity-100 p-1 bg-white hover:bg-zinc-50 border border-zinc-150 text-zinc-700 rounded-md transition-all cursor-pointer ml-1"
+                      className="opacity-0 group-hover:opacity-100 p-1 bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-700 rounded-md transition-all cursor-pointer ml-1"
                       title="View in CRM"
                     >
                       <ArrowRight size={9} />
@@ -370,7 +372,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
             onClick={() => setSyncReport(null)}
           />
 
-          <div className="relative w-full max-w-md bg-white border border-zinc-200/80 rounded-xl shadow-2xl p-6 sm:p-8 flex flex-col gap-6 animate-in zoom-in-95 duration-300 z-10">
+          <div className="relative w-full max-w-md bg-white border border-zinc-200/80 rounded-xl shadow-2xl p-6 sm:p-8 flex flex-col gap-6 animate-in zoom-in duration-300 z-10">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-zinc-200/50 pb-4 shrink-0">
               <div>
@@ -397,8 +399,8 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
                   <div>
                     <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block">Status Overview</span>
                     <span className={`text-xs font-bold ${syncReport.diagnostics.scope_insights === "SUCCESS" && syncReport.diagnostics.scope_comments === "SUCCESS"
-                        ? "text-emerald-600"
-                        : "text-amber-600"
+                      ? "text-emerald-600"
+                      : "text-amber-600"
                       }`}>
                       {syncReport.diagnostics.scope_insights === "SUCCESS" && syncReport.diagnostics.scope_comments === "SUCCESS"
                         ? "✅ READY FOR ACTION"

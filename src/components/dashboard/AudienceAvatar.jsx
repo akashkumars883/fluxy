@@ -7,7 +7,23 @@ const avatarCache = {};
 
 export default function AudienceAvatar({ senderId, defaultAvatar, automationId, className }) {
   const fallback = defaultAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${senderId || "default"}`;
-  const [src, setSrc] = useState(fallback);
+  // Initialize src from cache eagerly so first render shows the cached
+  // image (avoids cascading setState in an effect).
+  const [src, setSrc] = useState(() => {
+    if (
+      !automationId ||
+      !senderId ||
+      senderId.startsWith("mock") ||
+      senderId === "unknown" ||
+      senderId.startsWith("u")
+    ) {
+      return fallback;
+    }
+    if (avatarCache[senderId]) {
+      return avatarCache[senderId];
+    }
+    return fallback;
+  });
 
   useEffect(() => {
     if (!automationId || !senderId || senderId.startsWith("mock") || senderId === "unknown" || senderId.startsWith("u")) {
@@ -16,7 +32,7 @@ export default function AudienceAvatar({ senderId, defaultAvatar, automationId, 
     }
 
     if (avatarCache[senderId]) {
-      setSrc(avatarCache[senderId]);
+      // Already in cache; useState initializer handled first render.
       return;
     }
 

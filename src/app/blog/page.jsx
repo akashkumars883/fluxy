@@ -98,7 +98,7 @@ export default function BlogPage() {
   };
 
   return (
-    <main className="min-h-screen text-foreground overflow-x-clip relative font-sans pt-20 pb-10 selection:bg-sage/20">
+    <main className="min-h-screen text-foreground overflow-x-clip relative font-sans pt-32 pb-10 selection:bg-[#6366F1]/20">
       <PageTransition>
         <div className="max-w-7xl mx-auto px-6 md:px-10 mt-6 relative z-10">
           

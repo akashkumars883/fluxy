@@ -5,6 +5,17 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Shield, Cookie, X } from "lucide-react";
 
+// Strongly-typed alias for window.gtag to avoid `any` leaks.
+type GtagFn = (
+  command: "consent" | "js" | "config" | "event",
+  action: string,
+  params?: Record<string, unknown>
+) => void;
+interface GtagWindow extends Window {
+  gtag?: GtagFn;
+  dataLayer?: unknown[];
+}
+
 export default function CookieBanner() {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -22,33 +33,39 @@ export default function CookieBanner() {
 
   const handleAcceptAll = () => {
     localStorage.setItem("cookie_consent", "accepted");
-    
+
     // Update Google Consent Mode v2
-    if (typeof window !== "undefined" && (window as any).gtag) {
-      (window as any).gtag("consent", "update", {
-        analytics_storage: "granted",
-        ad_storage: "granted",
-        ad_user_data: "granted",
-        ad_personalization: "granted",
-      });
+    if (typeof window !== "undefined") {
+      const gWindow = window as GtagWindow;
+      if (gWindow.gtag) {
+        gWindow.gtag("consent", "update", {
+          analytics_storage: "granted",
+          ad_storage: "granted",
+          ad_user_data: "granted",
+          ad_personalization: "granted",
+        });
+      }
     }
-    
+
     setIsVisible(false);
   };
 
   const handleDeclineAll = () => {
     localStorage.setItem("cookie_consent", "declined");
-    
+
     // Keep Consent Mode v2 as denied
-    if (typeof window !== "undefined" && (window as any).gtag) {
-      (window as any).gtag("consent", "update", {
-        analytics_storage: "denied",
-        ad_storage: "denied",
-        ad_user_data: "denied",
-        ad_personalization: "denied",
-      });
+    if (typeof window !== "undefined") {
+      const gWindow = window as GtagWindow;
+      if (gWindow.gtag) {
+        gWindow.gtag("consent", "update", {
+          analytics_storage: "denied",
+          ad_storage: "denied",
+          ad_user_data: "denied",
+          ad_personalization: "denied",
+        });
+      }
     }
-    
+
     setIsVisible(false);
   };
 

@@ -7,16 +7,20 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function SystemBroadcast() {
   const [broadcasts, setBroadcasts] = useState([]);
-  const [dismissed, setDismissed] = useState([]);
+  // Initialize dismissed list from localStorage eagerly so the first render
+  // already has the correct state (avoids cascading setState in an effect).
+  const [dismissed, setDismissed] = useState(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const saved = window.localStorage.getItem("dismissed_broadcasts");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
 
   useEffect(() => {
-    // Load dismissed IDs from localStorage
-    const saved = localStorage.getItem("dismissed_broadcasts");
-    if (saved) {
-      try {
-        setDismissed(JSON.parse(saved));
-      } catch (e) {}
-    }
+    // No-op: dismissed list is already initialized above.
 
     async function fetchBroadcasts() {
       const supabase = createClient();

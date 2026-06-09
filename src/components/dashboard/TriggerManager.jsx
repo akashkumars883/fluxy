@@ -5,6 +5,7 @@ import { AlertCircle,ArrowRight,Calendar,Camera,Check,CircleChevronLeft,Clock,Ed
 import { useState } from "react";
 import AutomationPreview from "./AutomationPreview";
 import CampaignWizard from "./CampaignWizard";
+import toast from "react-hot-toast";
 
 export default function TriggerManager({ initialTriggers, media = [] }) {
   return (
@@ -14,19 +15,68 @@ export default function TriggerManager({ initialTriggers, media = [] }) {
   );
 }
 
-export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "free", onUpgradeClick }) {
+export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "free", onUpgradeClick, triggersCount = 0 }) {
   const [campaignName, setCampaignName] = useState("");
+  const [quickMode, setQuickMode] = useState(false);
+  const [keyword, setKeyword] = useState("");
+  const [response, setResponse] = useState("");
+  const [isQuickLoading, setIsQuickLoading] = useState(false);
 
   if (!isOpen) return null;
 
+  const maxFreeRules = 5;
+  const rulesUsed = triggersCount;
+  const rulesRemaining = Math.max(0, maxFreeRules - rulesUsed);
+
   const handleCreate = () => {
     if (!campaignName.trim()) return;
-    // Pass 'unified' — the wizard itself will handle automation type selection
     onSelect("unified", campaignName.trim());
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && campaignName.trim()) handleCreate();
+  };
+
+  const handleQuickSetup = async () => {
+    if (!keyword.trim() || !response.trim()) return;
+    setIsQuickLoading(true);
+    try {
+      // Simple keyword + response → direct create
+      const res = await fetch("/api/triggers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          keyword: keyword.trim().toUpperCase(),
+          response: response.trim(),
+          type: "COMMENT",
+          metadata: {
+            campaign_name: campaignName.trim() || `${keyword.trim().toUpperCase()} Auto-Reply`,
+            is_active: true,
+          },
+          variants: {
+            dm: [response.trim()],
+            public: [],
+          },
+        }),
+      });
+
+      const result = await res.json();
+      if (result.success && result.trigger) {
+        onClose();
+        // Trigger a refresh
+        window.dispatchEvent(new Event("refresh_dashboard_data"));
+      } else {
+        toast.error(result.error || "Failed to create rule");
+      }
+    } catch (err) {
+      toast.error("Failed to create rule. Please try again.");
+    } finally {
+      setIsQuickLoading(false);
+    }
+  };
+
+  const handleQuickKeyDown = (e) => {
+    if (e.key === "Enter" && keyword.trim() && response.trim()) handleQuickSetup();
   };
 
   return (
@@ -44,7 +94,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
             initial={{ opacity: 0, scale: 0.96, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 16 }}
-            className="relative w-full max-w-md bg-white border border-zinc-200/60 rounded-xl shadow-2xl p-8 flex flex-col gap-6"
+            className="relative w-full max-w-md bg-white border border-zinc-200/60 rounded-xl shadow-2xl p-6 sm:p-8 flex flex-col gap-5 max-h-[90vh] overflow-y-auto"
           >
             {/* Header */}
             <div className="flex items-start justify-between">
@@ -57,8 +107,12 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                   />
                 </div>
                 <div>
-                  <h2 className="text-xl font-black text-zinc-950 tracking-tight">New Automation</h2>
-                  <p className="text-[12px] font-medium text-zinc-400 mt-0.5">AI will guide you through setup</p>
+                  <h2 className="text-xl font-black text-zinc-950 tracking-tight">
+                    {quickMode ? "Quick Setup" : "New Automation"}
+                  </h2>
+                  <p className="text-[12px] font-medium text-zinc-400 mt-0.5">
+                    {quickMode ? "Keyword + Response in seconds" : "AI will guide you through setup"}
+                  </p>
                 </div>
               </div>
               <button onClick={onClose} className="p-2 text-zinc-400 hover:text-zinc-700 rounded-xl transition-all">
@@ -66,31 +120,122 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
               </button>
             </div>
 
-            {/* Campaign name */}
-            <div className="space-y-2">
-              <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Campaign Name</label>
-              <input
-                type="text"
-                placeholder="e.g. Summer Sale Campaign"
-                value={campaignName}
-                onChange={(e) => setCampaignName(e.target.value)}
-                onKeyDown={handleKeyDown}
-                autoFocus
-                className="w-full bg-zinc-50 border-2 border-zinc-200 rounded-xl px-5 py-4 text-[15px] font-medium text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all"
-              />
-              <p className="text-[12px] text-zinc-400 font-medium px-1">
-                Don&apos;t worry about the type - Automixa AI will ask you what you want to automate.
-              </p>
+            {/* Plan Usage Bar */}
+            {currentPlan === "free" && (
+              <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-3">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Free Plan Rules</span>
+                  <span className={`text-[10px] font-bold ${rulesRemaining === 0 ? "text-rose-500" : "text-zinc-600"}`}>
+                    {rulesUsed}/{maxFreeRules} used
+                  </span>
+                </div>
+                <div className="w-full h-1.5 bg-zinc-200 rounded-full overflow-hidden">
+                  <div 
+                    className={`h-full rounded-full transition-all duration-500 ${rulesRemaining === 0 ? "bg-rose-500" : "bg-[#6366F1]"}`}
+                    style={{ width: `${Math.min(100, (rulesUsed / maxFreeRules) * 100)}%` }}
+                  />
+                </div>
+                {rulesRemaining === 0 && (
+                  <p className="text-[10px] text-rose-500 font-semibold mt-1.5">
+                    ⚠️ Upgrade to create more rules
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Mode Toggle */}
+            <div className="flex items-center gap-2 p-1 bg-zinc-100 rounded-xl">
+              <button
+                onClick={() => setQuickMode(false)}
+                className={`flex-1 py-2 px-3 rounded-lg text-[11px] font-bold transition-all ${!quickMode ? "bg-white text-zinc-900 shadow-sm" : "text-zinc-500 hover:text-zinc-700"}`}
+              >
+                🤖 AI Wizard
+              </button>
+              <button
+                onClick={() => setQuickMode(true)}
+                className={`flex-1 py-2 px-3 rounded-lg text-[11px] font-bold transition-all ${quickMode ? "bg-white text-zinc-900 shadow-sm" : "text-zinc-500 hover:text-zinc-700"}`}
+              >
+                ⚡ Quick Setup
+              </button>
             </div>
 
-            {/* Action */}
-            <button
-              onClick={handleCreate}
-              disabled={!campaignName.trim()}
-              className="w-full py-4 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-xl text-[14px] font-bold shadow-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Start with Automixa AI <ArrowRight size={18} />
-            </button>
+            {/* Quick Setup Form */}
+            {quickMode ? (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Campaign Name</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Summer Sale"
+                    value={campaignName}
+                    onChange={(e) => setCampaignName(e.target.value)}
+                    className="w-full bg-zinc-50 border-2 border-zinc-200 rounded-xl px-4 py-3 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Trigger Keyword</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. PRICE"
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                    onKeyDown={handleQuickKeyDown}
+                    className="w-full bg-zinc-50 border-2 border-zinc-200 rounded-xl px-4 py-3 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all uppercase"
+                  />
+                  <p className="text-[10px] text-zinc-400 font-medium">When someone comments this keyword, Auto DM will trigger</p>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">DM Response</label>
+                  <textarea
+                    placeholder="e.g. Here's the price list! 🔗 Check your DMs..."
+                    value={response}
+                    onChange={(e) => setResponse(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleQuickSetup()}
+                    rows={3}
+                    className="w-full bg-zinc-50 border-2 border-zinc-200 rounded-xl px-4 py-3 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all resize-none"
+                  />
+                </div>
+                <button
+                  onClick={handleQuickSetup}
+                  disabled={!keyword.trim() || !response.trim() || isQuickLoading || (currentPlan === "free" && rulesRemaining === 0)}
+                  className="w-full py-3.5 bg-[#6366F1] hover:bg-[#4f46e5] text-white rounded-xl text-xs font-bold shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isQuickLoading ? (
+                    <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <Rocket size={16} /> Create Auto-Reply
+                    </>
+                  )}
+                </button>
+              </div>
+            ) : (
+              /* AI Wizard Mode */
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Campaign Name</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Summer Sale Campaign"
+                    value={campaignName}
+                    onChange={(e) => setCampaignName(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    autoFocus
+                    className="w-full bg-zinc-50 border-2 border-zinc-200 rounded-xl px-5 py-4 text-[15px] font-medium text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all"
+                  />
+                  <p className="text-[12px] text-zinc-400 font-medium px-1">
+                    Don't worry about the type - Automixa AI will ask you what you want to automate.
+                  </p>
+                </div>
+                <button
+                  onClick={handleCreate}
+                  disabled={!campaignName.trim()}
+                  className="w-full py-4 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-xl text-[14px] font-bold shadow-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Start with Automixa AI <ArrowRight size={18} />
+                </button>
+              </div>
+            )}
 
             <button onClick={onClose} className="text-[12px] font-medium text-zinc-400 hover:text-zinc-600 transition-all text-center">
               Cancel

@@ -32,6 +32,15 @@ export default function AutomationPreview({
   const [isTyping, setIsTyping] = useState(false);
   const [introClicked, setIntroClicked] = useState(false);
 
+  // Pick a stable public reply variant ONCE on mount to avoid impure
+  // Math.random() calls during render (which would also flicker on re-render).
+  const [selectedPublicReply] = useState(() => {
+    if (Array.isArray(publicReply) && publicReply.length > 0) {
+      return publicReply[Math.floor(Math.random() * publicReply.length)];
+    }
+    return publicReply;
+  });
+
   // ── Comment simulator states ────────────────────────────
   const [mockComments, setMockComments] = useState([]);
   const [showPushNotification, setShowPushNotification] = useState(false);
@@ -775,10 +784,10 @@ export default function AutomationPreview({
                                )}
                              </div>
                              <div className="flex-1">
-                               <p className="text-[10px] font-semibold text-zinc-900 leading-tight">
-                                 <span className="mr-1.5 font-semibold">{activeUsername}</span>
-                                 {Array.isArray(publicReply) ? publicReply[Math.floor(Math.random() * publicReply.length)] : publicReply}
-                               </p>
+                                  <p className="text-[10px] font-semibold text-zinc-900 leading-tight">
+                                    <span className="mr-1.5 font-semibold">{activeUsername}</span>
+                                    {selectedPublicReply}
+                                  </p>
                                <p className="text-[8px] text-zinc-400 font-normal mt-0.5">Just now • active</p>
                              </div>
                            </div>

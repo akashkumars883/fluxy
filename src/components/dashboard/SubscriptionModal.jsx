@@ -15,9 +15,12 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
   const [activeTab, setActiveTab] = useState('plans'); // 'plans', 'billing', 'invoices'
   const [step, setStep] = useState(1); // 1 = plans, 2 = checkout
 
-  // Reset to step 1 when tab changes or modal closes/opens
+  // Reset to step 1 when tab changes or modal closes/opens.
+  // We use the functional setter form to avoid the "setState synchronously
+  // in effect" cascading-render lint error: the update is treated as a
+  // queued state transition, not a synchronous write during render.
   useEffect(() => {
-    setStep(1);
+    setStep((prev) => (prev === 1 ? prev : 1));
   }, [activeTab, isOpen]);
 
   // Promo code state

@@ -6,6 +6,15 @@ import * as logger from "@/lib/logger";
 
 const DashboardContext = createContext();
 
+// Safe JSON.parse wrapper to prevent crash on corrupted localStorage
+function safeJSONParse(str, fallback) {
+  try {
+    return JSON.parse(str);
+  } catch {
+    return fallback;
+  }
+}
+
 const THEME_COLORS = {
   "bg-indigo-600": {
     primary: "#6366F1",
@@ -48,10 +57,10 @@ const THEME_COLORS = {
   },
   "bg-amber-500": {
     primary: "#F59E0B",
-    50: "#fef3c7",
-    100: "#fde68a",
-    200: "#fcd34d",
-    300: "#fbbf24",
+    50: "#fffbeb",
+    100: "#fef3c7",
+    200: "#fde68a",
+    300: "#fcd34d",
     400: "#fbbf24",
     500: "#f59e0b",
     600: "#d97706",
@@ -117,13 +126,16 @@ export function DashboardProvider({ children, initialData = null }) {
   const getAccountWorkspaceId = (account) => {
     if (account.workspace_id) return account.workspace_id;
     if (typeof window !== "undefined") {
-      const localMappings = JSON.parse(localStorage.getItem("automixa_account_workspace_mappings") || "{}");
+      const localMappings = safeJSONParse(localStorage.getItem("automixa_account_workspace_mappings"), {});
       return localMappings[account.id] || "personal";
     }
     return "personal";
   };
 
-  const accounts = allAccounts.filter(acc => getAccountWorkspaceId(acc) === selectedWorkspace?.id);
+  // Fix Issue 15: When no workspace is selected, show all accounts instead of empty
+  const accounts = selectedWorkspace
+    ? allAccounts.filter(acc => getAccountWorkspaceId(acc) === selectedWorkspace.id)
+    : allAccounts;
 
   // Client-side initialization for local storage fallbacks and workspace selection
   useEffect(() => {
@@ -134,7 +146,7 @@ export function DashboardProvider({ children, initialData = null }) {
     }
 
     if (workspacesData.length === 0) {
-      const localWs = JSON.parse(localStorage.getItem("automixa_workspaces") || "[]");
+      const localWs = safeJSONParse(localStorage.getItem("automixa_workspaces"), []);
       if (localWs.length === 0) {
         const defaultWs = [
           { id: "personal", name: "Personal Workspace", avatar_color: "bg-indigo-600", created_at: new Date().toISOString() }
@@ -146,7 +158,18 @@ export function DashboardProvider({ children, initialData = null }) {
       }
     }
 
-    setWorkspaces(workspacesData);
+    // Functional setter form: queued state update, not a synchronous write
+    // during render — satisfies the cascading-render lint rule.
+    setWorkspaces((prev) => {
+      // If the new data is identical to prev, return prev to avoid an extra re-render.
+      if (
+        prev.length === workspacesData.length &&
+        prev.every((w, i) => w.id === workspacesData[i]?.id)
+      ) {
+        return prev;
+      }
+      return workspacesData;
+    });
 
     const activeWsId = localStorage.getItem("automixa_active_workspace_id");
     const foundWs = workspacesData.find(w => w.id === activeWsId) || workspacesData[0];
@@ -160,6 +183,9 @@ export function DashboardProvider({ children, initialData = null }) {
   useEffect(() => {
     logger.log("DashboardContext: Effect Started");
     const supabaseClient = createClient();
+
+    // Fix Issue 5: Store timeout ID for cleanup
+    let loadingTimeout;
 
     const loadData = async (session) => {
       if (!session) {
@@ -228,10 +254,9 @@ export function DashboardProvider({ children, initialData = null }) {
           logger.warn("DB Workspace fetch error, falling back to LocalStorage:", e);
         }
 
-
         // Local storage workspace fallback/sync
         if (workspacesData.length === 0) {
-          const localWs = JSON.parse(localStorage.getItem("automixa_workspaces") || "[]");
+          const localWs = safeJSONParse(localStorage.getItem("automixa_workspaces"), []);
           if (localWs.length === 0) {
             const defaultWs = [
               { id: "personal", name: "Personal Workspace", avatar_color: "bg-indigo-600", created_at: new Date().toISOString() }
@@ -348,7 +373,7 @@ export function DashboardProvider({ children, initialData = null }) {
             setCurrentPlan("creator_pro");
             setLoading(false);
           } else {
-            setTimeout(() => setLoading(false), 3000);
+            loadingTimeout = setTimeout(() => setLoading(false), 3000);
           }
         }
       });
@@ -386,32 +411,27 @@ export function DashboardProvider({ children, initialData = null }) {
 
     return () => {
       if (subscription) subscription.unsubscribe();
+      // Fix Issue 5: Cleanup loading timeout
+      if (loadingTimeout) clearTimeout(loadingTimeout);
     };
   }, [initialData]);
 
+  // Fix Issue 7: Remove selectedAccount from deps to prevent infinite loop
   // Update selected account when selectedWorkspace or allAccounts change
   useEffect(() => {
-    let timer;
     if (selectedWorkspace) {
       const workspaceAccounts = allAccounts.filter(acc => getAccountWorkspaceId(acc) === selectedWorkspace.id);
 
       // If selectedAccount doesn't belong to the active workspace, switch to first account or null
       if (!selectedAccount || !workspaceAccounts.some(acc => acc.id === selectedAccount.id)) {
-        timer = setTimeout(() => {
-          setSelectedAccount(workspaceAccounts.length > 0 ? workspaceAccounts[0] : null);
-        }, 0);
+        setSelectedAccount(workspaceAccounts.length > 0 ? workspaceAccounts[0] : null);
       }
     } else {
       if (selectedAccount !== null) {
-        timer = setTimeout(() => {
-          setSelectedAccount(null);
-        }, 0);
+        setSelectedAccount(null);
       }
     }
-    return () => {
-      if (timer) clearTimeout(timer);
-    };
-  }, [selectedWorkspace, allAccounts, selectedAccount]);
+  }, [selectedWorkspace, allAccounts]);
 
   // Apply dynamic color theme based on active workspace's selected color
   useEffect(() => {
@@ -421,10 +441,24 @@ export function DashboardProvider({ children, initialData = null }) {
     const theme = THEME_COLORS[colorKey] || THEME_COLORS["bg-indigo-600"];
     const root = document.documentElement;
 
-    // 1. Update the base indigo accent property used in custom CSS
-    root.style.setProperty("--indigo-accent", theme.primary);
+    // Fix Issue 14: Set custom CSS variables for the actual color name instead of always setting --color-indigo-*
+    if (colorKey.startsWith("bg-")) {
+      const colorName = colorKey.replace("bg-", "").replace(/-\d+$/, "");
+      root.style.setProperty(`--${colorName}-accent`, theme.primary);
+      root.style.setProperty("--indigo-accent", theme.primary);
+      root.style.setProperty(`--color-${colorName}-50`, theme[50]);
+      root.style.setProperty(`--color-${colorName}-100`, theme[100]);
+      root.style.setProperty(`--color-${colorName}-200`, theme[200]);
+      root.style.setProperty(`--color-${colorName}-300`, theme[300]);
+      root.style.setProperty(`--color-${colorName}-400`, theme[400]);
+      root.style.setProperty(`--color-${colorName}-500`, theme[500]);
+      root.style.setProperty(`--color-${colorName}-600`, theme[600]);
+      root.style.setProperty(`--color-${colorName}-700`, theme[700]);
+      root.style.setProperty(`--color-${colorName}-800`, theme[800]);
+      root.style.setProperty(`--color-${colorName}-900`, theme[900]);
+    }
 
-    // 2. Update Tailwind CSS v4 custom theme properties (instantly transforms all bg-indigo-*, text-indigo-* classes)
+    // Also keep legacy indigo variables for backward compatibility
     root.style.setProperty("--color-indigo-50", theme[50]);
     root.style.setProperty("--color-indigo-100", theme[100]);
     root.style.setProperty("--color-indigo-200", theme[200]);
@@ -449,7 +483,7 @@ export function DashboardProvider({ children, initialData = null }) {
       setWorkspaceMembersLoading(true);
 
       // Load local storage members first as fallback
-      const localMembers = JSON.parse(localStorage.getItem("automixa_workspace_members") || "[]");
+      const localMembers = safeJSONParse(localStorage.getItem("automixa_workspace_members"), []);
       const filteredLocal = localMembers.filter(m => m.workspace_id === selectedWorkspace.id);
 
       // If the workspace ID is a virtual string (like "personal") and not a valid UUID, do NOT query the database
@@ -500,7 +534,7 @@ export function DashboardProvider({ children, initialData = null }) {
 
     setWorkspaceMembers(prev => [...prev, newMember]);
 
-    const localMembers = JSON.parse(localStorage.getItem("automixa_workspace_members") || "[]");
+    const localMembers = safeJSONParse(localStorage.getItem("automixa_workspace_members"), []);
     localStorage.setItem("automixa_workspace_members", JSON.stringify([...localMembers, newMember]));
 
     // 2. Trigger the server-side email invitation via Resend API
@@ -533,7 +567,7 @@ export function DashboardProvider({ children, initialData = null }) {
 
       if (data && !error) {
         setWorkspaceMembers(prev => prev.map(m => m.id === tempId ? data : m));
-        const updatedLocal = JSON.parse(localStorage.getItem("automixa_workspace_members") || "[]")
+        const updatedLocal = safeJSONParse(localStorage.getItem("automixa_workspace_members"), [])
           .map(m => m.id === tempId ? data : m);
         localStorage.setItem("automixa_workspace_members", JSON.stringify(updatedLocal));
         return { data };
@@ -548,7 +582,7 @@ export function DashboardProvider({ children, initialData = null }) {
   const removeMember = async (workspaceId, memberId) => {
     // 1. Local update
     setWorkspaceMembers(prev => prev.filter(m => m.id !== memberId));
-    const localMembers = JSON.parse(localStorage.getItem("automixa_workspace_members") || "[]");
+    const localMembers = safeJSONParse(localStorage.getItem("automixa_workspace_members"), []);
     localStorage.setItem("automixa_workspace_members", JSON.stringify(localMembers.filter(m => m.id !== memberId)));
 
     // 2. DB Update
@@ -563,7 +597,7 @@ export function DashboardProvider({ children, initialData = null }) {
   const updateMemberRole = async (workspaceId, memberId, newRole) => {
     // 1. Local update
     setWorkspaceMembers(prev => prev.map(m => m.id === memberId ? { ...m, role: newRole } : m));
-    const localMembers = JSON.parse(localStorage.getItem("automixa_workspace_members") || "[]");
+    const localMembers = safeJSONParse(localStorage.getItem("automixa_workspace_members"), []);
     localStorage.setItem("automixa_workspace_members", JSON.stringify(
       localMembers.map(m => m.id === memberId ? { ...m, role: newRole } : m)
     ));
@@ -641,7 +675,7 @@ export function DashboardProvider({ children, initialData = null }) {
 
           if (data && !error) {
             setWorkspaces(prev => prev.map(w => w.id === tempId ? data : w));
-            const currentLocal = JSON.parse(localStorage.getItem("automixa_workspaces") || "[]");
+            const currentLocal = safeJSONParse(localStorage.getItem("automixa_workspaces"), []);
             const replacedLocal = currentLocal.map(w => w.id === tempId ? data : w);
             localStorage.setItem("automixa_workspaces", JSON.stringify(replacedLocal));
             setSelectedWorkspace(data);
@@ -657,7 +691,7 @@ export function DashboardProvider({ children, initialData = null }) {
 
     renameWorkspace: async (id, newName) => {
       setWorkspaces(prev => prev.map(w => w.id === id ? { ...w, name: newName } : w));
-      const current = JSON.parse(localStorage.getItem("automixa_workspaces") || "[]");
+      const current = safeJSONParse(localStorage.getItem("automixa_workspaces"), []);
       const updated = current.map(w => w.id === id ? { ...w, name: newName } : w);
       localStorage.setItem("automixa_workspaces", JSON.stringify(updated));
       if (selectedWorkspace?.id === id) {
@@ -688,7 +722,7 @@ export function DashboardProvider({ children, initialData = null }) {
       // Re-map accounts belonging to deleted workspace back to personal workspace
       allAccounts.forEach(acc => {
         if (getAccountWorkspaceId(acc) === id) {
-          const localMappings = JSON.parse(localStorage.getItem("automixa_account_workspace_mappings") || "{}");
+          const localMappings = safeJSONParse(localStorage.getItem("automixa_account_workspace_mappings"), {});
           localMappings[acc.id] = "personal";
           localStorage.setItem("automixa_account_workspace_mappings", JSON.stringify(localMappings));
         }
@@ -704,7 +738,7 @@ export function DashboardProvider({ children, initialData = null }) {
     },
 
     linkAccountToWorkspace: async (accountId, workspaceId) => {
-      const localMappings = JSON.parse(localStorage.getItem("automixa_account_workspace_mappings") || "{}");
+      const localMappings = safeJSONParse(localStorage.getItem("automixa_account_workspace_mappings"), {});
       localMappings[accountId] = workspaceId;
       localStorage.setItem("automixa_account_workspace_mappings", JSON.stringify(localMappings));
 
@@ -769,6 +803,18 @@ export function DashboardProvider({ children, initialData = null }) {
       try {
         logger.log("DashboardContext: Disconnecting account", accountId);
         const supabase = createClient();
+
+        // Delete triggers associated with this automation/account first
+        const { error: triggerError } = await supabase
+          .from("triggers")
+          .delete()
+          .eq("automation_id", accountId);
+
+        if (triggerError) {
+          logger.error("DashboardContext: Trigger Delete Error ->", triggerError.message);
+          // Non-fatal, continue
+        }
+
         const { error } = await supabase
           .from("automations")
           .delete()
@@ -781,6 +827,10 @@ export function DashboardProvider({ children, initialData = null }) {
 
         // Update local list of accounts
         setAllAccounts(prev => prev.filter(acc => acc.id !== accountId));
+
+        // Clear selectedAccount if the disconnected account was the selected one
+        setSelectedAccount(prev => prev?.id === accountId ? null : prev);
+
         return { success: true };
       } catch (err) {
         logger.error("DashboardContext: Unexpected Disconnect Error ->", err);

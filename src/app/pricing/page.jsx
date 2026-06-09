@@ -3,6 +3,7 @@
 import CTA from "@/components/marketing/CTA";
 import FAQ from "@/components/marketing/FAQ";
 import Pricing from "@/components/marketing/Pricing";
+import PageTransition from "@/components/ui/PageTransition";
 import { Check,Sparkles,X } from "lucide-react";
 import { useEffect,useState } from "react";
 
@@ -35,7 +36,8 @@ export default function PricingPage() {
   ];
 
   return (
-    <main className="min-h-screen pt-32 pb-16 relative overflow-hidden bg-background selection:bg-[#6366F1]/20">
+    <PageTransition>
+      <main className="min-h-screen pt-32 pb-16 relative overflow-hidden bg-background selection:bg-[#6366F1]/20">
       <Pricing />
 
       {/* Feature Comparison Table */}
@@ -116,6 +118,7 @@ export default function PricingPage() {
       <FAQ />
       
       <CTA />
-    </main>
+      </main>
+    </PageTransition>
   );
 }

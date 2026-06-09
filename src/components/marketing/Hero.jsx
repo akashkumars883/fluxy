@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight,ShieldCheck } from "lucide-react";
+import { ArrowRight, PlayCircle, ShieldCheck, Star } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRef } from "react";
@@ -16,7 +16,7 @@ export default function Hero() {
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
 
   return (
-    <section ref={ref} className="relative w-full overflow-hidden pt-32 pb-20 md:pt-44 md:pb-28 flex items-center isolate min-h-[90vh] md:min-h-[90vh]">
+    <section ref={ref} className="relative w-full overflow-hidden pt-28 pb-16 md:pt-36 md:pb-24 flex items-center isolate min-h-[75vh] md:min-h-[80vh]">
       
       {/* Background Image with Parallax */}
       <motion.div 
@@ -25,7 +25,7 @@ export default function Hero() {
       >
         <Image 
           src="/images/hero-bg.jpg.png"
-          alt="Hero Background"
+          alt="Automixa Instagram business automation platform — dashboard preview"
           fill
           className="object-cover object-[15%_center] md:object-center"
           priority
@@ -45,8 +45,8 @@ export default function Hero() {
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="text-4xl sm:text-6xl md:text-7xl font-bold text-white leading-[1.1] tracking-tight font-display drop-shadow-sm"
           >
-            Customer Conversations, <br className="hidden sm:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-rose-400 drop-shadow-lg">Handled Automatically.</span>
+            Automate Instagram Conversations <br className="hidden sm:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-rose-400 drop-shadow-lg">in Seconds.</span>
           </motion.h1>
 
           <motion.p 
@@ -55,14 +55,14 @@ export default function Hero() {
             transition={{ duration: 1, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="text-sm md:text-xl text-zinc-200 font-normal leading-relaxed max-w-2xl mt-6 drop-shadow-md"
           >
-            Automixa helps businesses respond to Instagram comments, DMs, and story replies, capture customer details, and deliver approved resources without manual copy-pasting.
+            Automixa helps businesses automate Instagram comments, DMs, and story replies to capture leads and deliver resources.
           </motion.p>
 
           <motion.div 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-8 flex flex-col sm:flex-row items-center gap-6"
+            className="mt-8 flex flex-col sm:flex-row items-center gap-4 sm:gap-6"
           >
             <Link
               href="/login"
@@ -73,10 +73,53 @@ export default function Hero() {
                 <ArrowRight size={16} />
               </div>
             </Link>
+
+            <Link
+              href="/features/comment-auto-responder"
+              className="inline-flex items-center gap-2.5 text-zinc-300 hover:text-white text-sm font-semibold transition-colors group"
+            >
+              <PlayCircle size={20} className="text-indigo-400 group-hover:scale-110 transition-transform" />
+              Watch Demo
+            </Link>
             
             <div className="flex items-center gap-2 text-zinc-300 text-xs font-semibold drop-shadow">
               <ShieldCheck size={18} className="text-emerald-400" />
               Built on official Meta APIs
+            </div>
+          </motion.div>
+
+          {/* Social Proof */}
+          <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8"
+          >
+            <div className="flex items-center gap-1.5">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} size={16} className="fill-yellow-400 text-yellow-400" />
+              ))}
+              <span className="text-zinc-300 text-sm ml-1 font-medium">4.9/5</span>
+            </div>
+            <div className="text-zinc-400 text-sm font-medium">
+              <span className="text-white font-bold">1,200+</span> businesses trusted
+            </div>
+          </motion.div>
+
+          {/* Customer Logo Bar */}
+          <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-10 pt-8 border-t border-white/10 w-full"
+          >
+            <p className="text-zinc-500 text-xs uppercase tracking-wider font-semibold mb-4">Trusted by growing businesses</p>
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 opacity-50">
+              <span className="text-zinc-400 text-sm font-bold tracking-tight">CREATORLAB</span>
+              <span className="text-zinc-400 text-sm font-bold tracking-tight">SOCIALFLOW</span>
+              <span className="text-zinc-400 text-sm font-bold tracking-tight">GROWTHX</span>
+              <span className="text-zinc-400 text-sm font-bold tracking-tight">BRANDHIVE</span>
+              <span className="text-zinc-400 text-sm font-bold tracking-tight">INSTABIZ</span>
             </div>
           </motion.div>
         </div>

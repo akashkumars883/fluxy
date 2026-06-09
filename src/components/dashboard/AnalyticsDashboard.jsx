@@ -22,7 +22,7 @@ export default function AnalyticsDashboard({ realtimeStats, history = [], trigge
   });
 
   const currentData = {
-    triggers: (realtimeStats?.totalDms + realtimeStats?.autoReplies)?.toLocaleString() || "0",
+    triggers: ((realtimeStats?.totalDms || 0) + (realtimeStats?.autoReplies || 0)).toLocaleString(),
     dms: (realtimeStats?.totalDms)?.toLocaleString() || "0",
     contacts: uniqueContacts.toLocaleString(),
     descTriggers: "Total interactions",

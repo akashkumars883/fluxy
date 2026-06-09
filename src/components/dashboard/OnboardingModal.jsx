@@ -6,31 +6,23 @@ import { useEffect, useState } from "react";
 import { createClient } from '@/lib/supabase'; // adding this back since it's used
 import * as logger from "@/lib/logger";
 
-// Custom premium CSS-based confetti using Framer Motion
-const Confetti = () => {
-  const colors = ["#6366F1", "#EC4899", "#10B981", "#F59E0B", "#3B82F6", "#EF4444", "#A855F7"];
-  
-  // We generate 80 paper cutting particles
-  const particles = Array.from({ length: 80 }).map((_, i) => {
-    // Random angle from 0 to 360 degrees (spread in all directions)
+const COLORS = ["#6366F1", "#EC4899", "#10B981", "#F59E0B", "#3B82F6", "#EF4444", "#A855F7"];
+
+// Generate confetti particles ONCE on mount (not during render) to avoid
+// impure Math.random() calls during render. Re-rendering the component
+// will reuse the same stable particle values.
+const generateParticles = () => Array.from({ length: 80 }).map((_, i) => {
     const angle = Math.random() * 2 * Math.PI;
-    // Radial burst distance from center (100px to 450px)
     const distance = Math.random() * 320 + 60;
     const xDest = Math.cos(angle) * distance;
     const yDest = Math.sin(angle) * distance;
-    
-    // Gravity simulation: after initial burst, it drifts down
     const gravity = Math.random() * 150 + 150;
-    
-    // Rectangular paper-cutting dimensions
-    const width = Math.random() * 6 + 10;   // 10px to 16px
-    const height = Math.random() * 4 + 5;   // 5px to 9px
-    const color = colors[i % colors.length];
-    
-    // Random staggered delay to make it look like an explosion with trailing pieces
+    const width = Math.random() * 6 + 10;
+    const height = Math.random() * 4 + 5;
+    const color = COLORS[i % COLORS.length];
     const delay = Math.random() * 0.2;
-    const duration = Math.random() * 1.5 + 1.2; // 1.2s to 2.7s
-    const rotation = Math.random() * 1080 - 540; // up to 3 full spins
+    const duration = Math.random() * 1.5 + 1.2;
+    const rotation = Math.random() * 1080 - 540;
 
     return {
       id: i,
@@ -45,6 +37,12 @@ const Confetti = () => {
       rotation,
     };
   });
+
+// Custom premium CSS-based confetti using Framer Motion
+const Confetti = () => {
+  // useState initializer runs once on mount; subsequent re-renders reuse
+  // the same stable particle values, keeping render pure.
+  const [particles] = useState(generateParticles);
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
