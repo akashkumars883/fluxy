@@ -101,11 +101,11 @@ export default function CreatorsSolutionPage() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Link href="/login" className="px-8 py-4.5 bg-zinc-950 text-white font-bold rounded-full hover:bg-[#6366F1] hover:scale-[1.03] active:scale-[0.98] transition-all shadow-xl shadow-indigo-100 flex items-center justify-center gap-2 group text-sm">
+                <Link href="/login" className="px-8 py-4 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2 group text-sm">
                   Start Free
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <Link href="#features-list" className="px-8 py-4.5 bg-white border border-zinc-200 text-zinc-800 font-bold rounded-full hover:bg-zinc-50 transition-all flex items-center justify-center gap-2 text-sm shadow-sm">
+                <Link href="#features-list" className="px-8 py-4 bg-white border border-zinc-200 text-zinc-800 font-bold rounded-xl hover:bg-zinc-50 transition-all flex items-center justify-center gap-2 text-sm shadow-sm">
                   <Play size={18} className="text-[#6366F1] fill-[#6366F1]" />
                   See How It Works
                 </Link>
@@ -178,7 +178,7 @@ export default function CreatorsSolutionPage() {
                   >
                     {/* Left content text */}
                     <div className="w-full lg:w-1/2 space-y-4">
-                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-2 border shadow-sm ${benefit.color}`}>
+                      <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-2 border shadow-sm ${benefit.color}`}>
                         <Icon size={26} />
                       </div>
                       <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] block">{benefit.tagline}</p>
