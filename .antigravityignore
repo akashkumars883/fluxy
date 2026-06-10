@@ -1,0 +1,8 @@
+# Ignore backend API routes to prevent AI from modifying them accidentally
+src/app/api/
+
+# Ignore backend libraries and utility functions
+src/lib/
+
+# Ignore webhook endpoints
+src/app/webhook/
