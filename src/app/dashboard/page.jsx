@@ -648,7 +648,7 @@ export default function Dashboard() {
     };
   });
 
-  const maxQuota = effectivePlan === "viral_scale" ? 50000 : effectivePlan === "creator_pro" ? 15000 : 1000;
+  const maxQuota = currentPlan === "viral_scale" ? 50000 : currentPlan === "creator_pro" ? 15000 : 1000;
   const usedQuota = (realtimeStats?.totalDms || 0) + (realtimeStats?.autoReplies || 0);
   const quotaPercent = Math.min(100, Math.round((usedQuota / maxQuota) * 100));
 

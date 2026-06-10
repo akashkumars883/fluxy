@@ -223,16 +223,22 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         .eq("status", "active")
         .limit(1);
 
+      const actualPlan = subData?.[0]?.plan_id || subData?.[0]?.plan || "free";
+
       // --- CONFIG: SET TO false TO RE-ENABLE PAYWALLS ---
       const BYPASS_PLAN_LIMITS = true;
 
-      userPlan = BYPASS_PLAN_LIMITS ? "viral_scale" : (subData?.[0]?.plan_id || subData?.[0]?.plan || "free");
+      // Treat user as premium for features, but use actual plan for execution limits
+      userPlan = BYPASS_PLAN_LIMITS ? "viral_scale" : actualPlan;
+      
       const planLimits = {
         free: 1000,
         creator_pro: 15000,
         viral_scale: 50000
       };
-      const maxReplies = planLimits[userPlan] || 1000;
+      
+      // Strict limit check based on actual plan
+      const maxReplies = planLimits[actualPlan] || 1000;
 
       if ((consumedCount || 0) >= maxReplies) {
         console.log(`🚫 [PLAN LIMIT EXCEEDED] Quota limit of ${maxReplies} hit for user ID: ${automation.user_id}. Auto-reply blocked.`);
