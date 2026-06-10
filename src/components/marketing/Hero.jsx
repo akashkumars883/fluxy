@@ -14,7 +14,7 @@ export default function Hero() {
           src="/images/hero-bg.jpg.png"
           alt="Automixa Instagram business automation platform background"
           fill
-          className="object-cover object-center"
+          className="object-cover object-[75%_center] md:object-center"
           priority
         />
         <div className="absolute inset-0 bg-zinc-950/70 z-10" />

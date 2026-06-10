@@ -32,7 +32,7 @@ export default function Stats({ realStats = { users: 0, messages: 0, triggers: 0
               <div className="text-4xl sm:text-5xl font-extrabold text-zinc-900 tracking-tighter mb-2">
                 {stat.value}
               </div>
-              <div className="text-xs sm:text-sm text-zinc-500 font-medium tracking-wide uppercase">
+              <div className="text-xs sm:text-sm text-zinc-500 font-medium tracking-wide lowercase">
                 {stat.label}
               </div>
             </motion.div>
