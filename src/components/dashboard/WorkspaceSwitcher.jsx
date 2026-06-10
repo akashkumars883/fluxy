@@ -51,6 +51,16 @@ export default function WorkspaceSwitcher({ variant = "sidebar", onUpgradeClick 
 
   const dropdownRef = useRef(null);
 
+  // Safe localStorage parser
+  let localMappings = {};
+  if (typeof window !== "undefined") {
+    try {
+      localMappings = JSON.parse(localStorage.getItem("automixa_account_workspace_mappings") || "{}") || {};
+    } catch {
+      localMappings = {};
+    }
+  }
+
   // Close dropdown on click outside
   useEffect(() => {
     function handleClickOutside(event) {
@@ -363,7 +373,7 @@ export default function WorkspaceSwitcher({ variant = "sidebar", onUpgradeClick 
                   ) : (
                     <div className="space-y-1.5 max-h-48 overflow-y-auto no-scrollbar">
                       {(allAccounts || []).map(acc => {
-                        const isMappedToThis = (acc.workspace_id || JSON.parse(localStorage.getItem("automixa_account_workspace_mappings") || "{}")[acc.id] || "personal") === managingWs.id;
+                        const isMappedToThis = (acc.workspace_id || localMappings[acc.id] || "personal") === managingWs.id;
                         return (
                           <div key={acc.id} className="flex items-center justify-between p-2 hover:bg-zinc-50 rounded-xl border border-zinc-100 bg-white">
                             <div className="flex items-center gap-2 overflow-hidden flex-1 mr-2">

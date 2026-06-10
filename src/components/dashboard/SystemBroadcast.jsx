@@ -13,7 +13,8 @@ export default function SystemBroadcast() {
     if (typeof window === "undefined") return [];
     try {
       const saved = window.localStorage.getItem("dismissed_broadcasts");
-      return saved ? JSON.parse(saved) : [];
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed : [];
     } catch {
       return [];
     }
