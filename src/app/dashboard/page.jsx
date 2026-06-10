@@ -44,6 +44,7 @@ import StoreManager from "@/components/dashboard/StoreManager";
 import SubscriptionModal from "@/components/dashboard/SubscriptionModal";
 import { CampaignBuilderWorkspace, TriggerInputModal, TriggerList } from "@/components/dashboard/TriggerManager";
 import Loader from "@/components/ui/Loader";
+import SkeletonDashboard from "@/components/ui/SkeletonDashboard";
 import Button from "@/components/ui/Button";
 import SystemBroadcast from "@/components/dashboard/SystemBroadcast";
 import AppShell from "@/components/layout/AppShell";
@@ -51,6 +52,7 @@ import AppShell from "@/components/layout/AppShell";
 
 // Context
 import { useDashboard } from "@/context/DashboardContext";
+import confetti from "canvas-confetti";
 
 // Constants
 const FREE_PLAN_TRIGGER_LIMIT = 5;
@@ -495,6 +497,17 @@ export default function Dashboard() {
       if (result.success && result.trigger) {
         setTriggersList(prev => [result.trigger, ...prev]);
         setBuilderActive(false);
+        
+        // UX: Success Micro-interactions
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#6366F1', '#EC4899', '#10B981']
+        });
+        if (typeof window !== "undefined" && navigator.vibrate) {
+          navigator.vibrate(50);
+        }
       }
     } catch (err) {
       logger.error("Error adding trigger:", err);
@@ -599,7 +612,7 @@ export default function Dashboard() {
     }
   }, [user, loading, router]);
 
-  if (loading) return <Loader fullScreen text="Loading Dashboard..." />;
+  if (loading) return <SkeletonDashboard />;
 
   const navigationItems = [
     { id: "home", label: "Dashboard", icon: Home, reqPlan: "free" },

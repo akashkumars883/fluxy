@@ -5,6 +5,7 @@ import { AlertCircle,ArrowRight,Calendar,Camera,Check,CircleChevronLeft,Clock,Ed
 import { useState } from "react";
 import AutomationPreview from "./AutomationPreview";
 import CampaignWizard from "./CampaignWizard";
+import EmptyState from "@/components/ui/EmptyState";
 import toast from "react-hot-toast";
 
 export default function TriggerManager({ initialTriggers, media = [] }) {
@@ -416,23 +417,13 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
 
   if (!triggers || triggers.length === 0) {
     return (
-      <div className="bg-white border border-zinc-200/60 rounded-xl p-12 text-center shadow-sm flex flex-col items-center justify-center gap-6 animate-in fade-in duration-500">
-        <div className="w-14 h-14 bg-[#6366F1]/10 text-[#6366F1] rounded-xl flex items-center justify-center border border-[#6366F1]/20 shadow-sm">
-          <Rocket size={24} />
-        </div>
-        <div>
-          <h3 className="text-xl font-semibold text-zinc-900 mb-1 tracking-tight">No Auto-Reply Rules Yet</h3>
-          <p className="text-xs sm:text-sm font-normal text-zinc-500 max-w-md mx-auto leading-relaxed">
-            You haven&apos;t set up any keywords to auto-reply to comments or DMs yet. Create one now to get started!
-          </p>
-        </div>
-        <button
-          onClick={onCreateNew}
-          className="px-12 py-4 bg-[#6366F1] text-white rounded-xl text-[12px] font-semibold shadow-2xl transition-all flex items-center gap-2 hover:scale-[1.02]"
-        >
-          <Plus size={18} strokeWidth={2.5} /> <span>Create Auto-Reply</span>
-        </button>
-      </div>
+      <EmptyState
+        icon={Rocket}
+        title="No Automations Yet"
+        description="You haven't set up any keywords to auto-reply to comments or DMs yet. Create one now to engage your audience 24/7."
+        actionText="Create Auto-Reply"
+        onAction={onCreateNew}
+      />
     );
   }
 
