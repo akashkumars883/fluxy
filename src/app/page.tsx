@@ -72,7 +72,8 @@ export default async function Home({ searchParams }: PageProps) {
   ]);
 
   const realStats = {
-    users: usersRes?.data?.total || usersRes?.data?.users?.length || 0,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    users: (usersRes?.data as any)?.total || usersRes?.data?.users?.length || 0,
     messages: messagesRes?.count || 0,
     triggers: triggersRes?.count || 0
   };
