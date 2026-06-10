@@ -8,6 +8,8 @@ import FAQ from "@/components/marketing/FAQ";
 import CTA from "@/components/marketing/CTA";
 import JsonLd from "@/components/seo/JsonLd";
 
+export const revalidate = 3600; // Cache page for 1 hour to prevent database overload
+
 export const metadata = {
   title: "Automixa — Instagram DM & Comment Automation for Creatores",
   description: "Auto-reply to Instagram comments & DMs in seconds. Capture leads, deliver resources, and grow on autopilot. Free trial — no credit card required.",
@@ -39,7 +41,7 @@ export const metadata = {
 };
 
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase";
+import { createClient, createAdminClient } from "@/lib/supabase";
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -60,12 +62,26 @@ export default async function Home({ searchParams }: PageProps) {
     redirect("/dashboard");
   }
 
+  // Fetch real stats
+  const supabaseAdmin = createAdminClient();
+  const [usersRes, messagesRes, triggersRes] = await Promise.all([
+    supabaseAdmin.auth.admin.listUsers({ perPage: 1 }),
+    supabaseAdmin.from('automation_history').select('*', { count: 'exact', head: true }).eq('status', 'SUCCESS'),
+    supabaseAdmin.from('triggers').select('*', { count: 'exact', head: true })
+  ]);
+
+  const realStats = {
+    users: usersRes?.data?.total || usersRes?.data?.users?.length || 0,
+    messages: messagesRes?.count || 0,
+    triggers: triggersRes?.count || 0
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-background overflow-x-hidden">
       <main>
         <JsonLd />
         <Hero />
-        <Stats />
+        <Stats realStats={realStats} />
         <HowItWorks />
         <Features />
         <Testimonials />
