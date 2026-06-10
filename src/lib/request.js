@@ -14,6 +14,15 @@ export function getRequestOrigin(request) {
   
   // Prioritize X-Forwarded-Host, then Host header
   const targetHost = xForwardedHost || host;
+
+  // If NEXT_PUBLIC_APP_URL is defined, use it in production or when targetHost is not local
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    const isLocal = targetHost && (targetHost.includes('localhost') || targetHost.includes('127.0.0.1'));
+    if (!isLocal || process.env.NODE_ENV === 'production') {
+      return process.env.NEXT_PUBLIC_APP_URL;
+    }
+  }
+
   if (!targetHost) return origin;
   
   // Determine protocol (HTTPS/HTTP)
