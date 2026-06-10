@@ -21,11 +21,6 @@ const GoogleIcon = () => (
   </svg>
 );
 
-const FacebookIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" fill="#1877F2"/>
-  </svg>
-);
 
 export default function LoginPage() {
   const router = useRouter();
@@ -172,7 +167,7 @@ export default function LoginPage() {
         
         if (data?.session) {
           toast.success("Account created successfully!");
-          router.replace("/dashboard");
+          router.replace("/dashboard?start=onboarding");
         } else {
           toast.success("Verification link sent! Check your inbox.");
         }
@@ -401,12 +396,12 @@ export default function LoginPage() {
               </div>
 
               {/* OAuth Login Buttons */}
-              <div className="grid grid-cols-2 gap-3 mt-3">
+              <div className="mt-3">
                 <button 
                   type="button"
                   onClick={() => handleOAuthLogin('google')}
                   disabled={loadingProvider !== null || isLoading}
-                  className="flex items-center justify-center gap-2 bg-white border border-zinc-200 hover:bg-zinc-50 hover:border-zinc-300 rounded-xl py-3 px-4 transition-all active:scale-[0.98] cursor-pointer shadow-sm"
+                  className="w-full flex items-center justify-center gap-2 bg-white border border-zinc-200 hover:bg-zinc-50 hover:border-zinc-300 rounded-xl py-3 px-4 transition-all active:scale-[0.98] cursor-pointer shadow-sm"
                   title="Continue with Google"
                 >
                   {loadingProvider === 'google' ? (
@@ -414,22 +409,7 @@ export default function LoginPage() {
                   ) : (
                     <GoogleIcon />
                   )}
-                  <span className="text-xs font-semibold text-zinc-600 hidden xs:inline">Google</span>
-                </button>
-
-                <button 
-                  type="button"
-                  onClick={() => handleOAuthLogin('facebook')}
-                  disabled={loadingProvider !== null || isLoading}
-                  className="flex items-center justify-center gap-2 bg-white border border-zinc-200 hover:bg-zinc-50 hover:border-zinc-300 rounded-xl py-3 px-4 transition-all active:scale-[0.98] cursor-pointer shadow-sm"
-                  title="Continue with Facebook"
-                >
-                  {loadingProvider === 'facebook' ? (
-                    <div className="h-4 w-4 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <FacebookIcon />
-                  )}
-                  <span className="text-xs font-semibold text-zinc-600 hidden xs:inline">Facebook</span>
+                  <span className="text-xs font-semibold text-zinc-600">Continue with Google</span>
                 </button>
               </div>
 

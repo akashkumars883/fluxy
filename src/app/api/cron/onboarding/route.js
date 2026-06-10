@@ -30,21 +30,15 @@ export async function GET(req) {
     const now = new Date();
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-    // 1. Fetch workspaces created in the last 7 days, along with their connected Instagrams
-    const { data: workspaces, error: wsError } = await supabase
-      .from("workspaces")
-      .select(`
-        id,
-        user_id,
-        created_at,
-        automations ( id )
-      `)
-      .gt("created_at", sevenDaysAgo)
-      .order("created_at", { ascending: true });
+    // 1. Fetch users from auth admin API
+    const { data: authData, error: authError } = await supabase.auth.admin.listUsers({ perPage: 1000 });
 
-    if (wsError) {
-      throw wsError;
+    if (authError) {
+      throw authError;
     }
+
+    const allUsers = authData?.users || [];
+    const recentUsers = allUsers.filter(u => new Date(u.created_at) > new Date(sevenDaysAgo));
 
     // 2. Fetch already sent onboarding emails
     const { data: sentEmails, error: sentError } = await supabase
@@ -55,20 +49,30 @@ export async function GET(req) {
       throw sentError;
     }
 
-    // Deduplicate by user_id, keeping the oldest workspace creation date
-    const uniqueUsers = new Map();
-    for (const w of workspaces || []) {
-      if (!uniqueUsers.has(w.user_id)) {
-        uniqueUsers.set(w.user_id, {
-          user_id: w.user_id,
-          created_at: w.created_at,
-          hasInstagram: w.automations && w.automations.length > 0
-        });
-      } else {
-        if (w.automations && w.automations.length > 0) {
-          uniqueUsers.get(w.user_id).hasInstagram = true;
-        }
+    // 3. Find if these recent users have any automations (Instagram connected)
+    const userIds = recentUsers.map(u => u.id);
+    
+    let usersWithInstagram = new Set();
+    if (userIds.length > 0) {
+      const { data: automations, error: autoError } = await supabase
+        .from("automations")
+        .select("user_id, id")
+        .in("user_id", userIds);
+        
+      if (!autoError) {
+        usersWithInstagram = new Set(automations?.map(a => a.user_id) || []);
       }
+    }
+
+    const uniqueUsers = new Map();
+    for (const u of recentUsers) {
+      uniqueUsers.set(u.id, {
+        user_id: u.id,
+        email: u.email,
+        name: u.user_metadata?.full_name || u.user_metadata?.name || "there",
+        created_at: u.created_at,
+        hasInstagram: usersWithInstagram.has(u.id)
+      });
     }
 
     const processedLogs = [];
@@ -101,17 +105,7 @@ export async function GET(req) {
       }
 
       if (emailTypeToSend) {
-        // Fetch user from auth to get email and metadata
-        const { data: authUserObj, error: userError } = await supabase.auth.admin.getUserById(userId);
-
-        if (userError || !authUserObj?.user) {
-          console.warn(`Could not fetch auth details for user ${userId}:`, userError?.message);
-          continue;
-        }
-
-        const userObj = authUserObj.user;
-        const email = userObj.email;
-        const name = userObj.user_metadata?.full_name || userObj.user_metadata?.name || "there";
+        const { email, name } = userDetails;
 
         if (!email) {
           console.warn(`User ${userId} does not have an email address`);

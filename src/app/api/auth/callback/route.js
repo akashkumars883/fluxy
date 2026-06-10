@@ -36,8 +36,14 @@ export async function GET(request) {
   );
 
   if (code) {
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
+    const { data: { session }, error } = await supabase.auth.exchangeCodeForSession(code);
+    if (!error && session) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user && !user.user_metadata?.onboarding_completed) {
+        if (next === '/dashboard') {
+          next = '/dashboard?start=onboarding';
+        }
+      }
       console.log(`✅ OAuth Exchange Successful. Redirecting to: ${next}`);
       return NextResponse.redirect(`${origin}${next}`);
     }

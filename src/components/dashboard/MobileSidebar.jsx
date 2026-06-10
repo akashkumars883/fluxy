@@ -1,6 +1,5 @@
 "use client";
 
-import WorkspaceSwitcher from "@/components/dashboard/WorkspaceSwitcher";
 import { useDashboard } from "@/context/DashboardContext";
 import { AnimatePresence,motion } from "framer-motion";
 import { ChevronDown,Lock as LucideLock,Plus,X } from "lucide-react";

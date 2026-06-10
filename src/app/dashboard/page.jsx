@@ -30,7 +30,6 @@ import CreatorOverview from "@/components/dashboard/CreatorOverview";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import NotificationDropdown from "@/components/dashboard/NotificationDropdown";
 import ProfileDropdown from "@/components/dashboard/ProfileDropdown";
-import WorkspaceSwitcher from "@/components/dashboard/WorkspaceSwitcher";
 import { Zap, Search, X, Clock, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import EditTriggerModal from "@/components/dashboard/EditTriggerModal";
@@ -52,6 +51,9 @@ import AppShell from "@/components/layout/AppShell";
 
 // Context
 import { useDashboard } from "@/context/DashboardContext";
+
+// Constants
+const FREE_PLAN_TRIGGER_LIMIT = 5;
 
 function getInitialOnboardingState() {
   if (typeof window === "undefined") {
@@ -425,7 +427,7 @@ export default function Dashboard() {
   }, [selectedAccount, setRealtimeStats]);
 
   const handleCreateTriggerStart = (templateId = "custom", title = "New Campaign") => {
-    if (currentPlan === "free" && triggersList.length >= 5) {
+    if (currentPlan === "free" && triggersList.length >= FREE_PLAN_TRIGGER_LIMIT) {
       setIsCreateModalOpen(false);
       setIsSubscriptionOpen(true);
       return;
@@ -437,7 +439,7 @@ export default function Dashboard() {
   };
 
   const handleAddTrigger = async (keyword, response, options = {}) => {
-    if (currentPlan === "free" && triggersList.length >= 5) {
+    if (currentPlan === "free" && triggersList.length >= FREE_PLAN_TRIGGER_LIMIT) {
       setIsSubscriptionOpen(true);
       return;
     }
@@ -731,13 +733,7 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                {/* Workspace Switcher */}
-                <div className="hidden md:block">
-                  <WorkspaceSwitcher variant="minimal" onUpgradeClick={() => {
-                    setUpgradeReason("");
-                    setIsSubscriptionOpen(true);
-                  }} />
-                </div>
+
 
                 {/* Notification Dropdown */}
                 <NotificationDropdown accounts={accounts} />

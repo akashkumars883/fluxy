@@ -4,7 +4,6 @@ import { HelpCircle, Search, Users, BarChart2, Settings } from "lucide-react";
 import NotificationDropdown from "@/components/dashboard/NotificationDropdown";
 import ProfileDropdown from "@/components/dashboard/ProfileDropdown";
 import { useDashboard } from "@/context/DashboardContext";
-import WorkspaceSwitcher from "@/components/dashboard/WorkspaceSwitcher";
 
 export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, realtimeStats, onAccountSettingsClick, onSubscriptionClick, onMenuClick }) {
   const { user, setActiveTab, isSidebarCollapsed } = useDashboard();
@@ -45,9 +44,7 @@ export default function DashboardNavbar({ isScrolled, onHelpClick, accounts, rea
           </div>
         </div>
 
-        <div className="hidden md:block mr-1">
-          <WorkspaceSwitcher variant="minimal" onUpgradeClick={onSubscriptionClick} />
-        </div>
+
 
         <NotificationDropdown accounts={accounts} />
 
