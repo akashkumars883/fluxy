@@ -210,7 +210,7 @@ export default function LoginPage() {
 
       <PageTransition>
         <div className="w-full h-full flex items-center justify-center">
-          <div className="w-full max-w-4xl bg-white border border-zinc-200/80 rounded-[24px] shadow-2xl flex flex-col md:flex-row relative z-10 h-auto md:h-[580px] animate-in zoom-in duration-500 overflow-visible md:overflow-hidden">
+          <div className="w-full max-w-4xl bg-white border border-zinc-200/80 rounded-xl shadow-2xl flex flex-col md:flex-row relative z-10 h-auto md:h-[580px] animate-in zoom-in duration-500 overflow-visible md:overflow-hidden">
             
             {/* LEFT SIDE: Visual Brand Experience with Colored Image Background */}
             <div className="hidden md:flex md:w-1/2 relative bg-zinc-950 flex-col justify-between pt-10 pb-5 px-8 lg:pt-12 lg:pb-6 lg:px-10 text-white overflow-hidden">
