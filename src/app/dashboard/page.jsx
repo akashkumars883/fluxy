@@ -888,7 +888,7 @@ export default function Dashboard() {
                         history={realtimeHistory}
                         topTriggers={realtimeTriggers}
                         automationId={selectedAccount?.id}
-                        currentPlan={currentPlan}
+                        currentPlan={effectivePlan}
                         onUpgradeClick={(reason) => {
                           setUpgradeReason(reason || "general");
                           setIsSubscriptionOpen(true);
@@ -914,7 +914,7 @@ export default function Dashboard() {
                       <TriggerList
                         triggers={triggersList}
                         isMasterActive={selectedAccount?.is_active}
-                        currentPlan={currentPlan}
+                        currentPlan={effectivePlan}
                         onUpgradeClick={(reason) => {
                           setUpgradeReason(reason || "general");
                           setIsSubscriptionOpen(true);
@@ -940,7 +940,7 @@ export default function Dashboard() {
                       <AudienceCRM 
                         accountId={selectedAccount.id} 
                         history={realtimeHistory} 
-                        currentPlan={currentPlan} 
+                        currentPlan={effectivePlan} 
                         onUpgradeClick={(reason) => {
                           setUpgradeReason(reason || "general");
                           setIsSubscriptionOpen(true);
@@ -955,7 +955,7 @@ export default function Dashboard() {
                       onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                       className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                     >
-                      <StoreManager accountId={selectedAccount.id} currentPlan={currentPlan} onUpgradeClick={(reason) => {
+                      <StoreManager accountId={selectedAccount.id} currentPlan={effectivePlan} onUpgradeClick={(reason) => {
                         setUpgradeReason(reason || "mini_store");
                         setIsSubscriptionOpen(true);
                       }} />
@@ -968,7 +968,7 @@ export default function Dashboard() {
                       onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                       className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                     >
-                      <SmartBio accountId={selectedAccount.id} account={selectedAccount} currentPlan={currentPlan} onUpgradeClick={(reason) => {
+                      <SmartBio accountId={selectedAccount.id} account={selectedAccount} currentPlan={effectivePlan} onUpgradeClick={(reason) => {
                         setUpgradeReason(reason || "smart_bio");
                         setIsSubscriptionOpen(true);
                       }} />
@@ -981,7 +981,7 @@ export default function Dashboard() {
                       onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
                       className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                     >
-                      <SettingsDashboard account={selectedAccount} currentPlan={currentPlan} realtimeStats={realtimeStats} onSubscriptionClick={() => {
+                      <SettingsDashboard account={selectedAccount} currentPlan={effectivePlan} realtimeStats={realtimeStats} onSubscriptionClick={() => {
                         setUpgradeReason("");
                         setIsSubscriptionOpen(true);
                       }} />
@@ -996,7 +996,7 @@ export default function Dashboard() {
                       className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
                     >
                       <PartnerDashboard 
-                        currentPlan={currentPlan} 
+                        currentPlan={effectivePlan} 
                         onUpgradeClick={(reason) => {
                           setUpgradeReason(reason || "general");
                           setIsSubscriptionOpen(true);
@@ -1118,7 +1118,7 @@ export default function Dashboard() {
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
           onSelect={handleCreateTriggerStart}
-          currentPlan={currentPlan}
+          currentPlan={effectivePlan}
           triggersCount={triggersList.length}
           onUpgradeClick={(reason) => {
             setUpgradeReason(reason || "general");
@@ -1135,7 +1135,7 @@ export default function Dashboard() {
           trigger={editingTrigger}
           onSave={handleSaveTrigger}
           onDelete={handleDeleteTrigger}
-          currentPlan={currentPlan}
+          currentPlan={effectivePlan}
           onUpgradeClick={(reason) => {
             setUpgradeReason(reason || "general");
             setIsSubscriptionOpen(true);
@@ -1153,7 +1153,7 @@ export default function Dashboard() {
             setIsSubscriptionOpen(false);
             setUpgradeReason("");
           }}
-          currentPlan={currentPlan}
+          currentPlan={effectivePlan}
           realtimeStats={realtimeStats}
           upgradeReason={upgradeReason}
         />
@@ -1180,7 +1180,7 @@ export default function Dashboard() {
                 automation={selectedAccount}
                 templateKey={builderTemplateKey}
                 campaignName={builderCampaignName}
-                currentPlan={currentPlan}
+                currentPlan={effectivePlan}
                 onUpgradeClick={(reason) => {
                   setUpgradeReason(reason || "general");
                   setIsSubscriptionOpen(true);
