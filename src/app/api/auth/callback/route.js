@@ -15,6 +15,7 @@ export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
   const next = safeInternalPath(searchParams.get('next'));
+  const cookieStore = await cookies();
 
   // Initialize Supabase client with request cookies for proper session handling
   const supabase = createServerClient(
@@ -23,11 +24,11 @@ export async function GET(request) {
     {
       cookies: {
         getAll() {
-          return cookies().getAll();
+          return cookieStore.getAll();
         },
         setAll(cookieList) {
           cookieList.forEach(({ name, value, options }) =>
-            cookies().set(name, value, options)
+            cookieStore.set(name, value, options)
           );
         },
       },
