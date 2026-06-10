@@ -8,8 +8,10 @@ const DashboardContext = createContext();
 
 // Safe JSON.parse wrapper to prevent crash on corrupted localStorage
 function safeJSONParse(str, fallback) {
+  if (!str) return fallback;
   try {
-    return JSON.parse(str);
+    const parsed = JSON.parse(str);
+    return parsed !== null && parsed !== undefined ? parsed : fallback;
   } catch {
     return fallback;
   }
