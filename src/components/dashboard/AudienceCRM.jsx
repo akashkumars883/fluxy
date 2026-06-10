@@ -138,7 +138,7 @@ export default function AudienceCRM({ history = [], currentPlan = "free", onUpgr
   });
 
   // Stats
-  const totalInteractions = history.length;
+  const totalInteractions = (history || []).length;
   const uniqueUsers = allAudience.length;
   const successfulDeliveries = (history || []).filter((h) => h.status === "SUCCESS").length;
   const successRate = totalInteractions > 0

@@ -313,7 +313,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
           </div>
 
           <div className="flex-1 overflow-y-auto no-scrollbar pr-1 divide-y divide-zinc-100">
-            {!history || history.length === 0 ? (
+            {safeHistory.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full py-10 text-center space-y-3">
                 <div className="w-10 h-10 rounded-full bg-zinc-50 flex items-center justify-center">
                   <Activity size={18} className="text-zinc-300" />
@@ -321,7 +321,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
                 <p className="text-xs text-zinc-400 font-semibold">No recent activity.</p>
               </div>
             ) : (
-              history.map((log, index) => (
+              safeHistory.map((log, index) => (
                 <div key={log.id} className="flex items-center justify-between py-3 group cursor-default">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <AudienceAvatar
