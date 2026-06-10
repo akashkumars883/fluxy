@@ -358,11 +358,11 @@ export default function WorkspaceSwitcher({ variant = "sidebar", onUpgradeClick 
                     Accounts in this Workspace
                   </label>
                   
-                  {allAccounts.length === 0 ? (
+                  {(allAccounts || []).length === 0 ? (
                     <p className="text-xs text-zinc-400 italic">No accounts connected to your profile.</p>
                   ) : (
                     <div className="space-y-1.5 max-h-48 overflow-y-auto no-scrollbar">
-                      {allAccounts.map(acc => {
+                      {(allAccounts || []).map(acc => {
                         const isMappedToThis = (acc.workspace_id || JSON.parse(localStorage.getItem("automixa_account_workspace_mappings") || "{}")[acc.id] || "personal") === managingWs.id;
                         return (
                           <div key={acc.id} className="flex items-center justify-between p-2 hover:bg-zinc-50 rounded-xl border border-zinc-100 bg-white">
