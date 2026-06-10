@@ -84,10 +84,10 @@ export function DashboardProvider({ children, initialData = null }) {
     if (initialData?.session) {
       logger.log("DashboardContext: Hydrated using Server-side hydration data");
     } else {
-      supabaseClient.auth.getSession().then(({ data: { session } }) => {
-        if (session) {
-          logger.log("DashboardContext: Initial Session Found");
-          loadData(session);
+      supabaseClient.auth.getUser().then(({ data: { user } }) => {
+        if (user) {
+          logger.log("DashboardContext: Initial User Found");
+          loadData({ user });
         } else {
           const isLocalDev = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
           if (isLocalDev) {

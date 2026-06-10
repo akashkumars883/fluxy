@@ -55,8 +55,8 @@ export default async function Home({ searchParams }: PageProps) {
   }
 
   const supabase = createClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session && home !== "true") {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user && home !== "true") {
     redirect("/dashboard");
   }
 

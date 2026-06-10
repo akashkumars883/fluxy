@@ -11,15 +11,15 @@ export default async function DashboardLayout({ children }) {
   };
 
   try {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-      initialData.session = session;
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (user && !error) {
+      initialData.session = { user };
 
       // Parallel data fetching for workspaces, automations, and subscription plan
       const [workspacesRes, automationsRes, subscriptionRes] = await Promise.allSettled([
-        supabase.from("workspaces").select("*").eq("user_id", session.user.id),
-        supabase.from("automations").select("*").eq("user_id", session.user.id),
-        supabase.from("subscriptions").select("plan_id").eq("user_id", session.user.id).single()
+        supabase.from("workspaces").select("*").eq("user_id", user.id),
+        supabase.from("automations").select("*").eq("user_id", user.id),
+        supabase.from("subscriptions").select("plan_id").eq("user_id", user.id).single()
       ]);
 
       if (workspacesRes.status === "fulfilled" && workspacesRes.value.data) {

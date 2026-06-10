@@ -118,8 +118,14 @@ export async function GET(request) {
       console.log(`✅ FB Page Webhook Subscription Successful for ${username}`);
     }
 
-    // 7. Instagram webhooks are automatically enabled via the Facebook Page subscription.
-    console.log(`Instagram Business Account ID: ${instagramId} is ready via Page subscription.`);
+    // 7. Subscribe Instagram Business Account to Webhooks
+    console.log(`Subscribing Instagram Business Account ID: ${instagramId} to Webhooks...`);
+    const igSubscriptionResult = await MetaService.subscribeIgToWebhooks(instagramId, pageToken);
+    if (!igSubscriptionResult.success) {
+      console.warn(`⚠️ IG Webhook Subscription Warning for ${username}:`, igSubscriptionResult.error);
+    } else {
+      console.log(`✅ IG Webhook Subscription Successful for ${username}`);
+    }
 
     const encryptedToken = encryptToken(pageToken);
 

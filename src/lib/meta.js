@@ -300,8 +300,8 @@ export const MetaService = {
       if (!response.ok) throw new Error(data?.error?.message || "Failed to fetch user profile");
       return { success: true, data };
     } catch (error) {
-      // Silence Error #230 (Consent required) as it's expected for new commenters
-      if (!error.message.includes("(#230)")) {
+      // Silence Error #230 (Consent required) and #803 (IGSID not found) as it's expected for new commenters
+      if (!error.message.includes("(#230)") && !error.message.includes("(#803)")) {
         console.error("Meta API - getUserProfile Error:", error.message);
       }
       return { success: false, error: error.message };
@@ -537,7 +537,9 @@ export const MetaService = {
       }
       
       if (!response.ok) {
-        console.error("Meta API getMediaList Error:", data.error?.message);
+        if (!data.error?.message?.includes("missing permissions")) {
+          console.error("Meta API getMediaList Error:", data.error?.message);
+        }
         throw new Error(data.error?.message || "Failed to fetch media list");
       }
       

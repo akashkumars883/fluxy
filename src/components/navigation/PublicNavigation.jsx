@@ -28,8 +28,8 @@ export default function PublicNavigation() {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setSession(user ? { user } : null);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
