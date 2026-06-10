@@ -94,6 +94,10 @@ export default function Dashboard() {
     setUpgradeReason,
   } = useDashboard();
 
+  // --- CONFIG: SET TO false TO RE-ENABLE PAYWALLS ---
+  const BYPASS_PLAN_LIMITS = true;
+  const effectivePlan = BYPASS_PLAN_LIMITS ? "viral_scale" : currentPlan;
+
   const router = useRouter();
   const initialOnboardingState = useMemo(() => getInitialOnboardingState(), []);
   const [showOnboarding, setShowOnboarding] = useState(initialOnboardingState.showOnboarding);
@@ -427,7 +431,7 @@ export default function Dashboard() {
   }, [selectedAccount, setRealtimeStats]);
 
   const handleCreateTriggerStart = (templateId = "custom", title = "New Campaign") => {
-    if (currentPlan === "free" && triggersList.length >= FREE_PLAN_TRIGGER_LIMIT) {
+    if (effectivePlan === "free" && triggersList.length >= FREE_PLAN_TRIGGER_LIMIT) {
       setIsCreateModalOpen(false);
       setIsSubscriptionOpen(true);
       return;
@@ -439,7 +443,7 @@ export default function Dashboard() {
   };
 
   const handleAddTrigger = async (keyword, response, options = {}) => {
-    if (currentPlan === "free" && triggersList.length >= FREE_PLAN_TRIGGER_LIMIT) {
+    if (effectivePlan === "free" && triggersList.length >= FREE_PLAN_TRIGGER_LIMIT) {
       setIsSubscriptionOpen(true);
       return;
     }
@@ -578,7 +582,7 @@ export default function Dashboard() {
   };
 
   const handleConnectClick = () => {
-    if (currentPlan === "free" && accounts && accounts.length >= 1) {
+    if (effectivePlan === "free" && accounts && accounts.length >= 1) {
       setUpgradeReason("multiple_accounts");
       setIsSubscriptionOpen(true);
       return;
@@ -620,7 +624,7 @@ export default function Dashboard() {
       "viral_scale": 2
     };
 
-    const userPlanLevel = planHierarchy[currentPlan] || 0;
+    const userPlanLevel = planHierarchy[effectivePlan] || 0;
     const reqPlanLevel = planHierarchy[item.reqPlan] || 0;
 
     const isLockedByPlan = userPlanLevel < reqPlanLevel;
@@ -631,7 +635,7 @@ export default function Dashboard() {
     };
   });
 
-  const maxQuota = currentPlan === "viral_scale" ? 50000 : currentPlan === "creator_pro" ? 15000 : 1000;
+  const maxQuota = effectivePlan === "viral_scale" ? 50000 : effectivePlan === "creator_pro" ? 15000 : 1000;
   const usedQuota = (realtimeStats?.totalDms || 0) + (realtimeStats?.autoReplies || 0);
   const quotaPercent = Math.min(100, Math.round((usedQuota / maxQuota) * 100));
 
@@ -758,13 +762,13 @@ export default function Dashboard() {
                     {activeTab === "audience" && (
                       <Button
                         onClick={() => window.dispatchEvent(new Event("export_audience_csv"))}
-                        variant={currentPlan === "free" ? "ghost" : "primary"}
-                        disabled={currentPlan === "free"}
+                        variant={effectivePlan === "free" ? "ghost" : "primary"}
+                        disabled={effectivePlan === "free"}
                         className="flex items-center gap-1.5 px-3 py-1.5 text-[11px]"
                       >
                         <Download size={12} />
                         <span>Export CSV</span>
-                        {currentPlan === "free" && <LucideLock size={10} />}
+                        {effectivePlan === "free" && <LucideLock size={10} />}
                       </Button>
                     )}
 

@@ -223,7 +223,10 @@ export async function processAutomation(senderId, text, type, recipientId, comme
         .eq("status", "active")
         .limit(1);
 
-      userPlan = subData?.[0]?.plan_id || subData?.[0]?.plan || "free";
+      // --- CONFIG: SET TO false TO RE-ENABLE PAYWALLS ---
+      const BYPASS_PLAN_LIMITS = true;
+
+      userPlan = BYPASS_PLAN_LIMITS ? "viral_scale" : (subData?.[0]?.plan_id || subData?.[0]?.plan || "free");
       const planLimits = {
         free: 1000,
         creator_pro: 15000,
