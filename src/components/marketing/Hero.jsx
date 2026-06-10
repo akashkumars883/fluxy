@@ -14,14 +14,14 @@ export default function Hero() {
           src="/images/hero-bg.jpg.png"
           alt="Automixa Instagram business automation platform background"
           fill
-          className="object-cover object-[75%_center] md:object-center"
+          className="object-cover object-right md:object-center"
           priority
         />
         <div className="absolute inset-0 bg-zinc-950/70 z-10" />
       </div>
 
       {/* Content */}
-      <div className="max-w-5xl mx-auto px-6 sm:px-10 relative z-20 w-full text-center">
+      <div className="max-w-5xl mx-auto px-6 sm:px-10 relative z-20 w-full text-left">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -49,7 +49,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="text-base md:text-xl text-zinc-200 font-normal leading-relaxed max-w-2xl mx-auto mt-6"
+          className="text-base md:text-xl text-zinc-200 font-normal leading-relaxed max-w-2xl mt-6"
         >
           Turn comments into customers. Capture leads, deliver resources, and grow on autopilot — 24/7.
         </motion.p>
@@ -58,7 +58,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
+          className="mt-10 flex flex-col sm:flex-row items-start sm:items-center justify-start gap-4"
         >
           <Link
             href="/login"
