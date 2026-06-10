@@ -664,52 +664,39 @@ export async function processAutomation(senderId, text, type, recipientId, comme
     }
 
     // Update Log to SUCCESS or insert a new one if it wasn't pre-created
-    if (type === "COMMENT" && commentId) {
+    const { data: existingLogs } = await supabaseAdmin.from("automation_history")
+      .select("id, status, metadata")
+      .eq("automation_id", automation.id)
+      .eq("sender_id", senderId)
+      .order('created_at', { ascending: false })
+      .limit(1);
+
+    if (existingLogs && existingLogs.length > 0 && existingLogs[0].status === "INTERACTED") {
       await supabaseAdmin.from("automation_history")
         .update({ 
           status: "SUCCESS", 
-          metadata: { funnel_complete: true, scraped: true, event_key: eventKey, comment_id: commentId, message_id: messageId, media_id: mediaId, is_following: isFollowing } 
+          metadata: { 
+            ...(existingLogs[0].metadata || {}),
+            funnel_complete: true, 
+            scraped: true, 
+            event_key: eventKey, 
+            comment_id: commentId, 
+            message_id: messageId, 
+            media_id: mediaId,
+            is_following: isFollowing
+          } 
         })
-        .eq("automation_id", automation.id)
-        .eq("sender_id", senderId)
-        .order('created_at', { ascending: false })
-        .limit(1);
+        .eq("id", existingLogs[0].id);
     } else {
-      // Check if there is an existing 'INTERACTED' log for this sender to update
-      const { data: existingLogs } = await supabaseAdmin.from("automation_history")
-        .select("id, status, metadata")
-        .eq("automation_id", automation.id)
-        .eq("sender_id", senderId)
-        .order('created_at', { ascending: false })
-        .limit(1);
-
-      if (existingLogs && existingLogs.length > 0 && existingLogs[0].status === "INTERACTED") {
-        await supabaseAdmin.from("automation_history")
-          .update({ 
-            status: "SUCCESS", 
-            metadata: { 
-              ...(existingLogs[0].metadata || {}),
-              funnel_complete: true, 
-              scraped: true, 
-              event_key: eventKey, 
-              comment_id: commentId, 
-              message_id: messageId, 
-              media_id: mediaId,
-              is_following: isFollowing
-            } 
-          })
-          .eq("id", existingLogs[0].id);
-      } else {
-        await supabaseAdmin.from("automation_history").insert({
-          automation_id: automation.id,
-          sender_id: senderId,
-          sender_name: userName || "there",
-          type: type || "DM",
-          keyword: match.keyword,
-          status: "SUCCESS",
-          metadata: { funnel_complete: true, scraped: true, event_key: eventKey, comment_id: commentId, message_id: messageId, media_id: mediaId, is_following: isFollowing }
-        });
-      }
+      await supabaseAdmin.from("automation_history").insert({
+        automation_id: automation.id,
+        sender_id: senderId,
+        sender_name: userName || "there",
+        type: type || (commentId ? "COMMENT" : "DM"),
+        keyword: match.keyword,
+        status: "SUCCESS",
+        metadata: { funnel_complete: true, scraped: true, event_key: eventKey, comment_id: commentId, message_id: messageId, media_id: mediaId, is_following: isFollowing }
+      });
     }
 
     // --- OUTBOUND WEBHOOK DISPATCH (Asynchronous, Non-blocking) ---
