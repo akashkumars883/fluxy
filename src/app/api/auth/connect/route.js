@@ -46,7 +46,7 @@ export async function GET(request) {
     state,
     response_type: "code",
     auth_type: "rerequest",
-    scope: ["pages_show_list", "instagram_basic", "instagram_manage_messages", "instagram_manage_comments", "pages_manage_metadata", "pages_read_engagement", "business_management"].join(",")
+    scope: ["pages_show_list", "instagram_basic", "instagram_manage_messages", "instagram_manage_comments", "pages_manage_metadata", "pages_read_engagement"].join(",")
   });
 
   // Use traditional Facebook Login flow matching the approved Meta Developer permissions
