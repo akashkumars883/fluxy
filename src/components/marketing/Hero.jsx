@@ -14,14 +14,14 @@ export default function Hero() {
           src="/images/hero-bg.jpg.png"
           alt="Automixa Instagram business automation platform background"
           fill
-          className="object-cover object-right md:object-center"
+          className="object-cover object-[25%_center] md:object-center"
           priority
         />
         <div className="absolute inset-0 bg-zinc-950/70 z-10" />
       </div>
 
       {/* Content */}
-      <div className="max-w-5xl mx-auto px-6 sm:px-10 relative z-20 w-full text-left">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-16 relative z-20 w-full text-left">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
