@@ -179,7 +179,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
 
   const handleCheckout = async () => {
     if (!utrNumber || utrNumber.length < 12) {
-      alert("Please enter a valid 12-digit UTR or Reference Number.");
+      alert("Please enter a valid 12-digit UPI Ref No.");
       return;
     }
 
@@ -404,7 +404,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                       </div>
                       <h3 className="text-xl font-bold text-zinc-900">Payment Submitted!</h3>
                       <p className="text-sm text-zinc-600 max-w-sm mx-auto">
-                        Your UTR number has been received. Our team will verify the payment and upgrade your account within 1-2 hours.
+                        Your UPI Reference Number has been received. Our team will verify the payment and upgrade your account within 1-2 hours.
                       </p>
                       <button
                         onClick={onClose}
@@ -553,7 +553,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                         </div>
                         
                         <div className="space-y-2 pt-2">
-                          <label className="text-[11px] font-semibold text-zinc-700 uppercase tracking-wider block">Enter 12-Digit UTR Number</label>
+                          <label className="text-[11px] font-semibold text-zinc-700 uppercase tracking-wider block">Enter 12-Digit UPI Ref No.</label>
                           <input
                             type="text"
                             placeholder="e.g. 315482910384"
