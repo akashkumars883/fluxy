@@ -231,7 +231,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 15 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="relative bg-white w-full max-w-lg max-h-[90vh] rounded-[24px] shadow-2xl border border-zinc-200/80 overflow-hidden flex flex-col z-10"
+            className={`relative bg-white w-full ${step === 2 && !paymentSuccess ? 'max-w-3xl' : 'max-w-lg'} max-h-[90vh] rounded-[24px] shadow-2xl border border-zinc-200/80 overflow-hidden flex flex-col z-10 transition-all duration-300`}
           >
             {/* Header */}
             <div className="px-6 py-5 flex items-center justify-between border-b border-zinc-100 shrink-0">
@@ -386,12 +386,12 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
               )}
 
               {activeTab === 'plans' && step === 2 && (
-                <div className="space-y-5 animate-in fade-in duration-300">
+                <div className="animate-in fade-in duration-300 flex flex-col">
                   {/* Back button */}
                   {!paymentSuccess && (
                     <button 
                       onClick={() => setStep(1)} 
-                      className="flex items-center gap-1 text-xs font-semibold text-[#6366F1] hover:text-indigo-700 transition-colors cursor-pointer"
+                      className="flex items-center gap-1.5 text-xs font-semibold text-zinc-500 hover:text-zinc-800 transition-colors cursor-pointer mb-4"
                     >
                       <span>← Back to plans</span>
                     </button>
@@ -414,28 +414,30 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                       </button>
                     </div>
                   ) : (
-                    <div className="bg-zinc-50 border border-zinc-150 rounded-2xl p-5 space-y-4">
-                    <div>
-                      <h4 className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest border-b border-zinc-200/50 pb-2 mb-3">Order Summary</h4>
-                      
-                      {/* Selected Plan Summary card */}
-                      <div className="bg-white border border-zinc-100 rounded-xl p-3 flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-lg bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center shrink-0">
-                            {selectedPlanId === 'viral_scale' ? <Sparkles size={14} /> : selectedPlanId === 'creator_pro' ? <Zap size={14} /> : <BarChart3 size={14} />}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+                      {/* Left Side: Order Summary */}
+                      <div className="bg-zinc-50/80 border border-zinc-200/60 rounded-2xl p-5 sm:p-6 space-y-5 flex flex-col">
+                        <div>
+                          <h4 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest border-b border-zinc-200/50 pb-2 mb-4">Order Summary</h4>
+                          
+                          {/* Selected Plan Summary card */}
+                          <div className="bg-white border border-zinc-200 shadow-sm rounded-xl p-3 flex items-center justify-between mb-5">
+                            <div className="flex items-center gap-3">
+                              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border border-indigo-100/50">
+                                {selectedPlanId === 'viral_scale' ? <Sparkles size={16} /> : selectedPlanId === 'creator_pro' ? <Zap size={16} /> : <BarChart3 size={16} />}
+                              </div>
+                              <div>
+                                <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider">Plan</span>
+                                <h5 className="text-sm font-bold text-zinc-900 leading-none mt-0.5">{plans.find(p => p.id === selectedPlanId)?.name}</h5>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-sm font-bold text-indigo-600">
+                                {isIndia ? '₹' : '$'}{getDisplayPrice(plans.find(p => p.id === selectedPlanId), false)}
+                              </span>
+                              <p className="text-[9px] text-zinc-400 font-semibold mt-0.5">/{isAnnual ? 'yr' : 'mo'}</p>
+                            </div>
                           </div>
-                          <div>
-                            <span className="text-[9px] font-semibold text-zinc-400 uppercase tracking-wider">Plan</span>
-                            <h5 className="text-xs font-semibold text-zinc-800">{plans.find(p => p.id === selectedPlanId)?.name}</h5>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <span className="text-xs font-semibold text-[#6366F1]">
-                            {isIndia ? '₹' : '$'}{getDisplayPrice(plans.find(p => p.id === selectedPlanId), false)}
-                          </span>
-                          <p className="text-[9px] text-zinc-400 font-medium mt-0.5">/{isAnnual ? 'yr' : 'mo'}</p>
-                        </div>
-                      </div>
 
                       {/* Promo Code Input (Hidden for free plan) */}
                       {selectedPlanId !== 'free' && (
@@ -523,63 +525,80 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                             </div>
                           )}
 
-                          <div className="border-t border-zinc-200/50 pt-2 flex justify-between text-xs font-semibold text-zinc-900">
-                            <span>Total Payable</span>
-                            <span>{isIndia ? '₹' : '$'}{getDisplayPrice(plans.find(p => p.id === selectedPlanId), true)}</span>
+                        <div className="border-t border-zinc-200/60 pt-4 mt-auto">
+                          <div className="flex justify-between items-end">
+                            <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Total Payable</span>
+                            <span className="text-xl font-black text-zinc-950 tracking-tight">{isIndia ? '₹' : '$'}{getDisplayPrice(plans.find(p => p.id === selectedPlanId), true)}</span>
                           </div>
                         </div>
                       ) : (
-                        <div className="border-t border-zinc-200/60 pt-3 flex justify-between text-xs font-semibold text-zinc-900">
-                          <span>Total Payable</span>
-                          <span>₹0 / $0</span>
+                        <div className="border-t border-zinc-200/60 pt-4 mt-auto flex justify-between items-end">
+                          <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Total Payable</span>
+                          <span className="text-xl font-black text-zinc-950 tracking-tight">₹0 / $0</span>
                         </div>
                       )}
+                      </div>
                     </div>
 
-                    {selectedPlanId !== 'free' && (
-                      <div className="pt-2 border-t border-zinc-200/60 mt-4 space-y-4">
-                        <div className="bg-white border border-indigo-100 rounded-xl p-4 text-center">
-                          <p className="text-xs font-semibold text-zinc-800 mb-2">Scan QR to Pay via UPI</p>
-                          <div className="mx-auto w-40 h-40 bg-zinc-100 rounded-lg flex items-center justify-center overflow-hidden border border-zinc-200 shadow-sm">
-                            <img 
-                              src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=6201231875@pthdfc&pn=Automixa&am=${getDisplayPrice(plans.find(p => p.id === selectedPlanId), true).replace(/,/g, '')}`} 
-                              alt="UPI QR Code" 
-                              className="w-full h-full object-contain"
-                            />
+                    {/* Right Side: Payment Action */}
+                    <div className="relative bg-white border border-indigo-100/80 rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col justify-between overflow-hidden">
+                      {/* Decorative Background Accents */}
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50/50 rounded-bl-full pointer-events-none -z-10" />
+                      <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-50/30 rounded-tr-full pointer-events-none -z-10" />
+
+                      <div>
+                        <div className="flex items-center gap-2 mb-4">
+                          <div className="w-6 h-6 rounded bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                            <Zap size={12} className="fill-current" />
                           </div>
-                          <p className="text-[10px] text-zinc-500 font-medium mt-3">
-                            UPI ID: <strong className="text-zinc-800 select-all">6201231875@pthdfc</strong>
-                          </p>
+                          <h4 className="text-sm font-bold text-zinc-900">Secure UPI Payment</h4>
                         </div>
                         
-                        <div className="space-y-2 pt-2">
-                          <label className="text-[11px] font-semibold text-zinc-700 uppercase tracking-wider block">Enter 12-Digit UPI Ref No.</label>
-                          <input
-                            type="text"
-                            placeholder="e.g. 315482910384"
-                            value={utrNumber}
-                            onChange={(e) => setUtrNumber(e.target.value.replace(/[^0-9a-zA-Z]/g, '').slice(0, 22))}
-                            className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-sm font-medium text-zinc-800 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all placeholder:text-zinc-400"
-                          />
-                        </div>
+                        {selectedPlanId !== 'free' && (
+                          <div className="space-y-5">
+                            <div className="text-center">
+                              <p className="text-[11px] font-semibold text-zinc-500 mb-3">Scan with PhonePe, GPay, or Paytm</p>
+                              <div className="mx-auto w-44 h-44 bg-white p-2 rounded-2xl flex items-center justify-center border-2 border-indigo-100 shadow-[0_4px_20px_-8px_rgba(99,102,241,0.2)]">
+                                <img 
+                                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=6201231875@pthdfc&pn=Automixa&am=${getDisplayPrice(plans.find(p => p.id === selectedPlanId), true).replace(/,/g, '')}`} 
+                                  alt="UPI QR Code" 
+                                  className="w-full h-full object-contain"
+                                />
+                              </div>
+                              <p className="text-[10px] text-zinc-500 font-medium mt-3 bg-zinc-50 inline-block px-3 py-1 rounded-full border border-zinc-200">
+                                UPI ID: <strong className="text-zinc-800 select-all tracking-wide">6201231875@pthdfc</strong>
+                              </p>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <label className="text-[10px] font-bold text-zinc-700 uppercase tracking-widest block ml-1">Enter 12-Digit UPI Ref No.</label>
+                              <input
+                                type="text"
+                                placeholder="e.g. 315482910384"
+                                value={utrNumber}
+                                onChange={(e) => setUtrNumber(e.target.value.replace(/[^0-9a-zA-Z]/g, '').slice(0, 22))}
+                                className="w-full px-4 py-3 bg-zinc-50/50 border border-zinc-200 rounded-xl text-sm font-bold text-zinc-900 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder:text-zinc-400 placeholder:font-medium"
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    )}
 
-                    <div className="space-y-2 pt-2">
-                      <button
-                        onClick={handleCheckout}
-                        disabled={selectedPlanId !== 'free' && (!utrNumber || isSubmittingUtr)}
-                        className="w-full py-3 bg-zinc-950 text-white rounded-xl font-semibold text-xs shadow-lg flex items-center justify-center gap-1.5 hover:bg-zinc-800 transition-all active:scale-[0.99] cursor-pointer disabled:opacity-50"
-                      >
-                        <span>{isSubmittingUtr ? "Submitting..." : selectedPlanId === 'free' ? "Confirm Switch" : `Submit Payment of ${isIndia ? '₹' : '$'}${getDisplayPrice(plans.find(p => p.id === selectedPlanId), true)}`}</span>
-                        <ArrowRight size={13} />
-                      </button>
+                      <div className="space-y-3 pt-6 mt-auto">
+                        <button
+                          onClick={handleCheckout}
+                          disabled={selectedPlanId !== 'free' && (!utrNumber || isSubmittingUtr || utrNumber.length < 12)}
+                          className="w-full py-3.5 bg-zinc-950 text-white rounded-xl font-bold text-sm shadow-[0_8px_20px_-8px_rgba(0,0,0,0.4)] flex items-center justify-center gap-2 hover:bg-zinc-800 hover:-translate-y-0.5 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:hover:translate-y-0 disabled:cursor-not-allowed"
+                        >
+                          <span>{isSubmittingUtr ? "Verifying..." : selectedPlanId === 'free' ? "Confirm Switch" : `Submit Payment`}</span>
+                          <ArrowRight size={16} />
+                        </button>
 
-                      <p className="text-center text-[9px] text-zinc-400 font-medium">
-                        {selectedPlanId !== 'free' ? "🔒 Secure direct UPI payment verification" : ""}
-                      </p>
+                        <p className="text-center text-[10px] font-semibold text-emerald-600 flex items-center justify-center gap-1.5 bg-emerald-50 py-1.5 rounded-lg border border-emerald-100">
+                          {selectedPlanId !== 'free' ? <><CheckCircle2 size={12} /> Direct Bank Transfer (No Extra Fees)</> : ""}
+                        </p>
+                      </div>
                     </div>
-                  </div>
                   )}
                 </div>
               )}
