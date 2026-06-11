@@ -32,6 +32,12 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
   const [invoices, setInvoices] = useState([]);
   const [loadingInvoices, setLoadingInvoices] = useState(false);
 
+  // Manual UPI State
+  const [utrNumber, setUtrNumber] = useState("");
+  const [isSubmittingUtr, setIsSubmittingUtr] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+
+
   // Auto-detect location based on Timezone
   useEffect(() => {
     try {
@@ -172,35 +178,39 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
   };
 
   const handleCheckout = async () => {
-    try {
-      const storedRef = typeof window !== "undefined" ? localStorage.getItem("automixa_ref") : null;
+    if (!utrNumber || utrNumber.length < 12) {
+      alert("Please enter a valid 12-digit UTR or Reference Number.");
+      return;
+    }
 
-      // 1. Create order on the server
-      const createRes = await fetch("/api/checkout/create", {
+    setIsSubmittingUtr(true);
+    try {
+      const finalAmount = getDisplayPrice(plans.find(p => p.id === selectedPlanId), true).replace(/,/g, '');
+      
+      const res = await fetch("/api/payments/manual", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           planId: selectedPlanId,
           isAnnual,
           promoCode: promoApplied?.code || null,
-          ref: storedRef
+          utrNumber,
+          amount: parseFloat(finalAmount)
         }),
       });
 
-      const orderData = await createRes.json();
-      if (!createRes.ok || orderData.error) {
-        throw new Error(orderData.error || "Failed to initiate payment");
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to submit payment");
       }
 
-      // 2. Redirect to PhonePe payment page (or local simulation callback)
-      if (orderData.redirectUrl) {
-        window.location.href = orderData.redirectUrl;
-      } else {
-        throw new Error("Invalid payment gateway URL returned.");
-      }
+      setPaymentSuccess(true);
+      setUtrNumber("");
     } catch (err) {
-      logger.error("SubscriptionModal: Checkout launch error:", err);
-      alert("Could not start checkout process: " + err.message);
+      logger.error("SubscriptionModal: UTR submit error:", err);
+      alert("Could not submit payment: " + err.message);
+    } finally {
+      setIsSubmittingUtr(false);
     }
   };
 
@@ -378,14 +388,33 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
               {activeTab === 'plans' && step === 2 && (
                 <div className="space-y-5 animate-in fade-in duration-300">
                   {/* Back button */}
-                  <button 
-                    onClick={() => setStep(1)} 
-                    className="flex items-center gap-1 text-xs font-semibold text-[#6366F1] hover:text-indigo-700 transition-colors cursor-pointer"
-                  >
-                    <span>← Back to plans</span>
-                  </button>
+                  {!paymentSuccess && (
+                    <button 
+                      onClick={() => setStep(1)} 
+                      className="flex items-center gap-1 text-xs font-semibold text-[#6366F1] hover:text-indigo-700 transition-colors cursor-pointer"
+                    >
+                      <span>← Back to plans</span>
+                    </button>
+                  )}
 
-                  <div className="bg-zinc-50 border border-zinc-150 rounded-2xl p-5 space-y-4">
+                  {paymentSuccess ? (
+                    <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 sm:p-8 text-center space-y-4">
+                      <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <CheckCircle2 size={32} />
+                      </div>
+                      <h3 className="text-xl font-bold text-zinc-900">Payment Submitted!</h3>
+                      <p className="text-sm text-zinc-600 max-w-sm mx-auto">
+                        Your UTR number has been received. Our team will verify the payment and upgrade your account within 1-2 hours.
+                      </p>
+                      <button
+                        onClick={onClose}
+                        className="mt-4 px-6 py-2.5 bg-zinc-950 text-white rounded-xl font-semibold text-xs shadow-md hover:bg-zinc-800 transition-all cursor-pointer"
+                      >
+                        Back to Dashboard
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="bg-zinc-50 border border-zinc-150 rounded-2xl p-5 space-y-4">
                     <div>
                       <h4 className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest border-b border-zinc-200/50 pb-2 mb-3">Order Summary</h4>
                       
@@ -507,20 +536,51 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                       )}
                     </div>
 
+                    {selectedPlanId !== 'free' && (
+                      <div className="pt-2 border-t border-zinc-200/60 mt-4 space-y-4">
+                        <div className="bg-white border border-indigo-100 rounded-xl p-4 text-center">
+                          <p className="text-xs font-semibold text-zinc-800 mb-2">Scan QR to Pay via UPI</p>
+                          <div className="mx-auto w-40 h-40 bg-zinc-100 rounded-lg flex items-center justify-center overflow-hidden border border-zinc-200 shadow-sm">
+                            <img 
+                              src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=6201231875@pthdfc&pn=Automixa&am=${getDisplayPrice(plans.find(p => p.id === selectedPlanId), true).replace(/,/g, '')}`} 
+                              alt="UPI QR Code" 
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                          <p className="text-[10px] text-zinc-500 font-medium mt-3">
+                            UPI ID: <strong className="text-zinc-800 select-all">6201231875@pthdfc</strong>
+                          </p>
+                        </div>
+                        
+                        <div className="space-y-2 pt-2">
+                          <label className="text-[11px] font-semibold text-zinc-700 uppercase tracking-wider block">Enter 12-Digit UTR Number</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. 315482910384"
+                            value={utrNumber}
+                            onChange={(e) => setUtrNumber(e.target.value.replace(/[^0-9a-zA-Z]/g, '').slice(0, 22))}
+                            className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-sm font-medium text-zinc-800 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all placeholder:text-zinc-400"
+                          />
+                        </div>
+                      </div>
+                    )}
+
                     <div className="space-y-2 pt-2">
                       <button
                         onClick={handleCheckout}
-                        className="w-full py-3 bg-zinc-950 text-white rounded-sm font-semibold text-xs shadow-lg flex items-center justify-center gap-1.5 hover:bg-zinc-800 transition-all active:scale-[0.99] cursor-pointer"
+                        disabled={selectedPlanId !== 'free' && (!utrNumber || isSubmittingUtr)}
+                        className="w-full py-3 bg-zinc-950 text-white rounded-xl font-semibold text-xs shadow-lg flex items-center justify-center gap-1.5 hover:bg-zinc-800 transition-all active:scale-[0.99] cursor-pointer disabled:opacity-50"
                       >
-                        <span>{selectedPlanId === 'free' ? "Confirm Switch" : `Pay ${isIndia ? '₹' : '$'}${getDisplayPrice(plans.find(p => p.id === selectedPlanId), true)}`}</span>
+                        <span>{isSubmittingUtr ? "Submitting..." : selectedPlanId === 'free' ? "Confirm Switch" : `Submit Payment of ${isIndia ? '₹' : '$'}${getDisplayPrice(plans.find(p => p.id === selectedPlanId), true)}`}</span>
                         <ArrowRight size={13} />
                       </button>
 
                       <p className="text-center text-[9px] text-zinc-400 font-medium">
-                        🔒 Secure checkout with PhonePe Payment Gateway
+                        {selectedPlanId !== 'free' ? "🔒 Secure direct UPI payment verification" : ""}
                       </p>
                     </div>
                   </div>
+                  )}
                 </div>
               )}
 
