@@ -14,7 +14,7 @@ export async function GET(request) {
   const origin = getRequestOrigin(request);
   const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
-  const next = safeInternalPath(searchParams.get('next'));
+  let next = safeInternalPath(searchParams.get('next'));
   const cookieStore = await cookies();
 
   // Initialize Supabase client with request cookies for proper session handling
