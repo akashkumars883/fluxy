@@ -271,8 +271,11 @@ export default function Dashboard() {
     }
 
     const errorParam = params.get("error");
+    const reasonParam = params.get("reason");
     if (errorParam) {
-      toast.error(decodeURIComponent(errorParam));
+      const decodedError = decodeURIComponent(errorParam).replace(/_/g, " ");
+      const msg = reasonParam ? `${decodedError}: ${decodeURIComponent(reasonParam)}` : decodedError;
+      toast.error(msg);
       shouldClean = true;
     }
 
