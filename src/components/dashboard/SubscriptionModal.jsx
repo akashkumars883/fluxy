@@ -531,6 +531,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                             <span className="text-xl font-black text-zinc-950 tracking-tight">{isIndia ? '₹' : '$'}{getDisplayPrice(plans.find(p => p.id === selectedPlanId), true)}</span>
                           </div>
                         </div>
+                        </div>
                       ) : (
                         <div className="border-t border-zinc-200/60 pt-4 mt-auto flex justify-between items-end">
                           <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Total Payable</span>
@@ -593,13 +594,13 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                           <span>{isSubmittingUtr ? "Verifying..." : selectedPlanId === 'free' ? "Confirm Switch" : `Submit Payment`}</span>
                           <ArrowRight size={16} />
                         </button>
-
                         <p className="text-center text-[10px] font-semibold text-emerald-600 flex items-center justify-center gap-1.5 bg-emerald-50 py-1.5 rounded-lg border border-emerald-100">
                           {selectedPlanId !== 'free' ? <><CheckCircle2 size={12} /> Direct Bank Transfer (No Extra Fees)</> : ""}
                         </p>
                       </div>
                     </div>
-                  )}
+                  </div>
+                )}
                 </div>
               )}
 
