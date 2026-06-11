@@ -41,7 +41,7 @@ export function DashboardProvider({ children, initialData = null }) {
 
         const [accRes, subRes] = await Promise.allSettled([
           supabaseClient.from("automations").select("*").eq("user_id", session.user.id),
-          supabaseClient.from("subscriptions").select("plan_id").eq("user_id", session.user.id).single()
+          supabaseClient.from("subscriptions").select("plan_id").eq("user_id", session.user.id).maybeSingle()
         ]);
 
         if (accRes.status === 'fulfilled' && accRes.value.data) {
