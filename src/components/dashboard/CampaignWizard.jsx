@@ -578,7 +578,7 @@ export default function CampaignWizard({
                   type="submit"
                   disabled={currentPlan === "free" || !aiBuildPrompt.trim() || isAiBuilding}
                   onClick={currentPlan === "free" ? handleAiBuildClick : undefined}
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 bg-zinc-950 text-white rounded-lg flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#6366F1]"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 bg-zinc-950 text-white rounded-sm flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#6366F1]"
                 >
                   <ArrowRight size={15} />
                 </button>
@@ -675,7 +675,7 @@ export default function CampaignWizard({
             </div>
             <button
               onClick={handleConfirmPosts}
-              className="w-full py-2.5 bg-[#6366F1] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 shadow-md hover:bg-[#4f46e5] transition-all cursor-pointer"
+              className="w-full py-2.5 bg-[#6366F1] text-white rounded-sm text-xs font-semibold flex items-center justify-center gap-2 shadow-md hover:bg-[#4f46e5] transition-all cursor-pointer"
             >
               Confirm Selection <ArrowRight size={14} />
             </button>
@@ -757,7 +757,7 @@ export default function CampaignWizard({
             <button
               onClick={handleConfirmIntro}
               disabled={!tempIntroMessage.trim() || !tempIntroBtnText.trim()}
-              className="w-full py-3 bg-[#6366F1] text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow-md hover:bg-[#4f46e5] transition-all disabled:opacity-40 cursor-pointer"
+              className="w-full py-3 bg-[#6366F1] text-white rounded-sm text-sm font-semibold flex items-center justify-center gap-2 shadow-md hover:bg-[#4f46e5] transition-all disabled:opacity-40 cursor-pointer"
             >
               Confirm Intro DM <ArrowRight size={16} />
             </button>
@@ -815,7 +815,7 @@ export default function CampaignWizard({
               <button
                 onClick={handleConfirmDM}
                 disabled={!tempDM.trim()}
-                className="shrink-0 mb-0.5 w-8 h-8 bg-[#6366F1] text-white rounded-lg flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#4f46e5] cursor-pointer"
+                className="shrink-0 mb-0.5 w-8 h-8 bg-[#6366F1] text-white rounded-sm flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#4f46e5] cursor-pointer"
               >
                 <ArrowRight size={15} />
               </button>
@@ -1149,7 +1149,7 @@ export default function CampaignWizard({
 
             <button
               onClick={handleConfirmStory}
-              className="w-full py-3 bg-[#6366F1] text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow-md hover:bg-[#4f46e5] transition-all cursor-pointer"
+              className="w-full py-3 bg-[#6366F1] text-white rounded-sm text-sm font-semibold flex items-center justify-center gap-2 shadow-md hover:bg-[#4f46e5] transition-all cursor-pointer"
             >
               Next: Set DM Reply <ArrowRight size={16} />
             </button>
@@ -1170,7 +1170,7 @@ export default function CampaignWizard({
               <button
                 onClick={handleConfirmStoryDM}
                 disabled={!storyDM.trim()}
-                className="shrink-0 mb-0.5 w-8 h-8 bg-[#6366F1] text-white rounded-lg flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#4f46e5] cursor-pointer"
+                className="shrink-0 mb-0.5 w-8 h-8 bg-[#6366F1] text-white rounded-sm flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#4f46e5] cursor-pointer"
               >
                 <ArrowRight size={15} />
               </button>
@@ -1304,7 +1304,7 @@ export default function CampaignWizard({
             <button
               onClick={handleConfirmSales}
               disabled={!aiGoal.trim()}
-              className="w-full py-3 bg-[#6366F1] text-white rounded-xl text-sm font-semibold disabled:opacity-40 transition-all hover:bg-[#4f46e5] flex items-center justify-center gap-2 shadow-md cursor-pointer"
+              className="w-full py-3 bg-[#6366F1] text-white rounded-sm text-sm font-semibold disabled:opacity-40 transition-all hover:bg-[#4f46e5] flex items-center justify-center gap-2 shadow-md cursor-pointer"
             >
               Launch AI Sales Agent <Rocket size={16} />
             </button>
@@ -1428,7 +1428,7 @@ export default function CampaignWizard({
                 type="submit"
                 disabled={currentPlan === "free" || !aiBuildPrompt.trim() || isAiBuilding}
                 onClick={currentPlan === "free" ? handleAiBuildClick : undefined}
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#6366F1] text-white rounded-lg flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#4f46e5] cursor-pointer"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#6366F1] text-white rounded-sm flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#4f46e5] cursor-pointer"
               >
                 <ArrowRight size={15} />
               </button>
@@ -1452,7 +1452,7 @@ export default function CampaignWizard({
         <div className="shrink-0 px-3 sm:px-5 lg:px-6 pt-3 flex">
           <button
             onClick={handleBackStep}
-            className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-500 hover:text-zinc-900 bg-white border border-zinc-200 rounded-xl px-3 py-1.5 shadow-sm transition-all cursor-pointer"
+            className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-500 hover:text-zinc-900 bg-white border border-zinc-200 rounded-sm px-3 py-1.5 shadow-sm transition-all cursor-pointer"
           >
             ← Back Step
           </button>

@@ -164,7 +164,7 @@ export default function HelpSlider({ isOpen, onClose }) {
             <div className="px-6 py-5 sm:px-8 border-b border-zinc-200/60 flex items-center justify-between bg-white shrink-0">
               <div className="flex items-center gap-3">
                 {activeView !== 'home' ? (
-                  <button onClick={goBack} className="w-10 h-10 rounded-xl flex items-center justify-center bg-zinc-50 border border-zinc-200/80 text-zinc-500 hover:text-zinc-900 transition-all">
+                  <button onClick={goBack} className="w-10 h-10 rounded-sm flex items-center justify-center bg-zinc-50 border border-zinc-200/80 text-zinc-500 hover:text-zinc-900 transition-all">
                     <ArrowLeft size={18} />
                   </button>
                 ) : (
@@ -185,7 +185,7 @@ export default function HelpSlider({ isOpen, onClose }) {
               </div>
               <button 
                 onClick={onClose}
-                className="p-2.5 bg-zinc-50 border border-zinc-200/80 rounded-xl text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 shadow-sm transition-all"
+                className="p-2.5 bg-zinc-50 border border-zinc-200/80 rounded-sm text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 shadow-sm transition-all"
               >
                 <X size={16} />
               </button>
@@ -327,7 +327,7 @@ export default function HelpSlider({ isOpen, onClose }) {
                         placeholder="Type your message..." 
                         className="flex-1 bg-transparent px-3 text-sm font-medium outline-none"
                       />
-                      <button type="submit" disabled={!chatInput.trim()} className="w-10 h-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white flex items-center justify-center transition-all shadow-sm">
+                      <button type="submit" disabled={!chatInput.trim()} className="w-10 h-10 rounded-sm bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white flex items-center justify-center transition-all shadow-sm">
                         <Send size={16} />
                       </button>
                     </form>
@@ -385,7 +385,7 @@ export default function HelpSlider({ isOpen, onClose }) {
                       <button 
                         type="submit" 
                         disabled={emailSending}
-                        className="mt-6 w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow-md transition-all flex justify-center items-center gap-2"
+                        className="mt-6 w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-sm shadow-md transition-all flex justify-center items-center gap-2"
                       >
                         {emailSending ? <RefreshCw size={16} className="animate-spin" /> : <Mail size={16} />}
                         {emailSending ? "Sending..." : "Send Email"}
@@ -445,7 +445,7 @@ export default function HelpSlider({ isOpen, onClose }) {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full py-3.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
+                      className="w-full py-3.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm rounded-sm shadow-md transition-all flex items-center justify-center gap-2"
                     >
                       {isSubmitting ? "Submitting..." : "Submit Ticket"}
                     </button>

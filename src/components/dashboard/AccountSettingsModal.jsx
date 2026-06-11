@@ -40,7 +40,7 @@ export default function AccountSettingsModal({ isOpen, onClose, user }) {
                 <h3 className="text-xl font-semibold text-zinc-950 tracking-tight leading-none">Account Settings</h3>
                 <p className="text-[11px] sm:text-xs text-zinc-400 font-semibold mt-1.5">Manage your personal profile and identity.</p>
               </div>
-              <button onClick={onClose} className="p-2 bg-zinc-50 border border-zinc-200/60 hover:bg-zinc-100 rounded-xl transition-all shadow-sm cursor-pointer text-zinc-400 hover:text-zinc-800">
+              <button onClick={onClose} className="p-2 bg-zinc-50 border border-zinc-200/60 hover:bg-zinc-100 rounded-sm transition-all shadow-sm cursor-pointer text-zinc-400 hover:text-zinc-800">
                 <X size={16} />
               </button>
             </div>
@@ -118,7 +118,7 @@ export default function AccountSettingsModal({ isOpen, onClose, user }) {
                 Cancel
               </button>
               <button 
-                className="px-6 py-2.5 bg-zinc-950 text-white rounded-xl font-semibold text-xs shadow-lg hover:bg-zinc-800 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                className="px-6 py-2.5 bg-zinc-950 text-white rounded-sm font-semibold text-xs shadow-lg hover:bg-zinc-800 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
               >
                 Update Profile
               </button>

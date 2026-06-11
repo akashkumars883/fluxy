@@ -19,7 +19,7 @@ export default function EmptyState({ icon: Icon, title, description, actionText,
       {actionText && onAction && (
         <button
           onClick={onAction}
-          className="active-scale flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-900 text-white text-sm font-semibold hover:bg-zinc-800 transition-all shadow-sm hover:shadow premium-card-hover"
+          className="active-scale flex items-center gap-2 px-5 py-2.5 rounded-sm bg-zinc-900 text-white text-sm font-semibold hover:bg-zinc-800 transition-all shadow-sm hover:shadow premium-card-hover"
         >
           {actionText}
         </button>

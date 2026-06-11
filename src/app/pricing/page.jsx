@@ -18,7 +18,7 @@ export default function PricingPage() {
     } catch {}
   }, []);
   const comparisonRows = [
-    { feature: "Instagram Accounts", free: "1 Account", pro: "Multiple", viral: "Multiple", agency: "Unlimited", desc: "Number of active Instagram profiles linked to your workspace" },
+    { feature: "Instagram Accounts", free: "2 Accounts", pro: "Multiple", viral: "Multiple", agency: "Unlimited", desc: "Number of active Instagram profiles linked to your workspace" },
     { feature: "AI Credits per Month", free: "25,000 Credits", pro: "250,000 Credits (10X)", viral: "2,000,000 Credits (100X)", agency: "Custom Quota", desc: "Monthly quota for smart AI conversational responses" },
     { feature: "Active Automations Limit", free: "5 Automations", pro: "Unlimited", viral: "Unlimited", agency: "Unlimited", desc: "Number of active comment/DM trigger campaigns" },
     { feature: "Auto DMs Quota", free: "1,000 DMs/mo", pro: "Unlimited DMs & Replies", viral: "Unlimited DMs & Replies", agency: "Unlimited DMs & Replies", desc: "Volume of outbound automated Instagram DMs sent" },

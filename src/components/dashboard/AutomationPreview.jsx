@@ -697,7 +697,7 @@ export default function AutomationPreview({
                   </div>
                   <div className="flex items-center gap-3 text-white">
                       {chatInput.trim() ? (
-                         <button type="submit" className="text-[#6366F1] font-bold text-[10px] bg-white px-3 py-1.5 rounded-full shadow-lg">Send</button>
+                         <button type="submit" className="text-[#6366F1] font-bold text-[10px] bg-white px-3 py-1.5 rounded-sm shadow-lg">Send</button>
                       ) : (
                          <>
                             <Heart size={18} />

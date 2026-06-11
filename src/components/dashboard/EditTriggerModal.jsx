@@ -123,7 +123,7 @@ export default function EditTriggerModal({
                </div>
                <button 
                  onClick={onClose}
-                 className="p-2 bg-white border border-zinc-200 rounded-xl text-zinc-550 hover:text-zinc-900 transition-all shadow-sm cursor-pointer hover:bg-zinc-50"
+                 className="p-2 bg-white border border-zinc-200 rounded-sm text-zinc-550 hover:text-zinc-900 transition-all shadow-sm cursor-pointer hover:bg-zinc-50"
                >
                  <X size={16} />
                </button>
@@ -337,7 +337,7 @@ export default function EditTriggerModal({
                 <button 
                   type="button"
                   onClick={handleDelete}
-                  className="px-4 py-2.5 bg-white border border-rose-200 hover:border-rose-300 hover:bg-rose-50 rounded-xl text-xs font-semibold text-rose-600 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                  className="px-4 py-2.5 bg-white border border-rose-200 hover:border-rose-300 hover:bg-rose-50 rounded-sm text-xs font-semibold text-rose-600 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
                 >
                   <Trash2 size={14} /> <span className="hidden sm:inline">Delete Rule</span>
                 </button>
@@ -349,7 +349,7 @@ export default function EditTriggerModal({
                 <button 
                   type="button"
                   onClick={onClose}
-                  className="px-5 py-2.5 text-xs font-bold text-zinc-500 hover:text-zinc-800 hover:bg-zinc-200/50 rounded-xl transition-all cursor-pointer"
+                  className="px-5 py-2.5 text-xs font-bold text-zinc-500 hover:text-zinc-800 hover:bg-zinc-200/50 rounded-sm transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -357,7 +357,7 @@ export default function EditTriggerModal({
                 <button 
                   type="button"
                   onClick={handleSave}
-                  className="px-6 py-2.5 bg-[#6366F1] hover:bg-[#4f46e5] text-white rounded-xl text-xs font-bold shadow-md shadow-[#6366F1]/10 hover:shadow-lg hover:shadow-indigo-500/20 hover:-translate-y-0.5 transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="px-6 py-2.5 bg-[#6366F1] hover:bg-[#4f46e5] text-white rounded-sm text-xs font-bold shadow-md shadow-[#6366F1]/10 hover:shadow-lg hover:shadow-indigo-500/20 hover:-translate-y-0.5 transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   Save Automation <Save size={14} />
                 </button>

@@ -116,7 +116,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                   </p>
                 </div>
               </div>
-              <button onClick={onClose} className="p-2 text-zinc-400 hover:text-zinc-700 rounded-xl transition-all">
+              <button onClick={onClose} className="p-2 text-zinc-400 hover:text-zinc-700 rounded-sm transition-all">
                 <X size={18} />
               </button>
             </div>
@@ -199,7 +199,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                 <button
                   onClick={handleQuickSetup}
                   disabled={!keyword.trim() || !response.trim() || isQuickLoading || (currentPlan === "free" && rulesRemaining === 0)}
-                  className="w-full py-3.5 bg-[#6366F1] hover:bg-[#4f46e5] text-white rounded-xl text-xs font-bold shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3.5 bg-[#6366F1] hover:bg-[#4f46e5] text-white rounded-sm text-xs font-bold shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isQuickLoading ? (
                     <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -231,7 +231,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                 <button
                   onClick={handleCreate}
                   disabled={!campaignName.trim()}
-                  className="w-full py-4 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-xl text-[14px] font-bold shadow-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-4 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-sm text-[14px] font-bold shadow-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Start with Automixa AI <ArrowRight size={18} />
                 </button>
@@ -305,7 +305,7 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
           <div className="flex min-w-0 items-center gap-3">
             <button
               onClick={onClose}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-650 shadow-sm transition-all hover:border-zinc-300 hover:text-zinc-950 cursor-pointer"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-zinc-200 bg-white text-zinc-650 shadow-sm transition-all hover:border-zinc-300 hover:text-zinc-950 cursor-pointer"
               title="Back to automations"
             >
               <CircleChevronLeft size={18} />
@@ -470,7 +470,7 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
           </span>
           <button
             onClick={onCreateNew}
-            className="flex items-center gap-1.5 text-xs font-bold text-white bg-[#6366F1] hover:bg-[#4f46e5] px-4 py-2.5 rounded-xl transition-all shadow-md hover:shadow-indigo-500/10 cursor-pointer animate-in fade-in duration-300"
+            className="flex items-center gap-1.5 text-xs font-bold text-white bg-[#6366F1] hover:bg-[#4f46e5] px-4 py-2.5 rounded-sm transition-all shadow-md hover:shadow-indigo-500/10 cursor-pointer animate-in fade-in duration-300"
           >
             <Plus size={14} strokeWidth={2.5} /> Create Rule
           </button>

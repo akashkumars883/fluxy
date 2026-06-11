@@ -188,7 +188,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                     <div className="pt-1 sm:pt-2 flex flex-col items-center gap-2">
                       <button
                         onClick={handleConnectClick}
-                        className="w-full sm:w-auto px-8 sm:px-12 py-3 sm:py-3.5 bg-[#1877F2] text-white rounded-xl text-sm font-bold shadow-[0_8px_30px_-8px_rgba(24,119,242,0.5)] hover:shadow-[0_10px_40px_-10px_rgba(24,119,242,0.7)] transition-all flex items-center justify-center gap-3 hover:scale-[1.02]"
+                        className="w-full sm:w-auto px-8 sm:px-12 py-3 sm:py-3.5 bg-[#1877F2] text-white rounded-sm text-sm font-bold shadow-[0_8px_30px_-8px_rgba(24,119,242,0.5)] hover:shadow-[0_10px_40px_-10px_rgba(24,119,242,0.7)] transition-all flex items-center justify-center gap-3 hover:scale-[1.02]"
                       >
                         Login with Facebook <ArrowRight size={18} className="sm:w-5 sm:h-5" />
                       </button>
@@ -264,7 +264,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                 <div className="pt-4 sm:pt-6">
                   <button
                     onClick={onClose}
-                    className="w-full sm:w-auto px-8 sm:px-12 py-3.5 sm:py-4 bg-[#6366F1] text-white rounded-xl text-sm font-bold shadow-[0_8px_30px_-8px_rgba(99,102,241,0.5)] hover:shadow-[0_10px_40px_-10px_rgba(99,102,241,0.7)] transition-all flex items-center justify-center gap-3 hover:scale-[1.02] mx-auto"
+                    className="w-full sm:w-auto px-8 sm:px-12 py-3.5 sm:py-4 bg-[#6366F1] text-white rounded-sm text-sm font-bold shadow-[0_8px_30px_-8px_rgba(99,102,241,0.5)] hover:shadow-[0_10px_40px_-10px_rgba(99,102,241,0.7)] transition-all flex items-center justify-center gap-3 hover:scale-[1.02] mx-auto"
                   >
                     Go to Dashboard <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>

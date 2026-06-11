@@ -53,7 +53,7 @@ export default function MobileSidebar({
               </div>
               <button
                 onClick={onClose}
-                className="p-2 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100/50 rounded-full transition-all cursor-pointer"
+                className="p-2 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100/50 rounded-sm transition-all cursor-pointer"
               >
                 <X size={18} />
               </button>

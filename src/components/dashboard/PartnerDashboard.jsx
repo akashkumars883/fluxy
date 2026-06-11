@@ -250,7 +250,7 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
           </div>
           <button
             onClick={handleApplyNow}
-            className="mt-2 px-7 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-xl shadow-sm transition-all inline-flex items-center gap-2"
+            className="mt-2 px-7 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-sm shadow-sm transition-all inline-flex items-center gap-2"
           >
             Apply now <ArrowRight size={15} />
           </button>
@@ -361,7 +361,7 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
                     </div>
                     <button
                       onClick={handleCopyLink}
-                      className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-xl transition-all flex items-center gap-1.5 shrink-0"
+                      className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-sm transition-all flex items-center gap-1.5 shrink-0"
                     >
                       {copied ? <Check size={14} /> : <Copy size={14} />}
                       {copied ? "Copied" : "Copy"}
@@ -400,7 +400,7 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
                     <button
                       type="submit"
                       disabled={generating}
-                      className="px-3 sm:px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm rounded-xl transition-all whitespace-nowrap disabled:opacity-60"
+                      className="px-3 sm:px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm rounded-sm transition-all whitespace-nowrap disabled:opacity-60"
                     >
                       {generating ? "Adding…" : "Add code"}
                     </button>

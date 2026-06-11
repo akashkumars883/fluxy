@@ -159,7 +159,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
           return (
             <div
               key={card.label}
-              className="bg-white rounded-xl p-4 sm:p-5 flex flex-col justify-between shadow-md shadow-zinc-200/10 border border-zinc-200/80 hover:shadow-lg transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5"
+              className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-5 flex flex-col justify-between shadow-[0_2px_10px_rgb(0,0,0,0.02)] border border-zinc-200/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-zinc-300/80 transition-all duration-400 group cursor-default relative overflow-hidden hover:-translate-y-1 hover:scale-[1.02]"
             >
               <div className="flex items-center justify-between mb-3 relative z-10">
                 <Icon size={20} className={`${card.color} transition-all duration-300 group-hover:scale-110`} />
@@ -211,7 +211,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
 
         {/* Left Column: Active Automations */}
-        <div className="lg:col-span-2 bg-white border border-zinc-200/80 rounded-xl p-5 sm:p-6 shadow-md shadow-zinc-200/5 flex flex-col relative overflow-hidden min-h-[280px] lg:min-h-[380px]">
+        <div className="lg:col-span-2 bg-white/80 backdrop-blur-sm border border-zinc-200/60 rounded-2xl p-5 sm:p-6 shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-zinc-300/60 transition-all duration-500 flex flex-col relative overflow-hidden min-h-[280px] lg:min-h-[380px]">
           <div className="flex items-center justify-between mb-3 shrink-0 border-b border-zinc-100 pb-4">
             <div className="space-y-1">
               <h3 className="font-bold text-lg sm:text-xl text-zinc-950 tracking-tight flex items-center gap-2">
@@ -225,7 +225,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
               <button
                 onClick={handleMetaSync}
                 disabled={isSyncing}
-                className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-50 border border-zinc-200 rounded-lg text-[10px] font-bold text-zinc-500 hover:bg-zinc-100 transition-all cursor-pointer"
+                className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-50 border border-zinc-200 rounded-sm text-[10px] font-bold text-zinc-500 hover:bg-zinc-100 transition-all cursor-pointer"
                 title="Verify Meta connection status"
               >
                 {isSyncing ? (
@@ -243,7 +243,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
 
               <button
                 onClick={onCreateAutoReply}
-                className="flex items-center gap-1.5 text-xs font-bold text-white bg-[#6366F1] hover:bg-[#4f46e5] px-3.5 py-2 rounded-xl transition-all shadow-sm cursor-pointer"
+                className="flex items-center gap-1.5 text-xs font-bold text-white bg-[#6366F1] hover:bg-[#4f46e5] px-3.5 py-2 rounded-sm transition-all shadow-sm cursor-pointer"
               >
                 <Plus size={13} strokeWidth={3} /> Create Rule
               </button>
@@ -295,7 +295,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
         </div>
 
         {/* Right Column: Live Feed */}
-        <div className="bg-white border border-zinc-200/80 rounded-xl p-5 sm:p-6 shadow-md shadow-zinc-100/40 hover:shadow-lg transition-all duration-500 flex flex-col relative min-h-[280px] lg:min-h-[380px]">
+        <div className="bg-white/80 backdrop-blur-sm border border-zinc-200/60 rounded-2xl p-5 sm:p-6 shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-zinc-300/60 transition-all duration-500 flex flex-col relative min-h-[280px] lg:min-h-[380px]">
           <div className="flex items-center justify-between mb-5 border-b border-zinc-100 pb-4 shrink-0">
             <div className="space-y-1">
               <h3 className="font-bold text-lg sm:text-xl text-zinc-950 tracking-tight flex items-center gap-2">
@@ -305,7 +305,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
             </div>
             <button
               onClick={onViewAudience}
-              className="w-7 h-7 flex items-center justify-center rounded-lg bg-zinc-50 border border-zinc-100 text-zinc-400 hover:text-[#6366F1] hover:border-[#6366F1]/20 hover:bg-[#6366F1]/5 transition-all cursor-pointer"
+              className="w-7 h-7 flex items-center justify-center rounded-sm bg-zinc-50 border border-zinc-100 text-zinc-400 hover:text-[#6366F1] hover:border-[#6366F1]/20 hover:bg-[#6366F1]/5 transition-all cursor-pointer"
               title="Go to CRM Audience"
             >
               <ArrowRight size={12} />
@@ -355,7 +355,7 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
                     <span className="text-[9px] font-bold text-zinc-300">{formatTime(log.created_at)}</span>
                     <button
                       onClick={onViewAudience}
-                      className="opacity-0 group-hover:opacity-100 p-1 bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-700 rounded-md transition-all cursor-pointer ml-1"
+                      className="opacity-0 group-hover:opacity-100 p-1 bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-700 rounded-sm transition-all cursor-pointer ml-1"
                       title="View in CRM"
                     >
                       <ArrowRight size={9} />

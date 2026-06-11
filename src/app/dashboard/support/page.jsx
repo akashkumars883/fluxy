@@ -216,7 +216,7 @@ export default function SupportPage() {
                   <textarea rows={4} placeholder="Tell us exactly what happened..." className="w-full px-6 py-4 bg-zinc-50 border border-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-foreground/5" />
                 </div>
                 <div className="flex items-center gap-4 pt-4">
-                  <button type="submit" className="flex-1 py-4 bg-foreground text-background rounded-full font-bold shadow-lg shadow-foreground/10 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                  <button type="submit" className="flex-1 py-4 bg-foreground text-background rounded-sm font-bold shadow-lg shadow-foreground/10 hover:scale-[1.02] active:scale-[0.98] transition-all">
                     Submit Request
                   </button>
                   <button onClick={() => setIsModalOpen(false)} className="px-8 py-4 text-zinc-muted font-bold hover:text-foreground">

@@ -213,7 +213,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
                       className="p-1.5 text-zinc-400 hover:text-indigo-600 bg-white border border-zinc-200 hover:border-indigo-200 rounded-xl transition-colors" title="Copy Checkout Link">
                       <Link2 size={13} />
                     </button>
-                    <button className="p-1.5 text-zinc-400 hover:text-zinc-900 bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl transition-colors" title="Edit">
+                    <button className="p-1.5 text-zinc-400 hover:text-zinc-900 bg-white border border-zinc-200 hover:border-zinc-300 rounded-sm transition-colors" title="Edit">
                       <Edit2 size={13} />
                     </button>
                   </div>
@@ -278,7 +278,7 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
 
             <div className="px-6 py-4 border-t border-zinc-100 bg-zinc-50/50 flex justify-end gap-2 shrink-0">
               <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2.5 text-xs font-bold text-zinc-600 hover:bg-zinc-100 rounded-xl transition-colors">Cancel</button>
-              <button form="productForm" type="submit" disabled={saving} className="px-6 py-2.5 bg-[#6366F1] hover:bg-[#4f46e5] disabled:opacity-50 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-2">
+              <button form="productForm" type="submit" disabled={saving} className="px-6 py-2.5 bg-[#6366F1] hover:bg-[#4f46e5] disabled:opacity-50 text-white rounded-sm text-xs font-bold shadow-sm transition-all flex items-center gap-2">
                 {saving ? "Saving..." : "Create Product"}
               </button>
             </div>

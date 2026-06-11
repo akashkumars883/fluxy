@@ -2,9 +2,9 @@
 import { useDashboard } from "@/context/DashboardContext";
 import { createClient } from "@/lib/supabase";
 import { CreditCard,LogOut,Settings,User,Zap } from "lucide-react";
-import { useEffect,useRef,useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-export default function ProfileDropdown({ user, realtimeStats, onAccountSettingsClick, onSubscriptionClick }) {
+export default React.memo(function ProfileDropdown({ user, realtimeStats, onAccountSettingsClick, onSubscriptionClick }) {
   const { currentPlan } = useDashboard();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -101,7 +101,7 @@ export default function ProfileDropdown({ user, realtimeStats, onAccountSettings
           <div className="p-2">
             <button 
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 p-2.5 text-xs sm:text-sm text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 rounded-2xl font-semibold transition-all group"
+              className="w-full flex items-center gap-3 p-2.5 text-xs sm:text-sm text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 rounded-sm font-semibold transition-all group"
             >
               <div className="p-2 bg-rose-100/50 text-rose-600 rounded-xl group-hover:bg-rose-100 transition-colors shrink-0">
                 <LogOut size={16} />
@@ -114,4 +114,4 @@ export default function ProfileDropdown({ user, realtimeStats, onAccountSettings
       )}
     </div>
   );
-}
+});

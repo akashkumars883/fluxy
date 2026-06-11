@@ -54,7 +54,7 @@ export default function MobileBottomNav({ onMenuClick }) {
       {/* Menu Button with "More" indicator when extra tab active */}
       <button
         onClick={onMenuClick}
-        className="relative flex-1 flex items-center justify-center py-2 min-w-[50px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6366F1]/30 rounded-lg"
+        className="relative flex-1 flex items-center justify-center py-2 min-w-[50px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6366F1]/30 rounded-sm"
       >
         {isExtraTabActive && (
           <div className="absolute -top-0.5 right-2 w-2 h-2 bg-[#6366F1] rounded-full z-10" />

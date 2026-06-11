@@ -281,7 +281,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
             <button
               onClick={handlePublish}
               disabled={publishing}
-              className="px-5 py-2 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="px-5 py-2 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-sm text-xs font-bold shadow-sm transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {publishing ? "Publishing..." : "Publish"}
             </button>
@@ -294,7 +294,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                 <p className="text-xs font-bold text-emerald-700 mb-0.5">🎉 Your Smart Bio is Live!</p>
                 <p className="text-xs text-emerald-600 truncate font-medium">{publishedLink}</p>
               </div>
-              <button onClick={copyLink} className="shrink-0 px-3 py-1.5 bg-emerald-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 hover:bg-emerald-700 transition-all">
+              <button onClick={copyLink} className="shrink-0 px-3 py-1.5 bg-emerald-600 text-white rounded-sm text-xs font-bold flex items-center gap-1.5 hover:bg-emerald-700 transition-all">
                 {copied ? <><Check size={12} /> Copied!</> : <><Copy size={12} /> Copy Link</>}
               </button>
             </div>
@@ -308,7 +308,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
               <div className="space-y-4">
                 <button
                   onClick={addLink}
-                  className="w-full py-3 border-2 border-dashed border-zinc-200 text-zinc-500 rounded-xl text-xs font-bold flex justify-center items-center gap-2 hover:border-zinc-400 hover:text-zinc-700 transition-all"
+                  className="w-full py-3 border-2 border-dashed border-zinc-200 text-zinc-500 rounded-sm text-xs font-bold flex justify-center items-center gap-2 hover:border-zinc-400 hover:text-zinc-700 transition-all"
                 >
                   <Plus size={15} /> Add New Link
                 </button>

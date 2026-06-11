@@ -78,7 +78,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
       name: 'Free Plan',
       price_inr: '0',
       price_usd: '0',
-      features: ['1k AI Credits', '5 Automations', 'Basic CRM'],
+      features: ['1k AI Credits', '2 Accounts', '5 Automations'],
       popular: false
     },
     {
@@ -235,7 +235,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                     : "Complete your subscription upgrade securely."}
                 </p>
               </div>
-              <button onClick={onClose} className="p-2 bg-zinc-50 border border-zinc-200/60 hover:bg-zinc-100 rounded-xl transition-all shadow-sm cursor-pointer text-zinc-400 hover:text-zinc-800">
+              <button onClick={onClose} className="p-2 bg-zinc-50 border border-zinc-200/60 hover:bg-zinc-100 rounded-sm transition-all shadow-sm cursor-pointer text-zinc-400 hover:text-zinc-800">
                 <X size={16} />
               </button>
             </div>
@@ -436,7 +436,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                               <button
                                 onClick={handleApplyPromo}
                                 disabled={promoLoading || !promoInput.trim()}
-                                className="px-3 py-2 bg-zinc-950 hover:bg-zinc-800 text-white font-semibold text-[10px] rounded-xl transition-all disabled:opacity-50 whitespace-nowrap cursor-pointer"
+                                className="px-3 py-2 bg-zinc-950 hover:bg-zinc-800 text-white font-semibold text-[10px] rounded-sm transition-all disabled:opacity-50 whitespace-nowrap cursor-pointer"
                               >
                                 {promoLoading ? "..." : "Apply"}
                               </button>
@@ -510,7 +510,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                     <div className="space-y-2 pt-2">
                       <button
                         onClick={handleCheckout}
-                        className="w-full py-3 bg-zinc-950 text-white rounded-xl font-semibold text-xs shadow-lg flex items-center justify-center gap-1.5 hover:bg-zinc-800 transition-all active:scale-[0.99] cursor-pointer"
+                        className="w-full py-3 bg-zinc-950 text-white rounded-sm font-semibold text-xs shadow-lg flex items-center justify-center gap-1.5 hover:bg-zinc-800 transition-all active:scale-[0.99] cursor-pointer"
                       >
                         <span>{selectedPlanId === 'free' ? "Confirm Switch" : `Pay ${isIndia ? '₹' : '$'}${getDisplayPrice(plans.find(p => p.id === selectedPlanId), true)}`}</span>
                         <ArrowRight size={13} />

@@ -39,7 +39,7 @@ export default function Pricing({ isModal = false } = {}) {
       raw_usd: 0,
       desc: "Perfect to test automated chat flows.",
       features: [
-        "1 Instagram Account",
+        "2 Connected Accounts",
         "1 Personal Workspace",
         "25,000 AI Credits/mo",
         "5 Active Automations",

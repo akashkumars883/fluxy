@@ -11,7 +11,7 @@ export function DashboardProvider({ children, initialData = null }) {
   const [allAccounts, setAllAccounts] = useState(initialData?.accounts || []);
   const [loading, setLoading] = useState(initialData?.session ? false : true);
   const [activeTab, setActiveTab] = useState("home");
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const [currentPlan, setCurrentPlan] = useState(initialData?.currentPlan || "free");
   const [upgradeReason, setUpgradeReason] = useState("");
 

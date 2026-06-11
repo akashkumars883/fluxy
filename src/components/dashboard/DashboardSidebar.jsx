@@ -1,11 +1,11 @@
 "use client";
 
+import React, { useState } from "react";
 import { useDashboard } from "@/context/DashboardContext";
 import { motion } from "framer-motion";
 import { ChevronDown, Lock as LucideLock, PanelTopOpen, Plus, HelpCircle, Zap, ShieldCheck } from "lucide-react";
-import { useState } from "react";
 
-export default function DashboardSidebar({
+export default React.memo(function DashboardSidebar({
   navigationItems,
   onPricingClick,
   onConnectClick,
@@ -30,7 +30,7 @@ export default function DashboardSidebar({
   const settingsItem = navigationItems.find(item => item.id === "settings");
 
   return (
-    <aside className={`bg-[#FCFDFE] border-r border-[#e9e9eb] hidden md:flex flex-col justify-between select-none transition-all duration-300 ease-[0.16,1,0.3,1] z-30 shrink-0 h-full sticky top-0 overflow-visible ${isSidebarCollapsed ? "w-[72px] px-2 py-3 items-center" : "w-60 p-5"
+    <aside className={`bg-white/90 backdrop-blur-xl border border-zinc-200/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hidden md:flex flex-col justify-between select-none transition-all duration-300 ease-[0.16,1,0.3,1] z-30 shrink-0 h-[calc(100vh-24px)] sticky top-3 my-3 ml-3 rounded-2xl overflow-visible ${isSidebarCollapsed ? "w-[72px] px-2 py-3 items-center" : "w-60 p-5"
       }`}>
 
       {/* Top Nav */}
@@ -176,7 +176,7 @@ export default function DashboardSidebar({
         {/* Help Option */}
         <button
           onClick={onHelpClick}
-          className={`group relative flex items-center ${isSidebarCollapsed ? "justify-center mx-auto" : "justify-start"} rounded-xl text-sm font-medium transition-all duration-200 h-10 ${isSidebarCollapsed ? "w-10 p-0" : "w-full px-3 gap-3"} text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/80`}
+          className={`group relative flex items-center ${isSidebarCollapsed ? "justify-center mx-auto" : "justify-start"} rounded-sm text-sm font-medium transition-all duration-200 h-10 ${isSidebarCollapsed ? "w-10 p-0" : "w-full px-3 gap-3"} text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/80`}
           title={isSidebarCollapsed ? "" : "Help"}
         >
           <div className="flex items-center justify-center shrink-0 relative z-10">
@@ -331,4 +331,4 @@ export default function DashboardSidebar({
       </div>
     </aside>
   );
-}
+});

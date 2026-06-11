@@ -112,7 +112,7 @@ export default function PwaInstallBanner() {
               </div>
               <button 
                 onClick={handleDismiss}
-                className="absolute top-4 right-4 p-1 hover:bg-zinc-100 rounded-lg text-zinc-400 hover:text-zinc-600 transition-all shrink-0 cursor-pointer"
+                className="absolute top-4 right-4 p-1 hover:bg-zinc-100 rounded-sm text-zinc-400 hover:text-zinc-600 transition-all shrink-0 cursor-pointer"
               >
                 <X size={16} />
               </button>
@@ -121,13 +121,13 @@ export default function PwaInstallBanner() {
             <div className="flex gap-3">
               <button
                 onClick={handleDismiss}
-                className="flex-1 py-3 text-zinc-400 hover:text-zinc-600 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer"
+                className="flex-1 py-3 text-zinc-400 hover:text-zinc-600 rounded-sm text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer"
               >
                 Not Now
               </button>
               <button
                 onClick={handleInstallClick}
-                className="flex-1 py-3 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-xl text-[10px] font-bold uppercase tracking-wider shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-sm text-[10px] font-bold uppercase tracking-wider shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 Install App
               </button>

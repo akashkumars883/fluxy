@@ -1,10 +1,10 @@
 "use client";
-import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { Bell, CheckCircle2, MessageSquare, ShieldAlert, Sparkles, Check, HelpCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase";
 import * as logger from "@/lib/logger";
 
-export default function NotificationDropdown({ accounts = [] }) {
+export default React.memo(function NotificationDropdown({ accounts = [] }) {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -286,4 +286,4 @@ export default function NotificationDropdown({ accounts = [] }) {
       )}
     </div>
   );
-}
+});

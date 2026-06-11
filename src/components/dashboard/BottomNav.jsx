@@ -27,7 +27,7 @@ export default function BottomNav({ onCreateClick, onMoreClick }) {
               <button
                 key={item.id}
                 onClick={onCreateClick}
-                className="relative -top-4 bg-zinc-950 text-white p-3.5 rounded-2xl shadow-lg shadow-zinc-950/20 active:scale-90 transition-transform"
+                className="relative -top-4 bg-zinc-950 text-white p-3.5 rounded-sm shadow-lg shadow-zinc-950/20 active:scale-90 transition-transform"
               >
                 <Plus size={24} strokeWidth={2.5} />
               </button>

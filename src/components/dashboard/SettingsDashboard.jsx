@@ -306,7 +306,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
         {payoutError && <p className="text-xs text-rose-500 font-medium">{payoutError}</p>}
 
         <button type="submit" disabled={payoutSaving}
-          className="px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-xl transition-all flex items-center gap-2 disabled:opacity-60">
+          className="px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-sm transition-all flex items-center gap-2 disabled:opacity-60">
           {payoutSaved ? <><Check size={14} /> Saved!</> : payoutSaving ? "Saving…" : "Save payout details"}
         </button>
       </form>
@@ -355,7 +355,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
             <option value="admin">Admin</option>
           </select>
           <button type="submit" disabled={isInviting}
-            className="px-3 py-2 bg-zinc-900 hover:bg-[#6366F1] disabled:opacity-50 text-white rounded-xl text-xs font-semibold transition-all flex items-center gap-1 shrink-0">
+            className="px-3 py-2 bg-zinc-900 hover:bg-[#6366F1] disabled:opacity-50 text-white rounded-sm text-xs font-semibold transition-all flex items-center gap-1 shrink-0">
             {isInviting ? "…" : <><UserPlus size={13} /> Invite</>}
           </button>
         </form>
@@ -447,7 +447,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
         <input type="url" placeholder="https://hooks.zapier.com/hooks/catch/…" value={webhookUrl} onChange={(e) => setWebhookUrl(e.target.value)}
           className="flex-1 bg-zinc-50 border border-zinc-200 rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-900 placeholder:text-zinc-400 focus:bg-white focus:border-[#6366F1] outline-none transition-colors" />
         <button onClick={handleTestWebhook} disabled={isTestingWebhook || !webhookUrl}
-          className="px-4 py-2.5 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 disabled:opacity-50 text-zinc-700 rounded-xl text-sm font-semibold transition-all flex items-center gap-1.5 shrink-0">
+          className="px-4 py-2.5 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 disabled:opacity-50 text-zinc-700 rounded-sm text-sm font-semibold transition-all flex items-center gap-1.5 shrink-0">
           {isTestingWebhook ? <><Loader2 size={13} className="animate-spin" /> Testing…</> : <><RefreshCcw size={13} /> Test</>}
         </button>
         <button onClick={() => handleSave(webhookUrl, webhookEnabled)}

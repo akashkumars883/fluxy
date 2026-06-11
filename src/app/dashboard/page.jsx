@@ -15,34 +15,45 @@ import {
   Sparkles,
   Users,
   Package,
+  Zap,
+  Search,
+  X,
+  Clock,
+  ArrowRight
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import * as logger from "@/lib/logger";
 import toast from "react-hot-toast";
 
-// Components
-import AccountSettingsModal from "@/components/dashboard/AccountSettingsModal";
-import AnalyticsDashboard from "@/components/dashboard/AnalyticsDashboard";
-import AudienceCRM from "@/components/dashboard/AudienceCRM";
+import dynamic from 'next/dynamic';
+
+// Heavy Components (Lazy Loaded)
+const AccountSettingsModal = dynamic(() => import('@/components/dashboard/AccountSettingsModal'), { ssr: false });
+const AnalyticsDashboard = dynamic(() => import('@/components/dashboard/AnalyticsDashboard'), { loading: () => <SkeletonDashboard /> });
+const AudienceCRM = dynamic(() => import('@/components/dashboard/AudienceCRM'), { loading: () => <SkeletonDashboard /> });
+const EditTriggerModal = dynamic(() => import('@/components/dashboard/EditTriggerModal'), { ssr: false });
+const HelpSlider = dynamic(() => import('@/components/dashboard/HelpSlider'), { ssr: false });
+const OnboardingModal = dynamic(() => import('@/components/dashboard/OnboardingModal'), { ssr: false });
+const PartnerDashboard = dynamic(() => import('@/components/dashboard/PartnerDashboard'), { loading: () => <SkeletonDashboard /> });
+const SettingsDashboard = dynamic(() => import('@/components/dashboard/SettingsDashboard'), { loading: () => <SkeletonDashboard /> });
+const SmartBio = dynamic(() => import('@/components/dashboard/SmartBio'), { loading: () => <SkeletonDashboard /> });
+const StoreManager = dynamic(() => import('@/components/dashboard/StoreManager'), { loading: () => <SkeletonDashboard /> });
+const SubscriptionModal = dynamic(() => import('@/components/dashboard/SubscriptionModal'), { ssr: false });
+
+const CampaignBuilderWorkspace = dynamic(() => import('@/components/dashboard/TriggerManager').then(mod => mod.CampaignBuilderWorkspace), { loading: () => <SkeletonDashboard /> });
+const TriggerInputModal = dynamic(() => import('@/components/dashboard/TriggerManager').then(mod => mod.TriggerInputModal), { ssr: false });
+const TriggerList = dynamic(() => import('@/components/dashboard/TriggerManager').then(mod => mod.TriggerList), { loading: () => <SkeletonDashboard /> });
+
+// Core Components (Instantly Loaded)
 import CreatorOverview from "@/components/dashboard/CreatorOverview";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import NotificationDropdown from "@/components/dashboard/NotificationDropdown";
 import ProfileDropdown from "@/components/dashboard/ProfileDropdown";
-import { Zap, Search, X, Clock, ArrowRight } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import EditTriggerModal from "@/components/dashboard/EditTriggerModal";
-import HelpSlider from "@/components/dashboard/HelpSlider";
 import MobileSidebar from "@/components/dashboard/MobileSidebar";
 import MobileBottomNav from "@/components/dashboard/MobileBottomNav";
-import OnboardingModal from "@/components/dashboard/OnboardingModal";
-import PartnerDashboard from "@/components/dashboard/PartnerDashboard";
-import SettingsDashboard from "@/components/dashboard/SettingsDashboard";
-import SmartBio from "@/components/dashboard/SmartBio";
-import StoreManager from "@/components/dashboard/StoreManager";
-import SubscriptionModal from "@/components/dashboard/SubscriptionModal";
-import { CampaignBuilderWorkspace, TriggerInputModal, TriggerList } from "@/components/dashboard/TriggerManager";
 import Loader from "@/components/ui/Loader";
 import SkeletonDashboard from "@/components/ui/SkeletonDashboard";
 import Button from "@/components/ui/Button";
@@ -275,7 +286,24 @@ export default function Dashboard() {
     const supabase = createClient();
     const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (selectedAccount && UUID_REGEX.test(selectedAccount.id)) {
-      async function fetchAccountData() {
+      let fetchDebounceTimeout;
+
+      async function fetchMediaData() {
+        if (!selectedAccount?.id) return;
+        try {
+          const res = await fetch(`/api/media?automationId=${selectedAccount.id}`);
+          const mediaRes = await res.json();
+          if (mediaRes) {
+            if (mediaRes.media) setInstagramMedia(mediaRes.media);
+            if (mediaRes.stories) setInstagramStories(mediaRes.stories);
+          }
+        } catch (err) {
+          logger.warn("Dashboard: Media fetch failed ->", err?.message || err);
+        }
+      }
+
+      async function fetchCoreStats() {
+        if (!selectedAccount?.id) return;
         try {
           const results = await Promise.allSettled([
             supabase.from("automation_history").select("*", { count: 'exact', head: true }).eq("automation_id", selectedAccount.id).eq("status", "SUCCESS").neq("type", "COMMENT"),
@@ -309,24 +337,21 @@ export default function Dashboard() {
             })).sort((a, b) => b.count - a.count);
             setRealtimeTriggers(triggersWithCounts);
           }
-
-          if (selectedAccount.id) {
-            try {
-              const res = await fetch(`/api/media?automationId=${selectedAccount.id}`);
-              const mediaRes = await res.json();
-              if (mediaRes) {
-                if (mediaRes.media) setInstagramMedia(mediaRes.media);
-                if (mediaRes.stories) setInstagramStories(mediaRes.stories);
-              }
-            } catch (err) {
-              logger.warn("Dashboard: Media fetch failed ->", err?.message || err);
-            }
-          }
         } catch (e) {
           logger.error("Dashboard: Data Sync Error ->", e?.message || e);
         }
       }
-      fetchAccountData();
+
+      // Initial concurrent fetch to reduce waterfall delay
+      fetchCoreStats();
+      fetchMediaData();
+
+      const debouncedFetchCoreStats = () => {
+        if (fetchDebounceTimeout) clearTimeout(fetchDebounceTimeout);
+        fetchDebounceTimeout = setTimeout(() => {
+          fetchCoreStats();
+        }, 1500); // 1.5 seconds debounce
+      };
 
       // Set up real-time listeners for updates
       const historyChannel = supabase
@@ -339,7 +364,7 @@ export default function Dashboard() {
           logger.log('Realtime History Update received');
           const autoId = payload.new?.automation_id || payload.old?.automation_id;
           if (autoId === selectedAccount.id) {
-            fetchAccountData(); // Refresh everything when history changes
+            debouncedFetchCoreStats();
           }
         })
         .on('postgres_changes', {
@@ -350,7 +375,7 @@ export default function Dashboard() {
           logger.log('Realtime Trigger Update received');
           const autoId = payload.new?.automation_id || payload.old?.automation_id;
           if (autoId === selectedAccount.id) {
-            fetchAccountData(); // Refresh when triggers change
+            debouncedFetchCoreStats();
           }
         })
         .subscribe((status) => {
@@ -358,6 +383,7 @@ export default function Dashboard() {
         });
 
       return () => {
+        if (fetchDebounceTimeout) clearTimeout(fetchDebounceTimeout);
         supabase.removeChannel(historyChannel);
       };
     } else if (selectedAccount) {
@@ -564,7 +590,33 @@ export default function Dashboard() {
       is_draft: !currentIsActive ? false : trigger.metadata?.is_draft
     };
 
-    await handleSaveTrigger(triggerId, { metadata: updatedMetadata });
+    // OPTIMISTIC UI UPDATE
+    // Instantly flip the switch in the UI without waiting for the server
+    const updatedTrigger = { ...trigger, metadata: updatedMetadata };
+    
+    setTriggersList(prev => prev.map(t => t.id === triggerId ? updatedTrigger : t));
+    
+    setRealtimeTriggers(prev => prev.map(t => 
+      t.id === triggerId 
+        ? { ...t, metadata: updatedMetadata }
+        : t
+    ));
+
+    // Background server sync
+    try {
+      const supabase = createClient();
+      const { error } = await supabase
+        .from("triggers")
+        .update({ metadata: updatedMetadata })
+        .eq("id", triggerId);
+
+      if (error) throw error;
+    } catch (err) {
+      logger.error("Optimistic toggle failed:", err);
+      toast.error("Network error: Failed to toggle trigger");
+      // Revert the optimistic update on failure by re-fetching
+      window.dispatchEvent(new Event("refresh_dashboard_data"));
+    }
   };
 
 
@@ -595,7 +647,7 @@ export default function Dashboard() {
   };
 
   const handleConnectClick = () => {
-    if (effectivePlan === "free" && accounts && accounts.length >= 1) {
+    if (effectivePlan === "free" && accounts && accounts.length >= 2) {
       setUpgradeReason("multiple_accounts");
       setIsSubscriptionOpen(true);
       return;
@@ -664,7 +716,7 @@ export default function Dashboard() {
 
   return (
     <AppShell>
-      <div className="h-screen flex flex-col bg-background relative overflow-hidden selection:bg-sage/10 selection:text-sage">
+      <div className="h-screen flex flex-col bg-[#FBFBFD] relative overflow-hidden selection:bg-[#6366F1]/10 selection:text-[#6366F1]">
         <SystemBroadcast />
 
         <MobileSidebar
@@ -683,7 +735,11 @@ export default function Dashboard() {
 
         <MobileBottomNav onMenuClick={() => setIsMobileSidebarOpen(true)} />
 
-        <div className="flex flex-1 relative overflow-hidden">
+        {/* Ambient Glows */}
+        <div className="absolute top-0 left-60 w-96 h-96 bg-[#6366F1]/5 rounded-full blur-[100px] pointer-events-none z-0" />
+        <div className="absolute top-40 right-0 w-96 h-96 bg-purple-500/5 rounded-full blur-[100px] pointer-events-none z-0" />
+
+        <div className="flex flex-1 relative overflow-hidden z-10">
           <DashboardSidebar
             navigationItems={navigationItems}
             onHelpClick={() => setIsHelpOpen(true)}
@@ -698,10 +754,10 @@ export default function Dashboard() {
           />
 
           <main
-            className="flex-1 p-3 sm:p-4 lg:p-5 w-full flex flex-col min-h-0 overflow-hidden pb-[88px] md:pb-6"
+            className="flex-1 p-3 sm:p-4 lg:p-6 lg:pl-8 w-full flex flex-col min-h-0 overflow-hidden pb-[88px] md:pb-6"
           >
             {/* Global Page Header (Navbar elements + Actions on the right, Title on the left) */}
-            <div className="flex flex-row items-center justify-between gap-3 pb-4 border-b border-zinc-200/60 shrink-0 mb-4">
+            <div className="flex flex-row items-center justify-between gap-3 pb-4 mb-5 border-b border-zinc-200/40 shrink-0 sticky top-0 z-20 bg-[#FBFBFD]/60 backdrop-blur-xl pt-2 px-1 -mx-1 rounded-b-xl">
               {/* Left: Title + inline account badge */}
               <div className="flex items-center gap-3 min-w-0">
                 <div className="min-w-0">
@@ -1100,7 +1156,7 @@ export default function Dashboard() {
 
                     <button
                       onClick={handleConnectClick}
-                      className="w-full px-6 py-2.5 bg-[#6366F1] hover:bg-[#5558e3] text-white rounded-xl text-xs font-bold shadow-[0_4px_20px_-4px_rgba(99,102,241,0.4)] transition-all hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 hover:scale-[1.01]"
+                      className="w-full px-6 py-2.5 bg-[#6366F1] hover:bg-[#5558e3] text-white rounded-sm text-xs font-bold shadow-[0_4px_20px_-4px_rgba(99,102,241,0.4)] transition-all hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 hover:scale-[1.01]"
                     >
                       <Plus size={14} strokeWidth={2.5} /> Connect Instagram
                     </button>
