@@ -35,9 +35,7 @@ export default function ContactPage() {
   return (
     <main className="min-h-screen text-foreground overflow-hidden relative font-sans pt-32 pb-16 selection:bg-sage/20">
       
-      {/* Premium Soft Ambient Backglows matching homepage FAQ & Pricing */}
-      <div className="absolute top-1/4 right-0 w-[400px] h-[400px] bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-1/4 left-0 w-[400px] h-[400px] bg-rose-500/5 rounded-full blur-[100px] pointer-events-none" />
+      {/* Premium Soft Ambient Backglows Removed */}
 
       <PageTransition>
         <div className="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
@@ -45,9 +43,9 @@ export default function ContactPage() {
           {/* Header Title Section (2-column layout matching homepage components) */}
           <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 md:mb-20 gap-6">
             <div className="max-w-2xl">
-              <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] mb-3 block">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-900/5 hover:bg-zinc-900/10 transition-colors border border-zinc-900/10 rounded-full text-[11px] uppercase tracking-widest font-semibold text-sage mb-6 font-mono">
                 Support Hub
-              </p>
+              </div>
               <h1 className="text-4xl md:text-6xl font-semibold text-foreground tracking-normal leading-[1.1]">
                 How can we <br />
                 <span className="text-sage font-normal">help you?</span>
@@ -64,13 +62,10 @@ export default function ContactPage() {
              {/* CARD 1: Email Support */}
              <motion.div 
                whileHover={{ y: -6 }}
-               className="group bg-white/40 backdrop-blur-xl border border-white/60 hover:border-white rounded-[32px] p-8 lg:p-10 shadow-xl shadow-zinc-100/40 hover:shadow-2xl hover:shadow-zinc-200/40 transition-all duration-500 flex flex-col justify-between relative overflow-hidden"
+               className="group bg-white border border-zinc-200/80 hover:border-zinc-300 rounded-sm p-8 lg:p-10 transition-all duration-500 flex flex-col justify-between relative overflow-hidden"
              >
-                {/* Subtle hover glow matching the pricing hover card */}
-                <div className="absolute top-1/2 -left-16 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -translate-y-1/2" />
-                
                 <div className="space-y-6">
-                   <div className="w-12 h-12 bg-white/80 border border-white rounded-2xl flex items-center justify-center text-[#6366F1] shadow-md shadow-zinc-100/50 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shrink-0">
+                   <div className="w-12 h-12 bg-zinc-50 border border-zinc-200/80 rounded-sm flex items-center justify-center text-[#6366F1] transition-all duration-500 shrink-0">
                       <Mail size={22} />
                    </div>
                    <div className="space-y-2">
@@ -107,12 +102,9 @@ export default function ContactPage() {
              whileInView={{ opacity: 1, y: 0 }}
              viewport={{ once: true }}
              transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-             className="group max-w-4xl mx-auto bg-white/40 backdrop-blur-xl border border-white/60 hover:border-white rounded-[32px] p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 relative overflow-hidden mb-28 shadow-xl shadow-zinc-100/40 hover:shadow-2xl hover:shadow-zinc-200/40 transition-all duration-500"
+             className="group max-w-4xl mx-auto bg-white border border-zinc-200/80 hover:border-zinc-300 rounded-sm p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 relative overflow-hidden mb-28 transition-all duration-500"
           >
-             {/* Green ambient backglow inside glass card */}
-             <div className="absolute -bottom-10 -right-10 w-44 h-44 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none group-hover:bg-emerald-500/10 transition-colors duration-700" />
-             
-             <div className="w-12 h-12 bg-white/80 border border-white rounded-2xl flex items-center justify-center shrink-0 text-emerald-500 shadow-md shadow-zinc-100/50 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+             <div className="w-12 h-12 bg-zinc-50 border border-zinc-200/80 rounded-sm flex items-center justify-center shrink-0 text-emerald-500 transition-all duration-500">
                 <ShieldCheck size={24} className="animate-pulse" />
              </div>
              

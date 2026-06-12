@@ -43,8 +43,8 @@ export default function PricingPage() {
       {/* Feature Comparison Table */}
       <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-16 py-20 border-t border-zinc-100 mt-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#6366F1]/10 text-[#6366F1] text-xs font-semibold uppercase tracking-wider mb-4 shadow-sm">
-            <Sparkles size={14} /> Full Breakdown
+          <span className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-900/5 hover:bg-zinc-900/10 transition-colors border border-zinc-900/10 rounded-full text-[11px] uppercase tracking-widest font-semibold text-sage mb-4 font-mono">
+            <Sparkles size={14} className="text-[#6366F1]" /> Full Breakdown
           </span>
           <h3 className="text-3xl sm:text-5xl font-semibold text-zinc-900 tracking-tight mb-4">Compare all features</h3>
           <p className="text-zinc-600 text-xs sm:text-sm leading-relaxed font-normal">
@@ -52,13 +52,13 @@ export default function PricingPage() {
           </p>
         </div>
 
-        <div className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-[32px] shadow-xl shadow-zinc-100/40 p-6 sm:p-10 overflow-x-auto">
+        <div className="bg-white border border-zinc-200/80 rounded-sm shadow-none p-6 sm:p-10 overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
               <tr className="border-b border-zinc-200/50 text-zinc-400 text-[10px] font-bold uppercase tracking-wider">
                 <th className="py-4 pl-4 w-1/3">Core Feature</th>
                 <th className="py-4 text-center w-1/6">Free Plan ({isIndia ? "₹0" : "$0"})</th>
-                <th className="py-4 text-center w-1/6 bg-[#6366F1]/5 text-[#6366F1] rounded-t-2xl">Business Pro ({isIndia ? "₹899" : "$14"})</th>
+                <th className="py-4 text-center w-1/6 bg-[#6366F1]/5 text-[#6366F1] rounded-t-sm">Business Pro ({isIndia ? "₹899" : "$14"})</th>
                 <th className="py-4 text-center w-1/6">Business Scale ({isIndia ? "₹1,999" : "$29"})</th>
                 <th className="py-4 text-center w-1/6">Custom / Agency</th>
               </tr>

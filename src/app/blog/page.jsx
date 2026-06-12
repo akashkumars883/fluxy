@@ -145,10 +145,8 @@ export default function BlogPage() {
                       href={`/blog/${featuredPost.id}`}
                       className="group block bg-transparent border-0 hover:opacity-90 transition-all duration-300 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative overflow-hidden mb-10"
                     >
-                      {/* Interactive glow overlay */}
-                      <div className="absolute top-1/2 left-0 w-80 h-80 bg-[#6366F1]/15 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -translate-y-1/2" />
-                      <div className="absolute bottom-0 right-0 w-80 h-80 bg-pink-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                      <div className="lg:col-span-7 rounded-xl overflow-hidden aspect-[16/10] md:aspect-[16/9] relative shadow-md">
+                      {/* Interactive glow overlay Removed */}
+                      <div className="lg:col-span-7 rounded-sm overflow-hidden aspect-[16/10] md:aspect-[16/9] relative shadow-none">
                         <img 
                           src={featuredPost.image} 
                           alt={featuredPost.title}
@@ -217,7 +215,7 @@ export default function BlogPage() {
                           className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold tracking-tight transition-all duration-300 cursor-pointer shrink-0 border relative ${
                             isActive 
                               ? "bg-foreground text-background border-foreground shadow-md shadow-zinc-950/5 scale-[1.02]" 
-                              : "bg-white/40 backdrop-blur-md text-zinc-500 border-zinc-200/50 hover:bg-white hover:text-zinc-800"
+                              : "bg-white/40 text-zinc-500 border-zinc-200/50 hover:bg-white hover:text-zinc-800"
                           }`}
                         >
                           {cat}
@@ -237,7 +235,7 @@ export default function BlogPage() {
                         setSearchQuery(e.target.value);
                         setCurrentPage(1);
                       }}
-                      className="w-full bg-white/40 backdrop-blur-md border border-zinc-200/50 hover:border-zinc-300 focus:border-[#6366F1] rounded-full pl-11 pr-5 py-3 text-sm font-normal text-zinc-800 focus:outline-none transition-all placeholder-zinc-400 shadow-sm focus:shadow-md focus:shadow-indigo-500/5"
+                      className="w-full bg-white/40 border border-zinc-200/50 hover:border-zinc-300 focus:border-[#6366F1] rounded-full pl-11 pr-5 py-3 text-sm font-normal text-zinc-800 focus:outline-none transition-all placeholder-zinc-400 shadow-sm focus:shadow-md focus:shadow-indigo-500/5"
                     />
                   </div>
                 </div>
@@ -246,9 +244,9 @@ export default function BlogPage() {
                 {isLoading ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                     {[1, 2, 3].map((n) => (
-                      <div key={n} className="animate-pulse bg-white/20 border border-white/40 rounded-[32px] p-5 h-[480px] flex flex-col justify-between">
+                      <div key={n} className="animate-pulse bg-white/20 border border-zinc-200/50 rounded-sm p-5 h-[480px] flex flex-col justify-between">
                         <div>
-                          <div className="rounded-[22px] bg-zinc-200/40 aspect-[16/10] mb-5 h-[180px]" />
+                          <div className="rounded-sm bg-zinc-200/40 aspect-[16/10] mb-5 h-[180px]" />
                           <div className="space-y-3 px-1">
                             <div className="h-4 bg-zinc-200/40 rounded w-1/4" />
                             <div className="h-6 bg-zinc-200/40 rounded w-5/6" />
@@ -289,12 +287,11 @@ export default function BlogPage() {
                               href={`/blog/${post.id}`}
                               className="group block bg-transparent border-0 hover:opacity-90 transition-all duration-300 flex flex-col justify-between overflow-hidden relative h-full"
                             >
-                              {/* Inner soft card glow */}
-                              <div className="absolute top-1/3 left-0 w-48 h-48 bg-[#6366F1]/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -translate-y-1/2" />
+                              {/* Inner soft card glow Removed */}
                               
                               <div className="space-y-4 relative z-10">
                                 {/* Card Image Cover */}
-                                <div className="rounded-xl overflow-hidden aspect-[16/10] relative mb-5 shadow-sm">
+                                <div className="rounded-sm overflow-hidden aspect-[16/10] relative mb-5 shadow-none">
                                   <img 
                                     src={post.image} 
                                     alt={post.title}
@@ -423,7 +420,7 @@ export default function BlogPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="relative rounded-[24px] sm:rounded-[32px] md:rounded-[40px] px-6 sm:px-10 md:px-14 py-12 md:py-16 bg-gradient-to-br from-[#0c0c14] via-[#05050a] to-[#010103] border border-white/[0.06] shadow-none overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-8 sm:gap-10 group/main mb-12"
+                  className="relative rounded-sm px-6 sm:px-10 md:px-14 py-12 md:py-16 bg-gradient-to-br from-[#0c0c14] via-[#05050a] to-[#010103] border border-white/[0.06] shadow-none overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-8 sm:gap-10 group/main mb-12"
                 >
                   {/* SVG Noise Overlay */}
                   <div
@@ -433,9 +430,7 @@ export default function BlogPage() {
                     }}
                   />
 
-                  {/* Inner Ambient Glow Spots */}
-                  <div className="absolute top-1/2 left-1/4 w-[300px] h-[300px] bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 -translate-x-1/2 z-[1]" />
-                  <div className="absolute top-1/2 right-1/4 w-[300px] h-[300px] bg-[#6366F1]/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2 z-[1]" />
+                  {/* Inner Ambient Glow Spots Removed */}
 
                   {/* Left Side: Info Details */}
                   <div className="relative z-10 text-left space-y-3 max-w-xl">

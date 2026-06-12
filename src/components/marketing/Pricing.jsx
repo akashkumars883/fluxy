@@ -316,28 +316,20 @@ export default function Pricing({ isModal = false } = {}) {
 
   return (
     <section id="pricing" className={`relative overflow-hidden ${isModal ? 'py-1' : 'py-12 md:py-16 bg-transparent'}`}>
-      {/* Background Soft Glows */}
-      {!isModal && (
-        <>
-          <div className="absolute top-1/2 left-1/4 w-[400px] h-[400px] bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2" />
-          <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-rose-500/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2" />
-        </>
-      )}
+      {/* Background Soft Glows Removed for minimal aesthetic */}
 
       <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-16 relative z-10">
 
         {/* Header Title Block */}
         {!isModal && (
-          <div className="flex flex-col items-center text-center mb-12 md:mb-16">
-            <div className="max-w-2xl">
-              <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] mb-4 block">
-                Transparent Pricing
-              </p>
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground tracking-tight leading-[1.1] mb-4">
-                Simple pricing. <span className="text-sage font-normal">No surprises.</span>
-              </h2>
+          <div className="text-center md:text-left mb-16 lg:mb-24 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-900/5 hover:bg-zinc-900/10 transition-colors border border-zinc-900/10 rounded-full text-[11px] uppercase tracking-widest font-semibold text-sage mb-6 font-mono">
+              Transparent Pricing
             </div>
-            <p className="text-zinc-500 text-sm md:text-lg max-w-sm font-normal leading-relaxed">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground tracking-tight leading-[1.1] mb-6">
+              Simple pricing. <span className="text-sage font-normal">No surprises.</span>
+            </h2>
+            <p className="text-zinc-500 text-sm md:text-lg max-w-xl leading-relaxed">
               Start free with 25,000 AI credits. Upgrade anytime for higher message quotas, CRM exports, and team workflows.
             </p>
           </div>
@@ -352,15 +344,15 @@ export default function Pricing({ isModal = false } = {}) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className={`group flex flex-col justify-between transition-all duration-300 relative ${isModal ? 'rounded-xl p-4 sm:p-5' : 'rounded-xl p-8 sm:p-10'
+              className={`group flex flex-col justify-between transition-all duration-300 relative ${isModal ? 'rounded-sm p-4 sm:p-5' : 'rounded-sm p-8 sm:p-10'
                 } ${tier.popular
-                  ? "bg-white border-2 border-indigo-500 shadow-xl shadow-indigo-500/20 scale-[1.02] z-10"
-                  : "bg-white border border-zinc-200 hover:border-indigo-300 shadow-md hover:shadow-xl"
+                  ? "bg-white border-2 border-indigo-500 shadow-sm scale-[1.02] z-10"
+                  : "bg-white border border-zinc-200/80 hover:border-zinc-300 shadow-none"
                 }`}
             >
               {/* Popular Badge */}
               {tier.popular && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#6366F1] text-white text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-lg shadow-indigo-500/30">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#6366F1] text-white text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-sm shadow-sm">
                   Most Popular
                 </div>
               )}
@@ -394,8 +386,8 @@ export default function Pricing({ isModal = false } = {}) {
               <div className="relative z-10">
                 <button
                   onClick={() => handlePlanClick(tier)}
-                  className={`w-full ${isModal ? 'py-2.5 text-xs' : 'py-3 text-xs sm:text-sm'} rounded-xl font-bold transition-all flex items-center justify-center gap-2 group/btn ${tier.popular
-                      ? "bg-indigo-600 text-white hover:bg-indigo-500 shadow-md shadow-indigo-500/20"
+                  className={`w-full ${isModal ? 'py-2.5 text-xs' : 'py-3 text-xs sm:text-sm'} rounded-full font-bold transition-all flex items-center justify-center gap-2 group/btn ${tier.popular
+                      ? "bg-zinc-950 text-white hover:bg-zinc-800 shadow-lg shadow-zinc-900/20"
                       : "bg-zinc-900 text-white hover:bg-zinc-800"
                     }`}
                 >
@@ -414,12 +406,11 @@ export default function Pricing({ isModal = false } = {}) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="group w-full mt-6 sm:mt-10 bg-white border border-zinc-200 hover:border-indigo-300 rounded-xl p-6 sm:p-8 lg:p-10 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col md:flex-row md:items-center md:justify-between gap-6 relative overflow-hidden"
+            className="group w-full mt-6 sm:mt-10 bg-white border border-zinc-200/80 hover:border-zinc-300 rounded-sm p-6 sm:p-8 lg:p-10 transition-all duration-300 flex flex-col md:flex-row md:items-center md:justify-between gap-6 relative overflow-hidden"
           >
-            <div className="absolute top-1/2 -left-16 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -translate-y-1/2" />
 
             <div className="relative z-10 space-y-2">
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-wider bg-zinc-950 text-white shadow-sm">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-[8px] font-bold uppercase tracking-wider bg-zinc-950 text-white shadow-sm">
                 Custom Quota
               </span>
               <h3 className="text-xl sm:text-2xl font-bold text-zinc-800 tracking-tight leading-tight">
@@ -433,7 +424,7 @@ export default function Pricing({ isModal = false } = {}) {
             <div className="relative z-10 shrink-0">
               <Link
                 href="/login"
-                className="inline-flex items-center gap-3 bg-zinc-950 text-white pl-6 pr-5 py-3 rounded-xl font-bold text-xs sm:text-sm hover:bg-zinc-800 transition-all group/btn"
+                className="inline-flex items-center gap-3 bg-zinc-950 text-white pl-6 pr-5 py-3 rounded-full font-bold text-xs sm:text-sm hover:bg-zinc-800 transition-all group/btn"
               >
                 Talk to Founders
                 <ArrowRight size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
@@ -524,7 +515,7 @@ export default function Pricing({ isModal = false } = {}) {
                     </div>
                     <button
                       type="submit"
-                      className="px-6 py-3 bg-zinc-950 hover:bg-zinc-800 text-white font-semibold text-xs rounded-2xl shadow-sm transition-all h-[42px]"
+                      className="px-6 py-3 bg-zinc-950 hover:bg-zinc-800 text-white font-semibold text-xs rounded-full shadow-sm transition-all h-[42px]"
                     >
                       Apply
                     </button>
@@ -545,14 +536,14 @@ export default function Pricing({ isModal = false } = {}) {
               <div className="flex items-center gap-4 border-t border-zinc-200/50 pt-6">
                 <button
                   onClick={() => setSelectedPlan(null)}
-                  className="px-6 py-4 rounded-2xl text-xs font-semibold text-zinc-500 hover:text-zinc-900 transition-all"
+                  className="px-6 py-4 rounded-full text-xs font-semibold text-zinc-500 hover:text-zinc-900 transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   disabled={checkoutLoading || checkoutSuccess}
                   onClick={handleCheckoutSimulate}
-                  className="flex-1 px-8 py-4 bg-[#6366F1] hover:bg-[#5356e2] disabled:opacity-50 text-white rounded-2xl font-semibold text-xs sm:text-sm shadow-lg transition-all flex items-center justify-center gap-2"
+                  className="flex-1 px-8 py-4 bg-[#6366F1] hover:bg-[#5356e2] disabled:opacity-50 text-white rounded-full font-semibold text-xs sm:text-sm shadow-lg transition-all flex items-center justify-center gap-2"
                 >
                   {checkoutLoading ? "Connecting to payment gateway..." : checkoutSuccess ? "Subscription Active! Redirecting..." : "Proceed to Secure Checkout"}
                   {!checkoutLoading && !checkoutSuccess && <ArrowRight size={16} />}

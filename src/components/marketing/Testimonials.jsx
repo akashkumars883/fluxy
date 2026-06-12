@@ -92,16 +92,15 @@ export default function Testimonials() {
         }
       `}</style>
 
-      {/* Background Ambient Lights */}
-      <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-rose-500/5 rounded-full blur-[130px] pointer-events-none -translate-x-1/2 -translate-y-1/2" />
+      {/* Background Ambient Lights Removed for pure minimal aesthetic */}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 relative z-10 mb-10 sm:mb-14">
         {/* Header Title Block (Symmetrical with HowItWorks, Features and Pricing) */}
         <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
           <div className="max-w-3xl">
-            <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] mb-2 block">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-900/5 hover:bg-zinc-900/10 transition-colors border border-zinc-900/10 rounded-full text-[11px] uppercase tracking-widest font-semibold text-sage mb-6 font-mono">
               Testimonials
-            </p>
+            </div>
             <h2 className="text-4xl md:text-6xl font-semibold text-foreground tracking-normal leading-[1.1]">
               Loved by modern <span className="text-sage font-normal">teams.</span>
             </h2>
@@ -127,7 +126,7 @@ export default function Testimonials() {
             {[...row1, ...row1, ...row1].map((item, index) => (
               <div 
                 key={index}
-                className="w-[300px] sm:w-[360px] shrink-0 p-6 sm:p-8 rounded-xl bg-white border border-zinc-200 hover:border-indigo-300 transition-all duration-300 flex flex-col justify-between whitespace-normal select-none shadow-sm hover:shadow-md"
+                className="w-[300px] sm:w-[360px] shrink-0 p-6 sm:p-8 rounded-sm bg-white border border-zinc-200/80 hover:border-zinc-300 transition-all duration-300 flex flex-col justify-between whitespace-normal select-none"
               >
                 {/* Rating & Platform */}
                 <div className="flex items-center justify-between mb-4">
@@ -136,7 +135,7 @@ export default function Testimonials() {
                       <Star key={si} size={14} fill="currentColor" stroke="none" />
                     ))}
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-sm">
                     Instagram
                   </span>
                 </div>
@@ -171,7 +170,7 @@ export default function Testimonials() {
             {[...row2, ...row2, ...row2].map((item, index) => (
               <div 
                 key={index}
-                className="w-[300px] sm:w-[360px] shrink-0 p-6 sm:p-8 rounded-xl bg-white border border-zinc-200 hover:border-indigo-300 transition-all duration-300 flex flex-col justify-between whitespace-normal select-none shadow-sm hover:shadow-md"
+                className="w-[300px] sm:w-[360px] shrink-0 p-6 sm:p-8 rounded-sm bg-white border border-zinc-200/80 hover:border-zinc-300 transition-all duration-300 flex flex-col justify-between whitespace-normal select-none"
               >
                 {/* Rating & Platform */}
                 <div className="flex items-center justify-between mb-4">
@@ -180,7 +179,7 @@ export default function Testimonials() {
                       <Star key={si} size={14} fill="currentColor" stroke="none" />
                     ))}
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-md">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-sm">
                     Instagram
                   </span>
                 </div>

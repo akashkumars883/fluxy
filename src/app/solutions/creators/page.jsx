@@ -72,9 +72,7 @@ export default function CreatorsSolutionPage() {
   return (
     <main className="min-h-screen text-foreground bg-[#FBFBFD] overflow-hidden relative font-sans pt-32 pb-16 selection:bg-[#6366F1]/20">
       
-      {/* Background ambient glowing orbs */}
-      <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/3 right-0 w-[400px] h-[400px] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
+      {/* Background ambient glowing orbs Removed */}
 
       <PageTransition>
         <div className="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
@@ -89,8 +87,8 @@ export default function CreatorsSolutionPage() {
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="w-full lg:w-1/2 space-y-6"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#6366F1]/10 text-[#6366F1] text-xs font-black uppercase tracking-[0.3em] border border-[#6366F1]/20">
-                <Users size={14} />
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-900/5 hover:bg-zinc-900/10 transition-colors border border-zinc-900/10 rounded-full text-[11px] uppercase tracking-widest font-semibold text-sage font-mono">
+                <Users size={14} className="text-[#6366F1]" />
                 For Digital Product Teams
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-foreground leading-[1.1]">
@@ -101,11 +99,11 @@ export default function CreatorsSolutionPage() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Link href="/login" className="px-8 py-4 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2 group text-sm">
+                <Link href="/login" className="px-8 py-4 bg-indigo-600 text-white font-bold rounded-full hover:bg-indigo-500 transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2 group text-sm">
                   Start Free
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <Link href="#features-list" className="px-8 py-4 bg-white border border-zinc-200 text-zinc-800 font-bold rounded-xl hover:bg-zinc-50 transition-all flex items-center justify-center gap-2 text-sm shadow-sm">
+                <Link href="#features-list" className="px-8 py-4 bg-white border border-zinc-200 text-zinc-800 font-bold rounded-full hover:bg-zinc-50 transition-all flex items-center justify-center gap-2 text-sm shadow-sm">
                   <Play size={18} className="text-[#6366F1] fill-[#6366F1]" />
                   See How It Works
                 </Link>
@@ -131,16 +129,16 @@ export default function CreatorsSolutionPage() {
               transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="w-full lg:w-1/2 relative"
             >
-              <div className="relative rounded-xl overflow-hidden shadow-2xl border border-white bg-white/40 p-3 backdrop-blur-md">
-                <div className="relative rounded-xl overflow-hidden aspect-[4/3] bg-zinc-950 border border-zinc-800">
+              <div className="relative rounded-sm overflow-hidden shadow-none border border-zinc-200/80 bg-white p-3">
+                <div className="relative rounded-sm overflow-hidden aspect-[4/3] bg-zinc-950 border border-zinc-800">
                   <img 
                     src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1200&auto=format&fit=crop" 
                     alt="Team managing Instagram messages" 
                     className="w-full h-full object-cover opacity-85"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-xl p-5 rounded-2xl shadow-lg border border-white flex items-center gap-4">
-                    <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center shrink-0">
+                  <div className="absolute bottom-6 left-6 right-6 bg-white/90 p-5 rounded-sm shadow-xl border border-white flex items-center gap-4">
+                    <div className="w-12 h-12 bg-emerald-100 rounded-sm flex items-center justify-center shrink-0">
                       <CheckCircle2 className="text-emerald-500" size={24} />
                     </div>
                     <div>
@@ -156,7 +154,7 @@ export default function CreatorsSolutionPage() {
           {/* DYNAMIC ALTERNATING BENEFITS SECTION */}
           <div id="features-list" className="py-16 md:py-24 border-t border-zinc-200/60 scroll-mt-20">
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-              <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] block">Resource Delivery Workflows</p>
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-900/5 hover:bg-zinc-900/10 transition-colors border border-zinc-900/10 rounded-full text-[11px] uppercase tracking-widest font-semibold text-sage font-mono">Resource Delivery Workflows</div>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground tracking-tight leading-[1.1]">
                 Turn repeated questions into <span className="text-sage font-normal">trackable customer workflows.</span>
               </h2>
@@ -178,7 +176,7 @@ export default function CreatorsSolutionPage() {
                   >
                     {/* Left content text */}
                     <div className="w-full lg:w-1/2 space-y-4">
-                      <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-2 border shadow-sm ${benefit.color}`}>
+                      <div className={`w-14 h-14 rounded-sm flex items-center justify-center mb-2 border shadow-sm ${benefit.color}`}>
                         <Icon size={26} />
                       </div>
                       <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] block">{benefit.tagline}</p>
@@ -200,8 +198,8 @@ export default function CreatorsSolutionPage() {
                     
                     {/* Right content image */}
                     <div className="w-full lg:w-1/2">
-                      <div className="rounded-xl overflow-hidden bg-white/40 p-3 border border-white shadow-2xl relative group">
-                        <div className="rounded-xl overflow-hidden aspect-[4/3] relative">
+                      <div className="rounded-sm overflow-hidden bg-white p-3 border border-zinc-200/80 shadow-none relative group">
+                        <div className="rounded-sm overflow-hidden aspect-[4/3] relative">
                           <img 
                             src={benefit.image} 
                             alt={benefit.title} 

@@ -128,11 +128,11 @@ export default function PublicNavigation() {
               alt="Automixa Logo"
               width={32}
               height={32}
-              className={`mt-[2px] object-contain transition-all duration-300 shrink-0 ${showScrolledStyle ? "" : "brightness-0 invert"}`}
+              className={`mt-[2px] object-contain transition-all duration-300 shrink-0`}
               priority
             />
-            <span 
-              className={`text-xl font-bold tracking-tight transition-colors ${showScrolledStyle ? "text-foreground" : "text-white"}`}
+            <span
+              className={`text-xl font-bold tracking-tight transition-colors text-foreground`}
               style={{ fontFamily: 'var(--font-space-grotesk), sans-serif' }}
             >
               automixa
@@ -144,9 +144,9 @@ export default function PublicNavigation() {
 
             {/* Features Hover Dropdown */}
             <div className="relative group/menu py-2">
-              <button className={`flex items-center gap-1.5 text-sm font-semibold transition-colors cursor-pointer ${showScrolledStyle ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
+              <button className={`flex items-center gap-1.5 text-sm font-semibold transition-colors cursor-pointer text-zinc-600 hover:text-zinc-950`}>
                 Features
-                <ChevronDown size={14} className={`group-hover/menu:rotate-180 transition-transform duration-300 ${showScrolledStyle ? "text-zinc-400" : "text-white/70"}`} />
+                <ChevronDown size={14} className={`group-hover/menu:rotate-180 transition-transform duration-300 text-zinc-400`} />
               </button>
 
               {/* Dropdown panel container */}
@@ -181,9 +181,9 @@ export default function PublicNavigation() {
 
             {/* Solutions Hover Dropdown */}
             <div className="relative group/menu py-2">
-              <button className={`flex items-center gap-1.5 text-sm font-semibold transition-colors cursor-pointer ${showScrolledStyle ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
+              <button className={`flex items-center gap-1.5 text-sm font-semibold transition-colors cursor-pointer text-zinc-600 hover:text-zinc-950`}>
                 Solutions
-                <ChevronDown size={14} className={`group-hover/menu:rotate-180 transition-transform duration-300 ${showScrolledStyle ? "text-zinc-400" : "text-white/70"}`} />
+                <ChevronDown size={14} className={`group-hover/menu:rotate-180 transition-transform duration-300 text-zinc-400`} />
               </button>
 
               {/* Dropdown panel container */}
@@ -217,17 +217,17 @@ export default function PublicNavigation() {
             </div>
 
             {/* Pricing Direct Link */}
-            <Link href="/pricing" className={`text-sm font-semibold transition-colors cursor-pointer ${showScrolledStyle ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
+            <Link href="/pricing" className={`text-sm font-semibold transition-colors cursor-pointer text-zinc-600 hover:text-zinc-950`}>
               Pricing
             </Link>
 
             {/* Blog Direct Link */}
-            <Link href="/blog" className={`text-sm font-semibold transition-colors cursor-pointer ${showScrolledStyle ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
+            <Link href="/blog" className={`text-sm font-semibold transition-colors cursor-pointer text-zinc-600 hover:text-zinc-950`}>
               Blog
             </Link>
 
             {/* Contact Direct Link */}
-            <Link href="/contact" className={`text-sm font-semibold transition-colors cursor-pointer ${showScrolledStyle ? "text-zinc-600 hover:text-zinc-950" : "text-white/90 hover:text-white"}`}>
+            <Link href="/contact" className={`text-sm font-semibold transition-colors cursor-pointer text-zinc-600 hover:text-zinc-950`}>
               Contact
             </Link>
 
@@ -238,7 +238,7 @@ export default function PublicNavigation() {
             {/* CTA Button: Visible on Tablet/Desktop, Hidden on Mobile */}
             <Link
               href={session ? "/dashboard" : "/login"}
-              className={`hidden sm:flex text-sm font-semibold px-6 py-3 rounded-full hover:scale-[1.05] active:scale-[0.98] transition-all tracking-normal items-center gap-2 group ${showScrolledStyle ? "bg-foreground text-background" : "bg-white text-zinc-950 shadow-lg"}`}
+              className={`hidden sm:flex text-sm font-semibold px-6 py-3 rounded-full transition-all tracking-normal items-center gap-2 group bg-sage hover:bg-sage/90 text-background`}
             >
               {session ? "Dashboard" : "Get Started"}
               <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-rotate-45" />
@@ -247,13 +247,13 @@ export default function PublicNavigation() {
             {/* Custom Interactive Morphing Hamburger Button (Mobile Only) */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={`p-3 rounded-full transition-all flex items-center justify-center cursor-pointer relative z-50 group lg:hidden ${showScrolledStyle ? "hover:bg-[#09090B]/5" : "hover:bg-white/10"}`}
+              className={`p-3 rounded-full transition-all flex items-center justify-center cursor-pointer relative z-50 group lg:hidden hover:bg-[#09090B]/5`}
             >
               <div className="w-5 h-5 flex items-center justify-center relative">
                 {/* Custom morphing lines centered mathematically */}
-                <span className={`absolute h-0.5 rounded-full transition-all duration-300 ${isMenuOpen ? "rotate-45 w-5" : "w-5 -translate-y-1.5"} ${showScrolledStyle ? "bg-foreground" : "bg-white"}`} />
-                <span className={`absolute h-0.5 rounded-full transition-all duration-300 ${isMenuOpen ? "opacity-0 w-0" : "w-5"} ${showScrolledStyle ? "bg-foreground" : "bg-white"}`} />
-                <span className={`absolute h-0.5 rounded-full transition-all duration-300 ${isMenuOpen ? "-rotate-45 w-5" : "w-5 translate-y-1.5"} ${showScrolledStyle ? "bg-foreground" : "bg-white"}`} />
+                <span className={`absolute h-0.5 rounded-full transition-all duration-300 bg-foreground ${isMenuOpen ? "rotate-45 w-5" : "w-5 -translate-y-1.5"}`} />
+                <span className={`absolute h-0.5 rounded-full transition-all duration-300 bg-foreground ${isMenuOpen ? "opacity-0 w-0" : "w-5"}`} />
+                <span className={`absolute h-0.5 rounded-full transition-all duration-300 bg-foreground ${isMenuOpen ? "-rotate-45 w-5" : "w-5 translate-y-1.5"}`} />
               </div>
             </button>
           </div>

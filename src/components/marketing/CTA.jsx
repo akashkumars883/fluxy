@@ -15,7 +15,7 @@ export default function CTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="relative rounded-xl sm:rounded-xl md:rounded-xl px-6 sm:px-10 md:px-14 py-12 md:py-16 bg-gradient-to-br from-indigo-600 via-indigo-700 to-indigo-900 border border-indigo-500/20 shadow-2xl shadow-indigo-500/20 overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-6 sm:gap-10 group/main"
+          className="relative rounded-sm px-6 sm:px-10 md:px-14 py-12 md:py-16 bg-gradient-to-br from-indigo-600 via-indigo-700 to-indigo-900 border border-indigo-500/20 shadow-none overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-6 sm:gap-10 group/main"
         >
           {/* SVG Noise Overlay */}
           <div
@@ -25,16 +25,14 @@ export default function CTA() {
             }}
           />
 
-          {/* Inner Ambient Glow Spots */}
-          <div className="absolute top-1/2 left-1/4 w-[300px] h-[300px] bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 -translate-x-1/2 z-[1]" />
-          <div className="absolute top-1/2 right-1/4 w-[300px] h-[300px] bg-[#6366F1]/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2 z-[1]" />
+          {/* Inner Ambient Glow Spots Removed for Minimal Flat Aesthetic */}
 
           {/* Left Side: Info Details */}
           <div className="relative z-10 text-left space-y-3 max-w-3xl">
             {/* Tagline label */}
-            <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.3em] block">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 border border-white/20 rounded-full text-[11px] uppercase tracking-widest font-semibold text-white mb-2 font-mono">
               Get Started Now
-            </p>
+            </div>
 
             {/* Main Title */}
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-tight">
@@ -52,7 +50,7 @@ export default function CTA() {
           <div className="relative z-10 shrink-0">
             <Link
               href="/login"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-white text-indigo-700 font-bold text-xs sm:text-sm rounded-xl hover:bg-zinc-50 transition-all shadow-xl shadow-black/30 group/btn"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-white text-indigo-700 font-bold text-xs sm:text-sm rounded-full hover:bg-zinc-50 transition-all shadow-xl shadow-black/30 group/btn"
             >
               Start Automating Free
               <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform duration-300" />

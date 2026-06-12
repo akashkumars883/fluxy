@@ -41,9 +41,9 @@ export default function ComparePage({ params: paramsPromise }) {
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold uppercase tracking-wider mb-6 shadow-sm border border-[#6366F1]/20"
+              className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-900/5 hover:bg-zinc-900/10 transition-colors border border-zinc-900/10 rounded-full text-[11px] uppercase tracking-widest font-semibold text-sage mb-6 font-mono"
             >
-              <Sparkles size={12} /> Business Messaging Alternative
+              <Sparkles size={14} className="text-[#6366F1]" /> Business Messaging Alternative
             </motion.div>
 
             <motion.h1 
@@ -73,10 +73,10 @@ export default function ComparePage({ params: paramsPromise }) {
             >
               <Link
                 href="/login"
-                className="inline-flex items-center justify-between gap-4 bg-indigo-600 text-white pl-8 pr-3 py-3.5 rounded-xl font-bold hover:bg-indigo-500 transition-all w-full sm:w-fit text-sm group"
+                className="inline-flex items-center justify-between gap-4 bg-indigo-600 text-white pl-8 pr-3 py-3.5 rounded-full font-bold hover:bg-indigo-500 transition-all w-full sm:w-fit text-sm group shadow-sm hover:shadow-md"
               >
                 Start Free Trial
-                <div className="bg-white/20 text-white rounded-xl p-2 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-rotate-45">
+                <div className="bg-white/20 text-white rounded-full p-2 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-rotate-45">
                   <ArrowRight size={16} />
                 </div>
               </Link>
@@ -93,12 +93,12 @@ export default function ComparePage({ params: paramsPromise }) {
 
       {/* 2. Side-by-Side Premium Grid Table */}
       <section className="py-12 max-w-7xl mx-auto px-6 sm:px-10 relative z-10">
-        <div className="bg-white/40 backdrop-blur-3xl border border-white/60 rounded-xl shadow-2xl shadow-zinc-200/20 p-6 sm:p-10 overflow-x-auto">
+        <div className="bg-white border border-zinc-200/80 rounded-sm shadow-none p-6 sm:p-10 overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[700px]">
             <thead>
               <tr className="border-b border-zinc-200/50 text-zinc-400 text-[10px] font-black uppercase tracking-widest">
                 <th className="py-4 pl-4 w-1/3">Core Features</th>
-                <th className="py-4 pl-6 text-center w-1/3 bg-[#6366F1]/5 text-[#6366F1] rounded-t-xl border-x border-t border-[#6366F1]/20">
+                <th className="py-4 pl-6 text-center w-1/3 bg-[#6366F1]/5 text-[#6366F1] rounded-t-sm border-x border-t border-[#6366F1]/20">
                   ⚡ Automixa (Safe & Smart)
                 </th>
                 <th className="py-4 text-center w-1/3 text-zinc-500">
@@ -149,9 +149,9 @@ export default function ComparePage({ params: paramsPromise }) {
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold uppercase tracking-wider mb-4 shadow-sm border border-[#6366F1]/20"
+              className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-900/5 hover:bg-zinc-900/10 transition-colors border border-zinc-900/10 rounded-full text-[11px] uppercase tracking-widest font-semibold text-sage mb-6 font-mono"
             >
-              <Zap size={12} /> The Automixa Advantage
+              <Zap size={14} className="text-[#6366F1]" /> The Automixa Advantage
             </motion.div>
             
             <h2 className="text-3xl sm:text-5xl font-semibold text-zinc-900 tracking-tight leading-[1.15]">
@@ -164,10 +164,10 @@ export default function ComparePage({ params: paramsPromise }) {
             {data.whySwitch.map((item, idx) => (
               <div 
                 key={idx}
-                className="bg-white border border-zinc-200/40 p-8 rounded-xl shadow-sm hover:shadow-md hover:border-zinc-200 transition-all duration-300 flex flex-col justify-between"
+                className="bg-white border border-zinc-200/80 p-8 rounded-sm shadow-none hover:shadow-sm hover:border-zinc-300 transition-all duration-300 flex flex-col justify-between"
               >
                 <div className="space-y-4">
-                  <div className="w-10 h-10 rounded-xl bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center font-bold text-sm">
+                  <div className="w-10 h-10 rounded-sm bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center font-bold text-sm">
                     {idx + 1}
                   </div>
                   <h3 className="text-lg font-bold text-zinc-950 tracking-tight">

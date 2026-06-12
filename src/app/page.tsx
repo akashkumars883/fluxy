@@ -79,11 +79,10 @@ export default async function Home({ searchParams }: PageProps) {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background overflow-x-hidden">
+    <div className="flex flex-col min-h-screen bg-background overflow-x-clip">
       <main>
         <JsonLd />
         <Hero />
-        <MetaPartnerCard />
         <Stats realStats={realStats} />
         <HowItWorks />
         <Features />

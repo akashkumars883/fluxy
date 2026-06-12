@@ -223,21 +223,6 @@ export default function Footer() {
                   />
                 </a>
               </div>
- 
-              {/* Trustpilot Reviews Badge */}
-              <div className="opacity-80 hover:opacity-100 transition-opacity shrink-0">
-                <a 
-                  href="https://www.trustpilot.com/review/automixa.in" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-zinc-400 hover:text-white text-[10px] font-bold"
-                >
-                  <svg className="w-3.5 h-3.5 text-[#00b67a] fill-[#00b67a]" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                  </svg>
-                  <span>Trustpilot</span>
-                </a>
-              </div>
             </div>
          </div>
          
@@ -268,7 +253,7 @@ export default function Footer() {
             </Link>
          </div>
       </div>
-
+ 
     </footer>
   );
 }

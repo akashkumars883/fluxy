@@ -75,9 +75,7 @@ export default function ShieldPage() {
   return (
     <main className="min-h-screen text-foreground bg-[#FBFBFD] overflow-hidden relative font-sans pt-32 pb-6 selection:bg-[#6366F1]/20">
       
-      {/* Background ambient glowing orbs */}
-      <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-1/4 left-0 w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] pointer-events-none" />
+      {/* Background ambient glowing orbs Removed */}
 
       <PageTransition>
         <div className="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
@@ -92,7 +90,7 @@ export default function ShieldPage() {
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="w-full lg:w-1/2 space-y-6"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 text-amber-700 text-xs font-black uppercase tracking-[0.3em] border border-amber-500/20 shadow-sm">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-900/5 hover:bg-zinc-900/10 transition-colors border border-zinc-900/10 rounded-full text-[11px] uppercase tracking-widest font-semibold text-sage font-mono">
                 <Shield size={14} className="animate-pulse text-amber-500" />
                 Automixa Shield™
               </div>
@@ -141,8 +139,8 @@ export default function ShieldPage() {
               transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="w-full lg:w-1/2 relative"
             >
-              <div className="relative rounded-[40px] overflow-hidden shadow-2xl border border-white bg-white/40 p-3 backdrop-blur-md">
-                <div className="relative rounded-[32px] overflow-hidden aspect-[4/3] bg-zinc-950 border border-zinc-800">
+              <div className="relative rounded-sm overflow-hidden shadow-none border border-zinc-200/80 bg-white p-3">
+                <div className="relative rounded-sm overflow-hidden aspect-[4/3] bg-zinc-950 border border-zinc-800">
                   <img 
                     src="https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1200&auto=format&fit=crop" 
                     alt="Instagram safety automation protection shield" 
@@ -151,8 +149,8 @@ export default function ShieldPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent" />
                   
                   {/* Floating Notification */}
-                  <div className="absolute bottom-6 left-6 right-6 bg-zinc-900/90 backdrop-blur-xl border border-zinc-800 p-5 rounded-2xl shadow-xl flex items-center gap-4">
-                    <div className="w-10 h-10 bg-emerald-500/20 border border-emerald-500/30 rounded-xl flex items-center justify-center shrink-0">
+                  <div className="absolute bottom-6 left-6 right-6 bg-zinc-900/90 border border-zinc-800 p-5 rounded-sm shadow-xl flex items-center gap-4">
+                    <div className="w-10 h-10 bg-emerald-500/20 border border-emerald-500/30 rounded-sm flex items-center justify-center shrink-0">
                       <ShieldCheck className="text-emerald-400" size={20} />
                     </div>
                     <div>
@@ -168,7 +166,7 @@ export default function ShieldPage() {
           {/* ALTERNATING SECURITY LAYERS LIST */}
           <div id="compare-section" className="py-16 md:py-24 border-t border-zinc-200/60 scroll-mt-20">
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-              <span className="text-amber-500 font-bold uppercase tracking-widest text-xs">Security Architecture</span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-900/5 hover:bg-zinc-900/10 transition-colors border border-zinc-900/10 rounded-full text-[11px] uppercase tracking-widest font-semibold text-sage font-mono">Security Architecture</div>
               <h2 className="text-3xl sm:text-5xl font-bold text-zinc-900 tracking-tight leading-tight">
                 8 Layers of Active Protection
               </h2>
@@ -193,7 +191,7 @@ export default function ShieldPage() {
                   >
                     {/* Left: Text Details */}
                     <div className="w-full lg:w-1/2 space-y-5">
-                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-2 border shadow-sm ${benefit.color}`}>
+                      <div className={`w-14 h-14 rounded-sm flex items-center justify-center mb-2 border shadow-sm ${benefit.color}`}>
                         <Icon size={26} />
                       </div>
                       <span className="text-[10px] font-bold text-amber-600 uppercase tracking-widest block">{benefit.tagline}</span>
@@ -216,8 +214,8 @@ export default function ShieldPage() {
                     
                     {/* Right: Glassmorphic Image Frame */}
                     <div className="w-full lg:w-1/2">
-                      <div className="rounded-[40px] overflow-hidden bg-white/40 p-3 border border-white shadow-2xl relative group">
-                        <div className="rounded-[32px] overflow-hidden aspect-[4/3] relative">
+                      <div className="rounded-sm overflow-hidden bg-white p-3 border border-zinc-200/80 shadow-none relative group">
+                        <div className="rounded-sm overflow-hidden aspect-[4/3] relative">
                           <img 
                             src={benefit.image} 
                             alt={benefit.title} 
@@ -235,7 +233,7 @@ export default function ShieldPage() {
           {/* DANGER VS SAFE SIDE BY SIDE COMPARISON */}
           <div className="py-16 md:py-24 border-t border-zinc-200/60">
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-              <span className="text-rose-500 font-bold uppercase tracking-widest text-xs">Risk Comparison</span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-900/5 hover:bg-zinc-900/10 transition-colors border border-zinc-900/10 rounded-full text-[11px] uppercase tracking-widest font-semibold text-sage font-mono">Risk Comparison</div>
               <h2 className="text-3xl sm:text-5xl font-bold text-zinc-900 tracking-tight leading-tight">
                 Safe Automation vs. Spam Tools
               </h2>
@@ -250,10 +248,10 @@ export default function ShieldPage() {
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="bg-white border border-rose-100 rounded-[40px] p-8 md:p-10 shadow-xl shadow-rose-500/5 space-y-8 flex flex-col justify-between"
+                className="bg-white border border-rose-100 rounded-sm p-8 md:p-10 shadow-xl shadow-rose-500/5 space-y-8 flex flex-col justify-between"
               >
                 <div className="space-y-6">
-                  <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 text-rose-500 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-sm bg-rose-50 border border-rose-100 text-rose-500 flex items-center justify-center">
                     <ShieldAlert size={22} />
                   </div>
                   <div>
@@ -275,7 +273,7 @@ export default function ShieldPage() {
                     ))}
                   </div>
                 </div>
-                <div className="pt-6 border-t border-zinc-150 flex items-center justify-center text-xs font-bold text-rose-500 bg-rose-50/50 py-3 rounded-2xl">
+                <div className="pt-6 border-t border-zinc-150 flex items-center justify-center text-xs font-bold text-rose-500 bg-rose-50/50 py-3 rounded-sm">
                   ⚠️ HIGH SECURITY RISK FOR YOUR BRAND
                 </div>
               </motion.div>
@@ -285,13 +283,13 @@ export default function ShieldPage() {
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="bg-white border-2 border-amber-500 rounded-[40px] p-8 md:p-10 shadow-2xl shadow-amber-500/5 space-y-8 flex flex-col justify-between relative overflow-hidden"
+                className="bg-white border-2 border-amber-500 rounded-sm p-8 md:p-10 shadow-2xl shadow-amber-500/5 space-y-8 flex flex-col justify-between relative overflow-hidden"
               >
-                <div className="absolute top-0 right-0 bg-amber-500 text-white text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-bl-2xl">
+                <div className="absolute top-0 right-0 bg-amber-500 text-white text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-sm">
                   Shield Guard Enabled
                 </div>
                 <div className="space-y-6">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-sm bg-amber-500/10 border border-amber-500/20 text-amber-600 flex items-center justify-center">
                     <ShieldCheck size={22} />
                   </div>
                   <div>
@@ -313,7 +311,7 @@ export default function ShieldPage() {
                     ))}
                   </div>
                 </div>
-                <div className="pt-6 border-t border-zinc-150 flex items-center justify-center text-xs font-bold text-emerald-600 bg-emerald-50/50 py-3 rounded-2xl">
+                <div className="pt-6 border-t border-zinc-150 flex items-center justify-center text-xs font-bold text-emerald-600 bg-emerald-50/50 py-3 rounded-sm">
                   API-BASED AND RATE-AWARE
                 </div>
               </motion.div>

@@ -39,22 +39,19 @@ export default function FAQ({ customFaqs = null }) {
 
   return (
     <section id="faq" className="py-12 md:py-16 bg-transparent relative overflow-hidden">
-      {/* Background Ambient Glows */}
-      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none" />
+      {/* Background Ambient Glows Removed */}
 
       <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-16 relative z-10">
 
         {/* Header Title Block */}
-        <div className="flex flex-col items-center text-center mb-10 md:mb-14">
-          <div className="max-w-3xl">
-            <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] mb-3 block">
-              Help Center
-            </p>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground tracking-tight leading-[1.1] mb-4">
+        <div className="text-center md:text-left mb-10 md:mb-14 max-w-2xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-900/5 hover:bg-zinc-900/10 transition-colors border border-zinc-900/10 rounded-full text-[11px] uppercase tracking-widest font-semibold text-sage mb-6 font-mono">
+            Help Center
+          </div>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground tracking-tight leading-[1.1] mb-6">
               Frequently asked <span className="text-sage font-normal">questions.</span>
             </h2>
-          </div>
-          <p className="text-zinc-500 text-sm md:text-lg max-w-lg font-normal leading-relaxed">
+          <p className="text-zinc-500 text-sm md:text-lg max-w-xl font-normal leading-relaxed">
             Can&apos;t find what you are looking for? Reach out to our 24/7 team.
           </p>
         </div>

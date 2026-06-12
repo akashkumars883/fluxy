@@ -110,15 +110,17 @@ export default function PartnersPage() {
     {
       q: "Is there a limit to how much I can earn?",
       a: "Absolutely not. The more users you refer, the higher your commission percentage becomes (up to 25%). Since Automixa is a subscription service, you earn every month the user stays active."
+    },
+    {
+      q: "Is there a limit to how much I can earn?",
+      a: "Absolutely not. The more users you refer, the higher your commission percentage becomes (up to 25%). Since Automixa is a subscription service, you earn every month the user stays active."
     }
   ];
 
   return (
     <main className="min-h-screen text-foreground overflow-hidden relative font-sans pt-32 pb-16 selection:bg-[#6366F1]/20">
       
-      {/* Ambient Orbs */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#6366F1]/5 rounded-full blur-[150px] pointer-events-none" />
-      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none" />
+      {/* Ambient Orbs Removed */}
 
       <PageTransition>
         <div className="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
@@ -129,7 +131,7 @@ export default function PartnersPage() {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-bold uppercase tracking-widest border border-emerald-500/20"
+              className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-900/5 hover:bg-zinc-900/10 transition-colors border border-zinc-900/10 rounded-full text-[11px] uppercase tracking-widest font-semibold text-sage font-mono"
             >
               <DollarSign size={14} />
               Partner Program
@@ -174,9 +176,8 @@ export default function PartnersPage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4, duration: 0.5 }}
-            className="max-w-4xl mx-auto bg-white rounded-[32px] border border-zinc-200/60 shadow-2xl overflow-hidden mb-24 relative"
+            className="max-w-4xl mx-auto bg-white rounded-sm border border-zinc-200/80 shadow-sm overflow-hidden mb-24 relative"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/5 to-transparent pointer-events-none" />
             
             <div className="p-8 md:p-12 relative z-10 flex flex-col md:flex-row gap-12 items-center">
               
@@ -211,8 +212,7 @@ export default function PartnersPage() {
                 </div>
               </div>
 
-              <div className="w-full md:w-2/5 bg-zinc-900 rounded-3xl p-8 text-center text-white shadow-inner relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
+              <div className="w-full md:w-2/5 bg-zinc-900 rounded-sm p-8 text-center text-white shadow-none relative overflow-hidden">
                 <span className="text-zinc-400 text-sm font-bold uppercase tracking-widest block mb-4 relative z-10">Monthly Passive Income</span>
                 <div className="flex justify-center items-start gap-1 relative z-10">
                   <span className="text-2xl font-bold text-emerald-400 mt-2">₹</span>
@@ -236,7 +236,7 @@ export default function PartnersPage() {
                 const Icon = step.icon;
                 return (
                   <div key={idx} className="flex flex-col items-center text-center space-y-4">
-                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-2 ${step.color}`}>
+                    <div className={`w-16 h-16 rounded-sm flex items-center justify-center mb-2 ${step.color}`}>
                       <Icon size={28} />
                     </div>
                     <h3 className="text-xl font-bold text-zinc-900">{step.title}</h3>
@@ -260,7 +260,7 @@ export default function PartnersPage() {
               {tiers.map((tier, idx) => (
                 <div 
                   key={idx} 
-                  className={`rounded-3xl p-8 border ${tier.active ? 'bg-zinc-900 border-zinc-800 text-white shadow-2xl scale-105 z-10' : 'bg-white border-zinc-200/60 text-zinc-900 shadow-lg'}`}
+                  className={`rounded-sm p-8 border transition-all duration-300 ${tier.active ? 'bg-zinc-900 border-zinc-800 text-white shadow-sm scale-[1.02] z-10' : 'bg-white border-zinc-200/80 text-zinc-900 shadow-none'}`}
                 >
                   <div className="flex justify-between items-start mb-6">
                     <div>
@@ -318,13 +318,13 @@ export default function PartnersPage() {
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="relative bg-white rounded-[32px] border border-zinc-200 shadow-2xl p-6 sm:p-8 max-w-lg w-full z-10 overflow-hidden"
+              className="relative bg-white rounded-sm border border-zinc-200/80 shadow-2xl p-6 sm:p-8 max-w-lg w-full z-10 overflow-hidden"
             >
               {!isSubmitted ? (
                 <form onSubmit={handleApplySubmit} className="space-y-6">
                   <div className="flex items-center justify-between border-b border-zinc-100 pb-4">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-2xl bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center border border-[#6366F1]/20 shadow-sm shrink-0">
+                      <div className="w-10 h-10 rounded-sm bg-[#6366F1]/10 text-[#6366F1] flex items-center justify-center border border-[#6366F1]/20 shadow-none shrink-0">
                         <Sparkles size={20} />
                       </div>
                       <div>
@@ -347,7 +347,7 @@ export default function PartnersPage() {
                       <select 
                         value={formData.platform}
                         onChange={(e) => setFormData({...formData, platform: e.target.value})}
-                        className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs font-semibold text-zinc-900 outline-none focus:border-[#6366F1]"
+                        className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-sm text-xs font-semibold text-zinc-900 outline-none focus:border-[#6366F1]"
                       >
                         <option value="instagram">Instagram Business Page</option>
                         <option value="youtube">YouTube Channel</option>
@@ -361,7 +361,7 @@ export default function PartnersPage() {
                       <select 
                         value={formData.audienceRange}
                         onChange={(e) => setFormData({...formData, audienceRange: e.target.value})}
-                        className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs font-semibold text-zinc-900 outline-none focus:border-[#6366F1]"
+                        className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-sm text-xs font-semibold text-zinc-900 outline-none focus:border-[#6366F1]"
                       >
                         <option value="under_10k">Under 10,000</option>
                         <option value="10k-50k">10,000 - 50,000</option>
@@ -378,7 +378,7 @@ export default function PartnersPage() {
                         placeholder="https://instagram.com/your_handle"
                         value={formData.handle}
                         onChange={(e) => setFormData({...formData, handle: e.target.value})}
-                        className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs font-semibold text-zinc-900 outline-none focus:border-[#6366F1]"
+                        className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-sm text-xs font-semibold text-zinc-900 outline-none focus:border-[#6366F1]"
                       />
                     </div>
 
@@ -390,7 +390,7 @@ export default function PartnersPage() {
                         placeholder="e.g. In my product tutorials, newsletter, agency proposals, or directly to business clients."
                         value={formData.plan}
                         onChange={(e) => setFormData({...formData, plan: e.target.value})}
-                        className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs font-semibold text-zinc-900 outline-none focus:border-[#6366F1] resize-none"
+                        className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-sm text-xs font-semibold text-zinc-900 outline-none focus:border-[#6366F1] resize-none"
                       />
                     </div>
                   </div>
@@ -399,7 +399,7 @@ export default function PartnersPage() {
                     <button 
                       type="submit"
                       disabled={isApplying}
-                      className="w-full py-3.5 bg-[#6366F1] hover:bg-[#5254D8] text-white font-bold text-sm rounded-2xl shadow-xl transition-all flex items-center justify-center gap-2"
+                      className="w-full py-3.5 bg-[#6366F1] hover:bg-[#5254D8] text-white font-bold text-sm rounded-full shadow-sm transition-all flex items-center justify-center gap-2"
                     >
                       {isApplying ? "Submitting Application..." : "Submit Partner Application"}
                       <Send size={16} />
@@ -420,7 +420,7 @@ export default function PartnersPage() {
                   <div className="pt-4">
                     <Link 
                       href="/dashboard?tab=partner" 
-                      className="px-8 py-3.5 bg-zinc-950 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-lg transition-all inline-block hover:scale-105"
+                      className="px-8 py-3.5 bg-zinc-950 text-white font-bold text-xs sm:text-sm rounded-full shadow-md transition-all inline-block hover:scale-105"
                     >
                       Go to Partner Dashboard
                     </Link>

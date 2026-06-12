@@ -75,9 +75,7 @@ export default function DMAutoReplyPage() {
   return (
     <main className="min-h-screen text-foreground bg-[#FBFBFD] overflow-hidden relative font-sans pt-32 pb-16 selection:bg-[#6366F1]/20">
       
-      {/* Background ambient glowing orbs */}
-      <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-[#6366F1]/5 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-1/4 left-0 w-[500px] h-[500px] bg-[#6366F1]/5 rounded-full blur-[120px] pointer-events-none" />
+      {/* Background ambient glowing orbs Removed */}
 
       <PageTransition>
         <div className="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
@@ -92,8 +90,8 @@ export default function DMAutoReplyPage() {
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="w-full lg:w-1/2 space-y-6"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#6366F1]/10 text-[#6366F1] text-xs font-black uppercase tracking-[0.3em] border border-[#6366F1]/20 shadow-sm">
-                <Zap size={14} className="animate-pulse" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-900/5 hover:bg-zinc-900/10 transition-colors border border-zinc-900/10 rounded-full text-[11px] uppercase tracking-widest font-semibold text-sage font-mono">
+                <Zap size={14} className="animate-pulse text-[#6366F1]" />
                 DM Auto-Reply
               </div>
               
@@ -109,14 +107,14 @@ export default function DMAutoReplyPage() {
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Link 
                   href="/login" 
-                  className="px-8 py-4 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2 group text-sm"
+                  className="px-8 py-4 bg-indigo-600 text-white font-bold rounded-full hover:bg-indigo-500 transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2 group text-sm"
                 >
                   Start Free
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link 
                   href="#features-list" 
-                  className="px-8 py-4 bg-white border border-zinc-200 text-zinc-800 font-bold rounded-xl hover:bg-zinc-50 transition-all flex items-center justify-center gap-2 text-sm shadow-sm"
+                  className="px-8 py-4 bg-white border border-zinc-200 text-zinc-800 font-bold rounded-full hover:bg-zinc-50 transition-all flex items-center justify-center gap-2 text-sm shadow-sm"
                 >
                   <Play size={18} className="text-[#6366F1] fill-[#6366F1]" />
                   Explore Features
@@ -125,7 +123,7 @@ export default function DMAutoReplyPage() {
 
               {/* Trust Indicators */}
               <div className="pt-6 flex items-center gap-6 border-t border-zinc-200/60 max-w-md">
-                <div className="w-10 h-10 bg-[#6366F1]/10 rounded-xl flex items-center justify-center border border-[#6366F1]/20 shrink-0">
+                <div className="w-10 h-10 bg-[#6366F1]/10 rounded-sm flex items-center justify-center border border-[#6366F1]/20 shrink-0">
                   <ShieldCheck className="text-[#6366F1]" size={20} />
                 </div>
                 <div className="text-xs text-zinc-500 font-medium">
@@ -141,8 +139,8 @@ export default function DMAutoReplyPage() {
               transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="w-full lg:w-1/2 relative"
             >
-              <div className="relative rounded-xl overflow-hidden shadow-2xl border border-white bg-white/40 p-3 backdrop-blur-md">
-                <div className="relative rounded-xl overflow-hidden aspect-[4/3] bg-zinc-950 border border-zinc-800">
+              <div className="relative rounded-sm overflow-hidden shadow-none border border-zinc-200/80 bg-white p-3">
+                <div className="relative rounded-sm overflow-hidden aspect-[4/3] bg-zinc-950 border border-zinc-800">
                   <img 
                     src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop" 
                     alt="Instagram DM automation tool" 
@@ -151,8 +149,8 @@ export default function DMAutoReplyPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent" />
                   
                   {/* Floating Notification */}
-                  <div className="absolute bottom-6 left-6 right-6 bg-zinc-900/90 backdrop-blur-xl border border-zinc-800 p-5 rounded-2xl shadow-xl flex items-center gap-4">
-                    <div className="w-10 h-10 bg-[#6366F1]/20 border border-[#6366F1]/30 rounded-xl flex items-center justify-center shrink-0">
+                  <div className="absolute bottom-6 left-6 right-6 bg-zinc-900/90 border border-zinc-800 p-5 rounded-sm shadow-xl flex items-center gap-4">
+                    <div className="w-10 h-10 bg-[#6366F1]/20 border border-[#6366F1]/30 rounded-sm flex items-center justify-center shrink-0">
                       <MessageCircle className="text-indigo-400" size={20} />
                     </div>
                     <div>
@@ -168,7 +166,7 @@ export default function DMAutoReplyPage() {
           {/* FEATURES LIST */}
           <div id="features-list" className="py-16 md:py-24 border-t border-zinc-200/60 scroll-mt-20">
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-              <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] block">Core Capabilities</p>
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-900/5 hover:bg-zinc-900/10 transition-colors border border-zinc-900/10 rounded-full text-[11px] uppercase tracking-widest font-semibold text-sage font-mono">Core Capabilities</div>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground tracking-tight leading-[1.1]">
                 Unlock the full potential <span className="text-sage font-normal">of your DMs.</span>
               </h2>
@@ -193,10 +191,10 @@ export default function DMAutoReplyPage() {
                   >
                     {/* Left: Text Details */}
                     <div className="w-full lg:w-1/2 space-y-5">
-                      <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-2 border shadow-sm ${benefit.color}`}>
+                      <div className={`w-14 h-14 rounded-sm flex items-center justify-center mb-2 border shadow-sm ${benefit.color}`}>
                         <Icon size={26} />
                       </div>
-                      <p className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] block">{benefit.tagline}</p>
+                      <span className="text-[10px] font-bold text-[#6366F1] uppercase tracking-[0.3em] block">{benefit.tagline}</span>
                       <h3 className="text-2xl sm:text-4xl font-bold text-foreground leading-tight tracking-tight">
                         {benefit.title}
                       </h3>
@@ -216,8 +214,8 @@ export default function DMAutoReplyPage() {
                     
                     {/* Right: Glassmorphic Image Frame */}
                     <div className="w-full lg:w-1/2">
-                      <div className="rounded-xl overflow-hidden bg-white/40 p-3 border border-white shadow-2xl relative group">
-                        <div className="rounded-xl overflow-hidden aspect-[4/3] relative">
+                      <div className="rounded-sm overflow-hidden bg-white p-3 border border-zinc-200/80 shadow-none relative group">
+                        <div className="rounded-sm overflow-hidden aspect-[4/3] relative">
                           <img 
                             src={benefit.image} 
                             alt={benefit.title} 
