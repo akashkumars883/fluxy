@@ -1,5 +1,4 @@
 import Hero from "@/components/marketing/Hero";
-import MetaPartnerCard from "@/components/marketing/MetaPartnerCard";
 import Stats from "@/components/marketing/Stats";
 import HowItWorks from "@/components/marketing/HowItWorks";
 import Features from "@/components/marketing/Features";
