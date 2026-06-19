@@ -28,10 +28,9 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   const {
     selectedWorkspace, workspaceMembers, workspaceMembersLoading,
     inviteMember, removeMember, updateMemberRole,
-    disconnectAccount, updateSelectedAccount
+    disconnectAccount, updateSelectedAccount,
+    settingsTab, setSettingsTab
   } = useDashboard();
-
-  const [activeSection, setActiveSection] = useState("account");
 
   // Quota
   const usedQuota = (realtimeStats?.totalDms || 0) + (realtimeStats?.autoReplies || 0);
@@ -199,6 +198,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
               `https://ui-avatars.com/api/?name=${encodeURIComponent(account?.page_name || "User")}&background=6366f1&color=fff&size=80`}
             alt="Profile"
             className="w-9 h-9 rounded-xl object-cover border border-zinc-200 shrink-0"
+            onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(account?.ig_username || account?.page_name || "User")}&background=6366f1&color=fff&size=80`; }}
           />
           <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold text-zinc-900 truncate">@{account?.ig_username || account?.page_name || "account"}</p>
@@ -474,6 +474,9 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
     integrations: renderIntegrations(),
   };
 
+  // If settingsTab is invalid, default to account
+  const currentSection = sections[settingsTab] || sections.account;
+
   return (
     <div className="w-full max-w-[1400px] mx-auto animate-in fade-in duration-500 pb-10 space-y-6">
 
@@ -515,52 +518,17 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
       {/* Mobile: horizontal scroll tabs */}
       <div className="flex sm:hidden gap-1 overflow-x-auto no-scrollbar pb-3 mb-4 border-b border-zinc-100">
         {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
-          <button key={id} onClick={() => setActiveSection(id)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all shrink-0 ${activeSection === id ? "bg-[#6366F1] text-white " : "bg-zinc-100 text-zinc-500 hover:text-zinc-900"
+          <button key={id} onClick={() => setSettingsTab(id)}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all shrink-0 ${settingsTab === id ? "bg-[#6366F1] text-white " : "bg-zinc-100 text-zinc-500 hover:text-zinc-900"
               }`}>
             <Icon size={12} /> {label}
           </button>
         ))}
       </div>
 
-      {/* Desktop: left nav + right content */}
-      <div className="hidden sm:flex gap-6 items-start">
-
-        {/* Left Nav */}
-        <nav className="w-44 shrink-0 sticky top-0">
-          <ul className="space-y-0.5">
-            {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
-              const active = activeSection === id;
-              return (
-                <li key={id}>
-                  <button
-                    onClick={() => setActiveSection(id)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all text-left ${active
-                        ? "bg-indigo-50 text-[#6366F1] font-semibold"
-                        : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 font-medium"
-                      }`}
-                  >
-                    <Icon size={14} className={active ? "text-[#6366F1]" : "text-zinc-400"} />
-                    {label}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-
-        {/* Subtle divider */}
-        <div className="w-px bg-zinc-200/70 self-stretch shrink-0" />
-
-        {/* Right Content */}
-        <div className="flex-1 min-w-0">
-          {sections[activeSection]}
-        </div>
-      </div>
-
-      {/* Mobile content */}
-      <div className="sm:hidden">
-        {sections[activeSection]}
+      {/* Content */}
+      <div className="w-full">
+        {currentSection}
       </div>
 
     </div>

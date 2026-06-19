@@ -310,35 +310,72 @@ export default function Dashboard() {
       async function fetchCoreStats() {
         if (!selectedAccount?.id) return;
         try {
+          const now = new Date();
+          const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+          const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString();
+
           const results = await Promise.allSettled([
             supabase.from("automation_history").select("*", { count: 'exact', head: true }).eq("automation_id", selectedAccount.id).eq("status", "SUCCESS").neq("type", "COMMENT"),
             supabase.from("automation_history").select("*", { count: 'exact', head: true }).eq("automation_id", selectedAccount.id).eq("status", "SUCCESS").eq("type", "COMMENT"),
-            supabase.from("automation_history").select("*", { count: 'exact', head: true }).eq("automation_id", selectedAccount.id),
-            supabase.from("automation_history").select("*").eq("automation_id", selectedAccount.id).order("created_at", { ascending: false }).limit(100),
-            supabase.from("triggers").select("*").eq("automation_id", selectedAccount.id).order("created_at", { ascending: false })
+            supabase.from("automation_history").select("*", { count: 'exact', head: true }).eq("automation_id", selectedAccount.id), // total attempts
+            supabase.from("automation_history").select("*").eq("automation_id", selectedAccount.id).order("created_at", { ascending: false }).limit(200), // recent history for charts/campaigns
+            supabase.from("triggers").select("*").eq("automation_id", selectedAccount.id).order("created_at", { ascending: false }),
+            
+            // For unique contacts
+            supabase.from("automation_history").select("sender_id").eq("automation_id", selectedAccount.id),
+            
+            // For trends
+            supabase.from("automation_history").select("*", { count: 'exact', head: true }).eq("automation_id", selectedAccount.id).eq("status", "SUCCESS").gte("created_at", sevenDaysAgo),
+            supabase.from("automation_history").select("*", { count: 'exact', head: true }).eq("automation_id", selectedAccount.id).eq("status", "SUCCESS").gte("created_at", fourteenDaysAgo).lt("created_at", sevenDaysAgo),
           ]);
 
-          const [dmRes, commentRes, totalRes, historyRes, triggersRes] = results;
+          const [dmRes, commentRes, totalAttemptsRes, historyRes, triggersRes, allContactsRes, currentWeekRes, prevWeekRes] = results;
 
           const dmCount = dmRes.status === 'fulfilled' ? dmRes.value.count : 0;
           const commentCount = commentRes.status === 'fulfilled' ? commentRes.value.count : 0;
-          const triggerCount = totalRes.status === 'fulfilled' ? totalRes.value.count : 0;
+          const totalAttempts = totalAttemptsRes.status === 'fulfilled' ? totalAttemptsRes.value.count : 0;
+          const totalSuccess = dmCount + commentCount;
           const historyData = historyRes.status === 'fulfilled' ? historyRes.value.data : [];
           const triggersData = triggersRes.status === 'fulfilled' ? triggersRes.value.data : [];
+          
+          const allContacts = allContactsRes.status === 'fulfilled' ? allContactsRes.value.data : [];
+          const uniqueContacts = new Set(allContacts.filter(c => c.sender_id).map(c => c.sender_id)).size;
+
+          const currentWeekSuccess = currentWeekRes.status === 'fulfilled' ? currentWeekRes.value.count : 0;
+          const prevWeekSuccess = prevWeekRes.status === 'fulfilled' ? prevWeekRes.value.count : 0;
+          
+          // Calculate Trend %
+          let trendNum = 0;
+          if (prevWeekSuccess === 0) {
+            trendNum = currentWeekSuccess > 0 ? 100 : 0;
+          } else {
+            trendNum = Math.round(((currentWeekSuccess - prevWeekSuccess) / prevWeekSuccess) * 100);
+          }
+          const trendLabel = trendNum >= 0 ? `+${trendNum}%` : `${trendNum}%`;
+
+          // Calculate Success Rate
+          const successRate = totalAttempts > 0 ? Math.round((totalSuccess / totalAttempts) * 100) : 0;
+          
+          // Calculate Conversion Rate (Contacts per Auto Reply)
+          const conversionRate = commentCount > 0 ? Math.min(100, Math.round((uniqueContacts / commentCount) * 100)) : 0;
 
           setRealtimeStats({
             totalDms: dmCount || 0,
             autoReplies: commentCount || 0,
-            engagementRate: triggerCount > 0 ? "100%" : "0%",
-            followerGrowth: triggerCount || 0,
+            uniqueContacts: uniqueContacts,
+            successRate: `${successRate}%`,
+            conversionRate: `${conversionRate}%`,
+            trend: trendLabel,
+            trendIsPositive: trendNum >= 0
           });
 
           if (historyData) setRealtimeHistory(historyData);
           if (triggersData) {
             setTriggersList(triggersData);
+            // Campaign performance computation across all contacts instead of just recent 100
             const triggersWithCounts = triggersData.map(t => ({
               ...t,
-              count: (historyData || []).filter(h => h.keyword === t.keyword || h.trigger_id === t.id).length
+              count: allContacts.filter(h => h.keyword === t.keyword || h.trigger_id === t.id).length
             })).sort((a, b) => b.count - a.count);
             setRealtimeTriggers(triggersWithCounts);
           }
@@ -776,7 +813,7 @@ export default function Dashboard() {
             className="flex-1 overflow-y-auto w-full flex flex-col relative"
           >
             {/* Global Page Header (Navbar elements + Actions on the right, Title on the left) */}
-            <div className="flex flex-row items-center justify-between gap-3 py-3 px-4 sm:px-6 lg:px-8 border-b border-zinc-200/50 shrink-0 sticky top-0 z-20 bg-[#faf8f5]">
+            <div className="flex flex-row items-center justify-between gap-2 py-3 px-1 sm:px-6 lg:px-8 border-b border-zinc-200/50 shrink-0 sticky top-0 z-20 bg-[#faf8f5]">
               {/* Left: Title + inline account badge */}
               <div className="flex items-center gap-3 min-w-0">
                 <div className="min-w-0 flex flex-wrap items-center gap-2 sm:gap-4">
@@ -787,7 +824,7 @@ export default function Dashboard() {
                     {activeTab === "automations" && builderActive && (
                       <>
                         <span className="text-zinc-300 font-medium select-none hidden sm:inline">/</span>
-                        <span className="text-zinc-500 text-base sm:text-lg font-semibold truncate max-w-37.5 sm:max-w-xs">{builderCampaignName || "New Campaign"}</span>
+                        <span className="text-zinc-500 text-base sm:text-lg font-semibold truncate max-w-[120px] xs:max-w-[150px] sm:max-w-xs">{builderCampaignName || "New Campaign"}</span>
                       </>
                     )}
                   </h1>
@@ -808,7 +845,7 @@ export default function Dashboard() {
               </div>
 
               {/* Right Side: Navbar Elements + Contextual Actions */}
-              <div className="flex items-center gap-2 sm:gap-3 shrink-0 flex-nowrap justify-end">
+              <div className="flex items-center gap-1.5 sm:gap-3 shrink-0 flex-nowrap justify-end">
                 {/* Search Icon Button */}
                 <button
                   onClick={() => setIsSearchOpen(true)}
@@ -830,7 +867,7 @@ export default function Dashboard() {
                 {/* Notification Dropdown */}
                 <NotificationDropdown accounts={accounts} />
 
-                <div className="h-5 w-[1px] bg-zinc-200/60 hidden xs:block" />
+                <div className="h-5 w-[1px] bg-zinc-200/60 hidden sm:block" />
 
                 {/* Profile Dropdown */}
                 <ProfileDropdown
@@ -876,7 +913,7 @@ export default function Dashboard() {
             </div>
 
             {selectedAccount ? (
-              <div className="flex flex-col flex-1 min-h-0 space-y-3 overflow-hidden px-4 sm:px-5 lg:px-6 pt-4 pb-4">
+              <div className="flex flex-col flex-1 min-h-0 space-y-2 sm:space-y-3 overflow-hidden px-0 sm:px-5 lg:px-6 pt-2 pb-1 sm:pt-4 sm:pb-4">
                 {/* === DYNAMIC ERROR / WARNING BANNER === */}
                 {
                   (!selectedAccount?.is_active || usedQuota >= maxQuota) && (

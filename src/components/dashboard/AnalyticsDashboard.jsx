@@ -4,11 +4,11 @@ import { BarChart2, MessageSquare, Send, Sparkles, TrendingUp, Users, ArrowRight
 import { motion } from "framer-motion";
 
 export default function AnalyticsDashboard({ realtimeStats, history = [], triggers = [], currentPlan = "free", onUpgradeClick }) {
-  const uniqueContacts = new Set((history || []).filter(h => h.sender_id).map(h => h.sender_id)).size;
-
   const campaigns = (triggers || []).map(trigger => {
+    // Note: 'history' is currently limited to 200 items in page.jsx. 
+    // To get true counts, we now rely on 'trigger.count' which is calculated in page.jsx across all contacts.
     const triggerHistory = (history || []).filter(h => h.keyword === trigger.keyword || h.trigger_id === trigger.id);
-    const sentCount = triggerHistory.length;
+    const sentCount = trigger.count || triggerHistory.length;
     const triggerContacts = new Set(triggerHistory.map(h => h.sender_id)).size;
     return {
       name: trigger.metadata?.campaign_name || trigger.name || "Custom Flow ⚡",
@@ -22,6 +22,8 @@ export default function AnalyticsDashboard({ realtimeStats, history = [], trigge
 
   const totalInteractions = (realtimeStats?.totalDms || 0) + (realtimeStats?.autoReplies || 0);
   const totalDms = realtimeStats?.totalDms || 0;
+  const uniqueContacts = realtimeStats?.uniqueContacts || 0;
+  const trend = realtimeStats?.trend || "0%";
 
   const metricCards = [
     {
@@ -32,17 +34,19 @@ export default function AnalyticsDashboard({ realtimeStats, history = [], trigge
       gradient: "from-indigo-600 to-violet-600",
       softBg: "bg-indigo-500/10",
       iconColor: "text-indigo-500",
-      trend: "+12%",
+      trend: trend,
+      trendColor: realtimeStats?.trendIsPositive !== false ? "text-emerald-600 bg-emerald-50 border-emerald-100" : "text-amber-600 bg-amber-50 border-amber-100",
     },
     {
-      label: "DMs Delivered",
-      value: totalDms.toLocaleString(),
-      desc: "100% delivery rate",
+      label: "Automation Success",
+      value: realtimeStats?.successRate || "0%",
+      desc: "Success rate",
       icon: Send,
       gradient: "from-violet-500 to-purple-600",
       softBg: "bg-violet-500/10",
       iconColor: "text-violet-500",
-      trend: "+8%",
+      trend: trend,
+      trendColor: realtimeStats?.trendIsPositive !== false ? "text-emerald-600 bg-emerald-50 border-emerald-100" : "text-amber-600 bg-amber-50 border-amber-100",
     },
     {
       label: "Contacts Captured",
@@ -52,13 +56,13 @@ export default function AnalyticsDashboard({ realtimeStats, history = [], trigge
       gradient: "from-emerald-500 to-teal-500",
       softBg: "bg-emerald-500/10",
       iconColor: "text-emerald-500",
-      trend: "+14%",
+      trend: null, // Just show description
     },
     {
-      label: "Active Campaigns",
-      value: triggers.filter(t => t.metadata?.is_active !== false).length,
-      desc: `${triggers.length} total rules`,
-      icon: BarChart2,
+      label: "Conversion Rate",
+      value: realtimeStats?.conversionRate || "0%",
+      desc: "Contacts per Reply",
+      icon: Zap,
       gradient: "from-amber-500 to-orange-500",
       softBg: "bg-amber-500/10",
       iconColor: "text-amber-500",
@@ -87,7 +91,7 @@ export default function AnalyticsDashboard({ realtimeStats, history = [], trigge
       </div>
 
       {/* ── Stat Cards ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3">
         {metricCards.map((card, idx) => {
           const Icon = card.icon;
           return (
@@ -96,27 +100,27 @@ export default function AnalyticsDashboard({ realtimeStats, history = [], trigge
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.07, duration: 0.4, ease: "easeOut" }}
-              className="group relative bg-white border border-zinc-200/60 rounded-2xl p-5 flex flex-col gap-3 hover:border-zinc-300 hover:shadow-lg hover:shadow-zinc-100/60 transition-all duration-200 cursor-default overflow-hidden"
+              className="group relative bg-white border border-zinc-200/40 rounded-[16px] p-4 flex flex-col gap-2.5 hover:border-zinc-300 hover:shadow-sm transition-all duration-200 cursor-default overflow-hidden shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)]"
             >
               {/* Hover gradient glow */}
               <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-[0.03] transition-opacity duration-300 pointer-events-none`} />
 
               <div className="flex items-center justify-between">
-                <div className={`w-10 h-10 ${card.softBg} rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200`}>
-                  <Icon size={18} className={card.iconColor} />
+                <div className={`w-9 h-9 ${card.softBg} rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200`}>
+                  <Icon size={16} className={card.iconColor} />
                 </div>
                 {card.trend ? (
-                  <div className="flex items-center gap-0.5 px-2 py-1 bg-emerald-50 border border-emerald-100 rounded-lg">
-                    <ArrowUpRight size={10} className="text-emerald-600" />
-                    <span className="text-[10px] font-bold text-emerald-600">{card.trend}</span>
+                  <div className={`flex items-center gap-0.5 px-2 py-1 border rounded-lg ${card.trendColor || "bg-emerald-50 border-emerald-100 text-emerald-600"}`}>
+                    <ArrowUpRight size={10} className="currentColor" />
+                    <span className="text-[10px] font-bold currentColor">{card.trend}</span>
                   </div>
                 ) : (
                   <span className="text-[10px] font-semibold text-zinc-400 bg-zinc-50 border border-zinc-100 px-2 py-1 rounded-lg">{card.desc}</span>
                 )}
               </div>
               <div>
-                <div className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight leading-none">{card.value}</div>
-                <div className="text-[11px] font-semibold text-zinc-400 mt-1.5 uppercase tracking-wider">{card.label}</div>
+                <div className="text-2xl font-black text-zinc-900 tracking-tight leading-none">{card.value}</div>
+                <div className="text-[10px] font-bold text-zinc-400 mt-1 uppercase tracking-wider">{card.label}</div>
               </div>
             </motion.div>
           );

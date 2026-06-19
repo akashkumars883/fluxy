@@ -17,7 +17,7 @@ export async function POST(req) {
       console.log(`🤖 AI Suggest: Generating suggestions for type: ${type || 'dm'}`);
       const groq = new Groq({ apiKey });
 
-      const maxLength = type === "public_reply" ? 80 : 300;
+      const maxLength = type === "public_reply" ? 80 : 120;
       const context = campaignName ? `Campaign: "${campaignName}"` : "";
       const keywordContext = keyword ? `Trigger keyword: "${keyword}"` : "";
 
@@ -59,7 +59,8 @@ export async function POST(req) {
 
       const rawContent = response.choices[0]?.message?.content;
       if (rawContent) {
-        const parsed = JSON.parse(rawContent);
+        const sanitizedContent = rawContent.replace(/^\s*```json\s*/i, '').replace(/\s*```\s*$/i, '').trim();
+        const parsed = JSON.parse(sanitizedContent);
         if (parsed.suggestions && parsed.suggestions.length === 3) {
           return NextResponse.json({ success: true, source: "groq-llm", suggestions: parsed.suggestions });
         }

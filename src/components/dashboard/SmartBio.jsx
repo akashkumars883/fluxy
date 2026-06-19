@@ -627,7 +627,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                   <div className="relative group">
                     <div className="w-24 h-24 rounded-full overflow-hidden bg-zinc-100 ring-4 ring-white shadow-xl shadow-zinc-200/50 flex items-center justify-center relative">
                       {profilePic ? (
-                        <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
+                        <img src={profilePic} alt="Profile" className="w-full h-full object-cover" onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(account?.ig_username || account?.page_name || "User")}&background=6366f1&color=fff&size=150`; }} />
                       ) : (
                         <User size={32} className="text-zinc-300" />
                       )}
@@ -759,7 +759,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
           {isMobilePreviewOpen && (
             <button 
               onClick={() => setIsMobilePreviewOpen(false)}
-              className="absolute top-4 right-4 w-11 h-11 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white backdrop-blur-md border border-white/20 z-[120] transition-colors shadow-xl"
+              className="absolute top-6 right-4 sm:top-8 sm:right-8 w-12 h-12 bg-zinc-800/80 hover:bg-zinc-700 rounded-full flex items-center justify-center text-white backdrop-blur-md border border-zinc-600 z-[9999] transition-all shadow-2xl cursor-pointer"
             >
               <X size={24} />
             </button>
@@ -795,7 +795,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                   />
                 </svg>
                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-18 h-18 rounded-full border-[3px] border-white overflow-hidden z-10 shadow-sm" style={{ width: 72, height: 72, background: "#e5e7eb" }}>
-                  {profilePic ? <img src={profilePic} alt="Profile" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><User size={26} className="text-zinc-400" /></div>}
+                  {profilePic ? <img src={profilePic} alt="Profile" className="w-full h-full object-cover" onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(account?.ig_username || account?.page_name || "User")}&background=6366f1&color=fff&size=150`; }} /> : <div className="w-full h-full flex items-center justify-center"><User size={26} className="text-zinc-400" /></div>}
                 </div>
               </div>
 

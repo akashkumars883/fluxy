@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
-  ArrowRight, Zap, MessageSquare, Target, Users, ShoppingBag, ChevronDown
+  ArrowRight, Zap, MessageSquare, Target, Users, ShoppingBag, ChevronDown, Link2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/lib/supabase";
@@ -88,6 +88,13 @@ export default function PublicNavigation() {
       href: "/features/story-mention",
       icon: Target,
       color: "text-emerald-500 bg-emerald-500/10"
+    },
+    {
+      title: "Smart Bio Links",
+      desc: "Create a beautiful, fully integrated link-in-bio page for your profile.",
+      href: "/features/smart-bio",
+      icon: Link2,
+      color: "text-pink-500 bg-pink-500/10"
     }
   ];
 
@@ -150,9 +157,9 @@ export default function PublicNavigation() {
               </button>
 
               {/* Dropdown panel container */}
-              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-[400px] opacity-0 pointer-events-none group-hover/menu:opacity-100 group-hover/menu:pointer-events-auto transition-all duration-300 transform translate-y-2 group-hover/menu:translate-y-0 z-50">
-                <div className="bg-white/95 backdrop-blur-3xl border border-zinc-200/40 rounded-[28px] p-5 shadow-2xl shadow-zinc-200/60 flex flex-col gap-1.5">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 px-3 mb-1">Capabilities</span>
+              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-[650px] opacity-0 pointer-events-none group-hover/menu:opacity-100 group-hover/menu:pointer-events-auto transition-all duration-300 transform translate-y-2 group-hover/menu:translate-y-0 z-50">
+                <div className="bg-white/95 backdrop-blur-3xl border border-zinc-200/40 rounded-[28px] p-6 shadow-2xl shadow-zinc-200/60 grid grid-cols-2 gap-x-2 gap-y-2">
+                  <span className="col-span-2 text-[10px] font-black uppercase tracking-widest text-zinc-400 px-3 mb-1">Capabilities</span>
                   {featuresDropdown.map((item, idx) => {
                     const Icon = item.icon;
                     return (
@@ -187,9 +194,9 @@ export default function PublicNavigation() {
               </button>
 
               {/* Dropdown panel container */}
-              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-[400px] opacity-0 pointer-events-none group-hover/menu:opacity-100 group-hover/menu:pointer-events-auto transition-all duration-300 transform translate-y-2 group-hover/menu:translate-y-0 z-50">
-                <div className="bg-white/95 backdrop-blur-3xl border border-zinc-200/40 rounded-[28px] p-5 shadow-2xl shadow-zinc-200/60 flex flex-col gap-1.5">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 px-3 mb-1">Target Audiences</span>
+              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-[550px] opacity-0 pointer-events-none group-hover/menu:opacity-100 group-hover/menu:pointer-events-auto transition-all duration-300 transform translate-y-2 group-hover/menu:translate-y-0 z-50">
+                <div className="bg-white/95 backdrop-blur-3xl border border-zinc-200/40 rounded-[28px] p-6 shadow-2xl shadow-zinc-200/60 grid grid-cols-2 gap-x-2 gap-y-2">
+                  <span className="col-span-2 text-[10px] font-black uppercase tracking-widest text-zinc-400 px-3 mb-1">Target Audiences</span>
                   {solutionsDropdown.map((item, idx) => {
                     const Icon = item.icon;
                     return (

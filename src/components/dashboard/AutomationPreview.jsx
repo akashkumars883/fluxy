@@ -9,9 +9,7 @@ export default function AutomationPreview({
   response, 
   buttonText, 
   buttonLink, 
-  introTitle = "Hey {name}! 👋 Thanks for the comment! Tap the button below and I'll send you the access right away. ⚡",
-  introButtonText = "Send me the access",
-  publicReply, 
+  publicReply,  
   postUrl,
   aiName = "Automixa AI",
   strategy = "faq_assistant",
@@ -30,7 +28,6 @@ export default function AutomationPreview({
   const [chatInput, setChatInput] = useState("");
   const [testMessages, setTestMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
-  const [introClicked, setIntroClicked] = useState(false);
 
   // Pick a stable public reply variant ONCE on mount to avoid impure
   // Math.random() calls during render (which would also flicker on re-render).
@@ -65,7 +62,6 @@ export default function AutomationPreview({
       setTimeout(() => {
         setNotificationText(`Tap to open details!`);
         setShowPushNotification(true);
-        setIntroClicked(false);
       }, 1200);
     }
   };
@@ -78,7 +74,6 @@ export default function AutomationPreview({
 
   if (keyword !== prevKeyword) {
     setPrevKeyword(keyword);
-    setIntroClicked(false);
     setMockComments([]); // reset comments on keyword change
     setShowPushNotification(false);
   }
@@ -258,7 +253,7 @@ export default function AutomationPreview({
       </div>
 
       {/* iPhone Mockup Container */}
-      <div className="relative w-[260px] h-[525px] bg-white border-[6px] border-zinc-950 rounded-xl-[2.5rem]  overflow-hidden flex flex-col">
+      <div className="relative w-[260px] h-[525px] bg-white border-[6px] border-zinc-950 rounded-[40px]  overflow-hidden flex flex-col">
         
         {/* Dynamic Island Notch */}
         <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-16 h-3 bg-zinc-950 rounded-xl z-30 flex items-center justify-center">
@@ -278,7 +273,7 @@ export default function AutomationPreview({
                <div className="w-full h-full bg-white rounded-xl p-[0.5px]">
                   <div className="w-full h-full bg-zinc-100 rounded-xl flex items-center justify-center text-[9px] font-bold text-zinc-900 overflow-hidden">
                      {activeProfilePic ? (
-                       <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover" />
+                       <img src={activeProfilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`} alt="profile" className="w-full h-full object-cover" onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`; }} />
                      ) : (
                        activeUsername[0]?.toUpperCase()
                      )}
@@ -313,7 +308,7 @@ export default function AutomationPreview({
                   <div className="w-full h-full bg-white rounded-xl p-[0.5px]">
                       <div className="w-full h-full bg-zinc-100 rounded-xl flex items-center justify-center text-[8px] font-semibold text-zinc-900 overflow-hidden">
                          {activeProfilePic ? (
-                           <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                           <img src={activeProfilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`; }} />
                          ) : (
                            activeUsername[0]?.toUpperCase()
                          )}
@@ -336,60 +331,18 @@ export default function AutomationPreview({
                {/* Standard Keyword & Intro Flow for comment_dm */}
                {!isAIStrategy && keyword && (
                  <div className="flex flex-col items-end animate-in fade-in slide-in-from-right-4 duration-300">
-                    <div className="max-w-[70%] bg-[#6366F1] text-white px-3 py-1.5 rounded-xl-[16px] rounded-xl-[3px] text-[10px] font-medium ">
+                    <div className="max-w-[70%] bg-[#6366F1] text-white px-3 py-1.5 rounded-[16px] rounded-tr-[4px] text-[10px] font-medium ">
                       {keyword}
                     </div>
                     <span className="text-[7px] text-zinc-400 font-semibold mt-0.5 mr-0.5">Seen</span>
                  </div>
                )}
 
-               {!isAIStrategy && keyword && introTitle && (
-                 <div className="flex gap-1.5 animate-in fade-in slide-in-from-left-4 duration-500 items-end">
-                    <div className="w-5 h-5 rounded-xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[7px] font-semibold text-zinc-900 shrink-0  overflow-hidden">
-                      {activeProfilePic ? (
-                        <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
-                      ) : (
-                        activeUsername[0]?.toUpperCase()
-                      )}
-                    </div>
-                    <div className="max-w-[75%] space-y-1.5">
-                      <div className="bg-zinc-100 text-zinc-900 px-3 py-1.5 rounded-xl-[16px] rounded-xl-[3px] text-[10px] font-medium leading-relaxed ">
-                        {formatIntroTitle(introTitle)}
-                      </div>
-                      
-                      {!introClicked && introButtonText && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setIntroClicked(true);
-                            setIsTyping(true);
-                            setTimeout(() => {
-                              setIsTyping(false);
-                            }, 800);
-                          }}
-                          className="w-full py-1.5 px-3 bg-white border border-zinc-200 hover:border-[#6366F1] text-[#6366F1] hover:bg-[#6366F1]/5 rounded-xl text-[9px] font-bold transition-all  text-center block"
-                        >
-                          {introButtonText}
-                        </button>
-                      )}
-                    </div>
-                 </div>
-               )}
-
-               {!isAIStrategy && introClicked && !isTyping && (
-                 <>
-                   <div className="flex flex-col items-end animate-in fade-in slide-in-from-right-4 duration-300">
-                      <div className="max-w-[70%] bg-[#6366F1] text-white px-3 py-1.5 rounded-xl-[16px] rounded-xl-[3px] text-[10px] font-medium ">
-                        {introButtonText}
-                      </div>
-                      <span className="text-[7px] text-zinc-400 font-semibold mt-0.5 mr-0.5">Seen</span>
-                   </div>
-
-                   {response && (
+               {!isAIStrategy && response && (
                      <div className="flex gap-1.5 animate-in fade-in slide-in-from-left-4 duration-500 items-end">
                         <div className="w-5 h-5 rounded-xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[7px] font-semibold text-zinc-900 shrink-0  overflow-hidden">
                           {activeProfilePic ? (
-                            <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                            <img src={activeProfilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`; }} />
                           ) : (
                             activeUsername[0]?.toUpperCase()
                           )}
@@ -419,7 +372,7 @@ export default function AutomationPreview({
                                return (
                                  <>
                                      {activeLink ? (
-                                       <div className="w-full bg-white border border-zinc-200/80 rounded-xl-[18px] overflow-hidden  animate-in zoom-in-95 duration-500">
+                                       <div className="w-full bg-white border border-zinc-200/80 rounded-[18px] overflow-hidden  animate-in zoom-in-95 duration-500">
                                           {!isFile && (
                                             <div className="aspect-[1.91/1] bg-[#6366F1]/5 flex items-center justify-center border-b border-zinc-100">
                                                <Send size={20} className="text-[#6366F1]" />
@@ -434,7 +387,7 @@ export default function AutomationPreview({
                                           </div>
                                        </div>
                                      ) : (
-                                       <div className="bg-zinc-100 text-zinc-900 px-3 py-1.5 rounded-xl-[16px] rounded-xl-[3px] text-[10px] font-medium leading-relaxed ">
+                                       <div className="bg-zinc-100 text-zinc-900 px-3 py-1.5 rounded-[16px] rounded-tr-[4px] text-[10px] font-medium leading-relaxed ">
                                          {getPersonaResponse(response, aiPersona, aiUseEmojis)}
                                        </div>
                                      )}
@@ -444,8 +397,6 @@ export default function AutomationPreview({
                         </div>
                      </div>
                    )}
-                 </>
-               )}
 
                 {/* Sandbox / AI Chat history */}
                 <div className="space-y-3 mt-1">
@@ -453,8 +404,8 @@ export default function AutomationPreview({
                     <div key={i} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
                        <div className={`max-w-[85%] px-3 py-1.5 text-[10.5px] font-medium leading-[1.35]  ${
                          msg.role === 'user' 
-                           ? 'bg-gradient-to-tr from-[#3897f0] to-[#00d2ff] text-white rounded-xl-[16px] rounded-xl-[3px]' 
-                           : 'bg-[#efefef] text-zinc-900 rounded-xl-[16px] rounded-xl-[3px]'
+                           ? 'bg-gradient-to-tr from-[#3897f0] to-[#00d2ff] text-white rounded-[16px] rounded-tr-[4px]' 
+                           : 'bg-[#efefef] text-zinc-900 rounded-[16px] rounded-tr-[4px]'
                        }`}>
                           {msg.text}
                        </div>
@@ -525,7 +476,7 @@ export default function AutomationPreview({
                   <div className="w-full h-full bg-white rounded-xl p-[0.5px]">
                       <div className="w-full h-full bg-zinc-100 rounded-xl flex items-center justify-center text-[8px] font-semibold text-zinc-900 overflow-hidden">
                          {activeProfilePic ? (
-                           <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                           <img src={activeProfilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`; }} />
                          ) : (
                            activeUsername[0]?.toUpperCase()
                          )}
@@ -557,12 +508,12 @@ export default function AutomationPreview({
                <div className="flex gap-1.5 animate-in fade-in slide-in-from-left-4 duration-500 items-end">
                   <div className="w-5 h-5 rounded-xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[7px] font-semibold text-zinc-900 shrink-0  overflow-hidden">
                      {activeProfilePic ? (
-                       <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                       <img src={activeProfilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`; }} />
                      ) : (
                        activeUsername[0]?.toUpperCase()
                      )}
                   </div>
-                  <div className="max-w-[75%] bg-zinc-100 text-zinc-900 px-3 py-1.5 rounded-xl-[16px] rounded-xl-[3px] text-[10px] font-medium leading-relaxed ">
+                  <div className="max-w-[75%] bg-zinc-100 text-zinc-900 px-3 py-1.5 rounded-[16px] rounded-tr-[4px] text-[10px] font-medium leading-relaxed ">
                     {getPersonaResponse("Hi! I'm your AI assistant. Type a question below to test how I talk!", aiPersona, aiUseEmojis)}
                   </div>
                </div>
@@ -572,8 +523,8 @@ export default function AutomationPreview({
                     <div key={i} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
                        <div className={`max-w-[85%] px-3 py-1.5 text-[10.5px] font-medium leading-[1.35]  ${
                          msg.role === 'user' 
-                           ? 'bg-gradient-to-tr from-[#3897f0] to-[#00d2ff] text-white rounded-xl-[16px] rounded-xl-[3px]' 
-                           : 'bg-[#efefef] text-zinc-900 rounded-xl-[16px] rounded-xl-[3px]'
+                           ? 'bg-gradient-to-tr from-[#3897f0] to-[#00d2ff] text-white rounded-[16px] rounded-tr-[4px]' 
+                           : 'bg-[#efefef] text-zinc-900 rounded-[16px] rounded-tr-[4px]'
                        }`}>
                           {msg.text}
                        </div>
@@ -627,7 +578,7 @@ export default function AutomationPreview({
                   <div className="w-6 h-6 rounded-xl border border-[#6366F1] p-[0.5px] shrink-0">
                     <div className="w-full h-full rounded-xl bg-zinc-200 overflow-hidden flex items-center justify-center text-[8px] font-semibold text-zinc-900">
                        {activeProfilePic ? (
-                         <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                         <img src={activeProfilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`; }} />
                        ) : (
                          activeUsername[0]?.toUpperCase()
                        )}
@@ -666,8 +617,8 @@ export default function AutomationPreview({
                     <div key={i} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
                        <div className={`max-w-[85%] px-3 py-2 text-[10px] font-semibold leading-[1.35]  ${
                          msg.role === 'user' 
-                           ? 'bg-white text-zinc-950 rounded-xl-[16px] rounded-xl-[3px]' 
-                           : 'bg-[#6366F1] text-white rounded-xl-[16px] rounded-xl-[3px]'
+                           ? 'bg-white text-zinc-950 rounded-[16px] rounded-tr-[4px]' 
+                           : 'bg-[#6366F1] text-white rounded-[16px] rounded-tr-[4px]'
                        }`}>
                           {msg.text}
                           {msg.role === 'ai' && buttonText && (
@@ -717,7 +668,7 @@ export default function AutomationPreview({
                  <div className="flex items-center gap-2 truncate">
                     <div className="w-6 h-6 rounded-xl bg-zinc-100 flex items-center justify-center text-[7px] font-semibold text-zinc-900 border border-zinc-200 overflow-hidden  shrink-0">
                       {activeProfilePic ? (
-                        <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                        <img src={activeProfilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`; }} />
                       ) : (
                         activeUsername[0]?.toUpperCase()
                       )}
@@ -778,7 +729,7 @@ export default function AutomationPreview({
                            <div className="flex items-start gap-2">
                              <div className="w-5 h-5 rounded-xl bg-zinc-100 flex items-center justify-center text-[6px] font-semibold text-zinc-900 shrink-0 border border-zinc-200 overflow-hidden ">
                                {activeProfilePic ? (
-                                 <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                                 <img src={activeProfilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`; }} />
                                ) : (
                                  activeUsername[0]?.toUpperCase()
                                )}
@@ -818,7 +769,7 @@ export default function AutomationPreview({
                            <div className="flex items-start gap-2">
                               <div className="w-5 h-5 rounded-xl bg-zinc-100 flex items-center justify-center text-[6px] font-semibold text-zinc-900 shrink-0 border border-zinc-200 overflow-hidden ">
                                 {activeProfilePic ? (
-                                  <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
+                                  <img src={activeProfilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(activeUsername)}&background=6366f1&color=fff&size=150`; }} />
                                 ) : (
                                   activeUsername[0]?.toUpperCase()
                                 )}

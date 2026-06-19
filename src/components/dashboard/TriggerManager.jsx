@@ -95,7 +95,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-md bg-white border border-zinc-200/60 rounded-xl p-6 sm:p-8 flex flex-col gap-5 max-h-[85vh] overflow-y-auto no-scrollbar pointer-events-auto"
+            className="relative w-full max-w-md bg-white border border-zinc-200 rounded-[24px] shadow-2xl shadow-zinc-900/10 p-5 sm:p-8 flex flex-col gap-5 max-h-[90vh] overflow-y-auto no-scrollbar pointer-events-auto"
           >
             {/* Header */}
             <div className="flex items-start justify-between">
@@ -170,7 +170,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                     placeholder="e.g. Summer Sale"
                     value={campaignName}
                     onChange={(e) => setCampaignName(e.target.value)}
-                    className="w-full bg-zinc-50 border-2 border-zinc-200 rounded-xl px-4 py-3 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all"
+                    className="w-full bg-zinc-50 border-2 border-zinc-200 rounded-[16px] px-4 py-3.5 text-[13px] font-semibold text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#6366F1] focus:bg-white focus:ring-4 focus:ring-[#6366F1]/10 transition-all"
                   />
                 </div>
                 <div className="space-y-2">
@@ -181,7 +181,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
                     onKeyDown={handleQuickKeyDown}
-                    className="w-full bg-zinc-50 border-2 border-zinc-200 rounded-xl px-4 py-3 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all uppercase"
+                    className="w-full bg-zinc-50 border-2 border-zinc-200 rounded-[16px] px-4 py-3.5 text-[13px] font-semibold text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#6366F1] focus:bg-white focus:ring-4 focus:ring-[#6366F1]/10 transition-all uppercase"
                   />
                   <p className="text-[10px] text-zinc-400 font-medium">When someone comments this keyword, Auto DM will trigger</p>
                 </div>
@@ -193,13 +193,13 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                     onChange={(e) => setResponse(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleQuickSetup()}
                     rows={3}
-                    className="w-full bg-zinc-50 border-2 border-zinc-200 rounded-xl px-4 py-3 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all resize-none"
+                    className="w-full bg-zinc-50 border-2 border-zinc-200 rounded-[16px] px-4 py-3.5 text-[13px] font-semibold text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#6366F1] focus:bg-white focus:ring-4 focus:ring-[#6366F1]/10 transition-all resize-none"
                   />
                 </div>
                 <button
                   onClick={handleQuickSetup}
                   disabled={!keyword.trim() || !response.trim() || isQuickLoading || (currentPlan === "free" && rulesRemaining === 0)}
-                  className="w-full py-3.5 bg-[#6366F1] hover:bg-[#4f46e5] text-white rounded-xl text-xs font-bold  transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-4 bg-[#6366F1] hover:bg-[#4f46e5] text-white rounded-[16px] text-xs font-bold  transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isQuickLoading ? (
                     <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-xl animate-spin" />
@@ -222,7 +222,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                     onChange={(e) => setCampaignName(e.target.value)}
                     onKeyDown={handleKeyDown}
                     autoFocus
-                    className="w-full bg-zinc-50 border-2 border-zinc-200 rounded-xl px-5 py-4 text-[15px] font-medium text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 transition-all"
+                    className="w-full bg-zinc-50 border-2 border-zinc-200 rounded-[16px] px-5 py-4 text-[15px] font-semibold text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#6366F1] focus:bg-white focus:ring-4 focus:ring-[#6366F1]/10 transition-all"
                   />
                   <p className="text-[12px] text-zinc-400 font-medium px-1">
                     Don't worry about the type - Automixa AI will ask you what you want to automate.
@@ -231,7 +231,7 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
                 <button
                   onClick={handleCreate}
                   disabled={!campaignName.trim()}
-                  className="w-full py-4 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-xl text-[14px] font-bold  transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-4 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-[16px] text-[14px] font-bold  transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   Start with Automixa AI <ArrowRight size={18} />
                 </button>
@@ -296,11 +296,11 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
         : "Comment to DM";
   return (
     <div 
-      className="animate-in fade-in duration-500 flex flex-col flex-1 h-full min-h-0 bg-white text-zinc-950"
+      className="animate-in fade-in duration-500 flex flex-col flex-1 h-full min-h-0 bg-transparent text-zinc-950"
     >
       
       {/* Back Button */}
-      <header className="shrink-0 border-none bg-transparent px-4 pt-3 pb-0 sm:px-6">
+      <header className="shrink-0 border-none bg-transparent px-2 sm:px-6 pt-1 sm:pt-3 pb-0">
         <button
           onClick={onClose}
           className="flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-400 hover:text-zinc-700 hover:border-zinc-300 transition-all cursor-pointer"
@@ -311,7 +311,7 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
       </header>
 
       {/* Unified chat wizard — centered and responsive */}
-      <div className="flex-1 min-h-0 overflow-hidden py-2 px-4 max-w-[1240px] mx-auto w-full">
+      <div className="flex-1 min-h-0 overflow-hidden py-0 sm:py-2 px-0 sm:px-4 max-w-[1240px] mx-auto w-full">
         <div className="grid h-full min-h-0 grid-cols-1 xl:grid-cols-[minmax(0,1fr)_300px] gap-6">
         <CampaignWizard
           values={wizardValues}
@@ -349,8 +349,7 @@ export function CampaignBuilderWorkspace({ automation, campaignName, templateKey
                 response={wizardValues.response}
                 buttonText={wizardValues.buttonText}
                 buttonLink={wizardValues.buttonLink}
-                introTitle={wizardValues.introMessage}
-                introButtonText={wizardValues.introButtonText}
+
                 publicReply={wizardValues.publicReply}
                 postUrl={selectedPostUrl}
                 strategy={wizardValues.campaignStrategy}
@@ -418,7 +417,7 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
       </div>
 
       {/* Quick Action Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3">
         {[
           { id: "comment_dm", title: "Comment → DM", icon: MessageSquare, desc: "Auto DM on keyword comment", color: "text-blue-600", bg: "bg-blue-50" },
           { id: "story_automator", title: "Story Reply", icon: Camera, desc: "Reply to story interactions", color: "text-orange-600", bg: "bg-orange-50" },
@@ -430,18 +429,19 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
             <button
               key={t.id}
               onClick={() => onCreateFromTemplate ? onCreateFromTemplate(t.id) : onCreateNew()}
-              className="group flex flex-col items-start p-3.5 bg-white border border-zinc-200/80 rounded-xl hover:border-zinc-300 transition-all duration-200 cursor-pointer text-left"
+              className="group relative overflow-hidden flex flex-col items-start p-4 bg-white border border-zinc-200/60 rounded-[16px] hover:border-indigo-200 hover:shadow-sm transition-all duration-300 cursor-pointer text-left hover:-translate-y-0.5"
             >
-              <div className={`w-8 h-8 ${t.bg} ${t.color} rounded-xl flex items-center justify-center mb-2.5`}>
+              <div className="absolute inset-0 bg-gradient-to-br from-white to-zinc-50/50 -z-10" />
+              <div className={`w-8 h-8 ${t.bg} ${t.color} rounded-xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300`}>
                 <Icon size={16} />
               </div>
-              <div className="flex items-center gap-1.5 mb-0.5">
-                <span className="text-xs font-bold text-zinc-950 group-hover:text-indigo-600 transition-colors">{t.title}</span>
+              <div className="flex items-center gap-1.5 mb-1">
+                <span className="text-sm font-bold text-zinc-900 group-hover:text-indigo-600 transition-colors">{t.title}</span>
                 {t.isAI && (
-                  <span className="px-1 py-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[7px] font-bold rounded-xl">AI</span>
+                  <span className="px-1.5 py-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[8px] font-bold rounded-xl uppercase tracking-wider">AI</span>
                 )}
               </div>
-              <p className="text-[10px] text-zinc-400 font-medium leading-snug">{t.desc}</p>
+              <p className="text-[11px] text-zinc-500 font-medium leading-relaxed">{t.desc}</p>
             </button>
           );
         })}
@@ -457,7 +457,7 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
         {triggers.map((t) => (
           <div 
             key={t.id} 
-            className="bg-white border border-zinc-200/80 rounded-xl hover:border-zinc-300 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-3 p-3.5 group"
+            className="bg-white border border-zinc-200/60 rounded-[16px] hover:border-indigo-200 hover:shadow-sm transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-3 p-4 group"
           >
             <div className="space-y-1.5 flex-1 min-w-0 relative z-10">
               {/* Top Row: Keyword and Badges */}
@@ -528,20 +528,20 @@ export function TriggerList({ triggers, media, onDelete, onEdit, onCreateNew, is
                   }`} />
                 </div>
               </div>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-2">
                 <button 
                   onClick={() => onEdit(t)} 
-                  className="w-8 h-8 bg-white border border-zinc-200 hover:border-[#6366F1]/50 rounded-xl text-zinc-400 hover:text-[#6366F1] hover:bg-[#6366F1]/5 transition-all flex items-center justify-center"
+                  className="w-9 h-9 bg-zinc-50 border border-zinc-200 hover:border-indigo-300 rounded-[12px] text-zinc-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex items-center justify-center cursor-pointer"
                   title="Edit Rule"
                 >
-                  <Edit2 size={13} />
+                  <Edit2 size={14} />
                 </button>
                 <button 
                   onClick={() => onDelete(t.id)} 
-                  className="w-8 h-8 bg-white border border-zinc-200 hover:bg-rose-50 hover:text-rose-500 hover:border-rose-200 rounded-xl text-zinc-400 transition-all flex items-center justify-center"
+                  className="w-9 h-9 bg-zinc-50 border border-zinc-200 hover:border-rose-300 rounded-[12px] text-zinc-400 hover:text-rose-600 hover:bg-rose-50 transition-all flex items-center justify-center cursor-pointer"
                   title="Delete Rule"
                 >
-                  <Trash2 size={13} />
+                  <Trash2 size={14} />
                 </button>
               </div>
             </div>

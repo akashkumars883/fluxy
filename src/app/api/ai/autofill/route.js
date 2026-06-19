@@ -24,7 +24,7 @@ export async function POST(req) {
       STRICT JSON OUTPUT FORMAT:
       {
         "keyword": "string (single short word, e.g. INFO, OFFER, GUIDE, LENS, all caps is preferred, no spaces)",
-        "response": "string (helpful Private DM under 300 characters, warm and clear. Do NOT include any HTTP links in the text itself)",
+        "response": "string (helpful Private DM under 120 characters, extremely concise, warm and clear. Do NOT include any HTTP links in the text itself)",
         "publicReply": "string (clear public comment reply, e.g. Just sent the details to your DMs.)",
         "buttonText": "string (CTA label under 15 characters, e.g. Get Offer, Open Guide)",
         "buttonLink": "string (a relevant placeholder URL based on context, e.g. https://yoursite.com/discount)",
@@ -50,7 +50,8 @@ export async function POST(req) {
 
       const rawContent = response.choices[0]?.message?.content;
       if (rawContent) {
-        const parsed = JSON.parse(rawContent);
+        const sanitizedContent = rawContent.replace(/^\s*```json\s*/i, '').replace(/\s*```\s*$/i, '').trim();
+        const parsed = JSON.parse(sanitizedContent);
         return NextResponse.json({ success: true, source: "groq-llm", ...parsed });
       }
     }

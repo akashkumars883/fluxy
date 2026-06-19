@@ -96,19 +96,68 @@ const THEMES = [
   {
     id: "aurora",
     name: "Aurora",
-    heroStyle: { background: "transparent" },
-    heroPattern: "none",
-    bgImage: "/close-up-cigar.jpg",
-    pageBg: "#1e1b4b",
-    textPrimary: "#FFFFFF",
-    textSub: "#CBD5E1",
-    buttonBg: "rgba(255, 255, 255, 0.1)",
-    buttonBorder: "rgba(255, 255, 255, 0.2)",
-    buttonText: "#FFFFFF",
-    socialBg: "rgba(255, 255, 255, 0.1)",
-    socialText: "#FFFFFF",
-    footerText: "rgba(255, 255, 255, 0.5)",
+    heroStyle: { background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%)" },
+    heroPattern: "radial-gradient(circle at 20% 50%, rgba(255,255,255,0.15) 0%, transparent 50%)",
+    pageBg: "#faf8ff",
+    textPrimary: "#2d1b69",
+    textSub: "#6d28d9",
+    buttonBg: "#FFFFFF",
+    buttonBorder: "#ede9fe",
+    buttonText: "#4f46e5",
+    socialBg: "#FFFFFF",
+    socialText: "#4f46e5",
+    footerText: "rgba(79,70,229,0.3)",
   },
+  {
+    id: "sunset",
+    name: "Sunset",
+    heroStyle: { background: "linear-gradient(135deg, #f97316 0%, #ef4444 50%, #dc2626 100%)" },
+    heroPattern: "radial-gradient(circle at 70% 30%, rgba(255,220,180,0.3) 0%, transparent 60%)",
+    pageBg: "#fff8f5",
+    textPrimary: "#7c2d12",
+    textSub: "#c2410c",
+    buttonBg: "#FFFFFF",
+    buttonBorder: "#fed7aa",
+    buttonText: "#7c2d12",
+    socialBg: "#FFFFFF",
+    socialText: "#7c2d12",
+    footerText: "rgba(124,45,18,0.3)",
+  },
+  {
+    id: "cyber",
+    name: "Cyber",
+    heroStyle: { background: "#0ea5e9" },
+    heroPattern: "radial-gradient(circle at 50% 50%, rgba(14,165,233,0.3) 0%, transparent 80%)",
+    pageBg: "#0f172a",
+    textPrimary: "#38bdf8",
+    textSub: "#94a3b8",
+    buttonBg: "#1e293b",
+    buttonBorder: "#334155",
+    buttonText: "#38bdf8",
+    socialBg: "#1e293b",
+    socialText: "#38bdf8",
+    footerText: "rgba(56,189,248,0.4)",
+  },
+  {
+    id: "rose",
+    name: "Crimson",
+    heroStyle: { background: "#e11d48" },
+    heroPattern: "radial-gradient(circle at 20% 80%, rgba(225,29,72,0.4) 0%, transparent 70%)",
+    pageBg: "#4c0519",
+    textPrimary: "#fda4af",
+    textSub: "#fb7185",
+    buttonBg: "#881337",
+    buttonBorder: "#9f1239",
+    buttonText: "#fda4af",
+    socialBg: "#881337",
+    socialText: "#fda4af",
+    footerText: "rgba(253,164,175,0.4)",
+  },
+];
+
+const IMAGE_WALLPAPERS = [
+  { id: "none", label: "None", src: null },
+  { id: "wallpaper1", label: "Purple Leaves", src: "/wallpapers/purple-leaves.jpg" },
 ];
 
 const getSocialIcon = (url) => {
@@ -203,7 +252,8 @@ export default async function BioPage({ params }) {
   const theme = THEMES.find(t => t.id === themePreset) || THEMES[0];
   const profileTitle = settings?.profile_title || mockAccount.name;
   const bioText = settings?.bio_text || "Check out my links and products below!";
-  const bgImage = settings?.background_image_url || theme.bgImage || null;
+  const activeBgPreset = IMAGE_WALLPAPERS.find(w => w.id === settings?.bg_preset_id);
+  const bgImage = activeBgPreset?.src || null;
 
   // Fetch Bio Links
   const { data: linksData } = await supabase
@@ -445,6 +495,47 @@ export default async function BioPage({ params }) {
                   </div>
                 </a>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* Email Capture Section */}
+        {settings?.enable_email_capture && (
+          <div className="w-full px-6 mb-8 mt-4">
+            <div 
+              className="w-full p-5 rounded-2xl flex flex-col items-center gap-3 border shadow-sm backdrop-blur-md"
+              style={{ 
+                backgroundColor: theme.buttonBg, 
+                borderColor: theme.buttonBorder, 
+                color: theme.buttonText 
+              }}
+            >
+              <h3 className="font-bold text-[15px] text-center" style={{ color: theme.textPrimary }}>
+                {settings.email_capture_title || "Join my newsletter"}
+              </h3>
+              <form className="w-full flex gap-2 mt-1">
+                <input 
+                  type="email" 
+                  placeholder="Enter your email" 
+                  required
+                  className="flex-1 px-4 py-2.5 rounded-xl text-sm outline-none border focus:ring-2 focus:ring-opacity-50"
+                  style={{
+                    backgroundColor: theme.pageBg,
+                    borderColor: theme.buttonBorder,
+                    color: theme.textPrimary
+                  }}
+                />
+                <button 
+                  type="submit"
+                  className="px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all hover:opacity-90 shrink-0"
+                  style={{
+                    backgroundColor: theme.textPrimary,
+                    color: theme.pageBg
+                  }}
+                >
+                  {settings.email_capture_button_text || "Subscribe"}
+                </button>
+              </form>
             </div>
           </div>
         )}

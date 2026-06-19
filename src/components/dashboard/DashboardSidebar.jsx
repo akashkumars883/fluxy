@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useDashboard } from "@/context/DashboardContext";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Lock as LucideLock, PanelLeftClose, PanelLeftOpen, Plus, Zap, ChevronRight, Link2, AlignLeft, Palette, ArrowLeft, BarChart2 } from "lucide-react";
+import { ChevronDown, Lock as LucideLock, PanelLeftClose, PanelLeftOpen, Plus, Zap, ChevronRight, Link2, AlignLeft, Palette, ArrowLeft, BarChart2, UserCheck, Wallet, Bell, Users, Globe } from "lucide-react";
 
 export default React.memo(function DashboardSidebar({
   navigationItems,
@@ -19,6 +19,8 @@ export default React.memo(function DashboardSidebar({
     setActiveTab,
     smartBioTab,
     setSmartBioTab,
+    settingsTab,
+    setSettingsTab,
     isSidebarCollapsed,
     setIsSidebarCollapsed,
     selectedAccount,
@@ -205,6 +207,58 @@ export default React.memo(function DashboardSidebar({
               );
             })}
           </div>
+        ) : activeTab === "settings" ? (
+          <div className="space-y-0.5 animate-in slide-in-from-right-4 duration-300">
+            <button
+              onClick={() => setActiveTab("home")}
+              className={`group flex items-center rounded-xl text-sm font-bold text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100/80 transition-all duration-200 h-10 mb-4
+                ${isSidebarCollapsed ? "justify-center mx-auto w-10 p-0" : "justify-start w-full px-3 gap-3"}`}
+              title={isSidebarCollapsed ? "Back to Main Menu" : ""}
+            >
+              <div className="flex items-center justify-center shrink-0">
+                <ArrowLeft size={16} strokeWidth={2} className="group-hover:-translate-x-1 transition-transform" />
+              </div>
+              {!isSidebarCollapsed && <span>Main Menu</span>}
+            </button>
+
+            {[
+              { id: "account", label: "Account", icon: UserCheck },
+              { id: "payout", label: "Payout", icon: Wallet },
+              { id: "notifications", label: "Notifications", icon: Bell },
+              { id: "team", label: "Team", icon: Users },
+              { id: "integrations", label: "Integrations", icon: Globe },
+            ].map((item) => {
+              const isActive = settingsTab === item.id;
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setSettingsTab(item.id)}
+                  className={`group relative flex items-center rounded-xl text-sm font-medium transition-all duration-200 h-10
+                    ${isSidebarCollapsed ? "justify-center mx-auto w-10 p-0" : "justify-start w-full px-3 gap-3"}
+                    ${isActive ? "text-indigo-600" : "text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100/80"}`}
+                  title={isSidebarCollapsed ? item.label : ""}
+                >
+                  {isActive && (
+                    <motion.div
+                      layout
+                      layoutId="sidebarActiveTabSettings"
+                      className="absolute inset-0 bg-indigo-50 border border-indigo-100 rounded-xl z-0"
+                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                    />
+                  )}
+                  <div className="flex items-center justify-center shrink-0 relative z-10">
+                    <Icon size={17} strokeWidth={isActive ? 2.2 : 1.7} className={!isActive ? "group-hover:scale-110 transition-transform duration-200" : ""} />
+                  </div>
+                  {!isSidebarCollapsed && (
+                    <span className="whitespace-nowrap overflow-hidden flex-1 text-left relative z-10 font-medium">
+                      {item.label}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         ) : (
           <>
             <div className="space-y-0.5 animate-in slide-in-from-left-4 duration-300">
@@ -286,6 +340,7 @@ export default React.memo(function DashboardSidebar({
                     src={selectedAccount.profile_pic || selectedAccount.profile_picture_url || selectedAccount.metadata?.profile_picture_url || selectedAccount.metadata?.profile_pic || "https://ui-avatars.com/api/?name=" + encodeURIComponent(selectedAccount.page_name || "User") + "&background=6366f1&color=fff&size=150"}
                     alt={selectedAccount.ig_username || selectedAccount.page_name}
                     className="w-8 h-8 rounded-xl object-cover shrink-0 ring-1 ring-zinc-200"
+                    onError={(e) => { e.target.onerror = null; e.target.src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(selectedAccount.ig_username || selectedAccount.page_name || "User") + "&background=6366f1&color=fff&size=150"; }}
                   />
                   <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-white" />
                 </div>
@@ -334,8 +389,9 @@ export default React.memo(function DashboardSidebar({
                       >
                         <img
                           src={acc.profile_pic || acc.profile_picture_url || acc.metadata?.profile_picture_url || acc.metadata?.profile_pic || "https://ui-avatars.com/api/?name=" + encodeURIComponent(acc.page_name || "User") + "&background=6366f1&color=fff&size=150"}
-                          alt={acc.ig_username || acc.page_name}
+                          alt={acc.name || acc.page_name}
                           className="w-6 h-6 rounded-lg object-cover shrink-0 ring-1 ring-zinc-200"
+                          onError={(e) => { e.target.onerror = null; e.target.src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(acc.ig_username || acc.page_name || "User") + "&background=6366f1&color=fff&size=150"; }}
                         />
                         <span className="truncate flex-1 text-left">@{acc.ig_username || acc.name || acc.page_name || "automixa_user"}</span>
                         {selectedAccount.id === acc.id && <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full shrink-0" />}

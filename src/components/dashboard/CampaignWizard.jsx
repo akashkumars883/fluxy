@@ -68,7 +68,12 @@ const AUTOMATION_TYPES = [
 ];
 
 const KEYWORD_SUGGESTIONS = ["*", "price", "link", "guide", "yes", "vip", "info"];
-const DM_SUGGESTIONS = ["Here is the link! 🔗", "Sent it to you 📬", "Check your DMs!", "Happy to help! 😊"];
+const DM_SUGGESTIONS = [
+  "Hey {name}! 👋 Thanks for commenting. Here is the link you requested:",
+  "Hi {name}! As promised, here is your exclusive access link 👇",
+  "Hey there! ✨ Tap the button below to get all the details instantly.",
+  "Hello {name}! So glad you asked. Here is the direct link for you 🚀"
+];
 const PUBLIC_REPLY_SUGGESTIONS = ["Check your DMs", "Check your message requests", "Just messaged you", "Check your inbox"];
 
 export default function CampaignWizard({
@@ -85,20 +90,78 @@ export default function CampaignWizard({
   initialStrategy,
 }) {
   // ── Chat state ──────────────────────────────────────────
-  const [messages, setMessages] = useState([
-    {
+  const getInitialMessages = () => {
+    if (!initialStrategy) {
+      return [{
+        id: "init",
+        role: "ai",
+        type: "text",
+        text: `Hi! 👋 I'm your Automixa AI.\n\nWhat would you like to automate today?`,
+      }];
+    }
+
+    const type = AUTOMATION_TYPES.find(t => t.id === initialStrategy) || AUTOMATION_TYPES[0];
+    const msgs = [{
       id: "init",
       role: "ai",
       type: "text",
-      text: `Hi! 👋 I'm your Automixa AI.\n\nWhat would you like to automate today?`,
-    },
-  ]);
+      text: `Hi! 👋 I'm your Automixa AI.`,
+    }, {
+      id: "init_user",
+      role: "user",
+      type: "text",
+      text: `I want to set up: ${type.title} ${type.emoji}`,
+    }];
+
+    if (type.id === "comment_dm") {
+      msgs.push({
+        id: "init_ai_2",
+        role: "ai",
+        type: "text",
+        text: "Great choice! 🎯 First, which post should trigger this automation? You can pick specific posts or choose **All Posts**.",
+      });
+    } else if (type.id === "story_automator") {
+      msgs.push({
+        id: "init_ai_2",
+        role: "ai",
+        type: "text",
+        text: "Perfect! Let's set up your Story automation. Choose what should trigger it:",
+      });
+    } else if (type.id === "faq_assistant") {
+      msgs.push({
+        id: "init_ai_2",
+        role: "ai",
+        type: "text",
+        text: "Smart move! 🤖 Let me help you train your AI FAQ assistant. Add your most common questions and answers:",
+      });
+    } else if (type.id === "sales_closer") {
+      msgs.push({
+        id: "init_ai_2",
+        role: "ai",
+        type: "text",
+        text: "Let's build your AI Sales Agent! 🚀 First, what's the main goal you want the AI to achieve?",
+      });
+    }
+    return msgs;
+  };
+
+  const getInitialPhase = () => {
+    if (!initialStrategy) return "select_type";
+    if (initialStrategy === "comment_dm") return "select_post";
+    if (initialStrategy === "story_automator") return "story_setup";
+    if (initialStrategy === "faq_assistant") return "faq_setup";
+    if (initialStrategy === "sales_closer") return "sales_setup";
+    return "select_type";
+  };
+
+  const [messages, setMessages] = useState(getInitialMessages());
   const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef(null);
 
   // ── Flow state ──────────────────────────────────────────
-  const [phase, setPhase] = useState(initialStrategy ? "keyword" : "select_type");
+  const [phase, setPhase] = useState(getInitialPhase());
   const [selectedType, setSelectedType] = useState(initialStrategy ? AUTOMATION_TYPES.find(t => t.id === initialStrategy) || AUTOMATION_TYPES[0] : null);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   // ── AI Setup states ──────────────────────────────────────
   const [isAiBuilding, setIsAiBuilding] = useState(false);
@@ -201,8 +264,7 @@ export default function CampaignWizard({
           buttonLink: data.buttonLink || "https://example.com",
           followerGate: !!data.followerGate,
           campaignStrategy: generatedStrategy,
-          introMessage: `Hey {name}! 👋 Thanks for the comment! Tap the button below and I'll send you the access right away. ⚡`,
-          introButtonText: "Send me the access"
+          campaignStrategy: generatedStrategy
         });
 
         // Set local state variables as well
@@ -218,7 +280,7 @@ export default function CampaignWizard({
         aiSay([
           "✨ I've designed your campaign automation using Automixa AI!",
           `Keyword: "${(data.keyword || "OFFER").toUpperCase()}" | DM: "${data.response}"`,
-          "I configured the initial Intro Greeting Card, CTA buttons, and a public comment reply. You can test it live in the iPhone preview on the right!",
+          "I configured the DM message, CTA buttons, and a public comment reply. You can test it live in the iPhone preview on the right!",
         ], "done", 1200);
       } else {
         throw new Error("Invalid response schema from AI Copilot");
@@ -295,16 +357,7 @@ export default function CampaignWizard({
     onChange({ keyword: finalKw.trim().toUpperCase() });
     userSay(`Keyword: "${finalKw.trim().toUpperCase()}"`);
     setTempKeyword("");
-    aiSay("Perfect! Before setting up the final DM, let's configure the first DM (Intro Card) that users get right after commenting. What should it say?", "intro_setup");
-  };
-
-  const handleConfirmIntro = () => {
-    onChange({
-      introMessage: tempIntroMessage.trim(),
-      introButtonText: tempIntroBtnText.trim()
-    });
-    userSay(`Intro DM: "${tempIntroMessage.trim()}" | Button: "${tempIntroBtnText.trim()}"`);
-    aiSay(`Got it! After they tap **"${tempIntroBtnText.trim()}"**, what final DM message should I send?`, "dm_message");
+    aiSay(["Got it! Now, what DM message should I send when they comment this keyword?"], "dm_message", 500);
   };
 
   const handleConfirmDM = () => {
@@ -395,8 +448,7 @@ export default function CampaignWizard({
     if (currentStrategy === "comment_dm") {
       if (phase === "select_post") prevPhase = "select_type";
       else if (phase === "keyword") prevPhase = "select_post";
-      else if (phase === "intro_setup") prevPhase = "keyword";
-      else if (phase === "dm_message") prevPhase = "intro_setup";
+      else if (phase === "dm_message") prevPhase = "keyword";
       else if (phase === "cta") prevPhase = "dm_message";
       else if (phase === "public_reply") prevPhase = "cta";
       else if (phase === "follow_gate") prevPhase = "public_reply";
@@ -420,29 +472,23 @@ export default function CampaignWizard({
       if (prev.length > 2) {
         return prev.slice(0, -2);
       }
-      return [{
-        id: "init",
-        role: "ai",
-        type: "text",
-        text: `Hi! 👋 I'm your Automixa AI.\n\nWhat would you like to automate today?`,
-      }];
+      return getInitialMessages();
     });
   };
 
   // Final Publish
-  const handlePublish = (isDraft = false) => {
+  const handlePublish = async (isDraft = false) => {
+    setIsPublishing(true);
     const strategy = selectedType?.id || values.campaignStrategy;
     const extraOpts = {
       is_draft: isDraft,
       is_active: !isDraft,
     };
     if (strategy === "comment_dm") {
-      onPublish(values.keyword, values.response, {
+      await onPublish(values.keyword, values.response, {
         public_reply: values.publicReply,
         follower_gate: values.followerGate,
         follow_gate_message: values.followerGate ? values.followGateMessage : "",
-        intro_title: values.introMessage,
-        intro_button_text: values.introButtonText,
         button_text: values.buttonText,
         button_link: values.buttonLink,
         campaign_strategy: "comment_dm",
@@ -450,7 +496,7 @@ export default function CampaignWizard({
       });
     } else if (strategy === "story_automator") {
       const finalType = storyTriggerType === "MENTION" ? "STORY_MENTION" : "STORY_REPLY";
-      onPublish(values.keyword || "*", values.response, {
+      await onPublish(values.keyword || "*", values.response, {
         type: finalType,
         campaign_strategy: "story_automator",
         follower_gate: values.followerGate,
@@ -459,7 +505,7 @@ export default function CampaignWizard({
         ...extraOpts,
       });
     } else if (strategy === "faq_assistant") {
-      onPublish("AI_FAQ", "AUTOMATED", {
+      await onPublish("AI_FAQ", "AUTOMATED", {
         faqs: values.faqs || tempFaqs,
         faq_enabled: true,
         ai_persona: aiPersona,
@@ -467,7 +513,7 @@ export default function CampaignWizard({
         ...extraOpts,
       });
     } else if (strategy === "sales_closer") {
-      onPublish("AI_SALES", "AUTOMATED", {
+      await onPublish("AI_SALES", "AUTOMATED", {
         ai_goal: values.aiGoal || aiGoal,
         ai_knowledge: values.aiKnowledge || aiKnowledge,
         ai_persona: aiPersona,
@@ -475,6 +521,7 @@ export default function CampaignWizard({
         ...extraOpts,
       });
     }
+    setIsPublishing(false);
   };
 
   // ─────────────────────────────────────────────────────────
@@ -485,29 +532,31 @@ export default function CampaignWizard({
     return (
       <motion.div
         key={msg.id}
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className={`flex ${isAI ? "justify-start" : "justify-end"}`}
+        initial={{ opacity: 0, y: 10, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+        className={`flex ${isAI ? "justify-start" : "justify-end"} w-full mb-2`}
       >
         {isAI && (
-          <img
-            src="/logo.png"
-            alt="Automixa AI"
-            className="w-8 h-8 object-contain shrink-0 mr-3 mt-0.5 select-none"
-          />
+          <div className="w-8 h-8 rounded-full bg-white border border-zinc-200 flex items-center justify-center shrink-0 mr-2 sm:mr-3 mt-1 shadow-sm select-none">
+            <img
+              src="/logo.png"
+              alt="Automixa AI"
+              className="w-5 h-5 object-contain"
+            />
+          </div>
         )}
         <div
-          className={`max-w-[90%] sm:max-w-[80%] ${isAI
-            ? "text-zinc-800 text-[14.5px] font-medium leading-relaxed"
-            : "bg-[#6366F1] text-white px-5 py-3 rounded-xl-[22px] rounded-xl-[6px] text-[14px] font-semibold "
+          className={`max-w-[92%] sm:max-w-[75%] px-4 py-3 sm:px-5 sm:py-4 ${isAI
+            ? "bg-white border border-zinc-200 shadow-sm shadow-zinc-200/20 rounded-[24px] rounded-[8px] text-zinc-800 text-[14px] font-medium leading-relaxed"
+            : "bg-gradient-to-tr from-[#6366F1] to-indigo-500 text-white rounded-[24px] rounded-[8px] text-[14px] font-medium shadow-md shadow-indigo-500/20"
             }`}
         >
           {msg.text.split("\n").map((line, i) => (
-            <p key={i} className={`${i > 0 ? "mt-1.5" : ""}`}>
+            <p key={i} className={`${i > 0 ? "mt-2" : ""}`}>
               {line.split(/\*\*(.*?)\*\*/g).map((part, j) =>
                 j % 2 === 1 ? (
-                  <strong key={j} className={isAI ? "text-zinc-950 font-bold" : "font-bold"}>
+                  <strong key={j} className={isAI ? "text-zinc-950 font-bold" : "font-bold text-indigo-50"}>
                     {part}
                   </strong>
                 ) : (
@@ -524,7 +573,7 @@ export default function CampaignWizard({
   const renderInputPanel = () => {
     if (isAiBuilding) {
       return (
-        <motion.div key="ai-loading" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center p-8 bg-white border border-zinc-200 rounded-xl-[22px]  text-center space-y-4">
+        <motion.div key="ai-loading" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center p-8 bg-white border border-zinc-200 rounded-[22px]  text-center space-y-4">
           <div className="w-12 h-12 bg-[#6366F1]/10 text-[#6366F1] rounded-xl flex items-center justify-center border border-[#6366F1]/20">
             <Sparkles className="animate-spin text-[#6366F1]" size={24} />
           </div>
@@ -553,7 +602,7 @@ export default function CampaignWizard({
             {/* One-Shot AI Input */}
             <form
               onSubmit={currentPlan === "free" ? handleAiBuildClick : handleAiBuildSubmit}
-              className={`bg-white border border-zinc-200 rounded-xl-[22px] p-3 sm:p-4  space-y-3 text-left transition-all ${currentPlan === "free" ? "hover:border-[#6366F1]/50 cursor-pointer" : ""}`}
+              className={`bg-white border border-zinc-200 rounded-[22px] p-3 sm:p-4  space-y-3 text-left transition-all ${currentPlan === "free" ? "hover:border-[#6366F1]/50 cursor-pointer" : ""}`}
               onClick={currentPlan === "free" ? handleAiBuildClick : undefined}
             >
               <div className="flex items-center justify-between text-[#6366F1]">
@@ -639,7 +688,7 @@ export default function CampaignWizard({
             <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-2 max-h-[185px] overflow-y-auto no-scrollbar p-1">
               <button
                 onClick={() => onSelectPosts([])}
-                className={`relative flex flex-col items-center justify-center aspect-square rounded-xl-[12px] border-2 transition-all gap-1.5 ${selectedPosts.length === 0
+                className={`relative flex flex-col items-center justify-center aspect-square rounded-[12px] border-2 transition-all gap-1.5 ${selectedPosts.length === 0
                   ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]  /10"
                   : "border-zinc-200 bg-white hover:border-zinc-300 text-zinc-500"
                   }`}
@@ -661,7 +710,7 @@ export default function CampaignWizard({
                         isSel ? selectedPosts.filter((id) => id !== item.id) : [...selectedPosts, item.id]
                       )
                     }
-                    className={`relative flex-col aspect-square rounded-xl-[12px] overflow-hidden border-2 transition-all group ${isSel ? "border-[#6366F1] scale-[0.97]  /20" : "border-zinc-200 hover:border-zinc-300"
+                    className={`relative flex-col aspect-square rounded-[12px] overflow-hidden border-2 transition-all group ${isSel ? "border-[#6366F1] scale-[0.97]  /20" : "border-zinc-200 hover:border-zinc-300"
                       }`}
                   >
                     <img src={url} alt="post" className="w-full h-full object-cover" />
@@ -721,67 +770,14 @@ export default function CampaignWizard({
           </motion.div>
         );
 
-      // ── Step 2.5: Intro Setup ─────────────────────────────
-      case "intro_setup":
-        return (
-          <motion.div key="intro_setup" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="bg-white border border-zinc-200 rounded-xl  p-3.5 sm:p-4 space-y-3 mt-2 animate-in fade-in duration-200">
-            <div className="space-y-2.5 text-left">
-              <div>
-                <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">
-                  Intro DM Message (Greeting)
-                </label>
-                <textarea
-                  value={tempIntroMessage}
-                  onChange={(e) => setTempIntroMessage(e.target.value)}
-                  placeholder="Hey {name}! Thanks for commenting. Tap the button below for access!"
-                  rows={2}
-                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl-[14px] text-sm font-medium outline-none focus:border-[#6366F1] focus:bg-white transition-all resize-none"
-                />
-              </div>
-              <div>
-                <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">
-                  Intro Button Text
-                </label>
-                <input
-                  type="text"
-                  maxLength={20}
-                  value={tempIntroBtnText}
-                  onChange={(e) => setTempIntroBtnText(e.target.value)}
-                  placeholder="Send me the access"
-                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl-[14px] text-sm font-medium outline-none focus:border-[#6366F1] focus:bg-white transition-all"
-                />
-                <p className="text-[10px] text-zinc-400 font-medium px-1 mt-1">
-                  * Max 20 characters (Meta API limit)
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={handleConfirmIntro}
-              disabled={!tempIntroMessage.trim() || !tempIntroBtnText.trim()}
-              className="w-full py-3 bg-[#6366F1] text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2  hover:bg-[#4f46e5] transition-all disabled:opacity-40 cursor-pointer"
-            >
-              Confirm Intro DM <ArrowRight size={16} />
-            </button>
-          </motion.div>
-        );
+
 
       // ── Step 3: DM message ────────────────────────────────
       case "dm_message":
         return (
           <motion.div key="dm" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-3 mt-2 text-left">
-            <div className="flex gap-2 items-center justify-between overflow-x-auto no-scrollbar pb-1">
-              <div className="flex gap-1">
-                {DM_SUGGESTIONS.map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setTempDM(s)}
-                    className="shrink-0 px-3.5 py-1.5 bg-white border border-zinc-200 hover:border-[#6366F1] hover:text-[#6366F1] rounded-xl text-[12px] font-semibold text-zinc-700  transition-all"
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Message Templates</span>
               <button
                 type="button"
                 onClick={() => {
@@ -799,7 +795,21 @@ export default function CampaignWizard({
                 {currentPlan === "free" && <span className="text-[10px]">👑</span>}
               </button>
             </div>
-            <div className="relative flex items-end w-full bg-zinc-50 border border-zinc-200 rounded-xl focus-within:border-[#6366F1] focus-within:bg-white transition-all p-1.5">
+            
+            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+              {DM_SUGGESTIONS.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setTempDM(s)}
+                  className="shrink-0 px-3.5 py-2 bg-white border border-zinc-200 hover:border-[#6366F1] hover:text-[#6366F1] rounded-xl text-[12px] font-semibold text-zinc-700 transition-all max-w-[240px] text-left leading-relaxed whitespace-normal"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+            
+            <div className="relative flex items-end w-full bg-zinc-50 border border-zinc-200 rounded-[16px] focus-within:border-[#6366F1] focus-within:bg-white transition-all p-1.5">
               <textarea
                 value={tempDM}
                 onChange={(e) => setTempDM(e.target.value)}
@@ -859,34 +869,34 @@ export default function CampaignWizard({
       // ── Step 4: CTA Button ────────────────────────────────
       case "cta":
         return (
-          <motion.div key="cta" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="bg-white border border-zinc-200 rounded-xl-[22px]  p-3.5 sm:p-4 space-y-3 mt-2">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+          <motion.div key="cta" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="bg-white border border-zinc-200 shadow-sm shadow-zinc-200/50 rounded-[24px] p-5 space-y-4 mt-2 animate-in fade-in duration-200">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <input
                 type="text"
                 placeholder="Button text (e.g. Shop Now)"
                 value={tempBtnText}
                 onChange={(e) => setTempBtnText(e.target.value)}
-                className="px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl-[14px] text-[14.5px] font-medium outline-none focus:border-[#6366F1] transition-all"
+                className="px-4 py-3.5 bg-zinc-50 border-2 border-zinc-200 rounded-[16px] text-[14px] font-semibold text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition-all"
               />
               <input
                 type="text"
                 placeholder="URL (https://...)"
                 value={tempBtnLink}
                 onChange={(e) => setTempBtnLink(e.target.value)}
-                className="px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl-[14px] text-[14.5px] font-medium outline-none focus:border-[#6366F1] transition-all"
+                className="px-4 py-3.5 bg-zinc-50 border-2 border-zinc-200 rounded-[16px] text-[14px] font-semibold text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition-all"
               />
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => handleConfirmCTA(true)}
-                className="flex-1 py-3 bg-zinc-100 text-zinc-700 rounded-xl-[14px] font-bold text-[14px] hover:bg-zinc-200 transition-all"
+                className="flex-1 py-4 bg-zinc-100 text-zinc-700 rounded-[16px] font-bold text-[14px] hover:bg-zinc-200 transition-all cursor-pointer"
               >
                 Skip
               </button>
               <button
                 onClick={() => handleConfirmCTA(false)}
                 disabled={!tempBtnText.trim() || !tempBtnLink.trim()}
-                className="flex-1 py-3 bg-[#6366F1] text-white rounded-xl-[14px] font-bold text-[14px] disabled:opacity-40 transition-all hover:bg-[#4f46e5] cursor-pointer"
+                className="flex-1 py-4 bg-indigo-600 text-white rounded-[16px] font-bold text-[14px] disabled:opacity-40 transition-all hover:bg-indigo-700 cursor-pointer"
               >
                 Add Button
               </button>
@@ -897,7 +907,7 @@ export default function CampaignWizard({
       // ── Step 5: Public reply ──────────────────────────────
       case "public_reply":
         return (
-          <motion.div key="pr" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 text-left bg-white border border-zinc-200 rounded-xl-[22px] p-3.5 sm:p-4  animate-in fade-in duration-200">
+          <motion.div key="pr" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 text-left bg-white border border-zinc-200 shadow-sm shadow-zinc-200/50 rounded-[24px] p-5 animate-in fade-in duration-200">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Comment Reply Variations</span>
               <button
@@ -931,13 +941,13 @@ export default function CampaignWizard({
                       setPublicReplyVariants(updated);
                     }}
                     placeholder={`e.g. Sent! Check your DMs 📬`}
-                    className="flex-1 px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6366F1] focus:bg-white transition-all"
+                    className="flex-1 px-4 py-3 bg-zinc-50 border-2 border-zinc-200 rounded-[12px] text-sm font-semibold outline-none focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition-all"
                   />
                   {publicReplyVariants.length > 1 && (
                     <button
                       type="button"
                       onClick={() => setPublicReplyVariants(publicReplyVariants.filter((_, i) => i !== idx))}
-                      className="p-2 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                      className="p-3 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-[12px] transition-all cursor-pointer"
                     >
                       <Trash2 size={14} />
                     </button>
@@ -1029,7 +1039,7 @@ export default function CampaignWizard({
             <button
               onClick={() => handleConfirmPublicReply()}
               disabled={publicReplyVariants.filter(r => r.trim() !== "").length === 0}
-              className="w-full py-3 bg-zinc-950 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2  hover:bg-[#6366F1] transition-all disabled:opacity-40"
+              className="w-full py-4 bg-zinc-950 text-white rounded-[16px] text-sm font-bold flex items-center justify-center gap-2 hover:bg-indigo-600 transition-all disabled:opacity-40 cursor-pointer"
             >
               Confirm Replies <ArrowRight size={16} />
             </button>
@@ -1065,7 +1075,7 @@ export default function CampaignWizard({
                   onChange={(e) => setTempFollowGateMsg(e.target.value)}
                   placeholder="e.g. One final step to unlock! 🎁"
                   rows={2}
-                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl-[14px] text-[14px] font-medium outline-none focus:border-[#6366F1] transition-all resize-none"
+                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-[14px] text-[14px] font-medium outline-none focus:border-[#6366F1] transition-all resize-none"
                 />
                 <div className="flex gap-2">
                   <button
@@ -1073,13 +1083,13 @@ export default function CampaignWizard({
                       setFollowerGateEnabled(false);
                       setTempFollowGateMsg("One final step to unlock! 🎁");
                     }}
-                    className="flex-1 py-2 bg-zinc-100 text-zinc-700 rounded-xl-[12px] font-bold text-[13px] hover:bg-zinc-200 transition-all"
+                    className="flex-1 py-2 bg-zinc-100 text-zinc-700 rounded-[12px] font-bold text-[13px] hover:bg-zinc-200 transition-all"
                   >
                     Back
                   </button>
                   <button
                     onClick={() => handleConfirmFollowGate(true, tempFollowGateMsg)}
-                    className="flex-1 py-2 bg-[#6366F1] text-white rounded-xl-[12px] font-bold text-[13px] hover:bg-[#4f46e5] transition-all cursor-pointer"
+                    className="flex-1 py-2 bg-[#6366F1] text-white rounded-[12px] font-bold text-[13px] hover:bg-[#4f46e5] transition-all cursor-pointer"
                   >
                     Confirm & Continue
                   </button>
@@ -1092,7 +1102,7 @@ export default function CampaignWizard({
       // ── Story setup ───────────────────────────────────────
       case "story_setup":
         return (
-          <motion.div key="story-setup" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2">
+          <motion.div key="story-setup" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 bg-white border border-zinc-200 shadow-sm shadow-zinc-200/50 rounded-[24px] p-5 animate-in fade-in duration-200">
             {/* Trigger type */}
             <div className="space-y-2">
               <p className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Trigger when...</p>
@@ -1104,7 +1114,7 @@ export default function CampaignWizard({
                   <button
                     key={t.id}
                     onClick={() => setStoryTriggerType(t.id)}
-                    className={`flex flex-col gap-2 p-4 rounded-xl-[18px] border-2 text-left transition-all ${storyTriggerType === t.id
+                    className={`flex flex-col gap-2 p-4 rounded-[18px] border-2 text-left transition-all ${storyTriggerType === t.id
                       ? "border-[#6366F1] bg-[#6366F1]/5"
                       : "border-zinc-200 bg-white hover:border-zinc-300"
                       }`}
@@ -1127,7 +1137,7 @@ export default function CampaignWizard({
                   <button
                     key={c}
                     onClick={() => setStoryCondition(c)}
-                    className={`flex-1 py-3 rounded-xl-[14px] text-[13px] font-bold border-2 transition-all ${storyCondition === c
+                    className={`flex-1 py-3 rounded-[14px] text-[13px] font-bold border-2 transition-all ${storyCondition === c
                       ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]"
                       : "border-zinc-200 bg-white text-zinc-650"
                       }`}
@@ -1144,13 +1154,13 @@ export default function CampaignWizard({
                 placeholder="e.g. COLLAB"
                 value={storyKeyword}
                 onChange={(e) => setStoryKeyword(e.target.value.toUpperCase())}
-                className="w-full px-5 py-3.5 border-2 border-zinc-200 rounded-xl-[16px] text-[14px] font-bold uppercase outline-none focus:border-[#6366F1] transition-all"
+                className="w-full px-4 py-3.5 bg-zinc-50 border-2 border-zinc-200 rounded-[16px] text-sm font-bold uppercase outline-none focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition-all"
               />
             )}
 
             <button
               onClick={handleConfirmStory}
-              className="w-full py-3 bg-[#6366F1] text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2  hover:bg-[#4f46e5] transition-all cursor-pointer"
+              className="w-full py-4 bg-indigo-600 text-white rounded-[16px] text-sm font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all cursor-pointer"
             >
               Next: Set DM Reply <ArrowRight size={16} />
             </button>
@@ -1182,10 +1192,10 @@ export default function CampaignWizard({
       // ── FAQ setup ─────────────────────────────────────────
       case "faq_setup":
         return (
-          <motion.div key="faq" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 bg-white border border-zinc-200 rounded-xl-[22px] p-3.5 sm:p-4 ">
+          <motion.div key="faq" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 bg-white border border-zinc-200 shadow-sm shadow-zinc-200/50 rounded-[24px] p-5 animate-in fade-in duration-200">
             <div className="space-y-3 max-h-[260px] overflow-y-auto no-scrollbar">
               {tempFaqs.map((faq, idx) => (
-                <div key={idx} className="group relative p-4 bg-zinc-50 border border-zinc-200 rounded-xl-[16px] space-y-2">
+                <div key={idx} className="group relative p-4 bg-zinc-50 border border-zinc-200 rounded-[16px] space-y-2">
                   <button
                     onClick={() => setTempFaqs(tempFaqs.filter((_, i) => i !== idx))}
                     className="absolute top-3 right-3 p-1.5 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
@@ -1218,7 +1228,7 @@ export default function CampaignWizard({
               ))}
               <button
                 onClick={() => setTempFaqs([...tempFaqs, { q: "", a: "" }])}
-                className="w-full py-3 border-2 border-dashed border-zinc-300 rounded-xl-[16px] text-[13px] font-bold text-zinc-500 hover:border-[#6366F1] hover:text-[#6366F1] transition-all flex items-center justify-center gap-2"
+                className="w-full py-3 border-2 border-dashed border-zinc-300 rounded-[16px] text-[13px] font-bold text-zinc-500 hover:border-[#6366F1] hover:text-[#6366F1] transition-all flex items-center justify-center gap-2"
               >
                 <Plus size={16} strokeWidth={2.5} /> Add Question
               </button>
@@ -1236,7 +1246,7 @@ export default function CampaignWizard({
                   <button
                     key={p.id}
                     onClick={() => setAiPersona(p.id)}
-                    className={`py-2 text-[11px] sm:text-[12px] font-bold rounded-xl-[12px] border-2 transition-all ${aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-650"
+                    className={`py-2 text-[11px] sm:text-[12px] font-bold rounded-[12px] border-2 transition-all ${aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-650"
                       }`}
                   >
                     {p.label}
@@ -1248,7 +1258,7 @@ export default function CampaignWizard({
             <button
               onClick={handleConfirmFAQ}
               disabled={tempFaqs.filter((f) => f.q.trim() && f.a.trim()).length === 0}
-              className="w-full py-3 bg-[#6366F1] text-white rounded-xl text-sm font-semibold disabled:opacity-40 transition-all hover:bg-[#4f46e5] flex items-center justify-center gap-2  cursor-pointer"
+              className="w-full py-4 bg-indigo-600 text-white rounded-[16px] text-sm font-bold disabled:opacity-40 transition-all hover:bg-indigo-700 flex items-center justify-center gap-2 cursor-pointer"
             >
               Launch AI FAQ <Sparkles size={16} />
             </button>
@@ -1258,7 +1268,7 @@ export default function CampaignWizard({
       // ── Step 8: Sales setup ───────────────────────────────
       case "sales_setup":
         return (
-          <motion.div key="sales" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 bg-white border border-zinc-200 rounded-xl-[22px] p-3.5 sm:p-4 ">
+          <motion.div key="sales" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 bg-white border border-zinc-200 shadow-sm shadow-zinc-200/50 rounded-[24px] p-5 animate-in fade-in duration-200">
             <div className="space-y-2">
               <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Sales Goal</label>
               <textarea
@@ -1266,7 +1276,7 @@ export default function CampaignWizard({
                 onChange={(e) => setAiGoal(e.target.value)}
                 placeholder="e.g. Get users to book a demo call or buy the $99 plan"
                 rows={2}
-                className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl-[16px] text-[14px] font-medium outline-none focus:border-[#6366F1] transition-all resize-none"
+                className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-[16px] text-[14px] font-medium outline-none focus:border-[#6366F1] transition-all resize-none"
               />
             </div>
             <div className="space-y-2">
@@ -1276,7 +1286,7 @@ export default function CampaignWizard({
                 onChange={(e) => setAiKnowledge(e.target.value)}
                 placeholder="Tell the AI about your product, pricing, and USPs..."
                 rows={3}
-                className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl-[16px] text-[14px] font-medium outline-none focus:border-[#6366F1] transition-all resize-none"
+                className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-[16px] text-[14px] font-medium outline-none focus:border-[#6366F1] transition-all resize-none"
               />
             </div>
 
@@ -1293,7 +1303,7 @@ export default function CampaignWizard({
                   <button
                     key={p.id}
                     onClick={() => setAiPersona(p.id)}
-                    className={`py-2 text-[12px] font-bold rounded-xl-[12px] border-2 transition-all ${aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-650"
+                    className={`py-2 text-[12px] font-bold rounded-[12px] border-2 transition-all ${aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-650"
                       }`}
                   >
                     {p.label}
@@ -1305,7 +1315,7 @@ export default function CampaignWizard({
             <button
               onClick={handleConfirmSales}
               disabled={!aiGoal.trim()}
-              className="w-full py-3 bg-[#6366F1] text-white rounded-xl text-sm font-semibold disabled:opacity-40 transition-all hover:bg-[#4f46e5] flex items-center justify-center gap-2  cursor-pointer"
+              className="w-full py-4 bg-indigo-600 text-white rounded-[16px] text-sm font-bold disabled:opacity-40 transition-all hover:bg-indigo-700 flex items-center justify-center gap-2 cursor-pointer"
             >
               Launch AI Sales Agent <Rocket size={16} />
             </button>
@@ -1318,10 +1328,11 @@ export default function CampaignWizard({
           <motion.div key="done" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mt-2 space-y-2">
             <button
               onClick={() => handlePublish(false)}
-              className="w-full py-3 bg-gradient-to-r from-[#6366F1] to-purple-600 text-white rounded-xl text-sm font-semibold-100 hover:scale-[1.01] transition-all flex items-center justify-center gap-2 cursor-pointer"
+              disabled={isPublishing}
+              className="w-full py-3 bg-gradient-to-r from-[#6366F1] to-purple-600 text-white rounded-xl text-sm font-semibold-100 hover:scale-[1.01] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
-              <Rocket size={16} />
-              Confirm & Launch Automation
+              {isPublishing ? <Sparkles className="animate-spin" size={16} /> : <Rocket size={16} />}
+              {isPublishing ? "Launching..." : "Confirm & Launch Automation"}
             </button>
             <button
               onClick={() => handlePublish(true)}
@@ -1370,29 +1381,30 @@ export default function CampaignWizard({
               <button
                 key={type.id}
                 onClick={() => handleSelectType(type)}
-                className={`group flex flex-col items-center justify-between p-3.5 rounded-xl border-2 text-center transition-all duration-300 hover: hover:-translate-y-0.5 ${isLocked
-                  ? "border-zinc-150 bg-zinc-50/50 opacity-80"
-                  : `border-zinc-200 bg-white hover:border-[#6366F1] hover:-500/10`
+                className={`group relative overflow-hidden flex flex-col items-center justify-between p-5 rounded-[20px] border text-center transition-all duration-300 ${isLocked
+                  ? "border-zinc-200 bg-zinc-50/80 opacity-80"
+                  : "border-zinc-200 bg-white hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1"
                   }`}
               >
-                <div className="flex flex-col items-center w-full">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2.5 ${type.bg} ${type.color} group-hover:bg-[#6366F1] group-hover:text-white transition-all `}>
-                    <type.icon size={20} />
+                {!isLocked && <div className="absolute inset-0 bg-gradient-to-b from-white to-zinc-50/30 opacity-0 group-hover:opacity-100 transition-opacity -z-10" />}
+                <div className="flex flex-col items-center w-full relative z-10">
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-3 ${type.bg} ${type.color} group-hover:scale-110 transition-transform duration-300`}>
+                    <type.icon size={22} />
                   </div>
-                  <div className="flex items-center gap-1 justify-center flex-wrap">
-                    <span className="text-[12px] font-bold text-zinc-950 group-hover:text-[#6366F1] transition-colors">{type.title}</span>
+                  <div className="flex items-center gap-1.5 justify-center flex-wrap mb-1.5">
+                    <span className="text-[13px] font-bold text-zinc-900 group-hover:text-indigo-600 transition-colors">{type.title}</span>
                     {type.isAI && (
-                      <span className="px-1 py-0.5 bg-gradient-to-r from-[#6366F1] to-purple-500 text-white text-[7px] font-bold rounded-xl">AI</span>
+                      <span className="px-1.5 py-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[8px] font-bold rounded-xl uppercase tracking-wider shadow-sm">AI</span>
                     )}
                     {isLocked && (
-                      <span className="px-1 py-0.5 bg-amber-100 text-amber-700 text-[7px] font-bold rounded-xl uppercase">Pro</span>
+                      <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[8px] font-bold rounded-xl uppercase tracking-wider">Pro</span>
                     )}
                   </div>
-                  <p className="text-[10px] text-zinc-550 font-medium mt-1 leading-snug px-0.5">{type.desc}</p>
+                  <p className="text-[11px] text-zinc-500 font-medium mt-0.5 leading-relaxed px-0.5">{type.desc}</p>
                 </div>
                 
-                <span className="mt-3 text-[9px] font-black text-[#6366F1] uppercase tracking-wider group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
-                  Select <ArrowRight size={8} />
+                <span className="mt-4 text-[10px] font-bold text-indigo-600 uppercase tracking-wider group-hover:translate-x-0.5 transition-transform flex items-center gap-1 opacity-0 group-hover:opacity-100">
+                  Select <ArrowRight size={10} />
                 </span>
               </button>
             );
@@ -1403,7 +1415,7 @@ export default function CampaignWizard({
         <div className="w-full max-w-2xl mx-auto">
           <form
             onSubmit={currentPlan === "free" ? handleAiBuildClick : handleAiBuildSubmit}
-            className={`bg-white border border-zinc-200 rounded-xl p-4  space-y-3 text-left transition-all ${currentPlan === "free" ? "hover:border-[#6366F1]/50 cursor-pointer" : ""}`}
+            className={`bg-white border border-zinc-200 shadow-sm shadow-zinc-200/50 rounded-[20px] p-5 space-y-4 text-left transition-all ${currentPlan === "free" ? "hover:border-[#6366F1]/50 cursor-pointer" : ""}`}
             onClick={currentPlan === "free" ? handleAiBuildClick : undefined}
           >
             <div className="flex items-center justify-between text-[#6366F1]">
@@ -1415,7 +1427,7 @@ export default function CampaignWizard({
                 <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[8px] font-bold rounded-xl uppercase">Pro</span>
               )}
             </div>
-            <div className="relative flex items-center w-full bg-zinc-50 border border-zinc-200 rounded-xl overflow-hidden focus-within:border-[#6366F1] focus-within:bg-white transition-all">
+            <div className="relative flex items-center w-full bg-zinc-50 border border-zinc-200 rounded-[16px] overflow-hidden focus-within:border-indigo-400 focus-within:bg-white focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all p-1">
               <input
                 type="text"
                 value={aiBuildPrompt}
@@ -1423,15 +1435,15 @@ export default function CampaignWizard({
                 onClick={currentPlan === "free" ? handleAiBuildClick : undefined}
                 readOnly={currentPlan === "free"}
                 placeholder={currentPlan === "free" ? "Upgrade to Pro to unlock AI Builder" : "Describe what you want to automate in 1 sentence..."}
-                className={`flex-1 w-full pl-4 pr-12 py-2.5 text-sm outline-none bg-transparent font-medium ${currentPlan === "free" ? "cursor-pointer text-zinc-400 placeholder:text-zinc-400" : ""}`}
+                className={`flex-1 w-full pl-3 pr-12 py-3 text-[14px] outline-none bg-transparent font-semibold text-zinc-900 placeholder:text-zinc-400 ${currentPlan === "free" ? "cursor-pointer text-zinc-400 placeholder:text-zinc-400" : ""}`}
               />
               <button
                 type="submit"
                 disabled={currentPlan === "free" || !aiBuildPrompt.trim() || isAiBuilding}
                 onClick={currentPlan === "free" ? handleAiBuildClick : undefined}
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#6366F1] text-white rounded-xl flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#4f46e5] cursor-pointer"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-zinc-950 text-white rounded-[12px] flex items-center justify-center disabled:opacity-40 transition-all hover:bg-indigo-600 cursor-pointer shadow-sm"
               >
-                <ArrowRight size={15} />
+                <ArrowRight size={16} />
               </button>
             </div>
             {aiBuildError && (
@@ -1448,19 +1460,8 @@ export default function CampaignWizard({
 
   return (
     <div className="flex flex-col h-full w-full max-w-2xl mx-auto relative bg-transparent overflow-hidden">
-      {/* ── Back step button ── */}
-      {phase !== "select_type" && (
-        <div className="shrink-0 px-3 sm:px-5 lg:px-6 pt-3 flex">
-          <button
-            onClick={handleBackStep}
-            className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-500 hover:text-zinc-900 bg-white border border-zinc-200 rounded-xl px-3 py-1.5  transition-all cursor-pointer"
-          >
-            ← Back Step
-          </button>
-        </div>
-      )}
       {/* ── Chat messages ──────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto px-3 sm:px-5 lg:px-6 py-4 space-y-4 no-scrollbar pb-8 bg-transparent">
+      <div className="flex-1 overflow-y-auto px-1 sm:px-5 lg:px-6 py-2 sm:py-4 space-y-4 no-scrollbar pb-2 sm:pb-8 bg-transparent">
         {/* Intro header — shown only at the very start */}
         {messages.length === 1 && !isTyping && (
           <motion.div

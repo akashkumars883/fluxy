@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { Plus, Package, Link2, DollarSign, Download, Image as ImageIcon, Trash2, Edit2, ShoppingBag, Sparkles } from "lucide-react";
+import { Plus, Package, Link2, IndianRupee, Download, Image as ImageIcon, Trash2, Edit2, ShoppingBag, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
 import * as logger from "@/lib/logger";
 
@@ -138,30 +138,30 @@ export default function StoreManager({ accountId, currentPlan, onUpgradeClick })
 
       {/* Header Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-        <div className="bg-white rounded-xl p-4 sm:p-5 flex items-center justify-between-200/10 border border-zinc-200/80 hover: transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
+        <div className="bg-white rounded-xl p-4 sm:p-5 flex items-center justify-between border border-zinc-200/80 hover:shadow-md transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
           <div>
             <p className="text-xs font-semibold text-zinc-500">Total Revenue</p>
             <p className="text-2xl font-bold text-zinc-900 mt-1">₹0</p>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-            <DollarSign size={20} />
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <IndianRupee size={20} />
           </div>
         </div>
-        <div className="bg-white rounded-xl p-4 sm:p-5 flex items-center justify-between-200/10 border border-zinc-200/80 hover: transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
+        <div className="bg-white rounded-xl p-4 sm:p-5 flex items-center justify-between border border-zinc-200/80 hover:shadow-md transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
           <div>
             <p className="text-xs font-semibold text-zinc-500">Sales</p>
             <p className="text-2xl font-bold text-zinc-900 mt-1">0</p>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
             <ShoppingBag size={20} />
           </div>
         </div>
-        <div className="bg-white rounded-xl p-4 sm:p-5 flex items-center justify-between-200/10 border border-zinc-200/80 hover: transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
+        <div className="bg-white rounded-xl p-4 sm:p-5 flex items-center justify-between border border-zinc-200/80 hover:shadow-md transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
           <div>
             <p className="text-xs font-semibold text-zinc-500">Active Products</p>
             <p className="text-2xl font-bold text-zinc-900 mt-1">{products.length}</p>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
             <Package size={20} />
           </div>
         </div>

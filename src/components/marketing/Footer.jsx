@@ -15,7 +15,8 @@ export default function Footer() {
   const featuresLinks = [
     { label: "DM Auto-Reply", href: "/features/dm-auto-reply" },
     { label: "Comment Auto-Responder", href: "/features/comment-auto-responder" },
-    { label: "Story Mentions", href: "/features/story-mention" }
+    { label: "Story Mentions", href: "/features/story-mention" },
+    { label: "Smart Bio Links", href: "/features/smart-bio" }
   ];
 
   const solutionsLinks = [

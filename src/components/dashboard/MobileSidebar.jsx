@@ -81,7 +81,8 @@ export default function MobileSidebar({
                         <img
                           src={selectedAccount.profile_pic || selectedAccount.profile_picture_url || selectedAccount.metadata?.profile_picture_url || selectedAccount.metadata?.profile_pic || "https://ui-avatars.com/api/?name=" + encodeURIComponent(selectedAccount.page_name || "User") + "&background=6366f1&color=fff&size=150"}
                           alt={selectedAccount.ig_username || selectedAccount.page_name}
-                          className="w-10 h-10 rounded-xl object-cover ring-1 ring-zinc-200"
+                          className="w-10 h-10 rounded-xl object-cover shrink-0 ring-1 ring-zinc-200"
+                          onError={(e) => { e.target.onerror = null; e.target.src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(selectedAccount.ig_username || selectedAccount.page_name || "User") + "&background=6366f1&color=fff&size=150"; }}
                         />
                         <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white" />
                       </div>
@@ -122,8 +123,9 @@ export default function MobileSidebar({
                             >
                               <img
                                 src={acc.profile_pic || acc.profile_picture_url || acc.metadata?.profile_picture_url || acc.metadata?.profile_pic || "https://ui-avatars.com/api/?name=" + encodeURIComponent(acc.page_name || "User") + "&background=6366f1&color=fff&size=150"}
-                                alt={acc.ig_username || acc.page_name}
-                                className="w-6 h-6 rounded-lg object-cover ring-1 ring-zinc-200"
+                                alt={acc.name || acc.page_name}
+                                className="w-8 h-8 rounded-xl object-cover shrink-0"
+                                onError={(e) => { e.target.onerror = null; e.target.src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(acc.ig_username || acc.page_name || "User") + "&background=6366f1&color=fff&size=150"; }}
                               />
                               <span className="truncate flex-1 text-left">@{acc.ig_username || acc.name || acc.page_name || 'automixa_user'}</span>
                               {selectedAccount.id === acc.id && <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full shrink-0" />}

@@ -26,8 +26,10 @@ export default function MobileBottomNav({ onMenuClick }) {
   const quotaDotColor = quotaPercent >= 90 ? "bg-rose-500" : quotaPercent >= 70 ? "bg-amber-500" : "bg-emerald-500";
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 w-full z-50 pointer-events-auto pb-safe-area-inset-bottom">
-      {/* Glass bar */}
+    <>
+      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#faf8f5] via-[#faf8f5]/90 to-transparent z-40 pointer-events-none pb-safe-area-inset-bottom" />
+      <div className="md:hidden fixed bottom-0 left-0 right-0 w-full z-50 pointer-events-auto pb-safe-area-inset-bottom">
+        {/* Glass bar */}
       <div className="mx-3 mb-3 bg-white/90 backdrop-blur-xl border border-zinc-200/60 rounded-2xl shadow-xl shadow-zinc-900/10 flex items-center justify-between px-2 py-2">
         {primaryNavItems.map((item) => {
           const Icon = item.icon;
@@ -39,15 +41,8 @@ export default function MobileBottomNav({ onMenuClick }) {
               onClick={() => setActiveTab(item.id)}
               className="relative flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 min-w-[50px] rounded-xl focus-visible:outline-none"
             >
-              {isActive && (
-                <motion.div
-                  layoutId="mobileBottomNavActiveIndicator"
-                  className="absolute inset-0 bg-indigo-500/10 rounded-xl -z-10"
-                  transition={{ type: "spring", stiffness: 350, damping: 28 }}
-                />
-              )}
-              <div className={`transition-all duration-200 ${isActive ? "text-indigo-600 scale-110" : "text-zinc-400"}`}>
-                <Icon size={21} strokeWidth={isActive ? 2.2 : 1.8} />
+              <div className={`transition-all duration-200 ${isActive ? "text-indigo-600 scale-110 drop-shadow-sm" : "text-zinc-400"}`}>
+                <Icon size={21} strokeWidth={isActive ? 2.2 : 1.8} fill={isActive ? "currentColor" : "none"} />
               </div>
               <span className={`text-[9px] font-semibold transition-colors ${isActive ? "text-indigo-600" : "text-zinc-400"}`}>
                 {item.label}
@@ -71,6 +66,7 @@ export default function MobileBottomNav({ onMenuClick }) {
           <span className="text-[9px] font-semibold text-zinc-400">More</span>
         </button>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

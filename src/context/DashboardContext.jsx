@@ -12,6 +12,7 @@ export function DashboardProvider({ children, initialData = null }) {
   const [loading, setLoading] = useState(initialData?.session ? false : true);
   const [activeTab, setActiveTab] = useState("home");
   const [smartBioTab, setSmartBioTab] = useState("links");
+  const [settingsTab, setSettingsTab] = useState("account");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [currentPlan, setCurrentPlan] = useState(initialData?.currentPlan || "free");
   const [upgradeReason, setUpgradeReason] = useState("");
@@ -173,6 +174,8 @@ export function DashboardProvider({ children, initialData = null }) {
     setActiveTab,
     smartBioTab,
     setSmartBioTab,
+    settingsTab,
+    setSettingsTab,
     isSidebarCollapsed,
     setIsSidebarCollapsed,
     currentPlan,

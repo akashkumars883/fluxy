@@ -11,7 +11,7 @@ import JsonLd from "@/components/seo/JsonLd";
 export const revalidate = 3600; // Cache page for 1 hour to prevent database overload
 
 export const metadata = {
-  title: "Automixa — Instagram DM & Comment Automation for Creatores",
+  title: "Automixa — Instagram DM & Comment Automation for Creators",
   description: "Auto-reply to Instagram comments & DMs in seconds. Capture leads, deliver resources, and grow on autopilot. Free trial — no credit card required.",
   keywords: [
     "Instagram DM automation",
