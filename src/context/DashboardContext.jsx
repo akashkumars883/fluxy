@@ -11,7 +11,8 @@ export function DashboardProvider({ children, initialData = null }) {
   const [allAccounts, setAllAccounts] = useState(initialData?.accounts || []);
   const [loading, setLoading] = useState(initialData?.session ? false : true);
   const [activeTab, setActiveTab] = useState("home");
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+  const [smartBioTab, setSmartBioTab] = useState("links");
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [currentPlan, setCurrentPlan] = useState(initialData?.currentPlan || "free");
   const [upgradeReason, setUpgradeReason] = useState("");
 
@@ -134,9 +135,12 @@ export function DashboardProvider({ children, initialData = null }) {
           setUser(session.user);
         }
       } else {
-        setUser(null);
-        setAllAccounts([]);
-        setSelectedAccount(null);
+        const isLocalDev = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+        if (!isLocalDev) {
+          setUser(null);
+          setAllAccounts([]);
+          setSelectedAccount(null);
+        }
         setLoading(false);
       }
     });
@@ -167,6 +171,8 @@ export function DashboardProvider({ children, initialData = null }) {
     setLoading,
     activeTab,
     setActiveTab,
+    smartBioTab,
+    setSmartBioTab,
     isSidebarCollapsed,
     setIsSidebarCollapsed,
     currentPlan,

@@ -95,7 +95,7 @@ export default function SystemBroadcast() {
           </div>
           <button 
             onClick={() => handleDismiss(visibleBroadcast.id)}
-            className="shrink-0 p-1 rounded-md hover:bg-black/10 transition-colors"
+            className="shrink-0 p-1 rounded-xl hover:bg-black/10 transition-colors"
           >
             <X size={16} />
           </button>

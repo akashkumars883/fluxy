@@ -2,71 +2,63 @@
 import {
   Activity,
   ArrowRight,
+  ArrowUpRight,
+  Camera,
+  CheckCircle2,
   Cpu,
   MessageSquare,
   Plus,
+  RefreshCw,
+  Rocket,
   ShieldAlert,
   Sparkles,
   TrendingUp,
   X,
   Zap,
-  RefreshCw
+  Users,
+  Clock,
+  ChevronRight,
+  MessageSquareMore,
+  MessagesSquare,
+  BarChart2,
+  Play,
+  Pause,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import * as logger from "@/lib/logger";
 import { createPortal } from "react-dom";
 import { useDashboard } from "@/context/DashboardContext";
 import AudienceAvatar from "./AudienceAvatar";
+import { motion, AnimatePresence } from "framer-motion";
 
-export default function CreatorOverview({ stats = {}, history = [], topTriggers = [], automationId, hideHeader = false, onSimulateLocal, isActive = true, onViewAudience, onCreateAutoReply, onToggleTriggerActive, currentPlan = "free", onUpgradeClick }) {
+export default function CreatorOverview({
+  stats = {},
+  history = [],
+  topTriggers = [],
+  automationId,
+  hideHeader = false,
+  onSimulateLocal,
+  isActive = true,
+  onViewAudience,
+  onCreateAutoReply,
+  onToggleTriggerActive,
+  currentPlan = "free",
+  onUpgradeClick,
+  onCreateTemplate,
+}) {
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncReport, setSyncReport] = useState(null);
   const [mounted, setMounted] = useState(false);
 
   const { user } = useDashboard();
-  const userName = user?.user_metadata?.full_name || "Creator";
+  const userName =
+    user?.user_metadata?.full_name?.split(" ")[0] ||
+    user?.user_metadata?.name?.split(" ")[0] ||
+    "Creator";
 
-  // `mounted` is needed because `createPortal` cannot run on the server.
-  // The synchronous setTimeout(0) was flagged as a cascading render;
-  // the effect below only upgrades to `true` on real browser, never
-  // back to `false`, so the value is stable for the rest of the lifecycle.
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setMounted(true);
-    }
+    if (typeof window !== "undefined") setMounted(true);
   }, []);
-
-  const handleSimulateTrigger = async (type) => {
-    if (automationId === "dev-test-id") {
-      if (onSimulateLocal) {
-        onSimulateLocal(type);
-      }
-      return;
-    }
-
-    try {
-      const res = await fetch("/api/media/test-simulate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          automationId,
-          type,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        logger.error("Simulation endpoint failed:", data.error);
-        alert("Simulation endpoint failed: " + data.error);
-      } else {
-        logger.log("Simulated live event successfully via API route");
-      }
-    } catch (err) {
-      logger.error("Network error during simulation:", err);
-    }
-  };
 
   const handleMetaSync = async () => {
     if (isSyncing) return;
@@ -75,288 +67,378 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
     try {
       const res = await fetch(`/api/media/sync?automationId=${automationId}`);
       const data = await res.json();
-
-      if (data.success && data.diagnostics) {
-        setSyncReport({
-          success: true,
-          diagnostics: data.diagnostics
-        });
-      } else {
-        setSyncReport({
-          success: false,
-          error: data.error || "Unknown error during sync check."
-        });
-      }
+      setSyncReport(
+        data.success && data.diagnostics
+          ? { success: true, diagnostics: data.diagnostics }
+          : { success: false, error: data.error || "Unknown error during sync check." }
+      );
     } catch (err) {
-      setSyncReport({
-        success: false,
-        error: "Network error occurred while syncing with Meta."
-      });
+      setSyncReport({ success: false, error: "Network error occurred while syncing with Meta." });
       logger.error("CreatorOverview: Meta sync error:", err);
     } finally {
       setIsSyncing(false);
     }
   };
 
-  const {
-    totalDms = 0,
-    autoReplies = 0,
-    engagementRate = "0%",
-  } = stats || {};
-
-  // Defensive defaults to prevent "Cannot read properties of null (reading 'length')" crash
+  const { totalDms = 0, autoReplies = 0, engagementRate = "0%" } = stats || {};
   const safeHistory = Array.isArray(history) ? history : [];
   const safeTopTriggers = Array.isArray(topTriggers) ? topTriggers : [];
 
   const formatTime = (dateStr) => {
     if (!dateStr) return "Just now";
-    const date = new Date(dateStr);
-    const now = new Date();
-    const diff = Math.floor((now - date) / 1000);
-
+    const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
     if (diff < 60) return `${diff}s ago`;
     if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-    return date.toLocaleDateString();
+    return new Date(dateStr).toLocaleDateString();
   };
 
-  const activeKeywords = safeTopTriggers.length > 0
-    ? safeTopTriggers.map((t) => {
-      return {
-        id: t.id,
-        keyword: (t.keyword || "AUTO").toUpperCase(),
-        triggerType: t.type === "COMMENT" ? "Post Comment" : t.type === "STORY_REPLY" ? "Story Reply" : t.type === "DM" ? "Direct Inbox" : "Reel Comment",
-        isActive: t.metadata?.is_active !== false,
-        comments: t.count
-      };
-    })
-    : [];
+  const activeKeywords = safeTopTriggers.map((t) => ({
+    id: t.id,
+    keyword: (t.keyword || "AUTO").toUpperCase(),
+    triggerType:
+      t.type === "COMMENT" ? "Post Comment"
+        : t.type === "STORY_REPLY" ? "Story Reply"
+          : t.type === "DM" ? "Direct Inbox"
+            : "Reel Comment",
+    isActive: t.metadata?.is_active !== false,
+    comments: t.count,
+  }));
 
   const metricCards = [
-    { label: "Automated Comments", value: autoReplies, icon: MessageSquare, color: "text-[#6366F1]" },
-    { label: "Messages Sent", value: totalDms, icon: Zap, color: "text-amber-500" },
-    { label: "Conversion Rate", value: engagementRate, icon: TrendingUp, color: "text-emerald-500" },
-    { label: "Active Rules", value: safeTopTriggers.length, icon: Cpu, color: "text-purple-500" },
+    {
+      label: "Auto Replies",
+      value: autoReplies,
+      icon: MessageSquareMore,
+      gradient: "from-indigo-600 to-violet-600",
+      softBg: "bg-indigo-500/10",
+      iconColor: "text-indigo-400",
+      trend: "+12%",
+      trendUp: true,
+      desc: "Total comment replies",
+    },
+    {
+      label: "DMs Sent",
+      value: totalDms,
+      icon: MessagesSquare,
+      gradient: "from-amber-500 to-orange-500",
+      softBg: "bg-amber-500/10",
+      iconColor: "text-amber-400",
+      trend: "+8%",
+      trendUp: true,
+      desc: "Delivered to inbox",
+    },
+    {
+      label: "Engagement Rate",
+      value: engagementRate,
+      icon: TrendingUp,
+      gradient: "from-emerald-500 to-teal-500",
+      softBg: "bg-emerald-500/10",
+      iconColor: "text-emerald-400",
+      trend: "+1.2%",
+      trendUp: true,
+      desc: "Avg. engagement",
+    },
+    {
+      label: "Active Rules",
+      value: safeTopTriggers.filter((t) => t.metadata?.is_active !== false).length,
+      icon: Cpu,
+      gradient: "from-violet-500 to-purple-600",
+      softBg: "bg-violet-500/10",
+      iconColor: "text-violet-400",
+      trend: `${safeTopTriggers.length} total`,
+      trendUp: null,
+      desc: "Running automations",
+    },
+  ];
+
+  const now = new Date();
+  const hour = now.getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+
+  const quickTemplates = [
+    { id: "comment_dm", title: "Comment → DM", icon: MessageSquare, desc: "Auto DM on keyword comment", gradient: "from-blue-600 to-indigo-600", softBg: "bg-blue-500/10", iconColor: "text-blue-400" },
+    { id: "story_automator", title: "Story Reply", icon: Camera, desc: "Reply to story interactions", gradient: "from-orange-500 to-rose-500", softBg: "bg-orange-500/10", iconColor: "text-orange-400" },
+    { id: "faq_assistant", title: "AI FAQ Bot", icon: Zap, desc: "Auto-answer common questions", gradient: "from-purple-600 to-violet-600", softBg: "bg-purple-500/10", iconColor: "text-purple-400", isAI: true },
+    { id: "sales_closer", title: "AI Sales Agent", icon: Rocket, desc: "Close deals via DM 24/7", gradient: "from-emerald-500 to-teal-600", softBg: "bg-emerald-500/10", iconColor: "text-emerald-400", isAI: true },
   ];
 
   return (
-    <div className="space-y-4 sm:space-y-5 animate-in fade-in duration-700 w-full max-w-[1400px] mx-auto pb-8">
+    <div className="space-y-4 animate-in fade-in duration-500 w-full max-w-[1400px] mx-auto pb-6">
 
-      {/* Welcome Back Header */}
-      <div className="mb-2">
-        <h2 className="text-xl sm:text-2xl font-bold text-zinc-950 tracking-tight">
-          Welcome back, {userName}! 👋
-        </h2>
-        <p className="text-sm text-zinc-500 font-medium mt-0.5">
-          Here is what&apos;s happening with your automations today.
-        </p>
+      {/* ── Header Row ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">{greeting} ☀️</span>
+            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+              <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+              <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-wider">Live</span>
+            </div>
+          </div>
+          <h2 className="text-xl sm:text-2xl font-bold text-zinc-900 tracking-tight leading-tight">
+            {userName}&apos;s Dashboard
+          </h2>
+          <p className="text-sm text-zinc-400 font-normal mt-1">
+            Real-time view of your automation performance.
+          </p>
+        </div>
+        <button
+          onClick={onCreateAutoReply}
+          className="shrink-0 group inline-flex items-center gap-2 px-5 py-2.5 bg-zinc-950 hover:bg-zinc-800 text-white text-sm font-semibold rounded-xl transition-all duration-200 shadow-sm hover:shadow-md"
+        >
+          <Plus size={15} className="group-hover:rotate-90 transition-transform duration-300" />
+          New Automation
+        </button>
       </div>
 
-      {/* Metrics Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        {metricCards.map((card) => {
-          const Icon = card.icon;
+      {/* ── Quick Template Cards ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {quickTemplates.map((t) => {
+          const Icon = t.icon;
           return (
-            <div
-              key={card.label}
-              className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-5 flex flex-col justify-between shadow-[0_2px_10px_rgb(0,0,0,0.02)] border border-zinc-200/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-zinc-300/80 transition-all duration-400 group cursor-default relative overflow-hidden hover:-translate-y-1 hover:scale-[1.02]"
+            <button
+              key={t.id}
+              onClick={() => onCreateTemplate?.(t.id)}
+              className="group relative flex flex-col items-start p-4 bg-white border border-zinc-200/60 rounded-2xl hover:border-zinc-300 hover:shadow-md transition-all duration-200 cursor-pointer text-left overflow-hidden"
             >
-              <div className="flex items-center justify-between mb-3 relative z-10">
-                <Icon size={20} className={`${card.color} transition-all duration-300 group-hover:scale-110`} />
-              </div>
+              {/* Hover gradient overlay */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${t.gradient} opacity-0 group-hover:opacity-[0.04] transition-opacity duration-300 pointer-events-none`} />
 
-              <div className="space-y-1 relative z-10">
-                <span className="text-xl sm:text-3xl font-bold text-zinc-950 tracking-tighter leading-none block group-hover:text-[#6366F1] transition-colors duration-300">
-                  {card.value}
-                </span>
-                <span className="text-[11px] font-semibold text-zinc-400 tracking-wide block mt-1">
-                  {card.label}
-                </span>
+              <div className={`relative w-10 h-10 ${t.softBg} rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200`}>
+                <Icon size={18} className={t.iconColor} />
               </div>
-            </div>
+              <div className="flex items-center gap-1.5 mb-1">
+                <span className="text-xs font-bold text-zinc-900 group-hover:text-indigo-600 transition-colors">{t.title}</span>
+                {t.isAI && (
+                  <span className="px-1.5 py-0.5 bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-[8px] font-bold rounded-md">AI</span>
+                )}
+              </div>
+              <p className="text-[10px] text-zinc-400 font-medium leading-snug">{t.desc}</p>
+
+              <div className={`absolute top-3 right-3 w-6 h-6 rounded-lg bg-gradient-to-br ${t.gradient} flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 -translate-y-1 group-hover:translate-y-0`}>
+                <ArrowRight size={12} className="text-white" />
+              </div>
+            </button>
           );
         })}
       </div>
 
-      {/* Premium Upgrade Banner Card (Visible for Free & Pro users) */}
-      {currentPlan !== 'viral_scale' && (
-        <div className="bg-gradient-to-r from-[#6366F1] to-indigo-700 text-white rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md relative overflow-hidden animate-in fade-in">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none" />
-          <div className="flex items-start sm:items-center gap-3.5 relative z-10">
-            <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white shrink-0 shadow-inner">
-              <Sparkles size={16} />
+      {/* ── Metric Cards ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+        {metricCards.map((card, idx) => {
+          const Icon = card.icon;
+          return (
+            <motion.div
+              key={card.label}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.06, duration: 0.4, ease: "easeOut" }}
+              className="group relative bg-white border border-zinc-200/60 rounded-2xl p-5 flex flex-col gap-3 hover:border-zinc-300 hover:shadow-lg hover:shadow-zinc-100/60 transition-all duration-200 cursor-default overflow-hidden"
+            >
+              {/* Background gradient glow on hover */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-[0.03] transition-opacity duration-300 pointer-events-none`} />
+
+              <div className="flex items-center justify-between">
+                <div className={`w-10 h-10 ${card.softBg} rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200`}>
+                  <Icon size={18} className={card.iconColor} />
+                </div>
+                {card.trendUp !== null ? (
+                  <div className="flex items-center gap-0.5 px-2 py-1 bg-emerald-50 border border-emerald-100 rounded-lg">
+                    <ArrowUpRight size={10} className="text-emerald-600" />
+                    <span className="text-[10px] font-bold text-emerald-600">{card.trend}</span>
+                  </div>
+                ) : (
+                  <span className="text-[10px] font-semibold text-zinc-400 bg-zinc-50 border border-zinc-100 px-2 py-1 rounded-lg">{card.trend}</span>
+                )}
+              </div>
+
+              <div>
+                <div className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight leading-none">
+                  {typeof card.value === 'number' ? card.value.toLocaleString() : card.value}
+                </div>
+                <div className="text-[11px] font-medium text-zinc-400 mt-1.5">{card.label}</div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* ── Upgrade Banner ── */}
+      {currentPlan !== "viral_scale" && (
+        <div className="relative overflow-hidden bg-zinc-950 rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          {/* Animated gradient blobs */}
+          <div className="absolute -top-8 -left-8 w-48 h-48 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-8 -right-8 w-48 h-48 bg-violet-600/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent pointer-events-none" />
+
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/25">
+              <Sparkles size={18} className="text-white" />
             </div>
             <div>
-              <h4 className="text-xs sm:text-sm font-bold tracking-tight mb-0.5">
-                {currentPlan === 'free' ? "Upgrade Automations with Business Pro" : "Upgrade to Business Scale"}
-              </h4>
-              <p className="text-[11px] text-indigo-100 font-medium leading-normal max-w-xl">
-                {currentPlan === 'free'
-                  ? "Get unlimited automated replies, unlock the Mini Digital Store to sell directly inside DMs, and build premium Link-in-Bio landing pages."
-                  : "Get up to 50,000 monthly automated replies, advanced CRM tracking, and full agency multi-workspace collaboration features."
-                }
+              <p className="text-sm font-bold text-white tracking-tight">
+                {currentPlan === "free"
+                  ? "Unlock Business Pro — 15x more replies"
+                  : "Scale to 50,000 monthly replies"}
+              </p>
+              <p className="text-[11px] text-zinc-400 mt-0.5 max-w-md font-medium leading-relaxed">
+                {currentPlan === "free"
+                  ? "Unlimited automations, Mini Store, Smart Bio & priority support."
+                  : "Advanced CRM, custom persona, white-label & agency workspace."}
               </p>
             </div>
           </div>
           <button
-            onClick={() => onUpgradeClick?.(currentPlan === 'free' ? "creator_pro" : "viral_scale")}
-            className="shrink-0 w-full sm:w-auto px-5 py-2 bg-white hover:bg-zinc-50 text-indigo-700 text-[11px] font-bold rounded-xl shadow-md transition-all active:scale-[0.98] cursor-pointer"
+            onClick={() => onUpgradeClick?.(currentPlan === "free" ? "creator_pro" : "viral_scale")}
+            className="shrink-0 relative z-10 inline-flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-zinc-50 text-zinc-950 text-xs font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:scale-[1.02] cursor-pointer"
           >
-            Upgrade Plan
+            Upgrade Now <ArrowRight size={13} />
           </button>
         </div>
       )}
 
-      {/* Main Content Columns: Automations & Activity List */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+      {/* ── Main 2-Col Grid ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
 
-        {/* Left Column: Active Automations */}
-        <div className="lg:col-span-2 bg-white/80 backdrop-blur-sm border border-zinc-200/60 rounded-2xl p-5 sm:p-6 shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-zinc-300/60 transition-all duration-500 flex flex-col relative overflow-hidden min-h-[280px] lg:min-h-[380px]">
-          <div className="flex items-center justify-between mb-3 shrink-0 border-b border-zinc-100 pb-4">
-            <div className="space-y-1">
-              <h3 className="font-bold text-lg sm:text-xl text-zinc-950 tracking-tight flex items-center gap-2">
-                Active Automations <Zap size={18} className="text-[#6366F1]" fill="#6366F1" fillOpacity={0.2} />
+        {/* Left: Active Automations */}
+        <div className="lg:col-span-3 bg-white border border-zinc-200/60 rounded-2xl flex flex-col overflow-hidden min-h-[420px] shadow-sm">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-100/80">
+            <div>
+              <h3 className="text-base font-bold text-zinc-950 flex items-center gap-2">
+                <div className="w-6 h-6 bg-indigo-50 rounded-lg flex items-center justify-center">
+                  <Cpu size={13} className="text-indigo-500" />
+                </div>
+                Active Automations
               </h3>
-              <p className="text-xs text-zinc-400 font-semibold">Manage your currently running auto-reply rules.</p>
+              <p className="text-[11px] text-zinc-400 font-normal mt-0.5 ml-8">
+                Toggle, monitor and manage your running rules.
+              </p>
             </div>
-
-            <div className="flex items-center gap-3">
-              {/* Simple Meta Sync Badge */}
-              <button
-                onClick={handleMetaSync}
-                disabled={isSyncing}
-                className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-50 border border-zinc-200 rounded-sm text-[10px] font-bold text-zinc-500 hover:bg-zinc-100 transition-all cursor-pointer"
-                title="Verify Meta connection status"
-              >
-                {isSyncing ? (
-                  <>
-                    <RefreshCw size={10} className="animate-spin text-zinc-400" />
-                    Checking...
-                  </>
-                ) : (
-                  <>
-                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-300"></span>
-                    Meta: Not Verified
-                  </>
-                )}
-              </button>
-
-              <button
-                onClick={onCreateAutoReply}
-                className="flex items-center gap-1.5 text-xs font-bold text-white bg-[#6366F1] hover:bg-[#4f46e5] px-3.5 py-2 rounded-sm transition-all shadow-sm cursor-pointer"
-              >
-                <Plus size={13} strokeWidth={3} /> Create Rule
-              </button>
-            </div>
+            <button
+              onClick={onCreateAutoReply}
+              className="group inline-flex items-center gap-1.5 px-3.5 py-2 bg-zinc-950 text-white text-[11px] font-semibold rounded-xl hover:bg-zinc-800 transition-all cursor-pointer"
+            >
+              <Plus size={11} strokeWidth={2.5} className="group-hover:rotate-90 transition-transform duration-300" />
+              New
+            </button>
           </div>
 
-          <div className="flex-1 min-h-0 relative z-10 overflow-y-auto no-scrollbar pr-1 divide-y divide-zinc-100">
-            {!activeKeywords || activeKeywords.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full py-12 text-center space-y-4 bg-zinc-50/50 rounded-2xl border border-zinc-200 border-dashed">
-                <div className="w-14 h-14 rounded-2xl bg-white border border-zinc-100 shadow-sm flex items-center justify-center">
-                  <Zap size={24} className="text-zinc-300" />
+          <div className="flex-1 overflow-y-auto no-scrollbar divide-y divide-zinc-50">
+            {activeKeywords.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full py-16 text-center gap-4">
+                <div className="w-14 h-14 bg-zinc-50 border-2 border-zinc-100 border-dashed rounded-2xl flex items-center justify-center">
+                  <Zap size={22} className="text-zinc-300" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-zinc-700">No active automations</p>
-                  <p className="text-xs text-zinc-500 max-w-xs mx-auto mt-1">Create your first rule to start automating replies and DMs.</p>
+                  <p className="text-sm font-bold text-zinc-700">No automations yet</p>
+                  <p className="text-xs text-zinc-400 mt-0.5">Create your first rule to get started.</p>
                 </div>
+                <button
+                  onClick={onCreateAutoReply}
+                  className="mt-1 inline-flex items-center gap-1.5 px-5 py-2.5 bg-zinc-950 text-white text-xs font-bold rounded-xl hover:bg-zinc-800 transition-all cursor-pointer"
+                >
+                  <Plus size={12} /> Create Rule
+                </button>
               </div>
             ) : (
-              activeKeywords.map((item, index) => (
-                <div key={index} className="flex items-center justify-between py-3.5 group transition-colors">
-                  <div className="flex items-center gap-3">
-                    <MessageSquare size={18} className="text-[#6366F1] shrink-0" />
-                    <div>
+              activeKeywords.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between px-5 py-4 hover:bg-zinc-50/70 transition-colors group"
+                >
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${item.isActive ? "bg-indigo-50 border border-indigo-100" : "bg-zinc-100 border border-zinc-200"}`}>
+                      <MessageSquare size={15} className={item.isActive ? "text-indigo-500" : "text-zinc-400"} />
+                    </div>
+                    <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-sm text-zinc-900">#{item.keyword}</span>
-                        {item.isActive ? (
-                          <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-600 text-[8px] font-bold uppercase rounded-md">Active</span>
-                        ) : (
-                          <span className="px-1.5 py-0.5 bg-zinc-50 text-zinc-400 text-[8px] font-bold uppercase rounded-md border border-zinc-100">Paused</span>
-                        )}
+                        <span className="font-bold text-xs text-zinc-900 font-mono tracking-wide">#{item.keyword}</span>
+                        <span className={`px-1.5 py-0.5 text-[8px] font-bold uppercase rounded-md tracking-wide ${item.isActive ? "bg-emerald-50 text-emerald-600 border border-emerald-100" : "bg-zinc-100 text-zinc-400 border border-zinc-200"}`}>
+                          {item.isActive ? "Active" : "Paused"}
+                        </span>
                       </div>
-                      <span className="text-xs text-zinc-400 font-semibold mt-0.5 block">
-                        {item.triggerType} <span className="mx-1.5 text-zinc-200">•</span> <span className="text-zinc-700 font-bold">{item.comments}</span> replies sent
-                      </span>
+                      <p className="text-[10px] text-zinc-400 font-medium mt-0.5 truncate">
+                        {item.triggerType} · <span className="font-bold text-zinc-600">{item.comments}</span> replies
+                      </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div
-                      onClick={() => onToggleTriggerActive && onToggleTriggerActive(item.id, item.isActive)}
-                      className={`w-8 h-[18px] rounded-full relative cursor-pointer hover:opacity-95 transition-all duration-300 ${item.isActive ? "bg-[#6366F1]" : "bg-zinc-200"}`}
-                    >
-                      <div className={`w-3.5 h-3.5 bg-white rounded-full absolute top-[1px] shadow-sm transition-all duration-300 ${item.isActive ? "right-0.5" : "left-0.5"}`} />
-                    </div>
-                  </div>
+
+                  {/* Toggle Switch */}
+                  <button
+                    onClick={() => onToggleTriggerActive && onToggleTriggerActive(item.id, item.isActive)}
+                    className={`relative w-9 h-5 rounded-full transition-all duration-300 cursor-pointer shrink-0 focus:outline-none ${item.isActive ? "bg-indigo-500 shadow-sm shadow-indigo-200" : "bg-zinc-200"}`}
+                  >
+                    <span className={`absolute top-[3px] w-3.5 h-3.5 bg-white rounded-full shadow-sm transition-all duration-300 ${item.isActive ? "right-[3px]" : "left-[3px]"}`} />
+                  </button>
                 </div>
               ))
             )}
           </div>
         </div>
 
-        {/* Right Column: Live Feed */}
-        <div className="bg-white/80 backdrop-blur-sm border border-zinc-200/60 rounded-2xl p-5 sm:p-6 shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-zinc-300/60 transition-all duration-500 flex flex-col relative min-h-[280px] lg:min-h-[380px]">
-          <div className="flex items-center justify-between mb-5 border-b border-zinc-100 pb-4 shrink-0">
-            <div className="space-y-1">
-              <h3 className="font-bold text-lg sm:text-xl text-zinc-950 tracking-tight flex items-center gap-2">
-                Recent Activity <Activity size={16} className="text-emerald-500" />
+        {/* Right: Live Activity Feed */}
+        <div className="lg:col-span-2 bg-white border border-zinc-200/60 rounded-2xl flex flex-col overflow-hidden min-h-[320px] shadow-sm">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-100/80">
+            <div>
+              <h3 className="text-base font-bold text-zinc-950 flex items-center gap-2">
+                <div className="w-6 h-6 bg-emerald-50 rounded-lg flex items-center justify-center">
+                  <Activity size={13} className="text-emerald-500 animate-pulse" />
+                </div>
+                Live Activity
               </h3>
-              <p className="text-xs text-zinc-400 font-semibold">Live feed of interactions.</p>
+              <p className="text-[11px] text-zinc-400 font-medium mt-0.5 ml-8">Real-time interaction feed.</p>
             </div>
             <button
               onClick={onViewAudience}
-              className="w-7 h-7 flex items-center justify-center rounded-sm bg-zinc-50 border border-zinc-100 text-zinc-400 hover:text-[#6366F1] hover:border-[#6366F1]/20 hover:bg-[#6366F1]/5 transition-all cursor-pointer"
-              title="Go to CRM Audience"
+              className="inline-flex items-center gap-1 text-[11px] font-semibold text-zinc-400 hover:text-indigo-600 transition-colors cursor-pointer"
             >
-              <ArrowRight size={12} />
+              View CRM <ChevronRight size={12} />
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto no-scrollbar pr-1 divide-y divide-zinc-100">
+          <div className="flex-1 overflow-y-auto no-scrollbar divide-y divide-zinc-50">
             {safeHistory.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full py-10 text-center space-y-3">
-                <div className="w-10 h-10 rounded-full bg-zinc-50 flex items-center justify-center">
+              <div className="flex flex-col items-center justify-center h-full py-16 text-center gap-3">
+                <div className="w-12 h-12 bg-zinc-50 border-2 border-zinc-100 border-dashed rounded-2xl flex items-center justify-center">
                   <Activity size={18} className="text-zinc-300" />
                 </div>
-                <p className="text-xs text-zinc-400 font-semibold">No recent activity.</p>
+                <p className="text-xs text-zinc-400 font-semibold">No recent activity yet.</p>
               </div>
             ) : (
-              safeHistory.map((log, index) => (
-                <div key={log.id} className="flex items-center justify-between py-3 group cursor-default">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <AudienceAvatar
-                      senderId={log.sender_id}
-                      defaultAvatar={`https://api.dicebear.com/7.x/avataaars/svg?seed=${log.sender_id || log.id}`}
-                      automationId={automationId}
-                      className="w-8 h-8 rounded-full object-cover border border-zinc-200 shrink-0"
-                    />
-                    <div className="space-y-0.5 min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-bold text-zinc-900 truncate max-w-[85px] block leading-none">
-                          @{log.sender_username || log.sender_name || "unknown"}
-                        </span>
-                        {log.keyword && (
-                          <span className="px-1.5 py-0.5 bg-zinc-50 border border-zinc-200/60 text-zinc-500 rounded text-[8px] font-bold leading-none shrink-0">
-                            #{log.keyword}
-                          </span>
-                        )}
-                      </div>
-                      <span className="text-[10px] text-zinc-400 font-semibold block truncate max-w-[140px]">
-                        {log.type === "COMMENT" ? "commented on post" : "replied to story"}
-                        {log.response && (
-                          <span className="text-zinc-500 font-medium block truncate mt-0.5 italic">
-                            &ldquo;{log.response}&rdquo;
-                          </span>
-                        )}
+              safeHistory.slice(0, 15).map((log) => (
+                <div
+                  key={log.id}
+                  className="flex items-center gap-3 px-5 py-3.5 hover:bg-zinc-50/70 transition-colors group cursor-default"
+                >
+                  <AudienceAvatar
+                    senderId={log.sender_id}
+                    defaultAvatar={`https://api.dicebear.com/7.x/avataaars/svg?seed=${log.sender_id || log.id}`}
+                    automationId={automationId}
+                    className="w-8 h-8 rounded-xl object-cover border border-zinc-100 shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-xs font-bold text-zinc-900 truncate max-w-[90px]">
+                        @{log.sender_username || log.sender_name || "unknown"}
                       </span>
+                      {log.keyword && (
+                        <span className="px-1.5 py-0.5 bg-indigo-50 text-indigo-500 border border-indigo-100 rounded-md text-[8px] font-bold leading-none shrink-0">
+                          #{log.keyword}
+                        </span>
+                      )}
                     </div>
+                    <p className="text-[10px] text-zinc-400 font-medium mt-0.5 truncate">
+                      {log.type === "COMMENT" ? "Commented on post" : "Replied to story"}
+                    </p>
                   </div>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <span className="text-[9px] font-bold text-zinc-300">{formatTime(log.created_at)}</span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <span className="text-[9px] font-semibold text-zinc-300 whitespace-nowrap">
+                      {formatTime(log.created_at)}
+                    </span>
                     <button
                       onClick={onViewAudience}
-                      className="opacity-0 group-hover:opacity-100 p-1 bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-700 rounded-sm transition-all cursor-pointer ml-1"
-                      title="View in CRM"
+                      className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg bg-zinc-50 border border-zinc-100 text-zinc-400 hover:text-indigo-500 hover:border-indigo-100 transition-all cursor-pointer"
                     >
                       <ArrowRight size={9} />
                     </button>
@@ -368,108 +450,65 @@ export default function CreatorOverview({ stats = {}, history = [], topTriggers 
         </div>
       </div>
 
-      {/* Meta Sync Report Dialog Modal */}
-      {mounted && syncReport && typeof document !== "undefined" && createPortal(
-        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-300">
-          <div
-            className="fixed inset-0 bg-[#f3f3f3]/60 backdrop-blur-md transition-all duration-500"
-            onClick={() => setSyncReport(null)}
-          />
-
-          <div className="relative w-full max-w-md bg-white border border-zinc-200/80 rounded-xl shadow-2xl p-6 sm:p-8 flex flex-col gap-6 animate-in zoom-in duration-300 z-10">
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-zinc-200/50 pb-4 shrink-0">
-              <div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-500/10 text-indigo-600 rounded-full text-[9px] font-bold uppercase tracking-wider mb-1">
-                  <Activity size={10} /> Meta Integration
-                </div>
-                <h3 className="text-xl font-bold text-zinc-900 tracking-tight">Meta Connection Report</h3>
-              </div>
-              <button
-                onClick={() => setSyncReport(null)}
-                className="p-2 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-400 hover:text-zinc-950 transition-all hover:bg-zinc-100 cursor-pointer"
-              >
-                <X size={16} />
-              </button>
-            </div>
-
-            {/* Content */}
-            {syncReport.success && syncReport.diagnostics ? (
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-[#6366F1] flex items-center justify-center shrink-0">
-                    <Sparkles size={18} />
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block">Status Overview</span>
-                    <span className={`text-xs font-bold ${syncReport.diagnostics.scope_insights === "SUCCESS" && syncReport.diagnostics.scope_comments === "SUCCESS"
-                      ? "text-emerald-600"
-                      : "text-amber-600"
-                      }`}>
-                      {syncReport.diagnostics.scope_insights === "SUCCESS" && syncReport.diagnostics.scope_comments === "SUCCESS"
-                        ? "✅ READY FOR ACTION"
-                        : "⚠️ ATTENTION NEEDED"}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between py-2 border-b border-zinc-100">
-                    <span className="text-xs font-semibold text-zinc-500">Insights Reading Permission</span>
-                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${syncReport.diagnostics.scope_insights === "SUCCESS" ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"
-                      }`}>
-                      {syncReport.diagnostics.scope_insights}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between py-2 border-b border-zinc-100">
-                    <span className="text-xs font-semibold text-zinc-500">Comments Auto-Reply Permission</span>
-                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${syncReport.diagnostics.scope_comments === "SUCCESS" ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"
-                      }`}>
-                      {syncReport.diagnostics.scope_comments}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between py-2 border-b border-zinc-100">
-                    <span className="text-xs font-semibold text-zinc-500">Active Media Feed Detected</span>
-                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${syncReport.diagnostics.media_found === "YES" ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"
-                      }`}>
-                      {syncReport.diagnostics.media_found}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between py-2">
-                    <span className="text-xs font-semibold text-zinc-500">Diagnostics Simulation Reply</span>
-                    <span className="text-xs font-bold text-zinc-400">
-                      {syncReport.diagnostics.comment_replied}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="p-4 bg-rose-50 border border-rose-100 rounded-2xl flex gap-3 text-rose-700 text-xs">
-                <ShieldAlert size={18} className="shrink-0 mt-0.5" />
+      {/* ── Meta Sync Report Modal ── */}
+      {mounted && syncReport && typeof document !== "undefined" &&
+        createPortal(
+          <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 animate-in fade-in duration-200">
+            <div className="fixed inset-0 bg-zinc-950/70 backdrop-blur-sm" onClick={() => setSyncReport(null)} />
+            <div className="relative w-full max-w-md bg-white border border-zinc-200/80 rounded-2xl p-6 flex flex-col gap-5 z-10 animate-in zoom-in-95 duration-200 shadow-2xl">
+              <div className="flex items-center justify-between border-b border-zinc-100 pb-4">
                 <div>
-                  <span className="font-bold block">Sync Diagnostic Failed</span>
-                  <p className="mt-1 leading-normal font-medium text-rose-600/90">{syncReport.error}</p>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-lg text-[9px] font-bold uppercase tracking-wider mb-1.5">
+                    <Activity size={10} /> Meta Integration
+                  </span>
+                  <h3 className="text-lg font-bold text-zinc-900 tracking-tight">Connection Report</h3>
                 </div>
+                <button
+                  onClick={() => setSyncReport(null)}
+                  className="p-2 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-400 hover:text-zinc-900 transition-all cursor-pointer"
+                >
+                  <X size={15} />
+                </button>
               </div>
-            )}
 
-            {/* Footer */}
-            <div className="border-t border-zinc-200/50 pt-4 flex justify-end shrink-0">
-              <button
-                onClick={() => setSyncReport(null)}
-                className="px-5 py-2.5 bg-[#6366F1] hover:bg-[#4f46e5] text-white rounded-xl font-bold text-xs transition-all shadow-md shadow-[#6366F1]/10 hover:shadow-lg hover:shadow-[#6366F1]/20 cursor-pointer"
-              >
-                Acknowledge
-              </button>
+              {syncReport.success && syncReport.diagnostics ? (
+                <div className="space-y-2">
+                  {[
+                    { label: "Insights Permission", val: syncReport.diagnostics.scope_insights },
+                    { label: "Comments Permission", val: syncReport.diagnostics.scope_comments },
+                    { label: "Media Feed", val: syncReport.diagnostics.media_found === "YES" ? "SUCCESS" : "MISSING" },
+                    { label: "Simulation Reply", val: syncReport.diagnostics.comment_replied },
+                  ].map(({ label, val }) => (
+                    <div key={label} className="flex items-center justify-between py-2.5 border-b border-zinc-50 last:border-0">
+                      <span className="text-xs font-semibold text-zinc-500">{label}</span>
+                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg ${val === "SUCCESS" ? "bg-emerald-50 text-emerald-700 border border-emerald-100" : "bg-rose-50 text-rose-700 border border-rose-100"}`}>
+                        {val}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-4 bg-rose-50 border border-rose-100 rounded-xl flex gap-3 text-rose-700 text-xs">
+                  <ShieldAlert size={16} className="shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold block">Sync Failed</span>
+                    <p className="mt-1 font-medium text-rose-600/90">{syncReport.error}</p>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex justify-end pt-1">
+                <button
+                  onClick={() => setSyncReport(null)}
+                  className="px-5 py-2.5 bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl font-bold text-xs transition-all cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
             </div>
-          </div>
-        </div>,
-        document.body
-      )}
-
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

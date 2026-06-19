@@ -93,13 +93,13 @@ export default function PwaInstallBanner() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: "spring", damping: 25, stiffness: 350 }}
-            className="w-full max-w-md mx-auto pointer-events-auto bg-white/95 backdrop-blur-xl border border-zinc-200/60 rounded-xl p-5 shadow-[0_10px_40px_rgba(99,102,241,0.12)] flex flex-col gap-4 relative overflow-hidden"
+            className="w-full max-w-md mx-auto pointer-events-auto bg-white/95  border border-zinc-200/60 rounded-xl p-5  flex flex-col gap-4 relative overflow-hidden"
           >
             {/* Glossy top aesthetic border */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#6366F1] via-[#818CF8] to-[#6366F1]" />
 
             <div className="flex gap-4">
-              <div className="w-12 h-12 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-center shrink-0 shadow-sm">
+              <div className="w-12 h-12 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-center shrink-0 ">
                 <Smartphone size={22} className="text-[#6366F1]" />
               </div>
               <div className="flex-1 text-left min-w-0 pr-6">
@@ -112,7 +112,7 @@ export default function PwaInstallBanner() {
               </div>
               <button 
                 onClick={handleDismiss}
-                className="absolute top-4 right-4 p-1 hover:bg-zinc-100 rounded-sm text-zinc-400 hover:text-zinc-600 transition-all shrink-0 cursor-pointer"
+                className="absolute top-4 right-4 p-1 hover:bg-zinc-100 rounded-xl text-zinc-400 hover:text-zinc-600 transition-all shrink-0 cursor-pointer"
               >
                 <X size={16} />
               </button>
@@ -121,13 +121,13 @@ export default function PwaInstallBanner() {
             <div className="flex gap-3">
               <button
                 onClick={handleDismiss}
-                className="flex-1 py-3 text-zinc-400 hover:text-zinc-600 rounded-sm text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer"
+                className="flex-1 py-3 text-zinc-400 hover:text-zinc-600 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer"
               >
                 Not Now
               </button>
               <button
                 onClick={handleInstallClick}
-                className="flex-1 py-3 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-sm text-[10px] font-bold uppercase tracking-wider shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3 bg-zinc-950 hover:bg-[#6366F1] text-white rounded-xl text-[10px] font-bold uppercase tracking-wider  hover: transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 Install App
               </button>
@@ -149,25 +149,25 @@ export default function PwaInstallBanner() {
                     
                     <div className="space-y-2.5 text-xs text-zinc-700">
                       <div className="flex items-center gap-3">
-                        <div className="w-6 h-6 bg-white border border-zinc-200 rounded-lg flex items-center justify-center text-[10px] font-black text-zinc-600 shadow-sm shrink-0">
+                        <div className="w-6 h-6 bg-white border border-zinc-200 rounded-xl flex items-center justify-center text-[10px] font-black text-zinc-600  shrink-0">
                           1
                         </div>
                         <p className="font-semibold text-zinc-600">
-                          {`Tap Safari's `}<span className="inline-flex items-center justify-center p-1 bg-white border border-zinc-200 rounded-md mx-0.5"><Share size={12} className="text-[#6366F1]" /></span>{` **Share** button below.`}
+                          {`Tap Safari's `}<span className="inline-flex items-center justify-center p-1 bg-white border border-zinc-200 rounded-xl mx-0.5"><Share size={12} className="text-[#6366F1]" /></span>{` **Share** button below.`}
                         </p>
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <div className="w-6 h-6 bg-white border border-zinc-200 rounded-lg flex items-center justify-center text-[10px] font-black text-zinc-600 shadow-sm shrink-0">
+                        <div className="w-6 h-6 bg-white border border-zinc-200 rounded-xl flex items-center justify-center text-[10px] font-black text-zinc-600  shrink-0">
                           2
                         </div>
                         <p className="font-semibold text-zinc-600">
-                          Scroll down and tap <span className="inline-flex items-center gap-1 bg-white border border-zinc-200 px-2 py-0.5 rounded-md font-bold mx-0.5 text-[10px]"><Plus size={10} /> Add to Home Screen</span>.
+                          Scroll down and tap <span className="inline-flex items-center gap-1 bg-white border border-zinc-200 px-2 py-0.5 rounded-xl font-bold mx-0.5 text-[10px]"><Plus size={10} /> Add to Home Screen</span>.
                         </p>
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <div className="w-6 h-6 bg-white border border-zinc-200 rounded-lg flex items-center justify-center text-[10px] font-black text-zinc-600 shadow-sm shrink-0">
+                        <div className="w-6 h-6 bg-white border border-zinc-200 rounded-xl flex items-center justify-center text-[10px] font-black text-zinc-600  shrink-0">
                           3
                         </div>
                         <p className="font-semibold text-zinc-600">

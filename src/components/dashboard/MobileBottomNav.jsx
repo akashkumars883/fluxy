@@ -1,7 +1,7 @@
 "use client";
 
 import { useDashboard } from "@/context/DashboardContext";
-import { Home, Cpu, Users, Settings, Menu, Zap } from "lucide-react";
+import { Home, Cpu, Users, Settings, Menu } from "lucide-react";
 import { motion } from "framer-motion";
 import { useMemo } from "react";
 
@@ -9,7 +9,7 @@ export default function MobileBottomNav({ onMenuClick }) {
   const { activeTab, setActiveTab, currentPlan, realtimeStats } = useDashboard();
 
   const primaryNavItems = [
-    { id: "home", label: "Overview", icon: Home },
+    { id: "home", label: "Home", icon: Home },
     { id: "automations", label: "Automations", icon: Cpu },
     { id: 'audience', label: 'Audience', icon: Users },
     { id: 'settings', label: 'Settings', icon: Settings },
@@ -23,48 +23,54 @@ export default function MobileBottomNav({ onMenuClick }) {
   const maxQuota = currentPlan === "viral_scale" ? 50000 : currentPlan === "creator_pro" ? 15000 : 1000;
   const usedQuota = (realtimeStats?.totalDms || 0) + (realtimeStats?.autoReplies || 0);
   const quotaPercent = Math.min(100, Math.round((usedQuota / maxQuota) * 100));
-  const quotaDotColor = quotaPercent >= 90 ? "bg-red-500" : quotaPercent >= 60 ? "bg-amber-500" : "bg-emerald-500";
+  const quotaDotColor = quotaPercent >= 90 ? "bg-rose-500" : quotaPercent >= 70 ? "bg-amber-500" : "bg-emerald-500";
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 w-full z-50 px-4 py-2 bg-white/95 backdrop-blur-3xl border-t border-zinc-200/60 shadow-[0_-8px_30px_rgba(0,0,0,0.04)] flex items-center justify-between pointer-events-auto pb-safe-area-inset-bottom">
-      {primaryNavItems.map((item) => {
-        const Icon = item.icon;
-        const isActive = activeTab === item.id;
+    <div className="md:hidden fixed bottom-0 left-0 right-0 w-full z-50 pointer-events-auto pb-safe-area-inset-bottom">
+      {/* Glass bar */}
+      <div className="mx-3 mb-3 bg-white/90 backdrop-blur-xl border border-zinc-200/60 rounded-2xl shadow-xl shadow-zinc-900/10 flex items-center justify-between px-2 py-2">
+        {primaryNavItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = activeTab === item.id;
 
-        return (
-          <button
-            key={item.id}
-            onClick={() => setActiveTab(item.id)}
-            className="relative flex-1 flex items-center justify-center py-2 min-w-[50px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6366F1]/30 rounded-lg"
-          >
-            {isActive && (
-              <motion.div
-                layoutId="mobileBottomNavActiveIndicator"
-                className="absolute inset-0 bg-[#6366F1]/10 rounded-[16px] -z-10"
-                transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              />
-            )}
-            <div className={`p-1.5 rounded-full transition-colors ${isActive ? "text-[#6366F1]" : "text-zinc-400"}`}>
-              <Icon size={23} strokeWidth={isActive ? 2.5 : 2} />
-            </div>
-          </button>
-        );
-      })}
+          return (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              className="relative flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 min-w-[50px] rounded-xl focus-visible:outline-none"
+            >
+              {isActive && (
+                <motion.div
+                  layoutId="mobileBottomNavActiveIndicator"
+                  className="absolute inset-0 bg-indigo-500/10 rounded-xl -z-10"
+                  transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                />
+              )}
+              <div className={`transition-all duration-200 ${isActive ? "text-indigo-600 scale-110" : "text-zinc-400"}`}>
+                <Icon size={21} strokeWidth={isActive ? 2.2 : 1.8} />
+              </div>
+              <span className={`text-[9px] font-semibold transition-colors ${isActive ? "text-indigo-600" : "text-zinc-400"}`}>
+                {item.label}
+              </span>
+            </button>
+          );
+        })}
 
-      {/* Menu Button with "More" indicator when extra tab active */}
-      <button
-        onClick={onMenuClick}
-        className="relative flex-1 flex items-center justify-center py-2 min-w-[50px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6366F1]/30 rounded-sm"
-      >
-        {isExtraTabActive && (
-          <div className="absolute -top-0.5 right-2 w-2 h-2 bg-[#6366F1] rounded-full z-10" />
-        )}
-        <div className="relative inline-flex items-center justify-center p-1.5 rounded-full text-zinc-400 hover:text-zinc-600 transition-colors">
-          <Menu size={23} strokeWidth={2} />
-          {/* Quota indicator dot */}
-          <span className={`absolute -bottom-0.5 right-0.5 w-2 h-2 rounded-full ${quotaDotColor} ring-1 ring-white`} />
-        </div>
-      </button>
+        {/* More Menu */}
+        <button
+          onClick={onMenuClick}
+          className="relative flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 min-w-[50px] rounded-xl focus-visible:outline-none"
+        >
+          {isExtraTabActive && (
+            <div className="absolute top-1 right-3 w-2 h-2 bg-indigo-500 rounded-full z-10 ring-2 ring-white animate-pulse" />
+          )}
+          <div className="relative text-zinc-400">
+            <Menu size={21} strokeWidth={1.8} />
+            <span className={`absolute -bottom-0.5 right-0 w-1.5 h-1.5 rounded-full ring-1 ring-white ${quotaDotColor}`} />
+          </div>
+          <span className="text-[9px] font-semibold text-zinc-400">More</span>
+        </button>
+      </div>
     </div>
   );
 }

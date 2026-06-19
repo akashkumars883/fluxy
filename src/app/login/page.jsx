@@ -14,10 +14,10 @@ import { toast } from "react-hot-toast";
  */
 const GoogleIcon = () => (
   <svg width="22" height="22" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 24 0 24s.92 7.54 2.56 10.78l7.97-6.19z"/>
-    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 24 0 24s.92 7.54 2.56 10.78l7.97-6.19z" />
+    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
   </svg>
 );
 
@@ -34,7 +34,7 @@ export default function LoginPage() {
   const [turnstileToken, setTurnstileToken] = useState("");
   const [oauthError, setOauthError] = useState("");
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAC8adHAN8dPsLLNs";
-  
+
   // Check for OAuth error in URL params
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -122,7 +122,7 @@ export default function LoginPage() {
   const handleOAuthLogin = async (providerName) => {
     setLoadingProvider(providerName);
     const supabase = createClient();
-    
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: providerName,
       options: {
@@ -147,10 +147,10 @@ export default function LoginPage() {
       toast.error("Please complete the security check first");
       return;
     }
-    
+
     setIsLoading(true);
     const supabase = createClient();
-    
+
     try {
       if (isSignUp) {
         // Sign Up Flow
@@ -162,9 +162,9 @@ export default function LoginPage() {
             captchaToken: turnstileToken,
           },
         });
-        
+
         if (error) throw error;
-        
+
         if (data?.session) {
           toast.success("Account created successfully!");
           router.replace("/dashboard?start=onboarding");
@@ -180,9 +180,9 @@ export default function LoginPage() {
             captchaToken: turnstileToken,
           },
         });
-        
+
         if (error) throw error;
-        
+
         toast.success("Logged in successfully!");
         router.replace("/dashboard");
       }
@@ -195,9 +195,9 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen w-screen flex items-center justify-center bg-[#FBFBFD] text-foreground font-sans relative p-4 sm:p-6">
-      <Script 
-        src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" 
-        strategy="afterInteractive" 
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+        strategy="afterInteractive"
       />
 
       {/* Subtle Grid Pattern */}
@@ -205,12 +205,12 @@ export default function LoginPage() {
 
       <PageTransition>
         <div className="w-full h-full flex items-center justify-center">
-          <div className="w-full max-w-4xl bg-white border border-zinc-200/80 rounded-xl shadow-2xl flex flex-col md:flex-row relative z-10 h-auto md:h-[580px] animate-in zoom-in duration-500 overflow-visible md:overflow-hidden">
-            
+          <div className="w-full max-w-4xl bg-white border border-zinc-200/80 rounded-sm shadow-2xl flex flex-col md:flex-row relative z-10 h-auto md:h-[580px] animate-in zoom-in duration-500 overflow-visible md:overflow-hidden">
+
             {/* LEFT SIDE: Visual Brand Experience with Colored Image Background */}
             <div className="hidden md:flex md:w-1/2 relative bg-zinc-950 flex-col justify-between pt-10 pb-5 px-8 lg:pt-12 lg:pb-6 lg:px-10 text-white overflow-hidden">
               {/* Background image from public assets */}
-              <div 
+              <div
                 className="absolute inset-0 bg-[url('/images/login_left_bg.png')] bg-cover bg-center transition-transform duration-10000 hover:scale-105"
               />
               {/* Dark gradient overlay for typography readability */}
@@ -218,11 +218,11 @@ export default function LoginPage() {
 
               {/* Top Brand Logo */}
               <Link href="/" className="flex items-center gap-2 text-2xl font-bold tracking-tighter text-white z-10 hover:opacity-90 transition-opacity">
-                <img 
-                  src="/logo.png" 
-                  alt="Automixa Logo" 
-                  className="w-8 h-8 object-contain" 
-                  style={{ filter: "brightness(0) invert(1)" }} 
+                <img
+                  src="/logo.png"
+                  alt="Automixa Logo"
+                  className="w-8 h-8 object-contain"
+                  style={{ filter: "brightness(0) invert(1)" }}
                 />
                 <span className="font-bold text-white tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>automixa</span>
               </Link>
@@ -271,8 +271,8 @@ export default function LoginPage() {
                   {isSignUp ? "Create your free account" : "Welcome back"}
                 </h2>
                 <p className="text-zinc-500 text-xs font-medium">
-                  {isSignUp 
-                    ? "Start managing customer conversations with AI today" 
+                  {isSignUp
+                    ? "Start managing customer conversations with AI today"
                     : "Enter your credentials to access your dashboard"}
                 </p>
               </div>
@@ -293,7 +293,7 @@ export default function LoginPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="name@domain.com"
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl py-3 pl-10 pr-4 text-xs font-semibold outline-none focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all placeholder:text-zinc-400 text-zinc-800"
+                      className="w-full bg-zinc-50 border border-zinc-300 rounded-sm py-3 pl-10 pr-4 text-xs font-semibold outline-none focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all placeholder:text-zinc-400 text-zinc-800"
                     />
                   </div>
                 </div>
@@ -329,7 +329,7 @@ export default function LoginPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl py-3 pl-10 pr-10 text-xs font-semibold outline-none focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all placeholder:text-zinc-400 text-zinc-800"
+                      className="w-full bg-zinc-50 border border-zinc-300 rounded-sm py-3 pl-10 pr-10 text-xs font-semibold outline-none focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all placeholder:text-zinc-400 text-zinc-800"
                     />
                     <button
                       type="button"
@@ -343,7 +343,7 @@ export default function LoginPage() {
 
                 {/* Cloudflare Turnstile Verification */}
                 {siteKey && (
-                  <div 
+                  <div
                     key={isSignUp ? "signup-turnstile" : "signin-turnstile"}
                     className="cf-turnstile my-1.5 flex justify-center scale-90 origin-center"
                     data-sitekey={siteKey}
@@ -361,7 +361,7 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={isLoading || loadingProvider !== null}
-                  className="w-full py-3 bg-[#6366F1] hover:bg-[#4f46e5] text-white rounded-xl text-xs font-bold shadow-md shadow-[#6366F1]/10 hover:shadow-lg hover:shadow-indigo-500/20 active:scale-[0.99] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="w-full py-3 bg-sage hover:bg-[#4f46e5] text-white rounded-sm text-xs font-bold shadow-md shadow-[#6366F1]/10 hover:shadow-lg hover:shadow-indigo-500/20 active:scale-[0.99] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   {isLoading || (loadingProvider !== null) ? (
                     <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -374,7 +374,7 @@ export default function LoginPage() {
                 </button>
 
                 {/* Legal Notice */}
-                <p className="text-[9px] text-zinc-450 text-center leading-normal mt-2">
+                <p className="text-[10px] text-zinc-450 text-center leading-normal mt-2">
                   By continuing, you agree to our{" "}
                   <Link href="/privacy" className="underline hover:text-zinc-650 font-semibold transition-colors">
                     Privacy Policy
@@ -389,7 +389,7 @@ export default function LoginPage() {
               {/* Divider */}
               <div className="relative flex py-1 items-center mt-3">
                 <div className="flex-grow border-t border-zinc-200/60"></div>
-                <span className="flex-shrink mx-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest bg-white px-2">
+                <span className="flex-shrink mx-3 text-[10px] font-semibold text-zinc-400 bg-white px-2">
                   or continue with
                 </span>
                 <div className="flex-grow border-t border-zinc-200/60"></div>
@@ -397,11 +397,11 @@ export default function LoginPage() {
 
               {/* OAuth Login Buttons */}
               <div className="mt-3">
-                <button 
+                <button
                   type="button"
                   onClick={() => handleOAuthLogin('google')}
                   disabled={loadingProvider !== null || isLoading}
-                  className="w-full flex items-center justify-center gap-2 bg-white border border-zinc-200 hover:bg-zinc-50 hover:border-zinc-300 rounded-xl py-3 px-4 transition-all active:scale-[0.98] cursor-pointer shadow-sm"
+                  className="w-full flex items-center justify-center gap-2 bg-white border border-zinc-200 hover:bg-zinc-50 hover:border-zinc-300 rounded-sm py-3 px-4 transition-all active:scale-[0.98] cursor-pointer"
                   title="Continue with Google"
                 >
                   {loadingProvider === 'google' ? (

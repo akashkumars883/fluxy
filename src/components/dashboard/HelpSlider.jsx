@@ -147,7 +147,7 @@ export default function HelpSlider({ isOpen, onClose }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm" 
+            className="fixed inset-0 bg-zinc-950/60 " 
             onClick={onClose} 
           />
 
@@ -157,18 +157,18 @@ export default function HelpSlider({ isOpen, onClose }) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="relative w-full max-w-lg h-full bg-white shadow-2xl flex flex-col overflow-hidden z-10 select-none"
+            className="relative w-full max-w-lg h-full bg-white  flex flex-col overflow-hidden z-10 select-none"
           >
             
             {/* Header */}
             <div className="px-6 py-5 sm:px-8 border-b border-zinc-200/60 flex items-center justify-between bg-white shrink-0">
               <div className="flex items-center gap-3">
                 {activeView !== 'home' ? (
-                  <button onClick={goBack} className="w-10 h-10 rounded-sm flex items-center justify-center bg-zinc-50 border border-zinc-200/80 text-zinc-500 hover:text-zinc-900 transition-all">
+                  <button onClick={goBack} className="w-10 h-10 rounded-xl flex items-center justify-center bg-zinc-50 border border-zinc-200/80 text-zinc-500 hover:text-zinc-900 transition-all">
                     <ArrowLeft size={18} />
                   </button>
                 ) : (
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-sm ${
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center border  ${
                     activeView === 'delete' || activeTicket ? "bg-rose-50 text-rose-600 border-rose-200" : "bg-zinc-50 text-zinc-900 border-zinc-200/80"
                   }`}>
                     {activeView === 'delete' || activeTicket ? <AlertTriangle size={18} /> : <HelpCircle size={18} />}
@@ -185,7 +185,7 @@ export default function HelpSlider({ isOpen, onClose }) {
               </div>
               <button 
                 onClick={onClose}
-                className="p-2.5 bg-zinc-50 border border-zinc-200/80 rounded-sm text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 shadow-sm transition-all"
+                className="p-2.5 bg-zinc-50 border border-zinc-200/80 rounded-xl text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100  transition-all"
               >
                 <X size={16} />
               </button>
@@ -200,9 +200,9 @@ export default function HelpSlider({ isOpen, onClose }) {
                   <div className="space-y-1 mb-8">
                     <h3 className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider pl-2 mb-3">Support Options</h3>
                     
-                    <button onClick={() => setActiveView('docs')} className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-zinc-50 transition-all group border border-transparent hover:border-zinc-200/60">
+                    <button onClick={() => setActiveView('docs')} className="w-full flex items-center justify-between p-4 rounded-xl hover:bg-zinc-50 transition-all group border border-transparent hover:border-zinc-200/60">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-[14px] bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <div className="w-10 h-10 rounded-xl-[14px] bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-105 transition-transform">
                           <BookOpen size={18} />
                         </div>
                         <div className="text-left">
@@ -213,9 +213,9 @@ export default function HelpSlider({ isOpen, onClose }) {
                       <ChevronRight size={16} className="text-zinc-300 group-hover:text-zinc-600 transition-colors" />
                     </button>
 
-                    <button onClick={() => setActiveView('chat')} className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-zinc-50 transition-all group border border-transparent hover:border-zinc-200/60">
+                    <button onClick={() => setActiveView('chat')} className="w-full flex items-center justify-between p-4 rounded-xl hover:bg-zinc-50 transition-all group border border-transparent hover:border-zinc-200/60">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-[14px] bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <div className="w-10 h-10 rounded-xl-[14px] bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-105 transition-transform">
                           <MessageSquare size={18} />
                         </div>
                         <div className="text-left flex items-center gap-2">
@@ -227,7 +227,7 @@ export default function HelpSlider({ isOpen, onClose }) {
                       </div>
                       <div className="flex items-center gap-3">
                         {currentPlan !== 'free' && (
-                           <span className={`text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md border ${supportTier.color}`}>
+                           <span className={`text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-xl border ${supportTier.color}`}>
                              {supportTier.label}
                            </span>
                         )}
@@ -235,9 +235,9 @@ export default function HelpSlider({ isOpen, onClose }) {
                       </div>
                     </button>
 
-                    <button onClick={() => setActiveView('email')} className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-zinc-50 transition-all group border border-transparent hover:border-zinc-200/60">
+                    <button onClick={() => setActiveView('email')} className="w-full flex items-center justify-between p-4 rounded-xl hover:bg-zinc-50 transition-all group border border-transparent hover:border-zinc-200/60">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-[14px] bg-sky-50 text-sky-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <div className="w-10 h-10 rounded-xl-[14px] bg-sky-50 text-sky-600 flex items-center justify-center group-hover:scale-105 transition-transform">
                           <Mail size={18} />
                         </div>
                         <div className="text-left">
@@ -250,14 +250,14 @@ export default function HelpSlider({ isOpen, onClose }) {
                   </div>
 
                   <div className="mt-auto">
-                    <div className="p-5 border border-rose-100 bg-rose-50/30 rounded-2xl flex items-center justify-between">
+                    <div className="p-5 border border-rose-100 bg-rose-50/30 rounded-xl flex items-center justify-between">
                       <div>
                         <h4 className="text-sm font-semibold text-rose-950">Danger Zone</h4>
                         <p className="text-xs text-rose-700/70 mt-0.5">Permanently delete account</p>
                       </div>
                       <button
                         onClick={() => setActiveView('delete')}
-                        className="px-4 py-2 bg-white text-rose-600 hover:bg-rose-600 hover:text-white border border-rose-200 hover:border-rose-600 font-semibold text-xs rounded-xl transition-all shadow-sm"
+                        className="px-4 py-2 bg-white text-rose-600 hover:bg-rose-600 hover:text-white border border-rose-200 hover:border-rose-600 font-semibold text-xs rounded-xl transition-all "
                       >
                         Delete
                       </button>
@@ -276,7 +276,7 @@ export default function HelpSlider({ isOpen, onClose }) {
                        { title: "How Follower Gate Works", text: "When enabled, Automixa checks if the user follows you before sending the payload. If they don't, it sends a fallback message asking them to follow." },
                        { title: "Managing Subscription", text: "You can upgrade or downgrade your plan at any time from the Billing Center. Pro-rated charges apply automatically." }
                      ].map((doc, idx) => (
-                       <div key={idx} className="bg-white p-5 rounded-2xl border border-zinc-200/80 shadow-sm space-y-2">
+                       <div key={idx} className="bg-white p-5 rounded-xl border border-zinc-200/80  space-y-2">
                          <h4 className="text-sm font-semibold text-zinc-900 flex items-center gap-2">
                             <BookOpen size={14} className="text-indigo-500" />
                             {doc.title}
@@ -292,11 +292,11 @@ export default function HelpSlider({ isOpen, onClose }) {
               {activeView === 'chat' && (
                 <div className="flex-1 flex flex-col h-full bg-white animate-in fade-in slide-in-from-right-4 duration-300">
                   <div className="px-6 py-3 border-b border-zinc-100 flex items-center justify-between bg-zinc-50">
-                     <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-md border ${supportTier.color}`}>
+                     <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-xl border ${supportTier.color}`}>
                        {supportTier.label} SLA
                      </span>
                      <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1.5">
-                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-xl animate-pulse" />
                         Admin Online
                      </span>
                   </div>
@@ -305,10 +305,10 @@ export default function HelpSlider({ isOpen, onClose }) {
                   <div ref={chatScrollRef} className="flex-1 overflow-y-auto p-6 space-y-4">
                     {chatMessages.map((msg) => (
                       <div key={msg.id} className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
-                        <div className={`max-w-[85%] p-3.5 rounded-2xl text-sm font-medium ${
+                        <div className={`max-w-[85%] p-3.5 rounded-xl text-sm font-medium ${
                           msg.sender === 'user' 
-                            ? 'bg-zinc-900 text-white rounded-tr-sm' 
-                            : 'bg-zinc-100 text-zinc-900 rounded-tl-sm'
+                            ? 'bg-zinc-900 text-white rounded-xl-sm' 
+                            : 'bg-zinc-100 text-zinc-900 rounded-xl-sm'
                         }`}>
                           {msg.text}
                         </div>
@@ -319,7 +319,7 @@ export default function HelpSlider({ isOpen, onClose }) {
 
                   {/* Input Area */}
                   <div className="p-4 sm:p-6 border-t border-zinc-100 bg-white">
-                    <form onSubmit={handleSendChat} className="flex items-center gap-3 bg-zinc-50 p-2 rounded-2xl border border-zinc-200/80 focus-within:border-indigo-400 focus-within:ring-2 ring-indigo-100 transition-all">
+                    <form onSubmit={handleSendChat} className="flex items-center gap-3 bg-zinc-50 p-2 rounded-xl border border-zinc-200/80 focus-within:border-indigo-400 focus-within:ring-2 ring-indigo-100 transition-all">
                       <input 
                         type="text" 
                         value={chatInput}
@@ -327,7 +327,7 @@ export default function HelpSlider({ isOpen, onClose }) {
                         placeholder="Type your message..." 
                         className="flex-1 bg-transparent px-3 text-sm font-medium outline-none"
                       />
-                      <button type="submit" disabled={!chatInput.trim()} className="w-10 h-10 rounded-sm bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white flex items-center justify-center transition-all shadow-sm">
+                      <button type="submit" disabled={!chatInput.trim()} className="w-10 h-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white flex items-center justify-center transition-all ">
                         <Send size={16} />
                       </button>
                     </form>
@@ -340,7 +340,7 @@ export default function HelpSlider({ isOpen, onClose }) {
                 <div className="flex-1 flex flex-col p-6 sm:p-8 animate-in fade-in slide-in-from-right-4 duration-300">
                   {emailSent ? (
                     <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4 animate-in zoom-in duration-300">
-                       <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-2">
+                       <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mb-2">
                           <CheckCircle2 size={32} />
                        </div>
                        <h3 className="text-xl font-bold text-zinc-900">Email Sent!</h3>
@@ -349,7 +349,7 @@ export default function HelpSlider({ isOpen, onClose }) {
                   ) : (
                     <form onSubmit={handleSendEmail} className="h-full flex flex-col justify-between">
                       <div className="space-y-4">
-                        <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-2xl mb-2 flex items-center gap-3">
+                        <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-xl mb-2 flex items-center gap-3">
                            <Clock size={20} className="text-blue-500 shrink-0" />
                            <div>
                               <p className="text-xs font-semibold text-blue-900">Priority: {supportTier.label}</p>
@@ -365,7 +365,7 @@ export default function HelpSlider({ isOpen, onClose }) {
                              onChange={(e) => setEmailSubject(e.target.value)}
                              required
                              placeholder="What is this regarding?"
-                             className="w-full p-3.5 bg-white border border-zinc-200/80 rounded-xl text-sm font-medium outline-none focus:border-blue-400 shadow-sm"
+                             className="w-full p-3.5 bg-white border border-zinc-200/80 rounded-xl text-sm font-medium outline-none focus:border-blue-400 "
                            />
                         </div>
 
@@ -377,7 +377,7 @@ export default function HelpSlider({ isOpen, onClose }) {
                              onChange={(e) => setEmailBody(e.target.value)}
                              required
                              placeholder="Please describe your issue in detail..."
-                             className="w-full p-3.5 bg-white border border-zinc-200/80 rounded-xl text-sm font-medium outline-none focus:border-blue-400 shadow-sm resize-none"
+                             className="w-full p-3.5 bg-white border border-zinc-200/80 rounded-xl text-sm font-medium outline-none focus:border-blue-400  resize-none"
                            />
                         </div>
                       </div>
@@ -385,7 +385,7 @@ export default function HelpSlider({ isOpen, onClose }) {
                       <button 
                         type="submit" 
                         disabled={emailSending}
-                        className="mt-6 w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-sm shadow-md transition-all flex justify-center items-center gap-2"
+                        className="mt-6 w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl  transition-all flex justify-center items-center gap-2"
                       >
                         {emailSending ? <RefreshCw size={16} className="animate-spin" /> : <Mail size={16} />}
                         {emailSending ? "Sending..." : "Send Email"}
@@ -399,7 +399,7 @@ export default function HelpSlider({ isOpen, onClose }) {
               {activeView === 'delete' && !activeTicket && (
                 <form onSubmit={handleRaiseTicket} className="p-6 sm:p-8 animate-in fade-in slide-in-from-right-4 duration-300 h-full flex flex-col justify-between">
                   <div className="space-y-6">
-                    <div className="bg-white p-6 rounded-3xl border border-rose-100 shadow-sm">
+                    <div className="bg-white p-6 rounded-xl-3xl border border-rose-100 ">
                       <h4 className="text-sm font-semibold text-rose-950 mb-1">Why are you leaving?</h4>
                       <p className="text-xs text-rose-700/80 mb-5">Your feedback helps us improve.</p>
                       
@@ -435,7 +435,7 @@ export default function HelpSlider({ isOpen, onClose }) {
                       </div>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200/80 text-xs text-amber-800 font-medium flex gap-3 shadow-sm">
+                    <div className="p-4 rounded-xl bg-amber-50 border border-amber-200/80 text-xs text-amber-800 font-medium flex gap-3 ">
                       <AlertTriangle size={18} className="text-amber-600 shrink-0" />
                       <span>All data, active campaigns, and webhooks will be permanently purged within 24-48 hours.</span>
                     </div>
@@ -445,7 +445,7 @@ export default function HelpSlider({ isOpen, onClose }) {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full py-3.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm rounded-sm shadow-md transition-all flex items-center justify-center gap-2"
+                      className="w-full py-3.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm rounded-xl  transition-all flex items-center justify-center gap-2"
                     >
                       {isSubmitting ? "Submitting..." : "Submit Ticket"}
                     </button>
@@ -456,18 +456,18 @@ export default function HelpSlider({ isOpen, onClose }) {
               {/* --- VIEW: ACTIVE TICKET --- */}
               {activeTicket && (
                 <div className="p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-300 h-full flex flex-col justify-center">
-                  <div className="bg-white border border-rose-200 p-8 rounded-3xl shadow-xl shadow-rose-500/5 text-center space-y-6">
-                    <div className="w-20 h-20 mx-auto bg-rose-50 rounded-[24px] flex items-center justify-center text-rose-600 mb-2 border border-rose-100">
+                  <div className="bg-white border border-rose-200 p-8 rounded-xl-3xl-500/5 text-center space-y-6">
+                    <div className="w-20 h-20 mx-auto bg-rose-50 rounded-xl flex items-center justify-center text-rose-600 mb-2 border border-rose-100">
                       <Clock size={32} className="animate-pulse" />
                     </div>
                     
                     <div>
-                      <span className="text-[10px] font-bold text-rose-500 tracking-wider uppercase bg-rose-50 px-3 py-1 rounded-full">Active Ticket</span>
+                      <span className="text-[10px] font-bold text-rose-500 tracking-wider uppercase bg-rose-50 px-3 py-1 rounded-xl">Active Ticket</span>
                       <h3 className="text-2xl font-bold text-zinc-900 mt-4 tracking-tight">{activeTicket.id}</h3>
                       <p className="text-sm text-zinc-500 font-medium mt-1">Data purge in progress</p>
                     </div>
 
-                    <div className="bg-zinc-50 p-4 rounded-2xl border border-zinc-100 text-left space-y-3">
+                    <div className="bg-zinc-50 p-4 rounded-xl border border-zinc-100 text-left space-y-3">
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-zinc-500 font-medium">Reason</span>
                         <span className="font-semibold text-zinc-900 max-w-[150px] truncate">{activeTicket.reason}</span>
@@ -482,7 +482,7 @@ export default function HelpSlider({ isOpen, onClose }) {
                   <div className="flex flex-col gap-3 mt-8">
                     <button
                       onClick={() => setActiveTicket(null)}
-                      className="w-full py-4 bg-zinc-950 hover:bg-zinc-800 text-white font-semibold text-sm rounded-2xl shadow-xl flex items-center justify-center gap-2 transition-all"
+                      className="w-full py-4 bg-zinc-950 hover:bg-zinc-800 text-white font-semibold text-sm rounded-xl  flex items-center justify-center gap-2 transition-all"
                     >
                       <RefreshCw size={16} /> Cancel Request
                     </button>

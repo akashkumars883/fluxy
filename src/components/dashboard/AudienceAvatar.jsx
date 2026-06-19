@@ -56,7 +56,7 @@ export default function AudienceAvatar({ senderId, defaultAvatar, automationId, 
     <img
       src={src}
       alt="User Avatar"
-      className={className || "w-10 h-10 rounded-xl object-cover border border-zinc-200 shadow-sm shrink-0"}
+      className={className || "w-10 h-10 rounded-xl object-cover border border-zinc-200  shrink-0"}
       onError={() => {
         // Fallback if image fails to load
         setSrc(fallback);

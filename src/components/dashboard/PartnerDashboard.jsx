@@ -234,12 +234,19 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
   };
 
   return (
-    <div className="w-full space-y-4 animate-in fade-in duration-500">
+    <div className="w-full max-w-[1400px] mx-auto space-y-6 animate-in fade-in duration-500 pb-10">
+
+      {/* ── Page Header ── */}
+      <div>
+        <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1">Affiliate</p>
+        <h2 className="text-2xl sm:text-3xl font-bold text-zinc-950 tracking-tight">Partner Program</h2>
+        <p className="text-sm text-zinc-400 font-medium mt-1">Earn recurring commissions by referring new users to Automixa.</p>
+      </div>
 
       {/* STATE 1: UNAPPLIED */}
       {appStatus === "unapplied" && (
-        <div className="bg-white border border-zinc-200/80 rounded-xl p-10 shadow-md shadow-zinc-200/5 text-center space-y-4 max-w-2xl mx-auto">
-          <div className="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto border border-indigo-100">
+        <div className="bg-white border border-zinc-200/80 rounded-xl p-10-200/5 text-center space-y-4 max-w-2xl mx-auto">
+          <div className="w-14 h-14 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto border border-indigo-100">
             <Users size={26} />
           </div>
           <div className="space-y-2">
@@ -250,7 +257,7 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
           </div>
           <button
             onClick={handleApplyNow}
-            className="mt-2 px-7 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-sm shadow-sm transition-all inline-flex items-center gap-2"
+            className="mt-2 px-7 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-xl  transition-all inline-flex items-center gap-2"
           >
             Apply now <ArrowRight size={15} />
           </button>
@@ -259,9 +266,9 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
 
       {/* STATE 2: PENDING */}
       {appStatus === "pending" && (
-        <div className="bg-white border border-amber-200/80 rounded-xl p-8 shadow-md shadow-zinc-200/5 text-center space-y-4 max-w-xl mx-auto relative overflow-hidden">
+        <div className="bg-white border border-amber-200/80 rounded-xl p-8-200/5 text-center space-y-4 max-w-xl mx-auto relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-amber-400" />
-          <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto border border-amber-100">
+          <div className="w-14 h-14 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto border border-amber-100">
             <Clock size={26} className="animate-pulse" />
           </div>
           <div className="space-y-1">
@@ -278,27 +285,27 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
         <div className="space-y-4">
 
           {/* Hero Banner */}
-          <div className="relative rounded-xl p-4 sm:p-8 text-white shadow-md flex flex-col justify-center overflow-hidden group mb-2">
+          <div className="relative rounded-xl p-4 sm:p-8 text-white  flex flex-col justify-center overflow-hidden group mb-2">
             <div className="absolute inset-0 z-0">
               <div className="absolute inset-0 bg-gradient-to-r from-[#6366F1] via-indigo-800 to-purple-900" />
               <div className="absolute inset-0 bg-black/10 mix-blend-overlay" />
             </div>
             <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner">
-                  <Sparkles size={28} className="text-white drop-shadow-sm" />
+                <div className="p-3 bg-white/20 rounded-xl  border border-white/20 ">
+                  <Sparkles size={28} className="text-white drop-" />
                 </div>
                 <div>
-                  <h2 className="text-xl sm:text-2xl font-bold tracking-tight drop-shadow-md">
+                  <h2 className="text-xl sm:text-2xl font-bold tracking-tight drop-">
                     Automixa Partner Program
                   </h2>
-                  <p className="text-white/90 text-sm mt-1 font-medium drop-shadow-sm max-w-md">
+                  <p className="text-white/90 text-sm mt-1 font-medium drop- max-w-md">
                     Earn up to 25% recurring commission on every user you refer to our platform.
                   </p>
                 </div>
               </div>
-              <div className="shrink-0 flex items-center gap-2 bg-black/20 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10">
-                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <div className="shrink-0 flex items-center gap-2 bg-black/60  px-4 py-2 rounded-xl border border-white/10">
+                <div className="w-2 h-2 rounded-xl bg-emerald-400 animate-pulse" />
                 <span className="text-sm font-bold tracking-wide">Active Partner</span>
               </div>
             </div>
@@ -306,9 +313,9 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
 
           {/* Metrics Row (Overview Style) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            <div className="bg-white rounded-xl p-4 sm:p-5 flex flex-col justify-between shadow-md shadow-zinc-200/10 border border-zinc-200/80 hover:shadow-lg transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
+            <div className="bg-white rounded-xl p-4 sm:p-5 flex flex-col justify-between-200/10 border border-zinc-200/80 hover: transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
               <div className="flex items-center justify-between mb-4 relative z-10">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-emerald-200 shadow-sm transition-all duration-500 group-hover:scale-110 text-emerald-600 bg-emerald-50">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-emerald-200  transition-all duration-500 group-hover:scale-110 text-emerald-600 bg-emerald-50">
                   <DollarSign size={18} />
                 </div>
               </div>
@@ -322,9 +329,9 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-4 sm:p-5 flex flex-col justify-between shadow-md shadow-zinc-200/10 border border-zinc-200/80 hover:shadow-lg transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
+            <div className="bg-white rounded-xl p-4 sm:p-5 flex flex-col justify-between-200/10 border border-zinc-200/80 hover: transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
               <div className="flex items-center justify-between mb-4 relative z-10">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-blue-200 shadow-sm transition-all duration-500 group-hover:scale-110 text-blue-600 bg-blue-50">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-blue-200  transition-all duration-500 group-hover:scale-110 text-blue-600 bg-blue-50">
                   <Users size={18} />
                 </div>
               </div>
@@ -343,7 +350,7 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 items-stretch">
 
             {/* Left Card: Promotion & Links */}
-            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-md shadow-zinc-200/5 border border-zinc-200/80 hover:shadow-lg transition-all duration-300 flex flex-col h-full relative">
+            <div className="bg-white rounded-xl p-4 sm:p-6-200/5 border border-zinc-200/80 hover: transition-all duration-300 flex flex-col h-full relative">
               <h3 className="font-bold text-xl text-zinc-950 tracking-tight flex items-center gap-2 mb-6 border-b border-zinc-100 pb-4">
                 <LinkIcon size={20} className="text-[#6366F1]" /> Promotion & Links
               </h3>
@@ -361,7 +368,7 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
                     </div>
                     <button
                       onClick={handleCopyLink}
-                      className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-sm transition-all flex items-center gap-1.5 shrink-0"
+                      className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-xl transition-all flex items-center gap-1.5 shrink-0"
                     >
                       {copied ? <Check size={14} /> : <Copy size={14} />}
                       {copied ? "Copied" : "Copy"}
@@ -400,7 +407,7 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
                     <button
                       type="submit"
                       disabled={generating}
-                      className="px-3 sm:px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm rounded-sm transition-all whitespace-nowrap disabled:opacity-60"
+                      className="px-3 sm:px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm rounded-xl transition-all whitespace-nowrap disabled:opacity-60"
                     >
                       {generating ? "Adding…" : "Add code"}
                     </button>
@@ -438,13 +445,13 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
                                 <div className="flex items-center justify-end gap-1.5">
                                   <button
                                     onClick={() => handleCopyCode(item.code)}
-                                    className="p-1.5 text-zinc-400 hover:text-indigo-600 bg-white border border-zinc-200 hover:border-indigo-200 rounded-xl transition-colors shadow-sm"
+                                    className="p-1.5 text-zinc-400 hover:text-indigo-600 bg-white border border-zinc-200 hover:border-indigo-200 rounded-xl transition-colors "
                                   >
                                     {copiedCode === item.code ? <Check size={13} /> : <Copy size={13} />}
                                   </button>
                                   <button
                                     onClick={() => handleDeleteCode(item.code)}
-                                    className="p-1.5 text-zinc-400 hover:text-rose-600 bg-white border border-zinc-200 hover:border-rose-200 rounded-xl transition-colors shadow-sm"
+                                    className="p-1.5 text-zinc-400 hover:text-rose-600 bg-white border border-zinc-200 hover:border-rose-200 rounded-xl transition-colors "
                                   >
                                     <Trash2 size={13} />
                                   </button>
@@ -461,12 +468,12 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
             </div>
 
             {/* Right Card: Earnings & Tiers */}
-            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-md shadow-zinc-200/5 border border-zinc-200/80 hover:shadow-lg transition-all duration-300 flex flex-col h-full relative">
+            <div className="bg-white rounded-xl p-4 sm:p-6-200/5 border border-zinc-200/80 hover: transition-all duration-300 flex flex-col h-full relative">
               <h3 className="font-bold text-xl text-zinc-950 tracking-tight flex items-center justify-between gap-2 mb-6 border-b border-zinc-100 pb-4">
                 <div className="flex items-center gap-2">
                   <Award size={20} className="text-emerald-500" /> Earnings & Tiers
                 </div>
-                <span className={`px-2.5 py-1 text-[10px] font-bold uppercase rounded-lg border ${tierColors[partnerProfile.active_tier] || tierColors.silver}`}>
+                <span className={`px-2.5 py-1 text-[10px] font-bold uppercase rounded-xl border ${tierColors[partnerProfile.active_tier] || tierColors.silver}`}>
                   {partnerProfile.active_tier} Tier
                 </span>
               </h3>
@@ -483,7 +490,7 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
                     ].map((t) => (
                       <div
                         key={t.tier}
-                        className={`flex items-center justify-between rounded-xl px-4 py-3 border text-sm transition-all shadow-sm ${t.active
+                        className={`flex items-center justify-between rounded-xl px-4 py-3 border text-sm transition-all  ${t.active
                             ? "bg-indigo-50 border-indigo-200 text-indigo-900 scale-[1.02]"
                             : "bg-white border-zinc-100 text-zinc-500"
                           }`}

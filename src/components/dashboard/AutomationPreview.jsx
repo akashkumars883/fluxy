@@ -217,18 +217,18 @@ export default function AutomationPreview({
     <div className="flex flex-col items-center justify-center p-2 animate-in fade-in zoom-in-95 duration-1000 w-full max-w-[280px] mx-auto">
       
       {/* Compact Segmented Switcher Tabs */}
-      <div className="mb-3 flex p-1 bg-zinc-100 rounded-xl border border-zinc-200/50 shadow-none gap-0.5 max-w-full w-full">
+      <div className="mb-3 flex p-1 bg-zinc-100 rounded-xl border border-zinc-200/50  gap-0.5 max-w-full w-full">
          {strategy === "story_automator" ? (
             <>
               <button 
                 onClick={() => setView('story')}
-                className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-xl text-[10px] font-bold transition-all shrink-0 ${view === 'story' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
+                className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-xl text-[10px] font-bold transition-all shrink-0 ${view === 'story' ? 'bg-[#6366F1] text-white ' : 'text-zinc-500 hover:text-zinc-900'}`}
               >
                 <Camera size={11} /> <span>Story</span>
               </button>
               <button 
                 onClick={() => setView('dm')}
-                className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-xl text-[10px] font-bold transition-all shrink-0 ${view === 'dm' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
+                className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-xl text-[10px] font-bold transition-all shrink-0 ${view === 'dm' ? 'bg-[#6366F1] text-white ' : 'text-zinc-500 hover:text-zinc-900'}`}
               >
                 <MessageSquare size={11} /> <span>DM</span>
               </button>
@@ -237,19 +237,19 @@ export default function AutomationPreview({
             <>
              <button 
                onClick={() => setView('post')}
-               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-xl text-[10px] font-bold transition-all shrink-0 ${view === 'post' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
+               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-xl text-[10px] font-bold transition-all shrink-0 ${view === 'post' ? 'bg-[#6366F1] text-white ' : 'text-zinc-500 hover:text-zinc-900'}`}
              >
                <Layout size={11} /> <span>Post</span>
              </button>
              <button 
                onClick={() => setView('dm')}
-               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-xl text-[10px] font-bold transition-all shrink-0 ${view === 'dm' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
+               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-xl text-[10px] font-bold transition-all shrink-0 ${view === 'dm' ? 'bg-[#6366F1] text-white ' : 'text-zinc-500 hover:text-zinc-900'}`}
              >
                <MessageSquare size={11} /> <span>DM</span>
              </button>
              <button 
                onClick={() => setView('faq')}
-               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-xl text-[10px] font-bold transition-all shrink-0 ${view === 'faq' ? 'bg-[#6366F1] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'}`}
+               className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-xl text-[10px] font-bold transition-all shrink-0 ${view === 'faq' ? 'bg-[#6366F1] text-white ' : 'text-zinc-500 hover:text-zinc-900'}`}
              >
                <MoreHorizontal size={11} /> <span>AI Sandbox</span>
              </button>
@@ -258,11 +258,11 @@ export default function AutomationPreview({
       </div>
 
       {/* iPhone Mockup Container */}
-      <div className="relative w-[260px] h-[525px] bg-white border-[6px] border-zinc-950 rounded-[2.5rem] shadow-xl overflow-hidden flex flex-col">
+      <div className="relative w-[260px] h-[525px] bg-white border-[6px] border-zinc-950 rounded-xl-[2.5rem]  overflow-hidden flex flex-col">
         
         {/* Dynamic Island Notch */}
-        <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-16 h-3 bg-zinc-950 rounded-full z-30 flex items-center justify-center">
-          <div className="w-1 h-1 bg-[#0a0a0c] rounded-full absolute right-2" />
+        <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-16 h-3 bg-zinc-950 rounded-xl z-30 flex items-center justify-center">
+          <div className="w-1 h-1 bg-[#0a0a0c] rounded-xl absolute right-2" />
         </div>
 
         {/* Dynamic iOS Push Notification Banner */}
@@ -272,11 +272,11 @@ export default function AutomationPreview({
               setView("dm");
               setShowPushNotification(false);
             }}
-            className="absolute top-8 inset-x-2.5 z-[100] bg-white/95 border border-zinc-200 shadow-xl rounded-2xl p-2.5 flex gap-2 items-center cursor-pointer hover:scale-[1.01] transition-all animate-in slide-in-from-top-12 duration-500"
+            className="absolute top-8 inset-x-2.5 z-[100] bg-white/95 border border-zinc-200  rounded-xl p-2.5 flex gap-2 items-center cursor-pointer hover:scale-[1.01] transition-all animate-in slide-in-from-top-12 duration-500"
           >
-            <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-400 to-indigo-600 p-[1px] flex items-center justify-center shadow-sm shrink-0">
-               <div className="w-full h-full bg-white rounded-full p-[0.5px]">
-                  <div className="w-full h-full bg-zinc-100 rounded-full flex items-center justify-center text-[9px] font-bold text-zinc-900 overflow-hidden">
+            <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-amber-400 to-indigo-600 p-[1px] flex items-center justify-center  shrink-0">
+               <div className="w-full h-full bg-white rounded-xl p-[0.5px]">
+                  <div className="w-full h-full bg-zinc-100 rounded-xl flex items-center justify-center text-[9px] font-bold text-zinc-900 overflow-hidden">
                      {activeProfilePic ? (
                        <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover" />
                      ) : (
@@ -301,17 +301,17 @@ export default function AutomationPreview({
         <div className="h-8 bg-white flex items-center justify-between px-6 pt-1.5 shrink-0 relative z-20 select-none">
           <span className="text-[9px] font-bold text-zinc-900">9:41</span>
           <div className="flex items-center gap-1">
-             <div className="w-3.5 h-2 bg-zinc-900 rounded-sm opacity-20" />
-             <div className="w-2.5 h-2.5 bg-zinc-900 rounded-full opacity-20" />
+             <div className="w-3.5 h-2 bg-zinc-900 rounded-xl opacity-20" />
+             <div className="w-2.5 h-2.5 bg-zinc-900 rounded-xl opacity-20" />
           </div>
         </div>
 
         {view === 'dm' && (
           <>
             <div className="px-4 py-2 border-b border-zinc-200/60 flex items-center gap-2 shrink-0 bg-white">
-               <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-400 to-indigo-600 p-[1px] items-center justify-center flex shadow-sm">
-                  <div className="w-full h-full bg-white rounded-full p-[0.5px]">
-                      <div className="w-full h-full bg-zinc-100 rounded-full flex items-center justify-center text-[8px] font-semibold text-zinc-900 overflow-hidden">
+               <div className="w-6 h-6 rounded-xl bg-gradient-to-tr from-amber-400 to-indigo-600 p-[1px] items-center justify-center flex ">
+                  <div className="w-full h-full bg-white rounded-xl p-[0.5px]">
+                      <div className="w-full h-full bg-zinc-100 rounded-xl flex items-center justify-center text-[8px] font-semibold text-zinc-900 overflow-hidden">
                          {activeProfilePic ? (
                            <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
                          ) : (
@@ -336,7 +336,7 @@ export default function AutomationPreview({
                {/* Standard Keyword & Intro Flow for comment_dm */}
                {!isAIStrategy && keyword && (
                  <div className="flex flex-col items-end animate-in fade-in slide-in-from-right-4 duration-300">
-                    <div className="max-w-[70%] bg-[#6366F1] text-white px-3 py-1.5 rounded-[16px] rounded-br-[3px] text-[10px] font-medium shadow-sm">
+                    <div className="max-w-[70%] bg-[#6366F1] text-white px-3 py-1.5 rounded-xl-[16px] rounded-xl-[3px] text-[10px] font-medium ">
                       {keyword}
                     </div>
                     <span className="text-[7px] text-zinc-400 font-semibold mt-0.5 mr-0.5">Seen</span>
@@ -345,7 +345,7 @@ export default function AutomationPreview({
 
                {!isAIStrategy && keyword && introTitle && (
                  <div className="flex gap-1.5 animate-in fade-in slide-in-from-left-4 duration-500 items-end">
-                    <div className="w-5 h-5 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[7px] font-semibold text-zinc-900 shrink-0 shadow-sm overflow-hidden">
+                    <div className="w-5 h-5 rounded-xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[7px] font-semibold text-zinc-900 shrink-0  overflow-hidden">
                       {activeProfilePic ? (
                         <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
                       ) : (
@@ -353,7 +353,7 @@ export default function AutomationPreview({
                       )}
                     </div>
                     <div className="max-w-[75%] space-y-1.5">
-                      <div className="bg-zinc-100 text-zinc-900 px-3 py-1.5 rounded-[16px] rounded-bl-[3px] text-[10px] font-medium leading-relaxed shadow-sm">
+                      <div className="bg-zinc-100 text-zinc-900 px-3 py-1.5 rounded-xl-[16px] rounded-xl-[3px] text-[10px] font-medium leading-relaxed ">
                         {formatIntroTitle(introTitle)}
                       </div>
                       
@@ -367,7 +367,7 @@ export default function AutomationPreview({
                               setIsTyping(false);
                             }, 800);
                           }}
-                          className="w-full py-1.5 px-3 bg-white border border-zinc-200 hover:border-[#6366F1] text-[#6366F1] hover:bg-[#6366F1]/5 rounded-xl text-[9px] font-bold transition-all shadow-sm text-center block"
+                          className="w-full py-1.5 px-3 bg-white border border-zinc-200 hover:border-[#6366F1] text-[#6366F1] hover:bg-[#6366F1]/5 rounded-xl text-[9px] font-bold transition-all  text-center block"
                         >
                           {introButtonText}
                         </button>
@@ -379,7 +379,7 @@ export default function AutomationPreview({
                {!isAIStrategy && introClicked && !isTyping && (
                  <>
                    <div className="flex flex-col items-end animate-in fade-in slide-in-from-right-4 duration-300">
-                      <div className="max-w-[70%] bg-[#6366F1] text-white px-3 py-1.5 rounded-[16px] rounded-br-[3px] text-[10px] font-medium shadow-sm">
+                      <div className="max-w-[70%] bg-[#6366F1] text-white px-3 py-1.5 rounded-xl-[16px] rounded-xl-[3px] text-[10px] font-medium ">
                         {introButtonText}
                       </div>
                       <span className="text-[7px] text-zinc-400 font-semibold mt-0.5 mr-0.5">Seen</span>
@@ -387,7 +387,7 @@ export default function AutomationPreview({
 
                    {response && (
                      <div className="flex gap-1.5 animate-in fade-in slide-in-from-left-4 duration-500 items-end">
-                        <div className="w-5 h-5 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[7px] font-semibold text-zinc-900 shrink-0 shadow-sm overflow-hidden">
+                        <div className="w-5 h-5 rounded-xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[7px] font-semibold text-zinc-900 shrink-0  overflow-hidden">
                           {activeProfilePic ? (
                             <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
                           ) : (
@@ -419,7 +419,7 @@ export default function AutomationPreview({
                                return (
                                  <>
                                      {activeLink ? (
-                                       <div className="w-full bg-white border border-zinc-200/80 rounded-[18px] overflow-hidden shadow-sm animate-in zoom-in-95 duration-500">
+                                       <div className="w-full bg-white border border-zinc-200/80 rounded-xl-[18px] overflow-hidden  animate-in zoom-in-95 duration-500">
                                           {!isFile && (
                                             <div className="aspect-[1.91/1] bg-[#6366F1]/5 flex items-center justify-center border-b border-zinc-100">
                                                <Send size={20} className="text-[#6366F1]" />
@@ -434,7 +434,7 @@ export default function AutomationPreview({
                                           </div>
                                        </div>
                                      ) : (
-                                       <div className="bg-zinc-100 text-zinc-900 px-3 py-1.5 rounded-[16px] rounded-bl-[3px] text-[10px] font-medium leading-relaxed shadow-sm">
+                                       <div className="bg-zinc-100 text-zinc-900 px-3 py-1.5 rounded-xl-[16px] rounded-xl-[3px] text-[10px] font-medium leading-relaxed ">
                                          {getPersonaResponse(response, aiPersona, aiUseEmojis)}
                                        </div>
                                      )}
@@ -451,10 +451,10 @@ export default function AutomationPreview({
                 <div className="space-y-3 mt-1">
                   {testMessages.map((msg, i) => (
                     <div key={i} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
-                       <div className={`max-w-[85%] px-3 py-1.5 text-[10.5px] font-medium leading-[1.35] shadow-sm ${
+                       <div className={`max-w-[85%] px-3 py-1.5 text-[10.5px] font-medium leading-[1.35]  ${
                          msg.role === 'user' 
-                           ? 'bg-gradient-to-tr from-[#3897f0] to-[#00d2ff] text-white rounded-[16px] rounded-br-[3px]' 
-                           : 'bg-[#efefef] text-zinc-900 rounded-[16px] rounded-bl-[3px]'
+                           ? 'bg-gradient-to-tr from-[#3897f0] to-[#00d2ff] text-white rounded-xl-[16px] rounded-xl-[3px]' 
+                           : 'bg-[#efefef] text-zinc-900 rounded-xl-[16px] rounded-xl-[3px]'
                        }`}>
                           {msg.text}
                        </div>
@@ -463,9 +463,9 @@ export default function AutomationPreview({
                   
                   {isTyping && (
                     <div className="flex gap-1 animate-pulse ml-1.5 mt-2">
-                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-full" />
-                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-full" style={{ animationDelay: '0.2s' }} />
-                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-full" style={{ animationDelay: '0.4s' }} />
+                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-xl" />
+                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-xl" style={{ animationDelay: '0.2s' }} />
+                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-xl" style={{ animationDelay: '0.4s' }} />
                     </div>
                   )}
                 </div>
@@ -474,7 +474,7 @@ export default function AutomationPreview({
                 
                 {isAIStrategy && testMessages.length === 0 && (
                    <div className="flex flex-col items-center justify-center h-full text-center space-y-3 opacity-40">
-                      <div className="w-10 h-10 bg-zinc-50 rounded-2xl flex items-center justify-center border border-zinc-200 shadow-sm">
+                      <div className="w-10 h-10 bg-zinc-50 rounded-xl flex items-center justify-center border border-zinc-200 ">
                          <MessageCircle size={20} className="text-[#6366F1]" />
                       </div>
                       <p className="text-[9px] font-semibold text-zinc-900">Start typing to test AI Chat ✨</p>
@@ -483,7 +483,7 @@ export default function AutomationPreview({
 
                 {!isAIStrategy && !keyword && !response && testMessages.length === 0 && (
                    <div className="flex flex-col items-center justify-center h-full text-center space-y-3 opacity-40">
-                      <div className="w-10 h-10 bg-zinc-50 rounded-2xl flex items-center justify-center border border-zinc-200 shadow-sm">
+                      <div className="w-10 h-10 bg-zinc-50 rounded-xl flex items-center justify-center border border-zinc-200 ">
                          <MessageCircle size={20} className="text-[#6366F1]" />
                       </div>
                       <p className="text-[9px] font-semibold text-zinc-900">Configure triggers to test DM ✨</p>
@@ -492,8 +492,8 @@ export default function AutomationPreview({
             </div>
 
             <div className="p-2 bg-white border-t border-zinc-200/60 shrink-0">
-               <form onSubmit={handleSendTestMessage} className="bg-zinc-100 border border-zinc-200/50 rounded-[20px] px-3 py-1 flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-[#6366F1] flex items-center justify-center text-white shrink-0">
+               <form onSubmit={handleSendTestMessage} className="bg-zinc-100 border border-zinc-200/50 rounded-xl px-3 py-1 flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-xl bg-[#6366F1] flex items-center justify-center text-white shrink-0">
                     <Camera size={12} />
                   </div>
                   <input 
@@ -521,9 +521,9 @@ export default function AutomationPreview({
         {view === 'faq' && (
           <>
             <div className="px-4 py-2 border-b border-zinc-200/60 flex items-center gap-2 shrink-0 bg-white">
-               <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-400 to-indigo-600 p-[1px] items-center justify-center flex shadow-sm">
-                  <div className="w-full h-full bg-white rounded-full p-[0.5px]">
-                      <div className="w-full h-full bg-zinc-100 rounded-full flex items-center justify-center text-[8px] font-semibold text-zinc-900 overflow-hidden">
+               <div className="w-6 h-6 rounded-xl bg-gradient-to-tr from-amber-400 to-indigo-600 p-[1px] items-center justify-center flex ">
+                  <div className="w-full h-full bg-white rounded-xl p-[0.5px]">
+                      <div className="w-full h-full bg-zinc-100 rounded-xl flex items-center justify-center text-[8px] font-semibold text-zinc-900 overflow-hidden">
                          {activeProfilePic ? (
                            <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
                          ) : (
@@ -544,7 +544,7 @@ export default function AutomationPreview({
 
             <div className="flex-1 p-3 bg-white flex flex-col gap-3 overflow-y-auto no-scrollbar">
                <div className="flex flex-col items-center gap-2 my-4 px-4 text-center">
-                  <div className="w-10 h-10 rounded-full bg-zinc-50 flex items-center justify-center border border-zinc-100 mb-0.5">
+                  <div className="w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center border border-zinc-100 mb-0.5">
                      <Brain size={20} className="text-zinc-400" />
                   </div>
                   <p className="text-[9px] text-zinc-400 font-medium leading-relaxed">
@@ -555,14 +555,14 @@ export default function AutomationPreview({
                </div>
 
                <div className="flex gap-1.5 animate-in fade-in slide-in-from-left-4 duration-500 items-end">
-                  <div className="w-5 h-5 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[7px] font-semibold text-zinc-900 shrink-0 shadow-sm overflow-hidden">
+                  <div className="w-5 h-5 rounded-xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[7px] font-semibold text-zinc-900 shrink-0  overflow-hidden">
                      {activeProfilePic ? (
                        <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
                      ) : (
                        activeUsername[0]?.toUpperCase()
                      )}
                   </div>
-                  <div className="max-w-[75%] bg-zinc-100 text-zinc-900 px-3 py-1.5 rounded-[16px] rounded-bl-[3px] text-[10px] font-medium leading-relaxed shadow-sm">
+                  <div className="max-w-[75%] bg-zinc-100 text-zinc-900 px-3 py-1.5 rounded-xl-[16px] rounded-xl-[3px] text-[10px] font-medium leading-relaxed ">
                     {getPersonaResponse("Hi! I'm your AI assistant. Type a question below to test how I talk!", aiPersona, aiUseEmojis)}
                   </div>
                </div>
@@ -570,10 +570,10 @@ export default function AutomationPreview({
                <div className="space-y-3 mt-1">
                   {testMessages.map((msg, i) => (
                     <div key={i} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
-                       <div className={`max-w-[85%] px-3 py-1.5 text-[10.5px] font-medium leading-[1.35] shadow-sm ${
+                       <div className={`max-w-[85%] px-3 py-1.5 text-[10.5px] font-medium leading-[1.35]  ${
                          msg.role === 'user' 
-                           ? 'bg-gradient-to-tr from-[#3897f0] to-[#00d2ff] text-white rounded-[16px] rounded-br-[3px]' 
-                           : 'bg-[#efefef] text-zinc-900 rounded-[16px] rounded-bl-[3px]'
+                           ? 'bg-gradient-to-tr from-[#3897f0] to-[#00d2ff] text-white rounded-xl-[16px] rounded-xl-[3px]' 
+                           : 'bg-[#efefef] text-zinc-900 rounded-xl-[16px] rounded-xl-[3px]'
                        }`}>
                           {msg.text}
                        </div>
@@ -582,16 +582,16 @@ export default function AutomationPreview({
                   
                   {isTyping && (
                     <div className="flex gap-1 animate-pulse ml-1.5 mt-2">
-                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-full" />
-                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-full" style={{ animationDelay: '0.2s' }} />
-                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-full" style={{ animationDelay: '0.4s' }} />
+                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-xl" />
+                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-xl" style={{ animationDelay: '0.2s' }} />
+                       <div className="w-1.5 h-1.5 bg-zinc-300 rounded-xl" style={{ animationDelay: '0.4s' }} />
                     </div>
                   )}
                </div>
             </div>
 
             <div className="p-3 bg-white border-t border-zinc-200/60 shrink-0">
-               <form onSubmit={handleSendTestMessage} className="bg-[#efefef] rounded-[20px] px-3 py-1 flex items-center gap-2">
+               <form onSubmit={handleSendTestMessage} className="bg-[#efefef] rounded-xl px-3 py-1 flex items-center gap-2">
                   <input 
                     type="text"
                     value={chatInput}
@@ -611,9 +611,9 @@ export default function AutomationPreview({
           <div className="flex-1 bg-zinc-900 flex flex-col relative overflow-hidden group">
             {/* Story Progress Bars */}
             <div className="absolute top-1.5 inset-x-1.5 z-20 flex gap-0.5 px-0.5">
-               <div className="h-0.5 flex-1 bg-white rounded-full" />
-               <div className="h-0.5 flex-1 bg-white/30 rounded-full" />
-               <div className="h-0.5 flex-1 bg-white/30 rounded-full" />
+               <div className="h-0.5 flex-1 bg-white rounded-xl" />
+               <div className="h-0.5 flex-1 bg-white/30 rounded-xl" />
+               <div className="h-0.5 flex-1 bg-white/30 rounded-xl" />
             </div>
 
             {/* Story Image Background */}
@@ -624,8 +624,8 @@ export default function AutomationPreview({
             {/* Header */}
             <div className="relative z-10 p-3 flex items-center justify-between">
                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full border border-[#6366F1] p-[0.5px] shrink-0">
-                    <div className="w-full h-full rounded-full bg-zinc-200 overflow-hidden flex items-center justify-center text-[8px] font-semibold text-zinc-900">
+                  <div className="w-6 h-6 rounded-xl border border-[#6366F1] p-[0.5px] shrink-0">
+                    <div className="w-full h-full rounded-xl bg-zinc-200 overflow-hidden flex items-center justify-center text-[8px] font-semibold text-zinc-900">
                        {activeProfilePic ? (
                          <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
                        ) : (
@@ -635,7 +635,7 @@ export default function AutomationPreview({
                   </div>
                   <div>
                     <div className="text-[10px] font-bold text-white flex items-center gap-1">
-                      {activeUsername} <span className="w-1 h-1 bg-white/40 rounded-full" /> <span className="text-white/60 font-medium">9h</span>
+                      {activeUsername} <span className="w-1 h-1 bg-white/40 rounded-xl" /> <span className="text-white/60 font-medium">9h</span>
                     </div>
                     <div className="text-[8px] text-white/40 font-medium">Sponsored</div>
                   </div>
@@ -649,8 +649,8 @@ export default function AutomationPreview({
             {/* Interaction Area */}
             <div className="flex-1 flex flex-col items-center justify-center p-6 relative z-10">
                {storyTriggerType === 'MENTION' && (
-                 <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-[24px] p-6 text-center space-y-3 animate-in zoom-in-95 duration-700">
-                    <div className="w-12 h-12 bg-white rounded-full mx-auto flex items-center justify-center shadow-xl">
+                 <div className="bg-white/10  border border-white/20 rounded-xl p-6 text-center space-y-3 animate-in zoom-in-95 duration-700">
+                    <div className="w-12 h-12 bg-white rounded-xl mx-auto flex items-center justify-center ">
                        <Users size={24} className="text-[#6366F1]" />
                     </div>
                     <div>
@@ -664,15 +664,15 @@ export default function AutomationPreview({
                <div className="w-full space-y-3">
                   {testMessages.map((msg, i) => (
                     <div key={i} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
-                       <div className={`max-w-[85%] px-3 py-2 text-[10px] font-semibold leading-[1.35] shadow-lg ${
+                       <div className={`max-w-[85%] px-3 py-2 text-[10px] font-semibold leading-[1.35]  ${
                          msg.role === 'user' 
-                           ? 'bg-white text-zinc-950 rounded-[16px] rounded-br-[3px]' 
-                           : 'bg-[#6366F1] text-white rounded-[16px] rounded-bl-[3px]'
+                           ? 'bg-white text-zinc-950 rounded-xl-[16px] rounded-xl-[3px]' 
+                           : 'bg-[#6366F1] text-white rounded-xl-[16px] rounded-xl-[3px]'
                        }`}>
                           {msg.text}
                           {msg.role === 'ai' && buttonText && (
                             <div className="mt-1.5 pt-1.5 border-t border-white/20">
-                              <div className="bg-white text-[#6366F1] py-1 px-2 rounded text-center text-[9px] font-bold shadow-sm">
+                              <div className="bg-white text-[#6366F1] py-1 px-2 rounded-xl text-center text-[9px] font-bold ">
                                 {buttonText}
                               </div>
                             </div>
@@ -686,7 +686,7 @@ export default function AutomationPreview({
             {/* Footer / Reply Bar */}
             <div className="relative z-10 p-3 pb-6 space-y-3">
                <form onSubmit={handleSendTestMessage} className="flex items-center gap-2">
-                  <div className="flex-1 h-9 rounded-full border border-white/30 bg-black/20 backdrop-blur-md px-3 flex items-center gap-2">
+                  <div className="flex-1 h-9 rounded-xl border border-white/30 bg-black/60  px-3 flex items-center gap-2">
                      <input 
                        type="text"
                        value={chatInput}
@@ -697,7 +697,7 @@ export default function AutomationPreview({
                   </div>
                   <div className="flex items-center gap-3 text-white">
                       {chatInput.trim() ? (
-                         <button type="submit" className="text-[#6366F1] font-bold text-[10px] bg-white px-3 py-1.5 rounded-sm shadow-lg">Send</button>
+                         <button type="submit" className="text-[#6366F1] font-bold text-[10px] bg-white px-3 py-1.5 rounded-xl ">Send</button>
                       ) : (
                          <>
                             <Heart size={18} />
@@ -715,7 +715,7 @@ export default function AutomationPreview({
             <div className="flex-1 overflow-y-auto no-scrollbar">
               <div className="px-3 py-2 flex items-center justify-between border-b border-zinc-100">
                  <div className="flex items-center gap-2 truncate">
-                    <div className="w-6 h-6 rounded-full bg-zinc-100 flex items-center justify-center text-[7px] font-semibold text-zinc-900 border border-zinc-200 overflow-hidden shadow-sm shrink-0">
+                    <div className="w-6 h-6 rounded-xl bg-zinc-100 flex items-center justify-center text-[7px] font-semibold text-zinc-900 border border-zinc-200 overflow-hidden  shrink-0">
                       {activeProfilePic ? (
                         <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
                       ) : (
@@ -760,7 +760,7 @@ export default function AutomationPreview({
                    return (
                      <div key={cIdx} className="space-y-2 pt-2 border-t border-zinc-100 animate-in fade-in slide-in-from-bottom-2 duration-300">
                        <div className="flex items-start gap-2">
-                         <div className="w-5 h-5 rounded-full bg-[#6366F1] text-white flex items-center justify-center text-[7px] font-bold shrink-0 shadow-sm">
+                         <div className="w-5 h-5 rounded-xl bg-[#6366F1] text-white flex items-center justify-center text-[7px] font-bold shrink-0 ">
                            U
                          </div>
                          <div className="flex-grow">
@@ -776,7 +776,7 @@ export default function AutomationPreview({
                        {isKeyword && publicReply && (
                          <div className="ml-6 pt-1.5 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-1000">
                            <div className="flex items-start gap-2">
-                             <div className="w-5 h-5 rounded-full bg-zinc-100 flex items-center justify-center text-[6px] font-semibold text-zinc-900 shrink-0 border border-zinc-200 overflow-hidden shadow-sm">
+                             <div className="w-5 h-5 rounded-xl bg-zinc-100 flex items-center justify-center text-[6px] font-semibold text-zinc-900 shrink-0 border border-zinc-200 overflow-hidden ">
                                {activeProfilePic ? (
                                  <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
                                ) : (
@@ -800,7 +800,7 @@ export default function AutomationPreview({
                  {mockComments.length === 0 && keyword && (
                    <div className="pt-2 border-t border-zinc-200/60 animate-in fade-in slide-in-from-bottom-2 duration-300">
                       <div className="flex items-start gap-2">
-                         <div className="w-5 h-5 rounded-full bg-[#6366F1] text-white flex items-center justify-center text-[7px] font-semibold shrink-0 shadow-sm">
+                         <div className="w-5 h-5 rounded-xl bg-[#6366F1] text-white flex items-center justify-center text-[7px] font-semibold shrink-0 ">
                            User
                          </div>
                          <div className="flex-1">
@@ -816,7 +816,7 @@ export default function AutomationPreview({
                       {publicReply && (
                         <div className="ml-6 pt-1.5 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
                            <div className="flex items-start gap-2">
-                              <div className="w-5 h-5 rounded-full bg-zinc-100 flex items-center justify-center text-[6px] font-semibold text-zinc-900 shrink-0 border border-zinc-200 overflow-hidden shadow-sm">
+                              <div className="w-5 h-5 rounded-xl bg-zinc-100 flex items-center justify-center text-[6px] font-semibold text-zinc-900 shrink-0 border border-zinc-200 overflow-hidden ">
                                 {activeProfilePic ? (
                                   <img src={activeProfilePic} alt="profile" className="w-full h-full object-cover animate-in fade-in duration-300" />
                                 ) : (
@@ -840,7 +840,7 @@ export default function AutomationPreview({
 
             {/* Simulated comment input form */}
             <div className="p-2 bg-white border-t border-zinc-100 shrink-0">
-               <form onSubmit={handlePostCommentSubmit} className="border border-zinc-200 rounded-[20px] px-3 py-1 flex items-center gap-2 bg-zinc-50 focus-within:bg-white focus-within:border-zinc-300 transition-all">
+               <form onSubmit={handlePostCommentSubmit} className="border border-zinc-200 rounded-xl px-3 py-1 flex items-center gap-2 bg-zinc-50 focus-within:bg-white focus-within:border-zinc-300 transition-all">
                   <input 
                     type="text"
                     value={commentInput}
@@ -858,7 +858,7 @@ export default function AutomationPreview({
 
         {/* Bottom Screen Bar */}
         <div className="h-4 flex items-center justify-center shrink-0 bg-white border-t border-zinc-100">
-           <div className="w-16 h-1 bg-zinc-900 rounded-full opacity-20" />
+           <div className="w-16 h-1 bg-zinc-900 rounded-xl opacity-20" />
         </div>
 
       </div>

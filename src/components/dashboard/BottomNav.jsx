@@ -16,7 +16,7 @@ export default function BottomNav({ onCreateClick, onMoreClick }) {
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-zinc-200/50 pb-safe-area-inset-bottom shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/80  border-t border-zinc-200/50 pb-safe-area-inset-bottom ">
       <div className="flex items-center justify-around h-16 px-2">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -27,7 +27,7 @@ export default function BottomNav({ onCreateClick, onMoreClick }) {
               <button
                 key={item.id}
                 onClick={onCreateClick}
-                className="relative -top-4 bg-zinc-950 text-white p-3.5 rounded-sm shadow-lg shadow-zinc-950/20 active:scale-90 transition-transform"
+                className="relative -top-4 bg-zinc-950 text-white p-3.5 rounded-xl-950/20 active:scale-90 transition-transform"
               >
                 <Plus size={24} strokeWidth={2.5} />
               </button>
@@ -53,7 +53,7 @@ export default function BottomNav({ onCreateClick, onMoreClick }) {
               {isActive && (
                 <motion.div
                   layoutId="bottomNavIndicator"
-                  className="absolute bottom-1 w-1 h-1 bg-[#6366F1] rounded-full"
+                  className="absolute bottom-1 w-1 h-1 bg-[#6366F1] rounded-xl"
                   transition={{ type: "spring", damping: 20, stiffness: 300 }}
                 />
               )}

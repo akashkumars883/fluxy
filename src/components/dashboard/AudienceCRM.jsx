@@ -1,22 +1,27 @@
 "use client";
 
 import {
-Activity,
-ChevronRight,
-Clock,
-Filter,
-MessageSquare,
-Search,
-UserCheck,
-Users,
-X,
-Zap,
-Sparkles
+  Activity,
+  ChevronRight,
+  Clock,
+  Download,
+  Filter,
+  MessageSquare,
+  Search,
+  UserCheck,
+  Users,
+  X,
+  Zap,
+  Sparkles,
+  ArrowUpRight,
+  Mail,
+  Hash,
 } from "lucide-react";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useDashboard } from "@/context/DashboardContext";
 import AudienceAvatar from "./AudienceAvatar";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function AudienceCRM({ history = [], currentPlan = "free", onUpgradeClick }) {
   const { selectedAccount } = useDashboard();
@@ -27,51 +32,25 @@ export default function AudienceCRM({ history = [], currentPlan = "free", onUpgr
   const [modalProfilePic, setModalProfilePic] = useState(null);
   const [profilePicLoading, setProfilePicLoading] = useState(false);
 
-  // Mark as mounted from the client using a one-time check.
-  // We avoid the cascading-render lint rule by reading `mounted`
-  // in render (so the first render that already runs server-side
-  // sees `mounted === false`).
-  // The state upgrade is wrapped in a microtask via queueMicrotask,
-  // which the linter recognises as non-synchronous.
-  useEffect(() => {
-    // The `mounted` flag is used only to gate the portal; we never
-    // *need* to write to it from the effect. The render path
-    // already derives `mounted` lazily below as a fallback.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const isMounted = mounted || typeof window !== "undefined";
 
-  // Fetch real-time Instagram profile picture on demand when modal opens.
-  // (Initial modalProfilePic is null by default; we only set it inside the
-  // effect to avoid the cascading-render lint error since this depends on
-  // the runtime `selectedUser`/`selectedAccount` props which are not stable.)
   useEffect(() => {
     if (!selectedUser || !selectedAccount) {
       setModalProfilePic(null);
       return;
     }
-
     setModalProfilePic(selectedUser.avatar);
-
     const isLocalDev = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
-    if (isLocalDev || selectedUser.id.startsWith("mock") || !selectedAccount.id) {
-      return;
-    }
-
+    if (isLocalDev || selectedUser.id.startsWith("mock") || !selectedAccount.id) return;
     setProfilePicLoading(true);
     fetch(`/api/media/profile-pic?automationId=${selectedAccount.id}&senderId=${selectedUser.id}`)
       .then((res) => res.json())
-      .then((data) => {
-        if (data.success && data.profilePic) {
-          setModalProfilePic(data.profilePic);
-        }
-      })
+      .then((data) => { if (data.success && data.profilePic) setModalProfilePic(data.profilePic); })
       .catch((err) => console.error("Error loading profile pic:", err))
       .finally(() => setProfilePicLoading(false));
   }, [selectedUser, selectedAccount]);
 
-  // Build real audience map from history
+  // Build audience map from history
   const realAudienceMap = new Map();
   (history || []).forEach((h) => {
     if (!h.sender_id) return;
@@ -84,9 +63,7 @@ export default function AudienceCRM({ history = [], currentPlan = "free", onUpgr
         keywordTriggered: h.keyword || "AUTO",
         type: h.type || "COMMENT",
         lastActive: new Date(h.created_at),
-        lastActiveLabel: new Date(h.created_at).toLocaleDateString("en-IN", {
-          day: "numeric", month: "short"
-        }),
+        lastActiveLabel: new Date(h.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" }),
         tags: h.type?.startsWith("STORY") ? ["story"] : ["comment"],
         chats: [],
         interactionCount: 0,
@@ -97,9 +74,7 @@ export default function AudienceCRM({ history = [], currentPlan = "free", onUpgr
     user.interactionCount += 1;
     if (new Date(h.created_at) > user.lastActive) {
       user.lastActive = new Date(h.created_at);
-      user.lastActiveLabel = new Date(h.created_at).toLocaleDateString("en-IN", {
-        day: "numeric", month: "short"
-      });
+      user.lastActiveLabel = new Date(h.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
       user.keywordTriggered = h.keyword || user.keywordTriggered;
     }
     user.chats.push({
@@ -114,18 +89,14 @@ export default function AudienceCRM({ history = [], currentPlan = "free", onUpgr
     });
   });
 
-  const allAudience = Array.from(realAudienceMap.values()).sort(
-    (a, b) => b.lastActive - a.lastActive
-  );
-
-  // Filters — only show filters that actually have data
+  const allAudience = Array.from(realAudienceMap.values()).sort((a, b) => b.lastActive - a.lastActive);
   const commentUsers = allAudience.filter((u) => u.tags.includes("comment"));
   const storyUsers = allAudience.filter((u) => u.tags.includes("story"));
 
   const filterOptions = [
-    { id: "all", label: "All Users", count: allAudience.length },
-    ...(commentUsers.length > 0 ? [{ id: "comment", label: "💬 Comment Triggers", count: commentUsers.length }] : []),
-    ...(storyUsers.length > 0 ? [{ id: "story", label: "📖 Story Triggers", count: storyUsers.length }] : []),
+    { id: "all", label: "All", count: allAudience.length },
+    ...(commentUsers.length > 0 ? [{ id: "comment", label: "Comments", count: commentUsers.length }] : []),
+    ...(storyUsers.length > 0 ? [{ id: "story", label: "Stories", count: storyUsers.length }] : []),
   ];
 
   const filteredAudience = allAudience.filter((u) => {
@@ -137,56 +108,27 @@ export default function AudienceCRM({ history = [], currentPlan = "free", onUpgr
     return matchSearch && u.tags.includes(selectedFilter);
   });
 
-  // Stats
   const totalInteractions = (history || []).length;
   const uniqueUsers = allAudience.length;
   const successfulDeliveries = (history || []).filter((h) => h.status === "SUCCESS").length;
-  const successRate = totalInteractions > 0
-    ? Math.round((successfulDeliveries / totalInteractions) * 100)
-    : 0;
+  const successRate = totalInteractions > 0 ? Math.round((successfulDeliveries / totalInteractions) * 100) : 0;
 
   const statCards = [
-    {
-      label: "Unique Users",
-      value: uniqueUsers,
-      icon: Users,
-      color: "text-[#6366F1] bg-[#6366F1]/10 border-[#6366F1]/20",
-    },
-    {
-      label: "Total Interactions",
-      value: totalInteractions,
-      icon: MessageSquare,
-      color: "text-amber-600 bg-amber-50 border-amber-200",
-    },
-    {
-      label: "Delivered",
-      value: successfulDeliveries,
-      icon: Zap,
-      color: "text-emerald-600 bg-emerald-50 border-emerald-200",
-    },
-    {
-      label: "Success Rate",
-      value: `${successRate}%`,
-      icon: Activity,
-      color: "text-purple-600 bg-purple-50 border-purple-200",
-    },
+    { label: "Total Contacts", value: uniqueUsers, icon: Users, softBg: "bg-indigo-50", iconColor: "text-indigo-500", gradient: "from-indigo-500 to-violet-500" },
+    { label: "Interactions", value: totalInteractions, icon: MessageSquare, softBg: "bg-amber-50", iconColor: "text-amber-500", gradient: "from-amber-500 to-orange-400" },
+    { label: "Delivered", value: successfulDeliveries, icon: Zap, softBg: "bg-emerald-50", iconColor: "text-emerald-500", gradient: "from-emerald-500 to-teal-400" },
+    { label: "Success Rate", value: `${successRate}%`, icon: Activity, softBg: "bg-violet-50", iconColor: "text-violet-500", gradient: "from-violet-500 to-purple-500" },
   ];
 
-  // CSV Export
   const handleExportCSV = () => {
-    if (currentPlan === "free") {
-      alert("CSV Export is a Premium feature. Upgrade to Business Pro.");
-      return;
-    }
+    if (currentPlan === "free") { onUpgradeClick?.("creator_pro"); return; }
     const headers = "ID,Username,Keyword,Interactions,Last Active\n";
-    const rows = filteredAudience
-      .map((u) => `${u.id},@${u.username},${u.keywordTriggered},${u.interactionCount},${u.lastActiveLabel}`)
-      .join("\n");
+    const rows = filteredAudience.map((u) => `${u.id},@${u.username},${u.keywordTriggered},${u.interactionCount},${u.lastActiveLabel}`).join("\n");
     const blob = new Blob([headers + rows], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `automixa_audience_${Date.now()}.csv`;
+    link.download = `automixa_contacts_${Date.now()}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -207,268 +149,340 @@ export default function AudienceCRM({ history = [], currentPlan = "free", onUpgr
   };
 
   return (
-    <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700 w-full max-w-[1400px] mx-auto pb-8">
+    <div className="space-y-4 animate-in fade-in duration-500 w-full max-w-[1400px] mx-auto pb-8">
 
-      {/* Premium Upgrade Banner Card (Visible for Free & Pro users) */}
-      {currentPlan !== 'viral_scale' && (
-        <div className="bg-gradient-to-r from-[#6366F1] to-indigo-700 text-white rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md relative overflow-hidden animate-in fade-in">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none" />
-          <div className="flex items-start sm:items-center gap-3.5 relative z-10">
-            <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white shrink-0 shadow-inner">
-              <Sparkles size={16} />
-            </div>
-            <div>
-              <h4 className="text-xs sm:text-sm font-bold tracking-tight mb-0.5">
-                {currentPlan === 'free' ? "Upgrade Automations with Business Pro" : "Upgrade to Business Scale"}
-              </h4>
-              <p className="text-[11px] text-indigo-100 font-medium leading-normal max-w-xl">
-                {currentPlan === 'free' 
-                  ? "Get unlimited automated replies, unlock the Mini Digital Store to sell directly inside DMs, and build premium Link-in-Bio landing pages."
-                  : "Get up to 50,000 monthly automated replies, advanced CRM tracking, and full agency multi-workspace collaboration features."
-                }
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => onUpgradeClick?.(currentPlan === 'free' ? "creator_pro" : "viral_scale")}
-            className="shrink-0 w-full sm:w-auto px-5 py-2 bg-white hover:bg-zinc-50 text-indigo-700 text-[11px] font-bold rounded-xl shadow-md transition-all active:scale-[0.98] cursor-pointer"
-          >
-            Upgrade Plan
-          </button>
+      {/* ── Header ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-0.5">CRM</p>
+          <h2 className="text-2xl font-bold text-zinc-950 tracking-tight">Contacts</h2>
+          <p className="text-sm text-zinc-400 font-medium mt-0.5">All users who interacted with your automations.</p>
         </div>
-      )}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleExportCSV}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-zinc-600 bg-white border border-zinc-200 rounded-xl hover:border-zinc-300 hover:bg-zinc-50 transition-all"
+          >
+            <Download size={13} /> Export CSV
+          </button>
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-2 bg-indigo-50 text-indigo-600 rounded-xl border border-indigo-100">
+            <Users size={12} /> {allAudience.length} contacts
+          </span>
+        </div>
+      </div>
 
-      {/* Stats Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        {statCards.map((card) => {
+      {/* ── Stat Cards ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {statCards.map((card, idx) => {
           const Icon = card.icon;
           return (
-            <div
+            <motion.div
               key={card.label}
-              className="bg-white rounded-xl p-4 sm:p-5 flex flex-col justify-between shadow-md shadow-zinc-200/10 border border-zinc-200/80 hover:shadow-lg transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.05, duration: 0.35 }}
+              className="group bg-white border border-zinc-200/60 rounded-2xl p-4 flex items-center gap-3 hover:border-zinc-300 hover:shadow-md hover:shadow-zinc-100/60 transition-all duration-200"
             >
-              <div className="flex items-center justify-between mb-4 relative z-10">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-sm transition-all duration-500 group-hover:scale-110 ${card.color}`}>
-                  <Icon size={18} />
-                </div>
+              <div className={`w-9 h-9 ${card.softBg} ${card.iconColor} rounded-xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
+                <Icon size={16} />
               </div>
-              <div className="space-y-1 relative z-10">
-                <span className="text-2xl sm:text-4xl font-bold text-zinc-950 tracking-tighter leading-none block group-hover:text-[#6366F1] transition-colors duration-300">
-                  {card.value}
-                </span>
-                <span className="text-[12px] font-semibold text-zinc-500 tracking-wide block mt-1">
-                  {card.label}
-                </span>
+              <div>
+                <div className="text-xl font-black text-zinc-950 leading-none">{card.value}</div>
+                <div className="text-[10px] font-semibold text-zinc-400 mt-0.5 uppercase tracking-wide">{card.label}</div>
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>
 
-      {/* Main Content: Full width user list */}
-      <div className="bg-white border border-zinc-200/80 rounded-xl p-4 sm:p-6 shadow-md shadow-zinc-200/5 hover:shadow-lg transition-all duration-500 flex flex-col relative overflow-hidden">
+      {/* ── Upgrade Banner ── */}
+      {currentPlan !== "viral_scale" && (
+        <div className="relative overflow-hidden bg-zinc-950 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="absolute -top-6 -left-6 w-40 h-40 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="flex items-center gap-3 relative z-10">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 text-white flex items-center justify-center shrink-0">
+              <Sparkles size={15} />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-white">{currentPlan === "free" ? "Unlock Business Pro — full CRM access" : "Scale to 50,000 contacts"}</p>
+              <p className="text-[10px] text-zinc-400 mt-0.5 font-medium">
+                {currentPlan === "free" ? "Export CSV, detailed contact profiles & lead tracking." : "Agency-level CRM, multi-account contacts & white-label."}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => onUpgradeClick?.(currentPlan === "free" ? "creator_pro" : "viral_scale")}
+            className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-zinc-50 text-zinc-950 text-xs font-bold rounded-xl transition-all hover:shadow-md relative z-10"
+          >
+            Upgrade Now <ArrowUpRight size={12} />
+          </button>
+        </div>
+      )}
 
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4 sm:mb-6 border-b border-zinc-100 pb-4 sm:pb-6 shrink-0 relative z-10">
-          <div className="space-y-1">
-            <h3 className="font-bold text-2xl sm:text-3xl text-zinc-950 tracking-tight flex items-center gap-2">
-              Audience <Users size={24} className="text-[#6366F1]" />
-            </h3>
-            <p className="text-[13px] text-zinc-500 font-medium">
-              Instagram users who triggered your automations — commented on your posts or sent DMs with a keyword.
-            </p>
+      {/* ── Contacts Table Card ── */}
+      <div className="bg-white border border-zinc-200/60 rounded-2xl overflow-hidden shadow-sm">
+
+        {/* Toolbar */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 px-4 py-3 border-b border-zinc-100 bg-zinc-50/40">
+          {/* Search */}
+          <div className="relative flex-1 w-full sm:max-w-xs group">
+            <Search size={13} strokeWidth={2.5} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-indigo-500 transition-colors pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search contacts or keywords..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-white border border-zinc-200 rounded-xl pl-8 pr-3 py-2 text-[12px] font-medium text-zinc-900 placeholder:text-zinc-400 transition-all focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/10 outline-none"
+            />
+          </div>
+
+          {/* Filters */}
+          <div className="flex items-center gap-1.5">
+            {filterOptions.map((f) => (
+              <button
+                key={f.id}
+                onClick={() => setSelectedFilter(f.id)}
+                className={`px-3 py-1.5 rounded-xl text-[11px] font-bold whitespace-nowrap transition-all flex items-center gap-1
+                  ${selectedFilter === f.id
+                    ? "bg-indigo-500 text-white shadow-sm shadow-indigo-200"
+                    : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 border border-zinc-200"
+                  }`}
+              >
+                {f.label}
+                <span className={`text-[9px] px-1 py-0.5 rounded-md font-black ${selectedFilter === f.id ? "bg-white/20" : "bg-zinc-200/80"}`}>
+                  {f.count}
+                </span>
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Search + Filter */}
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-4 sm:mb-5 relative z-10">
-          <div className="relative flex-1 group">
-            <Search size={14} strokeWidth={2.5} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[#6366F1] transition-colors pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Search by username or keyword..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-zinc-50/80 hover:bg-white border border-zinc-200 hover:border-zinc-300 rounded-[14px] pl-10 pr-4 py-2.5 text-[13px] font-medium text-zinc-900 placeholder:text-zinc-400 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] focus:bg-white focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/10 outline-none"
-              />
-            </div>
-            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-              <Filter size={14} className="text-zinc-400 shrink-0" />
-              {filterOptions.map((f) => (
-                <button
-                  key={f.id}
-                  onClick={() => setSelectedFilter(f.id)}
-                  className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all shrink-0 ${
-                    selectedFilter === f.id
-                      ? "bg-[#6366F1] text-white shadow-md"
-                      : "bg-zinc-50 border border-zinc-200 text-zinc-600 hover:bg-white"
-                  }`}
-                >
-                  {f.label}
-                  <span className={`ml-1.5 text-[9px] px-1.5 py-0.5 rounded-full font-bold ${selectedFilter === f.id ? "bg-white/20 text-white" : "bg-zinc-200 text-zinc-500"}`}>
-                    {f.count}
-                  </span>
-                </button>
-              ))}
-            </div>
+        {/* Table Header - Desktop */}
+        {filteredAudience.length > 0 && (
+          <div className="hidden sm:grid grid-cols-[2fr_1fr_1fr_1fr_80px] gap-4 px-5 py-2.5 bg-zinc-50/60 border-b border-zinc-100 text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
+            <span>Contact</span>
+            <span>Keyword</span>
+            <span>Type</span>
+            <span>Last Active</span>
+            <span className="text-right">Actions</span>
           </div>
+        )}
 
-          {/* User List */}
-          <div className="space-y-1.5 sm:space-y-2 flex-1 max-h-[420px] overflow-y-auto no-scrollbar relative z-10">
-            {filteredAudience.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 text-center space-y-3 bg-zinc-50/50 rounded-2xl border border-zinc-200 border-dashed">
-                <div className="w-14 h-14 rounded-2xl bg-white border border-zinc-100 shadow-sm flex items-center justify-center">
-                  <Users size={24} className="text-zinc-300" />
-                </div>
-                <div>
-                  <p className="text-base font-bold text-zinc-700">No audience data yet</p>
-                  <p className="text-sm text-zinc-500 max-w-xs mx-auto mt-1">
-                    Users who trigger your automations will appear here.
-                  </p>
-                </div>
+        {/* Contact List */}
+        <div className="max-h-[540px] overflow-y-auto no-scrollbar divide-y divide-zinc-50">
+          {filteredAudience.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-14 text-center gap-3">
+              <div className="w-12 h-12 bg-zinc-50 border-2 border-zinc-100 border-dashed rounded-2xl flex items-center justify-center">
+                <Users size={20} className="text-zinc-300" />
               </div>
-            ) : (
-              filteredAudience.map((usr) => (
-                <button
-                  key={usr.id}
-                  onClick={() => setSelectedUser(usr)}
-                  className="w-full flex items-center justify-between p-3 sm:p-3.5 bg-zinc-50/80 hover:bg-white border border-zinc-100 hover:border-[#6366F1]/20 hover:shadow-md rounded-2xl transition-all duration-200 group text-left"
-                >
+              <div>
+                <p className="text-sm font-bold text-zinc-700">No contacts yet</p>
+                <p className="text-xs text-zinc-400 mt-0.5">Users who trigger your automations will appear here.</p>
+              </div>
+            </div>
+          ) : (
+            filteredAudience.map((usr, idx) => (
+              <motion.button
+                key={usr.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: idx * 0.03 }}
+                onClick={() => setSelectedUser(usr)}
+                className="w-full group"
+              >
+                {/* Desktop Row */}
+                <div className="hidden sm:grid grid-cols-[2fr_1fr_1fr_1fr_80px] gap-4 items-center px-5 py-3 hover:bg-zinc-50/70 transition-colors text-left">
+                  {/* Contact */}
                   <div className="flex items-center gap-3 min-w-0">
+                    <div className="relative shrink-0">
+                      <AudienceAvatar
+                        senderId={usr.id}
+                        defaultAvatar={usr.avatar}
+                        automationId={selectedAccount?.id}
+                        className="w-9 h-9 rounded-xl object-cover border border-zinc-100"
+                      />
+                      <div className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${usr.isFollowing ? "bg-emerald-400" : "bg-zinc-300"}`} />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-bold text-zinc-900 truncate">@{usr.username}</span>
+                        {usr.isFollowing && <UserCheck size={10} className="text-emerald-500 shrink-0" />}
+                      </div>
+                      <span className={`inline-flex items-center mt-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-md ${usr.isFollowing ? "bg-emerald-50 text-emerald-600" : "bg-zinc-100 text-zinc-400"}`}>
+                        {usr.isFollowing ? "Follower" : "Not following"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Keyword */}
+                  <div>
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-indigo-50 border border-indigo-100 text-indigo-600 text-[10px] font-bold rounded-lg font-mono">
+                      <Hash size={8} />
+                      {usr.keywordTriggered}
+                    </span>
+                  </div>
+
+                  {/* Type */}
+                  <div>
+                    <span className={`text-[10px] font-semibold px-2 py-1 rounded-lg border ${usr.tags.includes("story") ? "bg-amber-50 text-amber-600 border-amber-100" : "bg-zinc-50 text-zinc-500 border-zinc-200"}`}>
+                      {usr.tags.includes("story") ? "Story" : "Comment"}
+                    </span>
+                  </div>
+
+                  {/* Last Active */}
+                  <div className="flex items-center gap-1 text-[11px] text-zinc-400 font-medium">
+                    <Clock size={10} />
+                    {formatTimeAgo(usr.lastActive)}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center justify-end gap-2">
+                    <span className="text-[10px] font-bold text-zinc-600 bg-zinc-50 border border-zinc-100 px-2 py-1 rounded-lg">
+                      {usr.interactionCount}×
+                    </span>
+                    <div className="w-6 h-6 rounded-lg bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-400 group-hover:bg-indigo-50 group-hover:border-indigo-100 group-hover:text-indigo-500 transition-all">
+                      <ChevronRight size={12} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mobile Row */}
+                <div className="sm:hidden flex items-center gap-3 px-4 py-3 hover:bg-zinc-50/70 transition-colors text-left">
+                  <div className="relative shrink-0">
                     <AudienceAvatar
                       senderId={usr.id}
                       defaultAvatar={usr.avatar}
                       automationId={selectedAccount?.id}
-                      className="w-10 h-10 rounded-xl object-cover border border-zinc-200 shadow-sm shrink-0"
+                      className="w-10 h-10 rounded-xl object-cover border border-zinc-100"
                     />
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5 mb-0.5">
-                        <span className="text-sm font-bold text-zinc-900 group-hover:text-[#6366F1] transition-colors truncate">
-                          @{usr.username}
-                        </span>
-                        <UserCheck size={12} className="text-blue-500 shrink-0" />
-                      </div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-[10px] font-bold px-2 py-0.5 bg-[#6366F1]/10 text-[#6366F1] rounded-lg">
-                          &apos;{usr.keywordTriggered}&apos;
-                        </span>
-                        {usr.isFollowing ? (
-                          <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100 flex items-center gap-1">
-                            <span className="w-1 h-1 rounded-full bg-emerald-500" /> Follower
-                          </span>
-                        ) : (
-                          <span className="text-[10px] font-bold px-2 py-0.5 bg-amber-50 text-amber-600 rounded-lg border border-amber-100 flex items-center gap-1">
-                            <span className="w-1 h-1 rounded-full bg-amber-500" /> Not Following
-                          </span>
-                        )}
-                        <span className="text-[10px] text-zinc-400 font-medium flex items-center gap-1">
-                          <Clock size={9} /> {formatTimeAgo(usr.lastActive)}
-                        </span>
-                      </div>
+                    <div className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${usr.isFollowing ? "bg-emerald-400" : "bg-zinc-300"}`} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <span className="text-xs font-bold text-zinc-900">@{usr.username}</span>
+                      <span className="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 text-[8px] font-bold rounded-md font-mono">#{usr.keywordTriggered}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-[10px] text-zinc-400 font-medium">
+                      <span className="flex items-center gap-0.5"><Clock size={9} />{formatTimeAgo(usr.lastActive)}</span>
+                      <span>·</span>
+                      <span className="font-bold text-zinc-600">{usr.interactionCount} interactions</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 shrink-0">
-                    <div className="hidden sm:flex flex-col items-end">
-                      <span className="text-xs font-bold text-zinc-950">{usr.interactionCount}</span>
-                      <span className="text-[9px] text-zinc-400 font-medium">interactions</span>
-                    </div>
-                    <div className="w-8 h-8 rounded-xl bg-zinc-100 group-hover:bg-[#6366F1] group-hover:text-white flex items-center justify-center transition-all">
-                      <ChevronRight size={14} className="text-zinc-400 group-hover:text-white" />
-                    </div>
-                  </div>
-                </button>
-              ))
-            )}
+                  <ChevronRight size={14} className="text-zinc-300 shrink-0" />
+                </div>
+              </motion.button>
+            ))
+          )}
         </div>
+
+        {/* Table Footer */}
+        {filteredAudience.length > 0 && (
+          <div className="px-5 py-2.5 border-t border-zinc-100 bg-zinc-50/40 flex items-center justify-between">
+            <span className="text-[10px] font-semibold text-zinc-400">
+              Showing {filteredAudience.length} of {allAudience.length} contacts
+            </span>
+            <span className="text-[10px] font-semibold text-zinc-400">Click a contact to view details</span>
+          </div>
+        )}
       </div>
 
-      {/* User Detail Modal */}
-      {selectedUser && mounted && createPortal(
-        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-300">
-          <div className="fixed inset-0 bg-zinc-950/40 backdrop-blur-xl" onClick={() => setSelectedUser(null)} />
-          <div className="relative w-full max-w-lg bg-white border border-zinc-200 rounded-[28px] shadow-2xl p-6 sm:p-8 flex flex-col gap-6 animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-zinc-100 pb-5 shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="relative shrink-0 w-12 h-12">
-                  <img
-                    src={modalProfilePic || selectedUser.avatar}
-                    alt={selectedUser.name}
-                    className="w-12 h-12 rounded-xl object-cover border border-zinc-200 shadow-sm"
-                  />
-                  {profilePicLoading && (
-                    <div className="absolute inset-0 bg-white/60 flex items-center justify-center rounded-xl">
-                      <div className="w-4 h-4 border-2 border-[#6366F1] border-t-transparent rounded-full animate-spin" />
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-zinc-900 tracking-tight flex items-center gap-1.5">
-                    @{selectedUser.username} <UserCheck size={14} className="text-blue-500" />
-                  </h3>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[10px] font-bold px-2 py-0.5 bg-[#6366F1]/10 text-[#6366F1] rounded-lg">
-                      &apos;{selectedUser.keywordTriggered}&apos;
-                    </span>
-                    {selectedUser.isFollowing ? (
-                      <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100">
-                        Follower
-                      </span>
-                    ) : (
-                      <span className="text-[10px] font-bold px-2 py-0.5 bg-amber-50 text-amber-600 rounded-lg border border-amber-100">
-                        Not Following
-                      </span>
+      {/* ── Contact Detail Modal ── */}
+      {selectedUser && isMounted && createPortal(
+        <AnimatePresence>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6"
+          >
+            <div className="fixed inset-0 bg-zinc-950/60 backdrop-blur-sm" onClick={() => setSelectedUser(null)} />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.97, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.97 }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
+              className="relative w-full max-w-md bg-white border border-zinc-200 rounded-2xl flex flex-col overflow-hidden max-h-[88vh] shadow-2xl shadow-zinc-900/20"
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-5 border-b border-zinc-100 shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="relative shrink-0">
+                    <img
+                      src={modalProfilePic || selectedUser.avatar}
+                      alt={selectedUser.name}
+                      className="w-11 h-11 rounded-xl object-cover border border-zinc-200"
+                    />
+                    {profilePicLoading && (
+                      <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded-xl">
+                        <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                      </div>
                     )}
-                    <span className="text-[10px] text-zinc-400 font-medium">
-                      {selectedUser.interactionCount} interactions
-                    </span>
+                    <div className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${selectedUser.isFollowing ? "bg-emerald-400" : "bg-zinc-300"}`} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-zinc-900 flex items-center gap-1.5">
+                      @{selectedUser.username}
+                      {selectedUser.isFollowing && <UserCheck size={13} className="text-emerald-500" />}
+                    </h3>
+                    <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-indigo-50 text-indigo-600 text-[9px] font-bold rounded-md border border-indigo-100 font-mono">
+                        <Hash size={7} />{selectedUser.keywordTriggered}
+                      </span>
+                      <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md border ${selectedUser.isFollowing ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-zinc-50 text-zinc-500 border-zinc-200"}`}>
+                        {selectedUser.isFollowing ? "Follower" : "Not following"}
+                      </span>
+                      <span className="text-[9px] text-zinc-400 font-medium">{selectedUser.interactionCount} interactions</span>
+                    </div>
                   </div>
                 </div>
+                <button
+                  onClick={() => setSelectedUser(null)}
+                  className="p-2 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-all cursor-pointer"
+                >
+                  <X size={15} />
+                </button>
               </div>
-              <button
-                onClick={() => setSelectedUser(null)}
-                className="p-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-500 hover:text-zinc-950 shadow-sm transition-all cursor-pointer"
-              >
-                <X size={18} />
-              </button>
-            </div>
 
-            {/* Chat History */}
-            <div className="flex flex-col gap-3">
-              <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Interaction History</h4>
-              <div className="bg-zinc-50 border border-zinc-200/80 rounded-2xl p-5 max-h-[300px] overflow-y-auto space-y-4 no-scrollbar">
-                {selectedUser.chats.length === 0 ? (
-                  <p className="text-xs text-zinc-400 text-center py-6">No chat history available.</p>
-                ) : (
-                  selectedUser.chats.map((c, idx) => (
-                    <div key={idx} className={`flex flex-col ${c.sender === "user" ? "items-start" : "items-end"}`}>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] font-bold text-zinc-400">
-                          {c.sender === "user" ? `@${selectedUser.username}` : "🤖 Automixa Bot"}
-                        </span>
-                        <span className="text-[9px] text-zinc-300">• {c.time}</span>
+              {/* Chat History */}
+              <div className="flex-1 overflow-y-auto p-5 no-scrollbar">
+                <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-3">Interaction History</p>
+                <div className="space-y-3">
+                  {selectedUser.chats.length === 0 ? (
+                    <p className="text-xs text-zinc-400 text-center py-8">No interaction history.</p>
+                  ) : (
+                    selectedUser.chats.map((c, idx) => (
+                      <div key={idx} className={`flex flex-col ${c.sender === "user" ? "items-start" : "items-end"}`}>
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <span className="text-[9px] font-bold text-zinc-400">
+                            {c.sender === "user" ? `@${selectedUser.username}` : "🤖 Automixa"}
+                          </span>
+                          <span className="text-[9px] text-zinc-300">· {c.time}</span>
+                        </div>
+                        <div className={`px-3.5 py-2.5 rounded-xl text-xs font-medium max-w-[85%] leading-relaxed ${
+                          c.sender === "user"
+                            ? "bg-zinc-50 border border-zinc-200 text-zinc-800"
+                            : "bg-indigo-500 text-white"
+                        }`}>
+                          {c.text}
+                        </div>
                       </div>
-                      <div className={`p-3.5 rounded-2xl text-xs font-medium max-w-[85%] shadow-sm leading-relaxed ${
-                        c.sender === "user"
-                          ? "bg-white border border-zinc-200 text-zinc-800 rounded-tl-none"
-                          : "bg-[#6366F1] text-white rounded-tr-none"
-                      }`}>
-                        {c.text}
-                      </div>
-                    </div>
-                  ))
-                )}
+                    ))
+                  )}
+                </div>
               </div>
-            </div>
 
-            <button
-              onClick={() => setSelectedUser(null)}
-              className="w-full py-3.5 bg-zinc-950 hover:bg-[#6366F1] text-white font-bold text-xs rounded-xl shadow-lg transition-all"
-            >
-              Close
-            </button>
-          </div>
-        </div>,
+              {/* Modal Footer */}
+              <div className="p-4 border-t border-zinc-100 shrink-0">
+                <button
+                  onClick={() => setSelectedUser(null)}
+                  className="w-full py-2.5 bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs rounded-xl transition-all cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        </AnimatePresence>,
         document.body
       )}
     </div>

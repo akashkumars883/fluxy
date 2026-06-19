@@ -85,7 +85,7 @@ export default function SupportPage() {
 
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 px-8 py-4 bg-foreground text-background rounded-full font-bold shadow-xl shadow-foreground/10 hover:scale-105 active:scale-95 transition-all"
+            className="flex items-center gap-2 px-8 py-4 bg-foreground text-background rounded-xl font-bold/10 hover:scale-105 active:scale-95 transition-all"
           >
             <Plus size={20} /> Create New Ticket
           </button>
@@ -94,8 +94,8 @@ export default function SupportPage() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
           {stats.map((s, i) => (
-            <div key={i} className="bg-white border border-border p-6 rounded-[32px] shadow-sm flex items-center gap-5">
-              <div className={`p-4 bg-zinc-50 rounded-2xl ${s.color}`}>
+            <div key={i} className="bg-white border border-border p-6 rounded-xl-[32px] flex items-center gap-5">
+              <div className={`p-4 bg-zinc-50 rounded-xl-2xl ${s.color}`}>
                 <s.icon size={24} />
               </div>
               <div>
@@ -107,18 +107,18 @@ export default function SupportPage() {
         </div>
 
         {/* Tickets Section */}
-        <div className="bg-white border border-border rounded-[40px] shadow-sm overflow-hidden">
+        <div className="bg-white border border-border rounded-xl-[40px] overflow-hidden">
           
           {/* Filters & Search */}
           <div className="p-8 border-b border-border flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-2 bg-zinc-50 p-1.5 rounded-2xl border border-border/50">
+            <div className="flex items-center gap-2 bg-zinc-50 p-1.5 rounded-xl-2xl border border-border/50">
               {['all', 'open', 'pending', 'resolved'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveFilter(tab)}
                   className={`px-5 py-2.5 rounded-xl text-xs font-bold capitalize transition-all ${
                     activeFilter === tab 
-                      ? "bg-white text-foreground shadow-sm border border-border/50" 
+                      ? "bg-white text-foreground border border-border/50" 
                       : "text-zinc-muted hover:text-foreground"
                   }`}
                 >
@@ -132,7 +132,7 @@ export default function SupportPage() {
               <input 
                 type="text" 
                 placeholder="Search tickets..." 
-                className="w-full pl-12 pr-6 py-3.5 bg-zinc-50 border border-border rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-foreground/5 transition-all"
+                className="w-full pl-12 pr-6 py-3.5 bg-zinc-50 border border-border rounded-xl-2xl text-sm focus:outline-none focus:ring-2 focus:ring-foreground/5 transition-all"
               />
             </div>
           </div>
@@ -148,13 +148,13 @@ export default function SupportPage() {
                 className="group p-8 hover:bg-zinc-50 transition-all cursor-pointer flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
               >
                 <div className="flex items-start gap-5">
-                  <div className={`mt-1 p-2 rounded-lg border ${statusStyles[t.status]}`}>
+                  <div className={`mt-1 p-2 rounded-xl border ${statusStyles[t.status]}`}>
                     {t.status === 'resolved' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
                   </div>
                   <div>
                     <div className="flex items-center gap-3 mb-1">
                       <span className="text-[10px] font-black text-zinc-muted uppercase tracking-widest">{t.id}</span>
-                      <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${
+                      <span className={`px-2 py-0.5 rounded-xl text-[10px] font-bold uppercase ${
                         t.priority === 'high' ? 'bg-red-50 text-red-600' : 'bg-zinc-100 text-zinc-600'
                       }`}>
                         {t.priority} priority
@@ -201,7 +201,7 @@ export default function SupportPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl bg-white border border-border p-10 rounded-[48px] shadow-2xl z-[70]"
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl bg-white border border-border p-10 rounded-xl-[48px]-2xl z-[70]"
             >
               <h2 className="text-3xl font-bold text-foreground mb-2">How can we help?</h2>
               <p className="text-zinc-muted mb-8">Our team usually responds within 2-4 hours.</p>
@@ -209,14 +209,14 @@ export default function SupportPage() {
               <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); }}>
                 <div>
                   <label className="text-xs font-bold uppercase tracking-wider text-foreground mb-2 block">Subject</label>
-                  <input type="text" placeholder="Briefly describe the issue" className="w-full px-6 py-4 bg-zinc-50 border border-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-foreground/5" />
+                  <input type="text" placeholder="Briefly describe the issue" className="w-full px-6 py-4 bg-zinc-50 border border-border rounded-xl-2xl focus:outline-none focus:ring-2 focus:ring-foreground/5" />
                 </div>
                 <div>
                   <label className="text-xs font-bold uppercase tracking-wider text-foreground mb-2 block">Description</label>
-                  <textarea rows={4} placeholder="Tell us exactly what happened..." className="w-full px-6 py-4 bg-zinc-50 border border-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-foreground/5" />
+                  <textarea rows={4} placeholder="Tell us exactly what happened..." className="w-full px-6 py-4 bg-zinc-50 border border-border rounded-xl-2xl focus:outline-none focus:ring-2 focus:ring-foreground/5" />
                 </div>
                 <div className="flex items-center gap-4 pt-4">
-                  <button type="submit" className="flex-1 py-4 bg-foreground text-background rounded-sm font-bold shadow-lg shadow-foreground/10 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                  <button type="submit" className="flex-1 py-4 bg-foreground text-background rounded-xl font-bold/10 hover:scale-[1.02] active:scale-[0.98] transition-all">
                     Submit Request
                   </button>
                   <button onClick={() => setIsModalOpen(false)} className="px-8 py-4 text-zinc-muted font-bold hover:text-foreground">

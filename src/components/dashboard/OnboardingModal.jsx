@@ -133,7 +133,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-zinc-950/40 backdrop-blur-xl"
+        className="fixed inset-0 bg-zinc-950/60 "
       />
 
       {/* Confetti shows up ONLY in Step 4 (Celebration) */}
@@ -144,11 +144,11 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="relative w-full max-w-xl bg-white border border-border rounded-xl shadow-2xl overflow-hidden"
+        className="relative w-full max-w-xl bg-white border border-border rounded-xl max-h-[85vh] overflow-y-auto no-scrollbar"
       >
         {/* Glow effects */}
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-[80px] pointer-events-none" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink/5 rounded-full blur-[80px] pointer-events-none" />
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-xl blur-[80px] pointer-events-none" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink/5 rounded-xl blur-[80px] pointer-events-none" />
 
         <div className="relative p-5 sm:p-6 md:p-8 z-10">
           <AnimatePresence mode="wait">
@@ -188,7 +188,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                     <div className="pt-1 sm:pt-2 flex flex-col items-center gap-2">
                       <button
                         onClick={() => handleConnectClick('facebook')}
-                        className="w-full sm:w-auto px-8 sm:px-12 py-3 sm:py-3.5 bg-[#1877F2] text-white rounded-sm text-sm font-bold shadow-[0_8px_30px_-8px_rgba(24,119,242,0.5)] hover:shadow-[0_10px_40px_-10px_rgba(24,119,242,0.7)] transition-all flex items-center justify-center gap-3 hover:scale-[1.02]"
+                        className="w-full sm:w-auto px-8 sm:px-12 py-3 sm:py-3.5 bg-[#1877F2] text-white rounded-xl text-sm font-bold  hover: transition-all flex items-center justify-center gap-3 hover:scale-[1.02]"
                       >
                         Login with Facebook <ArrowRight size={18} className="sm:w-5 sm:h-5" />
                       </button>
@@ -231,7 +231,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                   transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 12 }}
                   className="relative w-24 h-24 mx-auto"
                 >
-                  <div className="w-full h-full rounded-full overflow-hidden border-[4px] border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.3)] bg-zinc-50 flex items-center justify-center">
+                  <div className="w-full h-full rounded-xl overflow-hidden border-[4px] border-emerald-500  bg-zinc-50 flex items-center justify-center">
                     <img
                       src={connectedAccount?.profilePictureUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(connectedAccount?.username || "User")}&background=6366f1&color=fff&size=150`}
                       alt={connectedAccount?.username || "Connected Account"}
@@ -242,7 +242,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                     />
                   </div>
                   {/* Small Success Badge */}
-                  <div className="absolute bottom-0 right-0 w-8 h-8 bg-emerald-500 rounded-full border-4 border-white flex items-center justify-center shadow-md">
+                  <div className="absolute bottom-0 right-0 w-8 h-8 bg-emerald-500 rounded-xl border-4 border-white flex items-center justify-center ">
                     <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
@@ -264,7 +264,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
                 <div className="pt-4 sm:pt-6">
                   <button
                     onClick={onClose}
-                    className="w-full sm:w-auto px-8 sm:px-12 py-3.5 sm:py-4 bg-[#6366F1] text-white rounded-sm text-sm font-bold shadow-[0_8px_30px_-8px_rgba(99,102,241,0.5)] hover:shadow-[0_10px_40px_-10px_rgba(99,102,241,0.7)] transition-all flex items-center justify-center gap-3 hover:scale-[1.02] mx-auto"
+                    className="w-full sm:w-auto px-8 sm:px-12 py-3.5 sm:py-4 bg-[#6366F1] text-white rounded-xl text-sm font-bold  hover: transition-all flex items-center justify-center gap-3 hover:scale-[1.02] mx-auto"
                   >
                     Go to Dashboard <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>

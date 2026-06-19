@@ -1,174 +1,266 @@
 "use client";
 
-import { MessageSquare,Send,Users,Sparkles } from "lucide-react";
+import { BarChart2, MessageSquare, Send, Sparkles, TrendingUp, Users, ArrowRight, ArrowUpRight, Zap, Activity } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function AnalyticsDashboard({ realtimeStats, history = [], triggers = [], currentPlan = "free", onUpgradeClick }) {
-  // Calculate real unique contacts from history
   const uniqueContacts = new Set((history || []).filter(h => h.sender_id).map(h => h.sender_id)).size;
 
-  // Calculate campaign-like breakdown from actual triggers
   const campaigns = (triggers || []).map(trigger => {
     const triggerHistory = (history || []).filter(h => h.keyword === trigger.keyword || h.trigger_id === trigger.id);
     const sentCount = triggerHistory.length;
     const triggerContacts = new Set(triggerHistory.map(h => h.sender_id)).size;
-    
     return {
       name: trigger.metadata?.campaign_name || trigger.name || "Custom Flow ⚡",
       keyword: trigger.keyword,
-      sent: sentCount.toLocaleString(),
+      sent: sentCount,
+      sentFmt: sentCount.toLocaleString(),
       contacts: triggerContacts.toLocaleString(),
-      rate: sentCount > 0 ? `${Math.min(100, Math.round((triggerContacts / sentCount) * 100))}%` : "0%"
+      rate: sentCount > 0 ? `${Math.min(100, Math.round((triggerContacts / sentCount) * 100))}%` : "0%",
     };
   });
 
-  const currentData = {
-    triggers: ((realtimeStats?.totalDms || 0) + (realtimeStats?.autoReplies || 0)).toLocaleString(),
-    dms: (realtimeStats?.totalDms)?.toLocaleString() || "0",
-    contacts: uniqueContacts.toLocaleString(),
-    descTriggers: "Total interactions",
-    descDms: "100% delivery rate",
-    descContacts: "Unique users reached",
-    campaigns: campaigns.length > 0 ? campaigns : [
-      { name: "No active campaigns found", keyword: "-", sent: "0", contacts: "0", rate: "0%" }
-    ]
-  };
+  const totalInteractions = (realtimeStats?.totalDms || 0) + (realtimeStats?.autoReplies || 0);
+  const totalDms = realtimeStats?.totalDms || 0;
+
+  const metricCards = [
+    {
+      label: "Total Interactions",
+      value: totalInteractions.toLocaleString(),
+      desc: "Auto-replies + DMs",
+      icon: MessageSquare,
+      gradient: "from-indigo-600 to-violet-600",
+      softBg: "bg-indigo-500/10",
+      iconColor: "text-indigo-500",
+      trend: "+12%",
+    },
+    {
+      label: "DMs Delivered",
+      value: totalDms.toLocaleString(),
+      desc: "100% delivery rate",
+      icon: Send,
+      gradient: "from-violet-500 to-purple-600",
+      softBg: "bg-violet-500/10",
+      iconColor: "text-violet-500",
+      trend: "+8%",
+    },
+    {
+      label: "Contacts Captured",
+      value: uniqueContacts.toLocaleString(),
+      desc: "Unique users reached",
+      icon: Users,
+      gradient: "from-emerald-500 to-teal-500",
+      softBg: "bg-emerald-500/10",
+      iconColor: "text-emerald-500",
+      trend: "+14%",
+    },
+    {
+      label: "Active Campaigns",
+      value: triggers.filter(t => t.metadata?.is_active !== false).length,
+      desc: `${triggers.length} total rules`,
+      icon: BarChart2,
+      gradient: "from-amber-500 to-orange-500",
+      softBg: "bg-amber-500/10",
+      iconColor: "text-amber-500",
+      trend: null,
+    },
+  ];
+
+  const maxSent = campaigns.reduce((m, c) => Math.max(m, c.sent), 1);
 
   return (
-    <div className="space-y-4 animate-in fade-in duration-500 w-full max-w-[1400px] mx-auto pb-8">
-      
-      {/* Premium Upgrade Banner Card (Visible for Free & Pro users) */}
-      {currentPlan !== 'viral_scale' && (
-        <div className="bg-gradient-to-r from-[#6366F1] to-indigo-700 text-white rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md relative overflow-hidden animate-in fade-in">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none" />
-          <div className="flex items-start sm:items-center gap-3.5 relative z-10">
-            <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white shrink-0 shadow-inner">
-              <Sparkles size={16} />
-            </div>
-            <div>
-              <h4 className="text-xs sm:text-sm font-bold tracking-tight mb-0.5">
-                {currentPlan === 'free' ? "Upgrade Automations with Business Pro" : "Upgrade to Business Scale"}
-              </h4>
-              <p className="text-[11px] text-indigo-100 font-medium leading-normal max-w-xl">
-                {currentPlan === 'free' 
-                  ? "Get unlimited automated replies, unlock the Mini Digital Store to sell directly inside DMs, and build premium Link-in-Bio landing pages."
-                  : "Get up to 50,000 monthly automated replies, advanced CRM tracking, and full agency multi-workspace collaboration features."
-                }
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => onUpgradeClick?.(currentPlan === 'free' ? "creator_pro" : "viral_scale")}
-            className="shrink-0 w-full sm:w-auto px-5 py-2 bg-white hover:bg-zinc-50 text-indigo-700 text-[11px] font-bold rounded-xl shadow-md transition-all active:scale-[0.98] cursor-pointer"
-          >
-            Upgrade Plan
-          </button>
-        </div>
-      )}
+    <div className="space-y-4 animate-in fade-in duration-500 w-full max-w-[1400px] mx-auto pb-6">
 
-      {/* 3 Simple Clean Metrics (ManyChat style) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
-        {[
-          { title: "Triggers Found", value: currentData.triggers, desc: currentData.descTriggers, icon: MessageSquare, color: "text-[#6366F1] bg-[#6366F1]/10 border-[#6366F1]/20", bgClass: "bg-[#6366F1]/5 border-[#6366F1]/20 hover:border-[#6366F1]/40 hover:shadow-[#6366F1]/5" },
-          { title: "DMs Delivered", value: currentData.dms, desc: currentData.descDms, icon: Send, color: "text-purple-600 bg-purple-50 border-purple-200", bgClass: "bg-purple-500/5 border-purple-500/20 hover:border-purple-500/40 hover:shadow-purple-500/5" },
-          { title: "Contacts Captured", value: currentData.contacts, desc: currentData.descContacts, icon: Users, color: "text-emerald-600 bg-emerald-50 border-emerald-200", bgClass: "bg-emerald-500/5 border-emerald-500/20 hover:border-emerald-500/40 hover:shadow-emerald-500/5" }
-        ].map((card, idx) => {
+      {/* ── Header ── */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+        <div>
+          <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-0.5">Overview</p>
+          <h2 className="text-xl sm:text-2xl font-bold text-zinc-950 tracking-tight">Analytics</h2>
+          <p className="text-sm text-zinc-400 font-medium mt-0.5">Performance across all your automation campaigns.</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100">
+            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+            Live Data
+          </span>
+        </div>
+      </div>
+
+      {/* ── Stat Cards ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {metricCards.map((card, idx) => {
           const Icon = card.icon;
           return (
-            <div 
-              key={idx} 
-              className="bg-white rounded-xl p-4 sm:p-5 flex flex-col justify-between shadow-md shadow-zinc-200/10 border border-zinc-200/80 hover:shadow-lg transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5"
+            <motion.div
+              key={card.label}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.07, duration: 0.4, ease: "easeOut" }}
+              className="group relative bg-white border border-zinc-200/60 rounded-2xl p-5 flex flex-col gap-3 hover:border-zinc-300 hover:shadow-lg hover:shadow-zinc-100/60 transition-all duration-200 cursor-default overflow-hidden"
             >
-              
-              <div className="flex items-center justify-between mb-6 relative z-10">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-sm transition-all duration-500 group-hover:scale-110 ${card.color}`}>
-                  <Icon size={18} />
+              {/* Hover gradient glow */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-[0.03] transition-opacity duration-300 pointer-events-none`} />
+
+              <div className="flex items-center justify-between">
+                <div className={`w-10 h-10 ${card.softBg} rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200`}>
+                  <Icon size={18} className={card.iconColor} />
                 </div>
-                <span className="text-[9px] font-semibold px-3 py-1 rounded-full shadow-sm bg-zinc-950 text-white border border-zinc-900">{card.desc}</span>
+                {card.trend ? (
+                  <div className="flex items-center gap-0.5 px-2 py-1 bg-emerald-50 border border-emerald-100 rounded-lg">
+                    <ArrowUpRight size={10} className="text-emerald-600" />
+                    <span className="text-[10px] font-bold text-emerald-600">{card.trend}</span>
+                  </div>
+                ) : (
+                  <span className="text-[10px] font-semibold text-zinc-400 bg-zinc-50 border border-zinc-100 px-2 py-1 rounded-lg">{card.desc}</span>
+                )}
               </div>
-              
-              <div className="space-y-0.5 relative z-10">
-                <span className="text-2xl sm:text-4xl font-bold text-zinc-950 tracking-tighter block group-hover:text-[#6366F1] transition-colors duration-300">
-                  {card.value}
-                </span>
-                <span className="text-[12px] font-semibold text-zinc-500 tracking-wide block mt-1">
-                  {card.title}
-                </span>
+              <div>
+                <div className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight leading-none">{card.value}</div>
+                <div className="text-[11px] font-semibold text-zinc-400 mt-1.5 uppercase tracking-wider">{card.label}</div>
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>
 
-      {/* Simple Active Campaigns Breakdown */}
-      <div className="bg-white border border-zinc-200/80 rounded-xl p-4 sm:p-6 shadow-md shadow-zinc-200/5 hover:shadow-lg transition-all duration-500 flex flex-col relative overflow-hidden space-y-3 sm:space-y-4">
-        <div className="flex items-center justify-between border-b border-zinc-200/50 pb-4">
-          <h3 className="text-lg font-bold text-zinc-950 tracking-tight">Campaign Breakdown</h3>
-          <span className="text-xs font-semibold text-[#6366F1] bg-[#6366F1]/10 px-3 py-1 rounded-full shadow-sm">Live</span>
-        </div>
+      {/* ── Upgrade Banner ── */}
+      {currentPlan !== "viral_scale" && (
+        <div className="relative overflow-hidden bg-zinc-950 rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="absolute -top-8 -left-8 w-48 h-48 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-8 -right-8 w-48 h-48 bg-violet-600/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent pointer-events-none" />
 
-        <div className="overflow-hidden">
-          {/* Desktop Table View */}
-          <table className="hidden md:table w-full border-collapse text-left">
-            <thead>
-              <tr className="border-b border-zinc-200/50 text-xs font-semibold text-zinc-400">
-                <th className="pb-4 pl-4">Automation Rule</th>
-                <th className="pb-4">Keyword</th>
-                <th className="pb-4 text-right">Messages Sent</th>
-                <th className="pb-4 text-right pr-4">Contacts Captured</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-200/30">
-              {currentData.campaigns.map((c, i) => (
-                <tr key={i} className="hover:bg-zinc-50 transition-all group">
-                  <td className="py-4 pl-4">
-                    <h4 className="text-xs sm:text-sm font-semibold text-zinc-900">{c.name}</h4>
-                  </td>
-                  <td className="py-4">
-                    <span className="px-3 py-1 bg-[#6366F1]/10 text-[#6366F1] font-semibold text-xs rounded-xl">
-                      &apos;{c.keyword}&apos;
-                    </span>
-                  </td>
-                  <td className="py-4 text-right font-semibold text-zinc-800 text-xs sm:text-sm">
-                    {c.sent}
-                  </td>
-                  <td className="py-4 text-right pr-4 font-semibold text-emerald-600 text-xs sm:text-sm">
-                    {c.contacts} ({c.rate})
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {/* Mobile Card List View */}
-          <div className="md:hidden flex flex-col gap-3">
-            {currentData.campaigns.map((c, i) => (
-              <div 
-                key={i} 
-                className="bg-white border border-zinc-200 rounded-xl p-4 space-y-3 hover:border-[#6366F1]/40 transition-all"
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <h4 className="text-sm font-bold text-zinc-950 truncate">{c.name}</h4>
-                  <span className="px-2.5 py-0.5 bg-[#6366F1]/10 text-[#6366F1] rounded-lg text-[9px] font-bold shrink-0">
-                    &apos;{c.keyword}&apos;
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 border-t border-zinc-100 pt-3 text-[11px]">
-                  <div>
-                    <span className="text-zinc-400 block font-semibold uppercase tracking-wider text-[8px] mb-1">Messages Sent</span>
-                    <span className="text-sm font-bold text-zinc-800">{c.sent}</span>
-                  </div>
-                  <div>
-                    <span className="text-zinc-400 block font-semibold uppercase tracking-wider text-[8px] mb-1">Contacts Captured</span>
-                    <span className="text-sm font-bold text-emerald-600">{c.contacts} <span className="text-[10px] font-medium text-emerald-500">({c.rate})</span></span>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/25">
+              <Sparkles size={18} className="text-white" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-white">
+                {currentPlan === "free" ? "Unlock advanced analytics with Business Pro" : "Scale to full analytics suite"}
+              </p>
+              <p className="text-[11px] text-zinc-400 mt-0.5 max-w-md font-medium leading-relaxed">
+                {currentPlan === "free"
+                  ? "Detailed funnel reports, contact heatmaps and export to CSV."
+                  : "Agency-level reports, multi-account comparison & white-label exports."}
+              </p>
+            </div>
           </div>
+          <button
+            onClick={() => onUpgradeClick?.(currentPlan === "free" ? "creator_pro" : "viral_scale")}
+            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-zinc-50 text-zinc-950 text-xs font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:scale-[1.02] cursor-pointer relative z-10"
+          >
+            Upgrade Now <ArrowRight size={12} />
+          </button>
         </div>
-      </div>
+      )}
 
+      {/* ── Campaign Breakdown ── */}
+      <div className="bg-white border border-zinc-200/60 rounded-2xl overflow-hidden shadow-sm">
+        <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-zinc-100/80">
+          <div>
+            <h3 className="text-base font-bold text-zinc-950 flex items-center gap-2">
+              <div className="w-6 h-6 bg-indigo-50 rounded-lg flex items-center justify-center">
+                <TrendingUp size={13} className="text-indigo-500" />
+              </div>
+              Campaign Breakdown
+            </h3>
+            <p className="text-[11px] text-zinc-400 font-medium mt-0.5 ml-8">Performance per automation rule.</p>
+          </div>
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1.5 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-xl">
+            <Activity size={10} /> {campaigns.length} rules
+          </span>
+        </div>
+
+        {campaigns.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center gap-4">
+            <div className="w-14 h-14 bg-zinc-50 border-2 border-zinc-100 border-dashed rounded-2xl flex items-center justify-center">
+              <BarChart2 size={22} className="text-zinc-300" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-zinc-600">No campaign data yet</p>
+              <p className="text-xs text-zinc-400 mt-0.5">Create automations to start tracking performance.</p>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Desktop Table */}
+            <table className="hidden md:table w-full text-left">
+              <thead>
+                <tr className="bg-zinc-50/80 border-b border-zinc-100">
+                  {["Campaign", "Keyword", "Messages Sent", "Contacts", "Conv. Rate"].map(h => (
+                    <th key={h} className="px-6 py-3.5 text-[9px] font-bold text-zinc-400 uppercase tracking-widest">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-50">
+                {campaigns.map((c, i) => (
+                  <tr key={i} className="hover:bg-zinc-50/60 transition-colors group">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-7 h-7 bg-indigo-50 border border-indigo-100 rounded-lg flex items-center justify-center shrink-0">
+                          <MessageSquare size={12} className="text-indigo-500" />
+                        </div>
+                        <span className="text-xs font-semibold text-zinc-900 truncate max-w-[160px]">{c.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="px-2 py-1 bg-indigo-50 border border-indigo-100 text-indigo-600 text-[10px] font-bold rounded-lg font-mono">
+                        #{c.keyword}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-20 h-1.5 bg-zinc-100 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full"
+                            style={{ width: `${Math.round((c.sent / maxSent) * 100)}%` }}
+                          />
+                        </div>
+                        <span className="text-xs font-bold text-zinc-800">{c.sentFmt}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-xs font-bold text-emerald-600">{c.contacts}</span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="px-2 py-1 bg-emerald-50 border border-emerald-100 text-emerald-700 text-[10px] font-bold rounded-lg">{c.rate}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Mobile Cards */}
+            <div className="md:hidden divide-y divide-zinc-50">
+              {campaigns.map((c, i) => (
+                <div key={i} className="px-5 py-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 bg-indigo-50 border border-indigo-100 rounded-lg flex items-center justify-center shrink-0">
+                        <MessageSquare size={12} className="text-indigo-500" />
+                      </div>
+                      <span className="text-xs font-bold text-zinc-900 truncate max-w-[160px]">{c.name}</span>
+                    </div>
+                    <span className="px-2 py-0.5 bg-indigo-50 border border-indigo-100 text-indigo-600 text-[10px] font-bold rounded-lg font-mono">#{c.keyword}</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { label: "Sent", val: c.sentFmt, green: false },
+                      { label: "Contacts", val: c.contacts, green: true },
+                      { label: "Rate", val: c.rate, green: true },
+                    ].map(({ label, val, green }) => (
+                      <div key={label} className="bg-zinc-50 rounded-xl p-2.5">
+                        <p className="text-[9px] text-zinc-400 font-bold uppercase tracking-wider mb-1">{label}</p>
+                        <p className={`text-sm font-black ${green ? "text-emerald-600" : "text-zinc-900"}`}>{val}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }

@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   Cpu,
   Download,
+  HelpCircle,
   Home,
   Link2,
   Lock as LucideLock,
@@ -134,6 +135,7 @@ export default function Dashboard() {
   const [builderActive, setBuilderActive] = useState(false);
   const [builderCampaignName, setBuilderCampaignName] = useState("");
   const [builderTemplateKey, setBuilderTemplateKey] = useState("custom");
+  const [builderInitialStrategy, setBuilderInitialStrategy] = useState(null);
   const [timeRange, setTimeRange] = useState("all");
   const [partnerAppStatus, setPartnerAppStatus] = useState("approved");
   const [partnerActiveTier, setPartnerActiveTier] = useState("silver");
@@ -235,7 +237,7 @@ export default function Dashboard() {
   // Set dynamic document title based on active tab
   useEffect(() => {
     const tabLabels = {
-      home: "Dashboard",
+      home: "Home",
       automations: "Automations",
       audience: "Audience",
       analytics: "Analytics",
@@ -260,7 +262,7 @@ export default function Dashboard() {
       setTimeout(() => setIsSubscriptionOpen(true), 0);
       shouldClean = true;
     }
-    
+
     const successParam = params.get("success");
     if (successParam === "instagram_connected") {
       toast.success("Instagram account connected successfully! 🔗");
@@ -473,6 +475,24 @@ export default function Dashboard() {
     setBuilderActive(true);
   };
 
+  const handleCreateFromTemplate = (strategy) => {
+    if (effectivePlan === "free" && triggersList.length >= FREE_PLAN_TRIGGER_LIMIT) {
+      setIsSubscriptionOpen(true);
+      return;
+    }
+    const labelMap = {
+      comment_dm: "Comment → DM",
+      story_automator: "Story Reply",
+      faq_assistant: "AI FAQ Bot",
+      sales_closer: "AI Sales Agent"
+    };
+    setBuilderInitialStrategy(strategy);
+    setBuilderTemplateKey("custom");
+    setBuilderCampaignName(labelMap[strategy] || "New Campaign");
+    setBuilderActive(true);
+    setActiveTab("automations");
+  };
+
   const handleAddTrigger = async (keyword, response, options = {}) => {
     if (effectivePlan === "free" && triggersList.length >= FREE_PLAN_TRIGGER_LIMIT) {
       setIsSubscriptionOpen(true);
@@ -526,7 +546,7 @@ export default function Dashboard() {
       if (result.success && result.trigger) {
         setTriggersList(prev => [result.trigger, ...prev]);
         setBuilderActive(false);
-        
+
         // UX: Success Micro-interactions
         confetti({
           particleCount: 100,
@@ -596,11 +616,11 @@ export default function Dashboard() {
     // OPTIMISTIC UI UPDATE
     // Instantly flip the switch in the UI without waiting for the server
     const updatedTrigger = { ...trigger, metadata: updatedMetadata };
-    
+
     setTriggersList(prev => prev.map(t => t.id === triggerId ? updatedTrigger : t));
-    
-    setRealtimeTriggers(prev => prev.map(t => 
-      t.id === triggerId 
+
+    setRealtimeTriggers(prev => prev.map(t =>
+      t.id === triggerId
         ? { ...t, metadata: updatedMetadata }
         : t
     ));
@@ -670,9 +690,9 @@ export default function Dashboard() {
   if (loading) return <SkeletonDashboard />;
 
   const navigationItems = [
-    { id: "home", label: "Dashboard", icon: Home, reqPlan: "free" },
+    { id: "home", label: "Home", icon: Home, reqPlan: "free" },
     { id: "automations", label: "Automations", icon: Cpu, reqPlan: "free" },
-    { id: "audience", label: "Audience", icon: Users, reqPlan: "free" },
+    { id: "audience", label: "Contacts", icon: Users, reqPlan: "free" },
     { id: "store", label: "Mini Store", icon: Package, reqPlan: "creator_pro" },
     { id: "smart_bio", label: "Smart Bio", icon: Link2, reqPlan: "free" },
     { id: "partner", label: "Partner Program", icon: Sparkles, reqPlan: "free" },
@@ -702,15 +722,14 @@ export default function Dashboard() {
       locked: isLockedByPlan
     };
   });
-
   const maxQuota = currentPlan === "viral_scale" ? 50000 : currentPlan === "creator_pro" ? 15000 : 1000;
   const usedQuota = (realtimeStats?.totalDms || 0) + (realtimeStats?.autoReplies || 0);
   const quotaPercent = Math.min(100, Math.round((usedQuota / maxQuota) * 100));
 
   const tabTitle = activeTab === "home"
-    ? "Dashboard"
+    ? "Home"
     : activeTab === "automations" ? "Automations"
-      : activeTab === "audience" ? "Audience"
+      : activeTab === "audience" ? "Contacts"
         : activeTab === "store" ? "Mini Store"
           : activeTab === "smart_bio" ? "Smart Bio"
             : activeTab === "settings" ? "Settings"
@@ -719,7 +738,7 @@ export default function Dashboard() {
 
   return (
     <AppShell>
-      <div className="h-screen flex flex-col bg-[#FBFBFD] relative overflow-hidden selection:bg-[#6366F1]/10 selection:text-[#6366F1]">
+      <div className="h-screen flex flex-col bg-[#faf8f5] relative overflow-hidden selection:bg-indigo-500/10 selection:text-indigo-600">
         <SystemBroadcast />
 
         <MobileSidebar
@@ -738,11 +757,8 @@ export default function Dashboard() {
 
         <MobileBottomNav onMenuClick={() => setIsMobileSidebarOpen(true)} />
 
-        {/* Ambient Glows */}
-        <div className="absolute top-0 left-60 w-96 h-96 bg-[#6366F1]/5 rounded-full blur-[100px] pointer-events-none z-0" />
-        <div className="absolute top-40 right-0 w-96 h-96 bg-purple-500/5 rounded-full blur-[100px] pointer-events-none z-0" />
 
-        <div className="flex flex-1 relative overflow-hidden z-10">
+        <div className="flex flex-1 overflow-hidden">
           <DashboardSidebar
             navigationItems={navigationItems}
             onHelpClick={() => setIsHelpOpen(true)}
@@ -757,27 +773,27 @@ export default function Dashboard() {
           />
 
           <main
-            className="flex-1 p-3 sm:p-4 lg:p-6 lg:pl-8 w-full flex flex-col min-h-0 overflow-hidden pb-[88px] md:pb-6"
+            className="flex-1 overflow-y-auto w-full flex flex-col relative"
           >
             {/* Global Page Header (Navbar elements + Actions on the right, Title on the left) */}
-            <div className="flex flex-row items-center justify-between gap-3 pb-4 mb-5 border-b border-zinc-200/40 shrink-0 sticky top-0 z-20 bg-[#FBFBFD]/60 backdrop-blur-xl pt-2 px-1 -mx-1 rounded-b-xl">
+            <div className="flex flex-row items-center justify-between gap-3 py-3 px-4 sm:px-6 lg:px-8 border-b border-zinc-200/50 shrink-0 sticky top-0 z-20 bg-[#faf8f5]">
               {/* Left: Title + inline account badge */}
               <div className="flex items-center gap-3 min-w-0">
-                <div className="min-w-0">
-                  <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-950 leading-tight flex items-center gap-2">
+                <div className="min-w-0 flex flex-wrap items-center gap-2 sm:gap-4">
+                  <h1 className="text-lg sm:text-xl font-bold tracking-tight text-zinc-950 leading-tight flex items-center gap-2">
                     <span className={builderActive && activeTab === "automations" ? "inline sm:hidden" : "inline"}>
                       {builderActive && activeTab === "automations" ? "Campaign Builder" : tabTitle}
                     </span>
                     {activeTab === "automations" && builderActive && (
                       <>
                         <span className="text-zinc-300 font-medium select-none hidden sm:inline">/</span>
-                        <span className="text-zinc-500 text-lg sm:text-xl font-semibold truncate max-w-37.5 sm:max-w-xs">{builderCampaignName || "New Campaign"}</span>
+                        <span className="text-zinc-500 text-base sm:text-lg font-semibold truncate max-w-37.5 sm:max-w-xs">{builderCampaignName || "New Campaign"}</span>
                       </>
                     )}
                   </h1>
                   {selectedAccount && (
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold border ${(selectedAccount.persona || "content_creator") === "content_creator"
+                    <div className="flex items-center gap-2 border-l border-zinc-200 pl-2 sm:pl-4">
+                      <span className={`px-2 py-0.5 rounded-xl text-[9px] font-bold border ${(selectedAccount.persona || "content_creator") === "content_creator"
                         ? "bg-indigo-50 text-indigo-600 border-indigo-200"
                         : "bg-blue-50 text-blue-600 border-blue-200"
                         } ${builderActive ? 'hidden sm:inline-block' : 'inline-block'}`}>
@@ -792,24 +808,24 @@ export default function Dashboard() {
               </div>
 
               {/* Right Side: Navbar Elements + Contextual Actions */}
-              <div className="flex items-center gap-2 sm:gap-3 shrink-0 flex-wrap justify-end">
-                {/* Search Bar */}
-                <div className="hidden lg:flex items-center w-48 xl:w-56">
-                  <div className="relative w-full group cursor-pointer" onClick={() => setIsSearchOpen(true)}>
-                    <div className="w-full bg-zinc-50/80 hover:bg-white backdrop-blur-xl border border-zinc-200 hover:border-zinc-300 rounded-xl pl-9 pr-10 py-1.5 text-[12px] font-medium text-zinc-400 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)] hover:shadow-sm flex items-center h-[34px] group-hover:ring-4 group-hover:ring-zinc-50">
-                      Search...
-                    </div>
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none group-hover:text-[#6366F1] transition-colors z-10">
-                      <Search size={13} strokeWidth={2} />
-                    </div>
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center gap-0.5 px-1 py-0.5 rounded-[4px] bg-white border border-zinc-200 text-[8px] font-semibold text-zinc-500 pointer-events-none transition-all shadow-sm group-hover:bg-zinc-50">
-                      <span>⌘</span>
-                      <span>K</span>
-                    </div>
-                  </div>
-                </div>
+              <div className="flex items-center gap-2 sm:gap-3 shrink-0 flex-nowrap justify-end">
+                {/* Search Icon Button */}
+                <button
+                  onClick={() => setIsSearchOpen(true)}
+                  className="hidden lg:inline-flex items-center justify-center w-9 h-9 rounded-xl text-zinc-400 hover:text-[#6366F1] hover:bg-zinc-100/80 transition-all"
+                  title="Search (⌘K)"
+                >
+                  <Search size={17} strokeWidth={1.5} />
+                </button>
 
-
+                {/* Help Button */}
+                <button
+                  onClick={() => setIsHelpOpen(true)}
+                  className="inline-flex items-center justify-center w-9 h-9 rounded-xl text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100/80 transition-all"
+                  title="Help"
+                >
+                  <HelpCircle size={17} strokeWidth={1.5} />
+                </button>
 
                 {/* Notification Dropdown */}
                 <NotificationDropdown accounts={accounts} />
@@ -831,38 +847,15 @@ export default function Dashboard() {
                 {/* Contextual Actions */}
                 {selectedAccount && (
                   <div className="flex items-center gap-1.5 sm:gap-2 border-l border-zinc-200/60 pl-2 sm:pl-3">
-                    {activeTab === "audience" && (
-                      <Button
-                        onClick={() => window.dispatchEvent(new Event("export_audience_csv"))}
-                        variant={effectivePlan === "free" ? "ghost" : "primary"}
-                        disabled={effectivePlan === "free"}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-[11px]"
-                      >
-                        <Download size={12} />
-                        <span>Export CSV</span>
-                        {effectivePlan === "free" && <LucideLock size={10} />}
-                      </Button>
-                    )}
 
 
 
-                    {activeTab === "home" && (
-                      <button
-                        onClick={() => updateSelectedAccount({ is_active: !selectedAccount.is_active })}
-                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border text-[11px] font-semibold transition-all cursor-pointer hover:scale-[1.02] active:scale-95 ${selectedAccount?.is_active ? "bg-emerald-50 border-emerald-200/80 text-emerald-700 hover:bg-emerald-100/30" : "bg-rose-50 border-rose-200/80 text-rose-600 hover:bg-rose-100/30"}`}
-                      >
-                        <span className="relative flex h-1.5 w-1.5">
-                          <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${selectedAccount?.is_active ? "bg-emerald-400" : "bg-rose-400"}`} />
-                          <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${selectedAccount?.is_active ? "bg-[#10B981]" : "bg-[#EF4444]"}`} />
-                        </span>
-                        {selectedAccount?.is_active ? "Active" : "Paused"}
-                      </button>
-                    )}
+                    {/* Contextual Actions (Removed Active Indicator) */}
 
 
 
                     {activeTab === "partner" && partnerAppStatus === "approved" && (
-                      <span className="px-2 py-1 bg-zinc-950 text-white font-bold text-[9px] rounded-lg uppercase tracking-wider border border-zinc-800">
+                      <span className="px-2 py-1 bg-zinc-950 text-white font-bold text-[9px] rounded-xl uppercase tracking-wider border border-zinc-800">
                         {partnerActiveTier} · {partnerCommissionRate}%
                       </span>
                     )}
@@ -883,13 +876,13 @@ export default function Dashboard() {
             </div>
 
             {selectedAccount ? (
-              <div className="flex flex-col flex-1 min-h-0 space-y-4 overflow-hidden">
+              <div className="flex flex-col flex-1 min-h-0 space-y-3 overflow-hidden px-4 sm:px-5 lg:px-6 pt-4 pb-4">
                 {/* === DYNAMIC ERROR / WARNING BANNER === */}
                 {
                   (!selectedAccount?.is_active || usedQuota >= maxQuota) && (
                     <div className="shrink-0 animate-in slide-in-from-top-4 duration-300">
                       {!selectedAccount?.is_active ? (
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-amber-50 border border-amber-200/60 rounded-xl shadow-sm text-amber-800">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-amber-50 border border-amber-200/60 rounded-xl text-amber-800">
                           <div className="flex items-center gap-3">
                             <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
                               <AlertCircle size={18} className="animate-pulse" />
@@ -903,13 +896,13 @@ export default function Dashboard() {
                           </div>
                           <button
                             onClick={() => updateSelectedAccount({ is_active: true })}
-                            className="w-full sm:w-auto px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold shadow-md transition-all hover:scale-[1.02] shrink-0"
+                            className="w-full sm:w-auto px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold transition-all hover:scale-[1.02] shrink-0"
                           >
                             Activate Shield
                           </button>
                         </div>
                       ) : usedQuota >= maxQuota ? (
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-rose-50 border border-rose-200/60 rounded-xl shadow-sm text-rose-800">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-rose-50 border border-rose-200/60 rounded-xl text-rose-800">
                           <div className="flex items-center gap-3">
                             <div className="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0">
                               <AlertCircle size={18} className="animate-pulse" />
@@ -926,7 +919,7 @@ export default function Dashboard() {
                               setUpgradeReason("automation_limit");
                               setIsSubscriptionOpen(true);
                             }}
-                            className="w-full sm:w-auto px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-semibold shadow-md transition-all hover:scale-[1.02] shrink-0"
+                            className="w-full sm:w-auto px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-semibold transition-all hover:scale-[1.02] shrink-0"
                           >
                             Upgrade Now
                           </button>
@@ -940,7 +933,7 @@ export default function Dashboard() {
                   activeTab === "home" && (
                     <div
                       onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                      className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
+                      className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar px-4 sm:px-6 lg:px-8 pt-4 pb-24 md:pb-8"
                     >
                       <CreatorOverview
                         stats={realtimeStats}
@@ -959,6 +952,7 @@ export default function Dashboard() {
                           setActiveTab("automations");
                           setIsCreateModalOpen(true);
                         }}
+                        onCreateTemplate={handleCreateFromTemplate}
                       />
                     </div>
                   )
@@ -968,24 +962,46 @@ export default function Dashboard() {
                   activeTab === "automations" && (
                     <div
                       onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                      className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
+                      className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar flex flex-col px-4 sm:px-6 lg:px-8 pt-4 pb-24 md:pb-8"
                     >
-                      <TriggerList
-                        triggers={triggersList}
-                        isMasterActive={selectedAccount?.is_active}
-                        currentPlan={effectivePlan}
-                        onUpgradeClick={(reason) => {
-                          setUpgradeReason(reason || "general");
-                          setIsSubscriptionOpen(true);
-                        }}
-                        onCreateNew={() => setIsCreateModalOpen(true)}
-                        onEdit={(t) => {
-                          setEditingTrigger(t);
-                          setIsEditModalOpen(true);
-                        }}
-                        onDelete={handleDeleteTrigger}
-                        onToggleActive={handleToggleTriggerActive}
-                      />
+                      {builderActive ? (
+                        <CampaignBuilderWorkspace
+                          stories={instagramStories}
+                          automation={selectedAccount}
+                          templateKey={builderTemplateKey}
+                          campaignName={builderCampaignName}
+                          currentPlan={effectivePlan}
+                          onUpgradeClick={(reason) => {
+                            setUpgradeReason(reason || "general");
+                            setIsSubscriptionOpen(true);
+                          }}
+                          media={instagramMedia}
+                          onPublish={handleAddTrigger}
+                          onClose={() => {
+                            setBuilderActive(false);
+                            setBuilderInitialStrategy(null);
+                          }}
+                          initialStrategy={builderInitialStrategy}
+                        />
+                      ) : (
+                        <TriggerList
+                          triggers={triggersList}
+                          isMasterActive={selectedAccount?.is_active}
+                          currentPlan={effectivePlan}
+                          onUpgradeClick={(reason) => {
+                            setUpgradeReason(reason || "general");
+                            setIsSubscriptionOpen(true);
+                          }}
+                          onCreateNew={() => setIsCreateModalOpen(true)}
+                          onEdit={(t) => {
+                            setEditingTrigger(t);
+                            setIsEditModalOpen(true);
+                          }}
+                          onDelete={handleDeleteTrigger}
+                          onToggleActive={handleToggleTriggerActive}
+                          onCreateFromTemplate={handleCreateFromTemplate}
+                        />
+                      )}
                     </div>
                   )
                 }
@@ -994,12 +1010,12 @@ export default function Dashboard() {
                   activeTab === "audience" && (
                     <div
                       onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                      className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
+                      className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar px-4 sm:px-6 lg:px-8 pt-4 pb-24 md:pb-8"
                     >
-                      <AudienceCRM 
-                        accountId={selectedAccount.id} 
-                        history={realtimeHistory} 
-                        currentPlan={effectivePlan} 
+                      <AudienceCRM
+                        accountId={selectedAccount.id}
+                        history={realtimeHistory}
+                        currentPlan={effectivePlan}
                         onUpgradeClick={(reason) => {
                           setUpgradeReason(reason || "general");
                           setIsSubscriptionOpen(true);
@@ -1012,7 +1028,7 @@ export default function Dashboard() {
                   activeTab === "store" && (
                     <div
                       onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                      className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
+                      className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar px-4 sm:px-6 lg:px-8 pt-4 pb-24 md:pb-8"
                     >
                       <StoreManager accountId={selectedAccount.id} currentPlan={effectivePlan} onUpgradeClick={(reason) => {
                         setUpgradeReason(reason || "mini_store");
@@ -1025,7 +1041,7 @@ export default function Dashboard() {
                   activeTab === "smart_bio" && (
                     <div
                       onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                      className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
+                      className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar px-4 sm:px-6 lg:px-8 pt-4 pb-24 md:pb-8"
                     >
                       <SmartBio accountId={selectedAccount.id} account={selectedAccount} currentPlan={effectivePlan} onUpgradeClick={(reason) => {
                         setUpgradeReason(reason || "smart_bio");
@@ -1038,7 +1054,7 @@ export default function Dashboard() {
                   activeTab === "settings" && (
                     <div
                       onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                      className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
+                      className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar px-4 sm:px-6 lg:px-8 pt-4 pb-24 md:pb-8"
                     >
                       <SettingsDashboard account={selectedAccount} currentPlan={effectivePlan} realtimeStats={realtimeStats} onSubscriptionClick={() => {
                         setUpgradeReason("");
@@ -1052,10 +1068,10 @@ export default function Dashboard() {
                   activeTab === "partner" && (
                     <div
                       onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
-                      className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar"
+                      className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar px-4 sm:px-6 lg:px-8 pt-4 pb-24 md:pb-8"
                     >
-                      <PartnerDashboard 
-                        currentPlan={effectivePlan} 
+                      <PartnerDashboard
+                        currentPlan={effectivePlan}
                         onUpgradeClick={(reason) => {
                           setUpgradeReason(reason || "general");
                           setIsSubscriptionOpen(true);
@@ -1066,103 +1082,73 @@ export default function Dashboard() {
                 }
               </div >
             ) : (
-              <div className="flex-1 flex flex-col min-h-0 relative overflow-hidden rounded-xl border border-zinc-200/60 bg-white">
-                {/* Background: Blurred Dashboard Preview Mockup */}
-                <div className="absolute inset-0 z-0 p-6 overflow-hidden pointer-events-none select-none blur-[0.5px] opacity-[0.6] flex flex-col gap-6">
-                  {/* Mock Stats Cards */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {[
-                      { label: "Total Replies", value: "1,245", trend: "+12.4%" },
-                      { label: "DM Automations", value: "328", trend: "+8.2%" },
-                      { label: "Engagement Rate", value: "4.8%", trend: "+1.2%" },
-                      { label: "New Leads", value: "89", trend: "+14.6%" }
-                    ].map((card, i) => (
-                      <div key={i} className="p-4 rounded-xl border border-zinc-200/80 bg-zinc-50/50">
-                        <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">{card.label}</div>
-                        <div className="text-xl font-bold text-zinc-900 mt-1">{card.value}</div>
-                        <div className="text-[9px] font-bold text-emerald-600 mt-1">{card.trend} vs last week</div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Mock Charts Section */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1 min-h-0">
-                    <div className="md:col-span-2 p-6 rounded-xl border border-zinc-200/80 bg-white flex flex-col gap-4">
-                      <div className="font-bold text-zinc-800 text-sm">Reply Analytics</div>
-                      <div className="flex-1 flex items-end gap-2 pt-4">
-                        {[40, 60, 45, 90, 65, 85, 110, 80, 95, 130, 115, 140].map((h, idx) => (
-                          <div key={idx} className="flex-1 bg-[#6366F1]/10 rounded-t-lg" style={{ height: `${h}%` }} />
-                        ))}
-                      </div>
+              <div className="flex-1 flex flex-col min-h-0 relative overflow-y-auto no-scrollbar bg-white gap-6 px-4 sm:px-6 lg:px-8 pt-6 pb-6">
+                {/* Mock Stats Cards (No blur, shown as blank dashboard) */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pointer-events-none select-none">
+                  {[
+                    { label: "Total Replies", value: "1,245", trend: "+12.4%" },
+                    { label: "DM Automations", value: "328", trend: "+8.2%" },
+                    { label: "Engagement Rate", value: "4.8%", trend: "+1.2%" },
+                    { label: "New Leads", value: "89", trend: "+14.6%" }
+                  ].map((card, i) => (
+                    <div key={i} className="p-4 rounded-xl border border-zinc-200 bg-zinc-50/50">
+                      <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">{card.label}</div>
+                      <div className="text-xl font-bold text-zinc-900 mt-1">{card.value}</div>
+                      <div className="text-[9px] font-bold text-emerald-600 mt-1">{card.trend} vs last week</div>
                     </div>
-                    <div className="p-6 rounded-xl border border-zinc-200/80 bg-white flex flex-col gap-4">
-                      <div className="font-bold text-zinc-800 text-sm">Top Trigger Keywords</div>
-                      <div className="space-y-3 pt-2">
-                        {[
-                          { keyword: "START", count: "482 replies" },
-                          { keyword: "PROMO", count: "312 replies" },
-                          { keyword: "GUIDE", count: "219 replies" }
-                        ].map((row, idx) => (
-                          <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-50 border border-zinc-100">
-                            <span className="text-xs font-bold text-[#6366F1] bg-[#6366F1]/5 px-2 py-1 rounded-lg">#{row.keyword}</span>
-                            <span className="text-xs font-semibold text-zinc-500">{row.count}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
 
-                {/* Foreground: Premium Onboarding Overlay */}
-                <div className="absolute inset-0 z-10 flex items-center justify-center p-4 sm:p-8 bg-gradient-to-b from-white/30 via-white/70 to-white/95">
-                  <div className="w-full max-w-md bg-white/80 backdrop-blur-xl border border-zinc-200/50 rounded-xl p-6 sm:p-8 shadow-2xl flex flex-col items-center text-center relative overflow-hidden group">
-                    {/* Glowing background gradient inside the card */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-[#6366F1]/5 rounded-full blur-3xl -z-10" />
-
-                    {/* Animated Connection Icon */}
-                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white border-[3px] border-[#6366F1] shadow-[0_0_0_6px_rgba(99,102,241,0.03)] flex items-center justify-center mb-5 relative transition-transform duration-500 group-hover:scale-105">
-                      <div className="absolute inset-0 rounded-full border border-dashed border-[#6366F1]/30 animate-[spin_12s_linear_infinite]" />
-                      <Link2 size={20} className="text-[#6366F1] relative z-10" />
-                    </div>
-
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold mb-3 border border-[#6366F1]/20 uppercase tracking-widest">
-                      <Sparkles size={11} /> Connect Profile
-                    </div>
-
-                    <h2 className="text-xl sm:text-2xl font-extrabold text-zinc-900 tracking-tight leading-tight mb-2">
-                      Unlock Your Marketing Workspace
-                    </h2>
-
-                    <p className="text-zinc-500 text-[12px] sm:text-[13px] font-medium leading-relaxed mb-6 max-w-sm">
-                      Connect your Instagram Business account to view live analytics, manage automations, and track leads in real-time.
-                    </p>
-
-                    {/* Quick Onboarding Steps Checklist */}
-                    <div className="w-full text-left space-y-3 mb-6 bg-zinc-50/50 border border-zinc-200/40 rounded-xl p-4">
-                      <div className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest border-b border-zinc-200/50 pb-2 mb-2">Getting Started</div>
-
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-5 h-5 rounded-full bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold flex items-center justify-center shrink-0">1</div>
-                        <span className="text-xs font-semibold text-zinc-700">Connect your Instagram profile</span>
+                {/* Inline Connect Card replacing the charts to act as part of the dashboard */}
+                <div className="flex-1 flex items-start md:items-center justify-center min-h-0">
+                  <div className="w-full h-full bg-white border border-zinc-200 rounded-xl p-6 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 relative overflow-hidden group">
+                    
+                    {/* Left Side: Copy and Call to Action */}
+                    <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left w-full max-w-xl">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold mb-4 border border-[#6366F1]/20 uppercase tracking-widest">
+                        <Sparkles size={11} /> Connect Profile
                       </div>
 
-                      <div className="flex items-center gap-2.5 opacity-60">
-                        <div className="w-5 h-5 rounded-full bg-zinc-200 text-zinc-500 text-[10px] font-bold flex items-center justify-center shrink-0">2</div>
-                        <span className="text-xs font-medium text-zinc-500">Set up comment auto-replies</span>
-                      </div>
+                      <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-zinc-900 tracking-tight leading-tight mb-3">
+                        Unlock Your Marketing Workspace
+                      </h2>
 
-                      <div className="flex items-center gap-2.5 opacity-60">
-                        <div className="w-5 h-5 rounded-full bg-zinc-200 text-zinc-500 text-[10px] font-bold flex items-center justify-center shrink-0">3</div>
-                        <span className="text-xs font-medium text-zinc-500">Collect leads & grow audience</span>
+                      <p className="text-zinc-500 text-sm md:text-base font-medium leading-relaxed mb-8 max-w-md">
+                        Connect your Instagram Business account to view live analytics, manage automations, and track leads in real-time.
+                      </p>
+
+                      <button
+                        onClick={handleConnectClick}
+                        className="w-full md:w-auto px-8 py-3.5 bg-[#6366F1] hover:bg-[#5558e3] text-white rounded-xl text-sm font-bold-[0_4px_20px_-4px_rgba(99,102,241,0.4)] transition-all hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 hover:scale-[1.02]"
+                      >
+                        <Plus size={16} strokeWidth={2.5} /> Connect Instagram
+                      </button>
+                    </div>
+
+                    {/* Right Side: Quick Onboarding Steps Checklist */}
+                    <div className="w-full md:w-auto md:flex-1 max-w-md flex justify-center md:justify-end">
+                      <div className="w-full text-left space-y-4 bg-zinc-50/50 border border-zinc-200/60 rounded-xl p-6 sm:p-8">
+                        <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest border-b border-zinc-200/50 pb-3 mb-4 flex items-center gap-2">
+                          <Zap size={14} className="text-[#6366F1]" /> Getting Started
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <div className="w-6 h-6 rounded-xl bg-[#6366F1]/10 text-[#6366F1] text-xs font-bold flex items-center justify-center shrink-0">1</div>
+                          <span className="text-sm font-semibold text-zinc-800">Connect your Instagram profile</span>
+                        </div>
+
+                        <div className="flex items-center gap-3 opacity-60">
+                          <div className="w-6 h-6 rounded-xl bg-zinc-200 text-zinc-500 text-xs font-bold flex items-center justify-center shrink-0">2</div>
+                          <span className="text-sm font-medium text-zinc-500">Set up comment auto-replies</span>
+                        </div>
+
+                        <div className="flex items-center gap-3 opacity-60">
+                          <div className="w-6 h-6 rounded-xl bg-zinc-200 text-zinc-500 text-xs font-bold flex items-center justify-center shrink-0">3</div>
+                          <span className="text-sm font-medium text-zinc-500">Collect leads & grow audience</span>
+                        </div>
                       </div>
                     </div>
 
-                    <button
-                      onClick={handleConnectClick}
-                      className="w-full px-6 py-2.5 bg-[#6366F1] hover:bg-[#5558e3] text-white rounded-sm text-xs font-bold shadow-[0_4px_20px_-4px_rgba(99,102,241,0.4)] transition-all hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 hover:scale-[1.01]"
-                    >
-                      <Plus size={14} strokeWidth={2.5} /> Connect Instagram
-                    </button>
                   </div>
                 </div>
               </div>
@@ -1224,33 +1210,6 @@ export default function Dashboard() {
           user={user}
         />
 
-        {/* Full-Screen Focused Campaign Builder Workspace */}
-        <AnimatePresence>
-          {builderActive && (
-            <motion.div
-              initial={{ y: "100%", opacity: 0.95 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: "100%", opacity: 0.95 }}
-              transition={{ type: "spring", damping: 26, stiffness: 220 }}
-              className="fixed inset-0 z-50 bg-white w-screen h-screen overflow-hidden flex flex-col"
-            >
-              <CampaignBuilderWorkspace
-                stories={instagramStories}
-                automation={selectedAccount}
-                templateKey={builderTemplateKey}
-                campaignName={builderCampaignName}
-                currentPlan={effectivePlan}
-                onUpgradeClick={(reason) => {
-                  setUpgradeReason(reason || "general");
-                  setIsSubscriptionOpen(true);
-                }}
-                media={instagramMedia}
-                onPublish={handleAddTrigger}
-                onClose={() => setBuilderActive(false)}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Global Search Modal */}
         <AnimatePresence>
@@ -1268,7 +1227,7 @@ export default function Dashboard() {
                 initial={{ opacity: 0, scale: 0.95, y: -20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                className="relative w-full max-w-2xl bg-white rounded-[32px] shadow-2xl border border-zinc-200/60 overflow-hidden"
+                className="relative w-full max-w-2xl bg-white rounded-xl-[32px]-2xl border border-zinc-200/60 overflow-hidden"
               >
                 <div className="p-6 border-b border-zinc-100 flex items-center gap-4">
                   <Search className="text-[#6366F1]" size={24} />
@@ -1282,7 +1241,7 @@ export default function Dashboard() {
                   />
                   <button
                     onClick={() => setIsSearchOpen(false)}
-                    className="p-2 hover:bg-zinc-100 rounded-full transition-colors text-zinc-400"
+                    className="p-2 hover:bg-zinc-100 rounded-xl transition-colors text-zinc-400"
                   >
                     <X size={20} />
                   </button>
@@ -1301,7 +1260,7 @@ export default function Dashboard() {
                                 setActiveTab(action.tab);
                                 setIsSearchOpen(false);
                               }}
-                              className="flex items-center justify-between p-4 rounded-2xl bg-zinc-50 border border-zinc-100 hover:border-[#6366F1]/30 hover:bg-[#6366F1]/5 transition-all group"
+                              className="flex items-center justify-between p-4 rounded-xl-2xl bg-zinc-50 border border-zinc-100 hover:border-[#6366F1]/30 hover:bg-[#6366F1]/5 transition-all group"
                             >
                               <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-[#6366F1]">
@@ -1360,7 +1319,7 @@ export default function Dashboard() {
                         </>
                       ) : (
                         <div className="py-12 text-center">
-                          <div className="w-16 h-16 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <div className="w-16 h-16 bg-zinc-50 rounded-xl flex items-center justify-center mx-auto mb-4">
                             <Search className="text-zinc-300" size={32} />
                           </div>
                           <h3 className="text-zinc-900 font-semibold mb-1">{`No results for "${searchQuery}"`}</h3>
@@ -1374,11 +1333,11 @@ export default function Dashboard() {
                 <div className="p-4 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1.5 text-[10px] text-zinc-400">
-                      <span className="px-1.5 py-0.5 bg-white border border-zinc-200 rounded shadow-sm text-zinc-500 font-bold">ESC</span>
+                      <span className="px-1.5 py-0.5 bg-white border border-zinc-200 rounded-xl text-zinc-500 font-bold">ESC</span>
                       <span>to close</span>
                     </div>
                     <div className="flex items-center gap-1.5 text-[10px] text-zinc-400">
-                      <span className="px-1.5 py-0.5 bg-white border border-zinc-200 rounded shadow-sm text-zinc-500 font-bold">↵</span>
+                      <span className="px-1.5 py-0.5 bg-white border border-zinc-200 rounded-xl text-zinc-500 font-bold">↵</span>
                       <span>to select</span>
                     </div>
                   </div>

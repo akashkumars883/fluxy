@@ -1,13 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FBFBFD;       /* Premium Off-White */
+  --background: #faf8f5;       /* Warm Cream — light & easy on eyes */
   --foreground: #09090B;       /* Jet Black Obsidian */
   --indigo-accent: #6366F1;    /* Premium Indigo Violet */
   --instagram-pink: #EC4899;   /* Electric Pink for secondary highlights */
   --zinc-gray: #71717A;
   --emerald-accent: #10B981;
   --border-color: #E4E4E7;     /* Clean Slate Border */
+  --sidebar-bg: #ffffff;       /* White sidebar (light mode) */
+  --card-bg: #ffffff;          /* Pure white cards */
+  --card-border: rgba(0,0,0,0.06); /* Subtle card border */
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

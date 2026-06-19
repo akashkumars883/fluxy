@@ -1,7 +1,9 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
-import BioPage from '../bio/[username]/page';
+import BioPage, { generateMetadata as bioGenerateMetadata } from '../bio/[username]/page';
+
+export const generateMetadata = bioGenerateMetadata;
 
 export const dynamic = 'force-dynamic';
 

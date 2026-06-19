@@ -222,16 +222,16 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-zinc-950/40 backdrop-blur-xl"
+            className="absolute inset-0 bg-zinc-950/60"
             onClick={onClose}
           />
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.96, y: 15 }}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 15 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className={`relative bg-white w-full ${step === 2 && !paymentSuccess ? 'max-w-3xl' : 'max-w-lg'} max-h-[90vh] rounded-[24px] shadow-2xl border border-zinc-200/80 overflow-hidden flex flex-col z-10 transition-all duration-300`}
+            className={`relative bg-white w-full ${step === 2 && !paymentSuccess ? 'max-w-3xl' : 'max-w-lg'} max-h-[85vh] rounded-xl border border-zinc-200/80 overflow-y-auto no-scrollbar flex flex-col z-10 transition-all duration-300 pointer-events-auto`}
           >
             {/* Header */}
             <div className="px-6 py-5 flex items-center justify-between border-b border-zinc-100 shrink-0">
@@ -245,7 +245,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                     : "Complete your subscription upgrade securely."}
                 </p>
               </div>
-              <button onClick={onClose} className="p-2 bg-zinc-50 border border-zinc-200/60 hover:bg-zinc-100 rounded-sm transition-all shadow-sm cursor-pointer text-zinc-400 hover:text-zinc-800">
+              <button onClick={onClose} className="p-2 bg-zinc-50 border border-zinc-200/60 hover:bg-zinc-100 rounded-xl transition-all cursor-pointer text-zinc-400 hover:text-zinc-800">
                 <X size={16} />
               </button>
             </div>
@@ -279,7 +279,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
             {/* Upgrade Reason Banner */}
             {upgradeReason && upgradeReason !== "general" && activeTab === 'plans' && step === 1 && (
               <div className="bg-indigo-50/60 border-b border-indigo-100 px-6 py-3 flex items-start sm:items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-                <div className="bg-indigo-500/10 text-[#6366F1] p-1.5 rounded-lg shrink-0">
+                <div className="bg-indigo-500/10 text-[#6366F1] p-1.5 rounded-xl shrink-0">
                   <Sparkles size={14} />
                 </div>
                 <div>
@@ -297,19 +297,19 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                 <div className="space-y-5 animate-in fade-in duration-300">
                   {/* Monthly / Yearly Toggle */}
                   <div className="flex justify-center border-b border-zinc-100 pb-4">
-                    <div className="bg-zinc-100 p-0.5 rounded-xl flex items-center gap-0.5 border border-zinc-200/60 shadow-inner w-fit">
+                    <div className="bg-zinc-100 p-0.5 rounded-xl flex items-center gap-0.5 border border-zinc-200/60 w-fit">
                       <button 
                         onClick={() => setIsAnnual(false)} 
-                        className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${!isAnnual ? 'bg-white shadow-sm text-zinc-950' : 'text-zinc-400 hover:text-zinc-800'}`}
+                        className={`px-4 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${!isAnnual ? 'bg-white text-zinc-950' : 'text-zinc-400 hover:text-zinc-800'}`}
                       >
                         Monthly
                       </button>
                       <button 
                         onClick={() => setIsAnnual(true)} 
-                        className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1 ${isAnnual ? 'bg-white shadow-sm text-zinc-950' : 'text-zinc-400 hover:text-zinc-800'}`}
+                        className={`px-4 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1 ${isAnnual ? 'bg-white text-zinc-950' : 'text-zinc-400 hover:text-zinc-800'}`}
                       >
                         Yearly 
-                        <span className="text-[9px] px-1 py-0.2 bg-emerald-500 text-white rounded font-semibold">-20%</span>
+                        <span className="text-[9px] px-1 py-0.2 bg-emerald-500 text-white rounded-xl font-semibold">-20%</span>
                       </button>
                     </div>
                   </div>
@@ -325,12 +325,12 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                           onClick={() => setSelectedPlanId(plan.id)}
                           className={`relative p-4 rounded-xl border-2 transition-all duration-300 cursor-pointer flex items-center justify-between gap-4 group ${
                             isSelected
-                              ? "bg-indigo-50/10 border-[#6366F1] shadow-md shadow-indigo-500/5"
+                              ? "bg-indigo-50/10 border-[#6366F1]"
                               : "bg-white border-zinc-100 hover:bg-zinc-50/50 hover:border-zinc-200"
                           }`}
                         >
                           <div className="flex items-center gap-3">
-                            <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 shrink-0 ${
+                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 shrink-0 ${
                               isSelected ? 'bg-[#6366F1]/15 text-[#6366F1]' : 'bg-zinc-50 text-zinc-400 group-hover:bg-zinc-100'
                             }`}>
                               {plan.id === 'viral_scale' ? <Sparkles size={16} /> : plan.id === 'creator_pro' ? <Zap size={16} /> : <BarChart3 size={16} />}
@@ -339,10 +339,10 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                               <div className="flex items-center gap-1.5">
                                 <h4 className="font-semibold text-zinc-900 text-xs tracking-tight">{plan.name}</h4>
                                 {plan.popular && (
-                                  <span className="bg-[#6366F1] text-white text-[8px] font-semibold px-1.5 py-0.5 rounded uppercase tracking-wider shadow-sm">popular</span>
+                                  <span className="bg-[#6366F1] text-white text-[8px] font-semibold px-1.5 py-0.5 rounded-xl uppercase tracking-wider">popular</span>
                                 )}
                                 {isCurrent && (
-                                  <span className="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[8px] font-semibold px-1.5 py-0.5 rounded uppercase tracking-wider">Active</span>
+                                  <span className="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[8px] font-semibold px-1.5 py-0.5 rounded-xl uppercase tracking-wider">Active</span>
                                 )}
                               </div>
                               <p className="text-[10px] text-zinc-400 font-medium mt-0.5">
@@ -360,10 +360,10 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                                 <span className="text-[9px] font-medium text-zinc-400">/{isAnnual ? 'yr' : 'mo'}</span>
                               </div>
                             </div>
-                            <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all shrink-0 ${
+                            <div className={`w-4 h-4 rounded-xl border flex items-center justify-center transition-all shrink-0 ${
                               isSelected ? 'border-[#6366F1] bg-[#6366F1]' : 'border-zinc-200 bg-white group-hover:border-zinc-300'
                             }`}>
-                              {isSelected && <div className="w-1.5 h-1.5 bg-white rounded-full shadow-sm" />}
+                              {isSelected && <div className="w-1.5 h-1.5 bg-white rounded-xl" />}
                             </div>
                           </div>
                         </div>
@@ -376,7 +376,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                     <button
                       onClick={() => setStep(2)}
                       disabled={selectedPlanId === currentPlan}
-                      className="w-full py-3 bg-zinc-950 text-white rounded-xl font-semibold text-xs shadow-lg flex items-center justify-center gap-1.5 hover:bg-zinc-800 disabled:opacity-50 transition-all active:scale-[0.99] cursor-pointer"
+                      className="w-full py-3 bg-zinc-950 text-white rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5 hover:bg-zinc-800 disabled:opacity-50 transition-all active:scale-[0.99] cursor-pointer"
                     >
                       <span>{selectedPlanId === currentPlan ? "Current Plan Active" : "Proceed to Checkout"}</span>
                       <ArrowRight size={13} />
@@ -398,8 +398,8 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                   )}
 
                   {paymentSuccess ? (
-                    <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 sm:p-8 text-center space-y-4">
-                      <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6 sm:p-8 text-center space-y-4">
+                      <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-2">
                         <CheckCircle2 size={32} />
                       </div>
                       <h3 className="text-xl font-bold text-zinc-900">Payment Submitted!</h3>
@@ -408,7 +408,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                       </p>
                       <button
                         onClick={onClose}
-                        className="mt-4 px-6 py-2.5 bg-zinc-950 text-white rounded-xl font-semibold text-xs shadow-md hover:bg-zinc-800 transition-all cursor-pointer"
+                        className="mt-4 px-6 py-2.5 bg-zinc-950 text-white rounded-xl font-semibold text-xs hover:bg-zinc-800 transition-all cursor-pointer"
                       >
                         Back to Dashboard
                       </button>
@@ -416,12 +416,12 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
                       {/* Left Side: Order Summary */}
-                      <div className="bg-zinc-50/80 border border-zinc-200/60 rounded-2xl p-5 sm:p-6 space-y-5 flex flex-col">
+                      <div className="bg-zinc-50/80 border border-zinc-200/60 rounded-xl p-5 sm:p-6 space-y-5 flex flex-col">
                         <div>
                           <h4 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest border-b border-zinc-200/50 pb-2 mb-4">Order Summary</h4>
                           
                           {/* Selected Plan Summary card */}
-                          <div className="bg-white border border-zinc-200 shadow-sm rounded-xl p-3 flex items-center justify-between mb-5">
+                          <div className="bg-white border border-zinc-200 rounded-xl p-3 flex items-center justify-between mb-5">
                             <div className="flex items-center gap-3">
                               <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border border-indigo-100/50">
                                 {selectedPlanId === 'viral_scale' ? <Sparkles size={16} /> : selectedPlanId === 'creator_pro' ? <Zap size={16} /> : <BarChart3 size={16} />}
@@ -467,7 +467,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                               <button
                                 onClick={handleApplyPromo}
                                 disabled={promoLoading || !promoInput.trim()}
-                                className="px-3 py-2 bg-zinc-950 hover:bg-zinc-800 text-white font-semibold text-[10px] rounded-sm transition-all disabled:opacity-50 whitespace-nowrap cursor-pointer"
+                                className="px-3 py-2 bg-zinc-950 hover:bg-zinc-800 text-white font-semibold text-[10px] rounded-xl transition-all disabled:opacity-50 whitespace-nowrap cursor-pointer"
                               >
                                 {promoLoading ? "..." : "Apply"}
                               </button>
@@ -542,14 +542,14 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                     </div>
 
                     {/* Right Side: Payment Action */}
-                    <div className="relative bg-white border border-indigo-100/80 rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col justify-between overflow-hidden">
+                    <div className="relative bg-white border border-indigo-100/80 rounded-xl p-5 sm:p-6 flex flex-col justify-between overflow-hidden">
                       {/* Decorative Background Accents */}
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50/50 rounded-bl-full pointer-events-none -z-10" />
-                      <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-50/30 rounded-tr-full pointer-events-none -z-10" />
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50/50 rounded-xl-full pointer-events-none -z-10" />
+                      <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-50/30 rounded-xl-full pointer-events-none -z-10" />
 
                       <div>
                         <div className="flex items-center gap-2 mb-4">
-                          <div className="w-6 h-6 rounded bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                          <div className="w-6 h-6 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
                             <Zap size={12} className="fill-current" />
                           </div>
                           <h4 className="text-sm font-bold text-zinc-900">Secure UPI Payment</h4>
@@ -559,14 +559,14 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                           <div className="space-y-5">
                             <div className="text-center">
                               <p className="text-[11px] font-semibold text-zinc-500 mb-3">Scan with PhonePe, GPay, or Paytm</p>
-                              <div className="mx-auto w-44 h-44 bg-white p-2 rounded-2xl flex items-center justify-center border-2 border-indigo-100 shadow-[0_4px_20px_-8px_rgba(99,102,241,0.2)]">
+                              <div className="mx-auto w-44 h-44 bg-white p-2 rounded-xl flex items-center justify-center border-2 border-indigo-100">
                                 <img 
                                   src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=6201231875@pthdfc&pn=Automixa&am=${getDisplayPrice(plans.find(p => p.id === selectedPlanId), true).replace(/,/g, '')}`} 
                                   alt="UPI QR Code" 
                                   className="w-full h-full object-contain"
                                 />
                               </div>
-                              <p className="text-[10px] text-zinc-500 font-medium mt-3 bg-zinc-50 inline-block px-3 py-1 rounded-full border border-zinc-200">
+                              <p className="text-[10px] text-zinc-500 font-medium mt-3 bg-zinc-50 inline-block px-3 py-1 rounded-xl border border-zinc-200">
                                 UPI ID: <strong className="text-zinc-800 select-all tracking-wide">6201231875@pthdfc</strong>
                               </p>
                             </div>
@@ -589,12 +589,12 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                         <button
                           onClick={handleCheckout}
                           disabled={selectedPlanId !== 'free' && (!utrNumber || isSubmittingUtr || utrNumber.length < 12)}
-                          className="w-full py-3.5 bg-zinc-950 text-white rounded-xl font-bold text-sm shadow-[0_8px_20px_-8px_rgba(0,0,0,0.4)] flex items-center justify-center gap-2 hover:bg-zinc-800 hover:-translate-y-0.5 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:hover:translate-y-0 disabled:cursor-not-allowed"
+                          className="w-full py-3.5 bg-zinc-950 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-zinc-800 hover:-translate-y-0.5 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:hover:translate-y-0 disabled:cursor-not-allowed"
                         >
                           <span>{isSubmittingUtr ? "Verifying..." : selectedPlanId === 'free' ? "Confirm Switch" : `Submit Payment`}</span>
                           <ArrowRight size={16} />
                         </button>
-                        <p className="text-center text-[10px] font-semibold text-emerald-600 flex items-center justify-center gap-1.5 bg-emerald-50 py-1.5 rounded-lg border border-emerald-100">
+                        <p className="text-center text-[10px] font-semibold text-emerald-600 flex items-center justify-center gap-1.5 bg-emerald-50 py-1.5 rounded-xl border border-emerald-100">
                           {selectedPlanId !== 'free' ? <><CheckCircle2 size={12} /> Direct Bank Transfer (No Extra Fees)</> : ""}
                         </p>
                       </div>
@@ -607,7 +607,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
               {/* Section: Invoices */}
               {activeTab === 'invoices' && (
                 <div className="space-y-6 animate-in fade-in duration-300">
-                  <div className="border border-zinc-200 rounded-2xl overflow-hidden shadow-sm bg-white/50">
+                  <div className="border border-zinc-200 rounded-xl overflow-hidden bg-white/50">
                     <table className="w-full text-left border-collapse">
                       <thead className="bg-zinc-50 border-b border-zinc-150">
                         <tr>
@@ -627,7 +627,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                               <td className="px-6 py-4 text-xs font-semibold text-zinc-500">{new Date(inv.created_at).toLocaleDateString()}</td>
                               <td className="px-6 py-4 text-xs font-semibold text-zinc-900">{inv.currency} {inv.amount}</td>
                               <td className="px-6 py-4 text-right">
-                                <span className={`px-2.5 py-0.8 text-[10px] font-semibold rounded-md border ${
+                                <span className={`px-2.5 py-0.8 text-[10px] font-semibold rounded-xl border ${
                                   inv.status === 'paid' 
                                     ? "bg-emerald-50 text-emerald-600 border-emerald-100" 
                                     : "bg-zinc-50 text-zinc-400 border-zinc-200"
@@ -647,7 +647,7 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                       </tbody>
                     </table>
                   </div>
-                  <div className="text-center py-6 bg-zinc-50 rounded-2xl border border-zinc-200 border-dashed">
+                  <div className="text-center py-6 bg-zinc-50 rounded-xl border border-zinc-200 border-dashed">
                     <p className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider">older invoices are archived. contact support for assistance.</p>
                   </div>
                 </div>

@@ -98,21 +98,21 @@ export default function EditTriggerModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm" 
+            className="fixed inset-0 bg-zinc-950/60 " 
           />
           
           {/* Modal Container */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.98, y: 10 }}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.98, y: 10 }}
-            className="relative w-full max-w-xl bg-white border border-zinc-200/80 rounded-xl shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            className="relative w-full max-w-xl bg-white border border-zinc-200/80 rounded-xl flex flex-col max-h-[85vh] overflow-y-auto no-scrollbar pointer-events-auto"
           >
             {/* Header */}
             <div className="px-5 sm:px-6 py-4 border-b border-zinc-150 flex items-center justify-between bg-zinc-50/50 shrink-0">
                <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-indigo-50 text-[#6366F1] flex items-center justify-center shadow-sm border border-indigo-100">
+                    <div className="w-8 h-8 rounded-xl bg-indigo-50 text-[#6366F1] flex items-center justify-center  border border-indigo-100">
                       <Rocket size={16} />
                     </div>
                     <span className="text-[13px] font-bold text-[#6366F1] tracking-tight">Edit Automation Rule</span>
@@ -123,7 +123,7 @@ export default function EditTriggerModal({
                </div>
                <button 
                  onClick={onClose}
-                 className="p-2 bg-white border border-zinc-200 rounded-sm text-zinc-550 hover:text-zinc-900 transition-all shadow-sm cursor-pointer hover:bg-zinc-50"
+                 className="p-2 bg-white border border-zinc-200 rounded-xl text-zinc-550 hover:text-zinc-900 transition-all  cursor-pointer hover:bg-zinc-50"
                >
                  <X size={16} />
                </button>
@@ -133,7 +133,7 @@ export default function EditTriggerModal({
             <div className="flex-1 overflow-y-auto no-scrollbar p-5 sm:p-6 space-y-5">
               
               {/* SECTION 1: TRIGGER SETUP */}
-              <div className="bg-zinc-50/40 border border-zinc-200/80 rounded-2xl p-4 sm:p-5 space-y-4 hover:border-zinc-300 transition-all">
+              <div className="bg-zinc-50/40 border border-zinc-200/80 rounded-xl p-4 sm:p-5 space-y-4 hover:border-zinc-300 transition-all">
                 <h3 className="text-xs font-black text-zinc-800 uppercase tracking-wider flex items-center gap-2 border-b border-zinc-100 pb-2.5">
                   <Sparkles size={14} className="text-[#6366F1]" /> 1. Trigger Setup
                 </h3>
@@ -161,7 +161,7 @@ export default function EditTriggerModal({
                           }}
                           className={`relative py-2.5 rounded-xl text-xs font-semibold transition-all border flex items-center justify-center gap-1.5 cursor-pointer ${
                             type === t.id 
-                              ? 'bg-[#6366F1] text-white border-[#6366F1] shadow-md shadow-indigo-500/10' 
+                              ? 'bg-[#6366F1] text-white border-[#6366F1]-500/10' 
                               : 'bg-white text-zinc-600 border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50'
                           }`}
                         >
@@ -181,7 +181,7 @@ export default function EditTriggerModal({
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value.toUpperCase())}
                     placeholder="e.g. READY"
-                    className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all shadow-sm placeholder:text-zinc-400 uppercase"
+                    className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all  placeholder:text-zinc-400 uppercase"
                   />
                 </div>
 
@@ -191,7 +191,7 @@ export default function EditTriggerModal({
                   <div className="flex flex-col gap-2 p-3 bg-white border border-zinc-200/80 rounded-xl">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-500 shrink-0">
+                        <div className="w-8 h-8 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-500 shrink-0">
                           <ShieldCheck size={16} />
                         </div>
                         <div>
@@ -202,9 +202,9 @@ export default function EditTriggerModal({
                       <button 
                         type="button"
                         onClick={() => setFollowerGate(!followerGate)}
-                        className={`w-9 h-5.5 rounded-full transition-all relative shrink-0 ${followerGate ? 'bg-[#6366F1]' : 'bg-zinc-300'}`}
+                        className={`w-9 h-5.5 rounded-xl transition-all relative shrink-0 ${followerGate ? 'bg-[#6366F1]' : 'bg-zinc-300'}`}
                       >
-                        <div className={`absolute top-0.5 w-4.5 h-4.5 bg-white rounded-full shadow-sm transition-all ${followerGate ? 'left-4' : 'left-0.5'}`} />
+                        <div className={`absolute top-0.5 w-4.5 h-4.5 bg-white rounded-xl  transition-all ${followerGate ? 'left-4' : 'left-0.5'}`} />
                       </button>
                     </div>
                     {followerGate && (
@@ -215,7 +215,7 @@ export default function EditTriggerModal({
                           value={followGateMessage}
                           onChange={(e) => setFollowGateMessage(e.target.value)}
                           placeholder="One final step to unlock! 🎁"
-                          className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:border-[#6366F1] focus:bg-white transition-all shadow-xs"
+                          className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:border-[#6366F1] focus:bg-white transition-all"
                         />
                       </div>
                     )}
@@ -224,7 +224,7 @@ export default function EditTriggerModal({
               </div>
 
               {/* SECTION 2: AUTOMATION RESPONSE */}
-              <div className="bg-zinc-50/40 border border-zinc-200/80 rounded-2xl p-4 sm:p-5 space-y-4 hover:border-zinc-300 transition-all">
+              <div className="bg-zinc-50/40 border border-zinc-200/80 rounded-xl p-4 sm:p-5 space-y-4 hover:border-zinc-300 transition-all">
                 <h3 className="text-xs font-black text-zinc-800 uppercase tracking-wider flex items-center gap-2 border-b border-zinc-100 pb-2.5">
                   <MessageSquare size={14} className="text-[#6366F1]" /> 2. Automation Response
                 </h3>
@@ -239,7 +239,7 @@ export default function EditTriggerModal({
                         value={publicReply}
                         onChange={(e) => setPublicReply(e.target.value)}
                         placeholder="e.g. Check your DMs! 🚀"
-                        className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all shadow-sm"
+                        className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all "
                       />
                       <p className="text-[10px] text-zinc-400 font-medium">This reply will be published directly under the follower&apos;s comment.</p>
                     </div>
@@ -252,9 +252,9 @@ export default function EditTriggerModal({
                         value={introTitle}
                         onChange={(e) => setIntroTitle(e.target.value)}
                         placeholder="Hey {name}! 👋 Tap the button below to claim..."
-                        className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all shadow-sm resize-none"
+                        className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all  resize-none"
                       />
-                      <p className="text-[10px] text-zinc-400 font-medium">Variables: Use <code className="bg-zinc-100 px-1 py-0.5 rounded font-mono text-[9px]">{'{name}'}</code> to personalize.</p>
+                      <p className="text-[10px] text-zinc-400 font-medium">Variables: Use <code className="bg-zinc-100 px-1 py-0.5 rounded-xl font-mono text-[9px]">{'{name}'}</code> to personalize.</p>
                     </div>
 
                     {/* Intro Button Text */}
@@ -266,7 +266,7 @@ export default function EditTriggerModal({
                         value={introButtonText}
                         onChange={(e) => setIntroButtonText(e.target.value)}
                         placeholder="Send me the access"
-                        className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all shadow-sm"
+                        className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all "
                       />
                     </div>
                   </>
@@ -282,13 +282,13 @@ export default function EditTriggerModal({
                     value={response}
                     onChange={(e) => setResponse(e.target.value)}
                     placeholder="Type your message here..."
-                    className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all shadow-sm resize-none"
+                    className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium text-zinc-900 outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all  resize-none"
                   />
                 </div>
               </div>
 
               {/* SECTION 3: CALL TO ACTION */}
-              <div className="bg-zinc-50/40 border border-zinc-200/80 rounded-2xl p-4 sm:p-5 space-y-4 hover:border-zinc-300 transition-all pb-6">
+              <div className="bg-zinc-50/40 border border-zinc-200/80 rounded-xl p-4 sm:p-5 space-y-4 hover:border-zinc-300 transition-all pb-6">
                 <h3 className="text-xs font-black text-zinc-800 uppercase tracking-wider flex items-center gap-2 border-b border-zinc-100 pb-2.5">
                   <LinkIcon size={14} className="text-[#6366F1]" /> 3. Call to Action (Optional)
                 </h3>
@@ -301,7 +301,7 @@ export default function EditTriggerModal({
                       placeholder="e.g. Claim Discount"
                       value={buttonText}
                       onChange={(e) => setButtonText(e.target.value)}
-                      className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-xs sm:text-sm font-medium outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all shadow-sm"
+                      className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-xs sm:text-sm font-medium outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all "
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -311,7 +311,7 @@ export default function EditTriggerModal({
                       placeholder="https://yourstore.com/deal"
                       value={buttonLink}
                       onChange={(e) => setButtonLink(e.target.value)}
-                      className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-xs sm:text-sm font-medium outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all shadow-sm"
+                      className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-xs sm:text-sm font-medium outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all "
                     />
                   </div>
                 </div>
@@ -323,7 +323,7 @@ export default function EditTriggerModal({
                     placeholder="e.g. Summer Promo 2026"
                     value={campaignName}
                     onChange={(e) => setCampaignName(e.target.value)}
-                    className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all shadow-sm"
+                    className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3 text-sm font-medium outline-none focus:border-[#6366F1] focus:ring-4 focus:ring-[#6366F1]/5 transition-all "
                   />
                 </div>
               </div>
@@ -331,13 +331,13 @@ export default function EditTriggerModal({
             </div>
 
             {/* Footer */}
-            <div className="px-5 sm:px-6 py-4 bg-zinc-50 border-t border-zinc-150 flex items-center justify-between shrink-0 rounded-b-xl">
+            <div className="px-5 sm:px-6 py-4 bg-zinc-50 border-t border-zinc-150 flex items-center justify-between shrink-0 rounded-xl-xl">
               {/* Optional Delete Button */}
               {onDelete ? (
                 <button 
                   type="button"
                   onClick={handleDelete}
-                  className="px-4 py-2.5 bg-white border border-rose-200 hover:border-rose-300 hover:bg-rose-50 rounded-sm text-xs font-semibold text-rose-600 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                  className="px-4 py-2.5 bg-white border border-rose-200 hover:border-rose-300 hover:bg-rose-50 rounded-xl text-xs font-semibold text-rose-600 transition-all flex items-center gap-1.5 cursor-pointer "
                 >
                   <Trash2 size={14} /> <span className="hidden sm:inline">Delete Rule</span>
                 </button>
@@ -349,7 +349,7 @@ export default function EditTriggerModal({
                 <button 
                   type="button"
                   onClick={onClose}
-                  className="px-5 py-2.5 text-xs font-bold text-zinc-500 hover:text-zinc-800 hover:bg-zinc-200/50 rounded-sm transition-all cursor-pointer"
+                  className="px-5 py-2.5 text-xs font-bold text-zinc-500 hover:text-zinc-800 hover:bg-zinc-200/50 rounded-xl transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -357,7 +357,7 @@ export default function EditTriggerModal({
                 <button 
                   type="button"
                   onClick={handleSave}
-                  className="px-6 py-2.5 bg-[#6366F1] hover:bg-[#4f46e5] text-white rounded-sm text-xs font-bold shadow-md shadow-[#6366F1]/10 hover:shadow-lg hover:shadow-indigo-500/20 hover:-translate-y-0.5 transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="px-6 py-2.5 bg-[#6366F1] hover:bg-[#4f46e5] text-white rounded-xl text-xs font-bold  /10 hover: hover:-500/20 hover:-translate-y-0.5 transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   Save Automation <Save size={14} />
                 </button>
