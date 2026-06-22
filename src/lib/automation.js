@@ -514,7 +514,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       console.log(`🎁 Sending Intro Card to ${userName}`);
       const templates = automation.metadata?.templates || {};
       const introTitle = interpolate(
-        match.metadata?.intro_title || templates.intro_title || "Hey {name}! 👋 Thanks for the comment! Tap the button below and I'll send you the access right away. ⚡",
+        match.metadata?.intro_title || templates.intro_title || "Hey {name}! 👋 Thanks for the comment!\n\nTap the button below and I'll send you the access right away. ⚡",
         userName,
         automation.brand_name
       );

@@ -103,18 +103,29 @@ export const SmartGuard = {
     const cleanText = baseText.replace(link, "").trim();
 
     const formattedName = name ? ` ${name}` : "";
+    
+    // Fix for double greeting: Check if cleanText already starts with a greeting or name
+    const lowerClean = cleanText.toLowerCase();
+    const alreadyHasGreeting = lowerClean.startsWith("hey") || 
+                               lowerClean.startsWith("hi") || 
+                               lowerClean.startsWith("hello") ||
+                               lowerClean.startsWith("great to");
+
+    const prefix = alreadyHasGreeting ? "" : `${randomGreet}${formattedName}! `;
 
     // If there is an external link, structure a beautiful generic card context or custom text
     if (link) {
       // 30% chance to return clean structured spintax, 70% keep customized text but vary greetings
-      if (Math.random() > 0.7) {
-        return `${randomGreet}${formattedName}! ${randomIntro}\n\n👉 Access Link: ${link}`;
+      if (Math.random() > 0.7 && !alreadyHasGreeting) {
+        return `${prefix}${randomIntro}\n\n👉 Access Link: ${link}`;
       } else {
-        return `${randomGreet}${formattedName}! ${cleanText}\n\n${link}`;
+        // If it already has a greeting, just append the link properly
+        const separator = cleanText.endsWith("\n") ? "" : "\n\n";
+        return `${prefix}${cleanText}${separator}${link}`;
       }
     }
     
-    return `${randomGreet}${formattedName}! ${cleanText}`;
+    return `${prefix}${cleanText}`;
   },
 
   /**
