@@ -69,7 +69,7 @@ export default React.memo(function ProfileDropdown({ user, realtimeStats, onAcco
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -4 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="fixed sm:absolute left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0 right-auto sm:right-0 top-[64px] sm:top-auto sm:mt-2 w-[calc(100vw-32px)] sm:w-[300px] bg-white border border-zinc-200/80 rounded-2xl overflow-hidden z-[999] shadow-2xl shadow-zinc-900/10"
+            className="fixed sm:absolute left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0 right-auto sm:right-0 top-[64px] sm:top-auto sm:mt-2 w-[calc(100vw-32px)] sm:w-[300px] bg-white border border-zinc-200/80 rounded-2xl overflow-hidden z-[999]  -900/10"
           >
             {/* Profile Header */}
             <div className="relative px-4 py-4 bg-zinc-50 border-b border-zinc-100 overflow-hidden">
@@ -81,10 +81,10 @@ export default React.memo(function ProfileDropdown({ user, realtimeStats, onAcco
                     src={avatarUrl}
                     alt={fullName}
                     referrerPolicy="no-referrer"
-                    className="w-11 h-11 rounded-xl object-cover border-2 border-white shadow-sm shrink-0"
+                    className="w-11 h-11 rounded-xl object-cover border-2 border-white  shrink-0"
                   />
                 ) : (
-                  <div className="w-11 h-11 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center font-bold text-lg text-white border-2 border-white shadow-sm shrink-0">
+                  <div className="w-11 h-11 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center font-bold text-lg text-white border-2 border-white  shrink-0">
                     {firstLetter || <User size={20} />}
                   </div>
                 )}

@@ -18,11 +18,7 @@ export async function GET(request) {
   const origin = getRequestOrigin(request);
   const { searchParams } = new URL(request.url);
   if (!user) {
-    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-      user = { id: 'dev-bypass' };
-    } else {
-      return NextResponse.json({ error: "Unauthorized. Please login first." }, { status: 401 });
-    }
+    return NextResponse.json({ error: "Unauthorized. Please login first." }, { status: 401 });
   }
   const role = searchParams.get('role') || 'business';
   const provider = searchParams.get('provider') || 'facebook';
@@ -50,7 +46,7 @@ export async function GET(request) {
       redirect_uri: redirectUri,
       state,
       response_type: "code",
-      scope: ["instagram_business_basic", "instagram_business_manage_messages", "instagram_business_content_publish"].join(",")
+      scope: ["instagram_business_basic", "instagram_business_manage_messages", "instagram_business_manage_comments"].join(",")
     });
     authUrl = `https://api.instagram.com/oauth/authorize?${igAuthParams.toString()}`;
   } else {

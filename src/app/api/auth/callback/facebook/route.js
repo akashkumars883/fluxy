@@ -31,23 +31,8 @@ export async function GET(request) {
 
   const supabaseAdmin = createAdminClient();
 
-  // Local development bypass if not logged in to Supabase
   if (!user) {
-    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-      try {
-        const { data: authData } = await supabaseAdmin.auth.admin.listUsers();
-        if (authData?.users?.length > 0) {
-          user = authData.users[0];
-        } else {
-          user = { id: '5de676f1-ea54-414f-93fd-cb7cdd678cc6' }; // Fallback valid UUID
-        }
-      } catch (e) {
-        console.warn("Could not list users for bypass, using fallback UUID:", e.message);
-        user = { id: '5de676f1-ea54-414f-93fd-cb7cdd678cc6' }; // Fallback valid UUID
-      }
-    } else {
-      return NextResponse.redirect(`${origin}/login`);
-    }
+    return NextResponse.redirect(`${origin}/login`);
   }
 
   try {

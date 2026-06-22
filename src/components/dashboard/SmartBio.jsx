@@ -9,146 +9,136 @@ import { useDashboard } from "@/context/DashboardContext";
 // ─── THEMES ─────────────────────────────────────────────────────────────────
 const THEMES = [
   {
-    id: "ivory",
-    name: "Ivory",
-    heroStyle: { background: "#D6CFC4" },
-    heroPattern: "radial-gradient(circle at 30% 20%, rgba(255,255,255,0.35) 0%, transparent 55%), radial-gradient(circle at 70% 80%, rgba(180,160,140,0.3) 0%, transparent 55%)",
-    pageBg: "#FAFAF8",
-    textPrimary: "#1A1A1A",
-    textSub: "#777777",
+    id: "minimal_light",
+    name: "Minimal Light",
+    heroStyle: { background: "#F4F4F5" },
+    heroPattern: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.8) 0%, transparent 100%)",
+    pageBg: "#FFFFFF",
+    textPrimary: "#000000",
+    textSub: "rgba(0,0,0,0.6)",
     buttonBg: "#FFFFFF",
-    buttonBorder: "#EBEBEB",
-    buttonText: "#1A1A1A",
+    buttonBorder: "rgba(0,0,0,0.08)",
+    buttonText: "#000000",
     socialBg: "#FFFFFF",
-    socialText: "#1A1A1A",
-    footerText: "rgba(0,0,0,0.3)",
+    socialText: "#000000",
+    footerText: "rgba(0,0,0,0.4)",
   },
   {
-    id: "midnight",
-    name: "Midnight",
+    id: "minimal_dark",
+    name: "Obsidian",
     heroStyle: { background: "#111111" },
-    heroPattern: "radial-gradient(circle at 50% 0%, rgba(80,80,80,0.4) 0%, transparent 70%)",
-    pageBg: "#0D0D0D",
+    heroPattern: "radial-gradient(circle at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 70%)",
+    pageBg: "#0A0A0A",
     textPrimary: "#FFFFFF",
-    textSub: "#888888",
-    buttonBg: "#1C1C1C",
-    buttonBorder: "#2E2E2E",
+    textSub: "rgba(255,255,255,0.6)",
+    buttonBg: "rgba(255,255,255,0.05)",
+    buttonBorder: "rgba(255,255,255,0.1)",
     buttonText: "#FFFFFF",
-    socialBg: "#1C1C1C",
+    socialBg: "rgba(255,255,255,0.05)",
     socialText: "#FFFFFF",
-    footerText: "rgba(255,255,255,0.25)",
-  },
-  {
-    id: "forest",
-    name: "Forest",
-    heroStyle: { background: "#1B4332" },
-    heroPattern: "radial-gradient(circle at 30% 30%, rgba(45,106,79,0.6) 0%, transparent 60%), radial-gradient(circle at 70% 70%, rgba(0,60,30,0.4) 0%, transparent 60%)",
-    pageBg: "#F2FAF5",
-    textPrimary: "#1B4332",
-    textSub: "#40916C",
-    buttonBg: "#FFFFFF",
-    buttonBorder: "#D8EDDF",
-    buttonText: "#1B4332",
-    socialBg: "#FFFFFF",
-    socialText: "#1B4332",
-    footerText: "rgba(27,67,50,0.35)",
-  },
-  {
-    id: "blush",
-    name: "Blush",
-    heroStyle: { background: "#C9637A" },
-    heroPattern: "radial-gradient(circle at 40% 20%, rgba(255,182,193,0.5) 0%, transparent 55%), radial-gradient(circle at 60% 80%, rgba(180,60,80,0.3) 0%, transparent 55%)",
-    pageBg: "#FFF5F7",
-    textPrimary: "#6B1F34",
-    textSub: "#BE4A6A",
-    buttonBg: "#FFFFFF",
-    buttonBorder: "#FBCFE8",
-    buttonText: "#6B1F34",
-    socialBg: "#FFFFFF",
-    socialText: "#6B1F34",
-    footerText: "rgba(107,31,52,0.3)",
-  },
-  {
-    id: "navy",
-    name: "Ocean",
-    heroStyle: { background: "#1E3A5F" },
-    heroPattern: "radial-gradient(circle at 30% 40%, rgba(56,120,180,0.5) 0%, transparent 60%), radial-gradient(circle at 70% 60%, rgba(10,30,60,0.4) 0%, transparent 60%)",
-    pageBg: "#F0F5FB",
-    textPrimary: "#1E3A5F",
-    textSub: "#4A7AB5",
-    buttonBg: "#FFFFFF",
-    buttonBorder: "#BFDBFE",
-    buttonText: "#1E3A5F",
-    socialBg: "#FFFFFF",
-    socialText: "#1E3A5F",
-    footerText: "rgba(30,58,95,0.3)",
+    footerText: "rgba(255,255,255,0.3)",
   },
   {
     id: "aurora",
-    name: "Aurora",
-    heroStyle: { background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%)" },
-    heroPattern: "radial-gradient(circle at 20% 50%, rgba(255,255,255,0.15) 0%, transparent 50%)",
-    pageBg: "#faf8ff",
-    textPrimary: "#2d1b69",
-    textSub: "#6d28d9",
-    buttonBg: "#FFFFFF",
-    buttonBorder: "#ede9fe",
-    buttonText: "#4f46e5",
-    socialBg: "#FFFFFF",
-    socialText: "#4f46e5",
-    footerText: "rgba(79,70,229,0.3)",
+    name: "Aurora Glass",
+    heroStyle: { background: "linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 50%, #45B7D1 100%)" },
+    heroPattern: "radial-gradient(circle at 20% 50%, rgba(255,255,255,0.2) 0%, transparent 50%)",
+    pageBg: "#F0F5F9",
+    textPrimary: "#1A202C",
+    textSub: "#4A5568",
+    buttonBg: "rgba(255,255,255,0.7)",
+    buttonBorder: "rgba(255,255,255,1)",
+    buttonText: "#2D3748",
+    socialBg: "rgba(255,255,255,0.8)",
+    socialText: "#2D3748",
+    footerText: "rgba(26,32,44,0.4)",
   },
   {
     id: "sunset",
-    name: "Sunset",
-    heroStyle: { background: "linear-gradient(135deg, #f97316 0%, #ef4444 50%, #dc2626 100%)" },
-    heroPattern: "radial-gradient(circle at 70% 30%, rgba(255,220,180,0.3) 0%, transparent 60%)",
-    pageBg: "#fff8f5",
-    textPrimary: "#7c2d12",
-    textSub: "#c2410c",
-    buttonBg: "#FFFFFF",
-    buttonBorder: "#fed7aa",
-    buttonText: "#7c2d12",
+    name: "Sunset Mesh",
+    heroStyle: { background: "linear-gradient(45deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)" },
+    heroPattern: "radial-gradient(circle at 80% 20%, rgba(255,154,158,0.5) 0%, transparent 60%)",
+    pageBg: "#FFF0F5",
+    textPrimary: "#4A154B",
+    textSub: "#8B5A8C",
+    buttonBg: "rgba(255,255,255,0.6)",
+    buttonBorder: "rgba(255,255,255,0.9)",
+    buttonText: "#4A154B",
     socialBg: "#FFFFFF",
-    socialText: "#7c2d12",
-    footerText: "rgba(124,45,18,0.3)",
+    socialText: "#4A154B",
+    footerText: "rgba(74,21,75,0.4)",
   },
   {
-    id: "cyber",
-    name: "Cyber",
-    heroStyle: { background: "#0ea5e9" },
-    heroPattern: "radial-gradient(circle at 50% 50%, rgba(14,165,233,0.3) 0%, transparent 80%)",
-    pageBg: "#0f172a",
-    textPrimary: "#38bdf8",
-    textSub: "#94a3b8",
-    buttonBg: "#1e293b",
-    buttonBorder: "#334155",
-    buttonText: "#38bdf8",
-    socialBg: "#1e293b",
-    socialText: "#38bdf8",
-    footerText: "rgba(56,189,248,0.4)",
+    id: "sage",
+    name: "Sage Matcha",
+    heroStyle: { background: "#42634c" },
+    heroPattern: "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1) 0%, transparent 60%)",
+    pageBg: "#F4F7F5",
+    textPrimary: "#25342a",
+    textSub: "#577e62",
+    buttonBg: "#FFFFFF",
+    buttonBorder: "#c9d7ce",
+    buttonText: "#354f3d",
+    socialBg: "#FFFFFF",
+    socialText: "#42634c",
+    footerText: "rgba(37,52,42,0.4)",
   },
   {
-    id: "rose",
-    name: "Crimson",
-    heroStyle: { background: "#e11d48" },
-    heroPattern: "radial-gradient(circle at 20% 80%, rgba(225,29,72,0.4) 0%, transparent 70%)",
-    pageBg: "#4c0519",
-    textPrimary: "#fda4af",
-    textSub: "#fb7185",
-    buttonBg: "#881337",
-    buttonBorder: "#9f1239",
-    buttonText: "#fda4af",
-    socialBg: "#881337",
-    socialText: "#fda4af",
-    footerText: "rgba(253,164,175,0.4)",
+    id: "oceanic",
+    name: "Deep Ocean",
+    heroStyle: { background: "linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%)" },
+    heroPattern: "radial-gradient(circle at 70% 60%, rgba(255,255,255,0.3) 0%, transparent 60%)",
+    pageBg: "#F6FAFF",
+    textPrimary: "#1E3A8A",
+    textSub: "#60A5FA",
+    buttonBg: "rgba(255,255,255,0.8)",
+    buttonBorder: "#DBEAFE",
+    buttonText: "#1D4ED8",
+    socialBg: "#FFFFFF",
+    socialText: "#2563EB",
+    footerText: "rgba(30,58,138,0.4)",
+  },
+  {
+    id: "cyberpunk",
+    name: "Neon Cyber",
+    heroStyle: { background: "linear-gradient(135deg, #FF007F 0%, #7928CA 100%)" },
+    heroPattern: "radial-gradient(circle at 50% 50%, rgba(255,0,127,0.4) 0%, transparent 80%)",
+    pageBg: "#000000",
+    textPrimary: "#00FFCC",
+    textSub: "#A8B2D1",
+    buttonBg: "rgba(255,0,127,0.1)",
+    buttonBorder: "#FF007F",
+    buttonText: "#FFFFFF",
+    socialBg: "rgba(121,40,202,0.2)",
+    socialText: "#00FFCC",
+    footerText: "rgba(168,178,209,0.5)",
+  },
+  {
+    id: "coffee",
+    name: "Espresso",
+    heroStyle: { background: "#4A3B32" },
+    heroPattern: "radial-gradient(circle at 20% 80%, rgba(212,163,115,0.2) 0%, transparent 70%)",
+    pageBg: "#FAF3E0",
+    textPrimary: "#3E2723",
+    textSub: "#795548",
+    buttonBg: "#FFFFFF",
+    buttonBorder: "#D7CCC8",
+    buttonText: "#4E342E",
+    socialBg: "#FFFFFF",
+    socialText: "#3E2723",
+    footerText: "rgba(62,39,35,0.4)",
   },
 ];
 
 // ─── BG PRESETS for wallpaper-style backgrounds ──────────────────────────────
 const IMAGE_WALLPAPERS = [
   { id: "none", label: "None", src: null },
-  { id: "wallpaper1", label: "Purple Leaves", src: "/wallpapers/purple-leaves.jpg" },
+  { id: "abstract_fluid", label: "Fluid Abstract", src: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=600&auto=format&fit=crop" },
+  { id: "dark_marble", label: "Dark Marble", src: "https://images.unsplash.com/photo-1508898578281-774ac4893c0c?q=80&w=600&auto=format&fit=crop" },
+  { id: "soft_gradient", label: "Soft Aura", src: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=600&auto=format&fit=crop" },
+  { id: "foggy_forest", label: "Foggy Pine", src: "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=600&auto=format&fit=crop" },
+  { id: "minimal_sand", label: "Desert Dune", src: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?q=80&w=600&auto=format&fit=crop" },
+  { id: "space_nebula", label: "Deep Space", src: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=600&auto=format&fit=crop" },
 ];
 
 // ─── SOCIAL ICON HELPER ──────────────────────────────────────────────────────
@@ -330,11 +320,11 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
   if (!accountId) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
-        <div className="w-14 h-14 rounded-2xl bg-zinc-100 flex items-center justify-center">
-          <User size={26} className="text-zinc-400" />
+        <div className="w-14 h-14 rounded-md bg-zinc-100 flex items-center justify-center">
+          <User size={26} className="text-black opacity-60" />
         </div>
-        <h3 className="text-base font-bold text-zinc-800">Connect an Account First</h3>
-        <p className="text-sm text-zinc-400 max-w-xs">Please connect your Instagram account to set up your Smart Bio page.</p>
+        <h3 className="text-base font-bold text-black">Connect an Account First</h3>
+        <p className="text-sm text-black opacity-60 max-w-xs">Please connect your Instagram account to set up your Smart Bio page.</p>
       </div>
     );
   }
@@ -344,10 +334,10 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
 
       {/* ── Upgrade Banner ── */}
       {currentPlan !== "viral_scale" && (
-        <div className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative overflow-hidden">
+        <div className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-md p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-28 h-28 bg-white/5 rounded-full blur-2xl pointer-events-none" />
           <div className="flex items-center gap-3 relative z-10">
-            <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 rounded-md bg-white/15 flex items-center justify-center shrink-0">
               <Sparkles size={16} />
             </div>
             <div>
@@ -359,7 +349,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
           </div>
           <button
             onClick={() => onUpgradeClick?.(currentPlan === "free" ? "creator_pro" : "viral_scale")}
-            className="shrink-0 w-full sm:w-auto px-5 py-2 bg-white hover:bg-zinc-50 text-indigo-700 text-xs font-bold rounded-xl transition-all cursor-pointer"
+            className="shrink-0 w-full sm:w-auto px-5 py-2 bg-white hover:bg-zinc-50 text-indigo-700 text-xs font-bold rounded-md transition-all cursor-pointer"
           >
             Upgrade Plan
           </button>
@@ -368,7 +358,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
 
       {/* ── Published Banner ── */}
       {published && (
-        <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between gap-3">
+        <div className="bg-emerald-50 border border-emerald-200 rounded-md p-4 flex items-center justify-between gap-3">
           <div className="min-w-0">
             <p className="text-xs font-bold text-emerald-700">🎉 Your Smart Bio is Live!</p>
             <p className="text-xs text-emerald-600 truncate font-medium mt-0.5">{publishedLink}</p>
@@ -376,7 +366,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={copyLink}
-              className="px-3 py-1.5 bg-emerald-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 hover:bg-emerald-700 transition-all"
+              className="px-3 py-1.5 bg-emerald-600 text-white rounded-md text-xs font-bold flex items-center gap-1.5 hover:bg-emerald-700 transition-all"
             >
               {copied ? <><Check size={11} /> Copied!</> : <><Copy size={11} /> Copy</>}
             </button>
@@ -384,7 +374,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
               href={publishedLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-1.5 bg-emerald-100 border border-emerald-200 text-emerald-600 rounded-xl hover:bg-emerald-200 transition-all"
+              className="p-1.5 bg-emerald-100 border border-emerald-200 text-emerald-600 rounded-md hover:bg-emerald-200 transition-all"
             >
               <ExternalLink size={13} />
             </a>
@@ -400,13 +390,13 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
 
           {/* Header & Publish Button */}
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-black text-zinc-900 tracking-tight capitalize">
+            <h1 className="text-2xl font-black text-black tracking-tight capitalize">
               {smartBioTab === "analytics" ? "Analytics" : smartBioTab}
             </h1>
             <button
               onClick={handlePublish}
               disabled={publishing}
-              className="px-6 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full text-xs font-bold transition-all flex items-center gap-2 disabled:opacity-50 shrink-0 cursor-pointer shadow-lg shadow-zinc-900/20"
+              className="px-6 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full text-xs font-bold transition-all flex items-center gap-2 disabled:opacity-50 shrink-0 cursor-pointer  -900/20"
             >
               {publishing ? "Publishing..." : "Publish to Web"}
             </button>
@@ -426,7 +416,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                 className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-colors border ${
                   smartBioTab === tab.id
                     ? "bg-indigo-50 text-indigo-600 border-indigo-200"
-                    : "bg-white text-zinc-500 border-zinc-200 hover:bg-zinc-50"
+                    : "bg-white text-black opacity-80 border-zinc-200 hover:bg-zinc-50"
                 }`}
               >
                 {tab.label}
@@ -435,59 +425,59 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
           </div>
 
           {/* Editor Space Container */}
-          <div className="bg-white rounded-[24px] border border-zinc-200 p-6 md:p-8 flex-1 flex flex-col shadow-sm">
+          <div className="bg-white rounded-md border border-zinc-200 p-6 md:p-8 flex-1 flex flex-col ">
 
             {/* ANALYTICS TAB */}
             {smartBioTab === "analytics" && (
               <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-300">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-5 border border-zinc-200 rounded-2xl flex flex-col justify-between">
-                    <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                  <div className="p-5 border border-zinc-200 rounded-md flex flex-col justify-between">
+                    <p className="text-[11px] font-bold text-black opacity-60 uppercase tracking-widest mb-2 flex items-center gap-2">
                       Views Today <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     </p>
-                    <p className="text-4xl font-black text-zinc-900 tracking-tight">1,248</p>
+                    <p className="text-4xl font-black text-black tracking-tight">1,248</p>
                     <p className="text-[11px] font-bold text-emerald-500 mt-2">
-                      +14.5% <span className="text-zinc-400 font-medium">vs yesterday</span>
+                      +14.5% <span className="text-black opacity-60 font-medium">vs yesterday</span>
                     </p>
                   </div>
-                  <div className="p-5 border border-zinc-200 rounded-2xl flex flex-col justify-between">
-                    <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Total Clicks</p>
+                  <div className="p-5 border border-zinc-200 rounded-md flex flex-col justify-between">
+                    <p className="text-[11px] font-bold text-black opacity-60 uppercase tracking-widest mb-2">Total Clicks</p>
                     <p className="text-4xl font-black text-indigo-600 tracking-tight">342</p>
                     <p className="text-[11px] font-bold text-emerald-500 mt-2">
-                      +5.2% <span className="text-zinc-400 font-medium">vs yesterday</span>
+                      +5.2% <span className="text-black opacity-60 font-medium">vs yesterday</span>
                     </p>
                   </div>
                 </div>
 
-                <div className="p-5 border border-zinc-200 rounded-2xl">
+                <div className="p-5 border border-zinc-200 rounded-md">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Avg. Click-Through Rate</p>
-                    <p className="text-2xl font-black text-zinc-900 tracking-tight">27.4%</p>
+                    <p className="text-[11px] font-bold text-black opacity-60 uppercase tracking-widest">Avg. Click-Through Rate</p>
+                    <p className="text-2xl font-black text-black tracking-tight">27.4%</p>
                   </div>
                   <div className="w-full h-3 bg-zinc-100 rounded-full mt-4 overflow-hidden">
                     <div className="h-full bg-indigo-500 w-[27.4%] rounded-full relative overflow-hidden" />
                   </div>
                 </div>
 
-                <div className="p-5 border border-zinc-200 rounded-2xl">
-                  <h4 className="text-sm font-bold text-zinc-800 mb-4 tracking-tight">Top Performing Links</h4>
+                <div className="p-5 border border-zinc-200 rounded-md">
+                  <h4 className="text-sm font-bold text-black mb-4 tracking-tight">Top Performing Links</h4>
                   <div className="space-y-3">
                     {links.length > 0 ? (
                       links.slice(0, 3).map((link, i) => (
                         <div key={link.id} className="flex items-center justify-between group">
                           <div className="flex items-center gap-3 min-w-0">
-                            <div className="w-8 h-8 rounded-xl bg-zinc-50 text-zinc-400 flex items-center justify-center text-[11px] font-black shrink-0 ring-1 ring-zinc-200 group-hover:bg-indigo-50 group-hover:text-indigo-600 group-hover:ring-indigo-200 transition-all">
+                            <div className="w-8 h-8 rounded-md bg-zinc-50 text-black opacity-60 flex items-center justify-center text-[11px] font-black shrink-0 ring-1 ring-zinc-200 group-hover:bg-indigo-50 group-hover:text-indigo-600 group-hover:ring-indigo-200 transition-all">
                               {i + 1}
                             </div>
-                            <span className="text-[13px] font-bold text-zinc-800 truncate">{link.title || "Untitled Link"}</span>
+                            <span className="text-[13px] font-bold text-black truncate">{link.title || "Untitled Link"}</span>
                           </div>
-                          <span className="text-[11px] font-bold text-zinc-500 shrink-0 bg-zinc-50 px-2.5 py-1.5 rounded-lg">
+                          <span className="text-[11px] font-bold text-black opacity-80 shrink-0 bg-zinc-50 px-2.5 py-1.5 rounded-lg">
                             {(i * 17) % 100 + 20} clicks
                           </span>
                         </div>
                       ))
                     ) : (
-                      <p className="text-xs font-semibold text-zinc-400 text-center py-6">
+                      <p className="text-xs font-semibold text-black opacity-60 text-center py-6">
                         Add links to see their performance here.
                       </p>
                     )}
@@ -501,27 +491,27 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
               <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-300">
                 <button
                   onClick={addLink}
-                  className="w-full py-3.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-[13px] font-bold tracking-wide flex justify-center items-center gap-2 transition-all"
+                  className="w-full py-3.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-md text-[13px] font-bold tracking-wide flex justify-center items-center gap-2 transition-all"
                 >
                   <Plus size={16} strokeWidth={2.5} /> Add New Link
                 </button>
 
                 {links.length === 0 ? (
-                  <div className="p-8 border border-zinc-200 border-dashed rounded-2xl flex flex-col items-center justify-center text-center gap-3">
+                  <div className="p-8 border border-zinc-200 border-dashed rounded-md flex flex-col items-center justify-center text-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-zinc-50 flex items-center justify-center">
                       <Link2 size={24} className="text-zinc-300" />
                     </div>
                     <div>
-                      <p className="text-[13px] font-bold text-zinc-800">No links added</p>
-                      <p className="text-[11px] font-medium text-zinc-500 mt-0.5">Your bio is looking a little empty.</p>
+                      <p className="text-[13px] font-bold text-black">No links added</p>
+                      <p className="text-[11px] font-medium text-black opacity-80 mt-0.5">Your bio is looking a little empty.</p>
                     </div>
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {links.map((link) => (
-                      <div key={link.id} className="border border-zinc-200 rounded-2xl p-4 flex gap-3 group relative bg-white transition-all hover:border-zinc-300">
+                      <div key={link.id} className="border border-zinc-200 rounded-md p-4 flex gap-3 group relative bg-white transition-all hover:border-zinc-300">
                         {/* Drag Handle */}
-                        <div className="flex items-center text-zinc-300 cursor-grab active:cursor-grabbing hover:text-zinc-600 transition-colors">
+                        <div className="flex items-center text-zinc-300 cursor-grab active:cursor-grabbing hover:text-black opacity-90 transition-colors">
                           <GripVertical size={18} />
                         </div>
                         
@@ -533,7 +523,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                                 setActiveLinkId(link.id);
                                 thumbnailInputRef.current?.click();
                               }}
-                              className="w-12 h-12 shrink-0 rounded-[14px] bg-zinc-50 ring-1 ring-zinc-200/60 flex flex-col items-center justify-center overflow-hidden hover:ring-indigo-300 hover:bg-indigo-50 transition-all group/thumb relative"
+                              className="w-12 h-12 shrink-0 rounded-md bg-zinc-50 ring-1 ring-zinc-200/60 flex flex-col items-center justify-center overflow-hidden hover:ring-indigo-300 hover:bg-indigo-50 transition-all group/thumb relative"
                               title={link.thumbnail ? "Change thumbnail" : "Add thumbnail"}
                             >
                               {link.thumbnail ? (
@@ -544,7 +534,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                                   </div>
                                 </>
                               ) : (
-                                <Image size={16} className="text-zinc-400 group-hover/thumb:text-indigo-500" />
+                                <Image size={16} className="text-black opacity-60 group-hover/thumb:text-indigo-500" />
                               )}
                             </button>
                             
@@ -554,14 +544,14 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                                 placeholder="Button Title (e.g. Book a Workshop)"
                                 value={link.title}
                                 onChange={(e) => updateLink(link.id, "title", e.target.value)}
-                                className="w-full bg-transparent border-none text-[13px] font-extrabold text-zinc-900 placeholder:text-zinc-300 outline-none focus:ring-0 p-0"
+                                className="w-full bg-transparent border-none text-[13px] font-extrabold text-black placeholder:text-zinc-300 outline-none focus:ring-0 p-0"
                               />
                               <input
                                 type="url"
                                 placeholder="URL (https://...)"
                                 value={link.url}
                                 onChange={(e) => updateLink(link.id, "url", e.target.value)}
-                                className="w-full bg-transparent border-none text-[11px] font-medium text-zinc-500 placeholder:text-zinc-300 outline-none focus:ring-0 p-0 mt-0.5"
+                                className="w-full bg-transparent border-none text-[11px] font-medium text-black opacity-80 placeholder:text-zinc-300 outline-none focus:ring-0 p-0 mt-0.5"
                               />
                             </div>
                           </div>
@@ -578,40 +568,40 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                 <input ref={thumbnailInputRef} type="file" accept="image/*" onChange={handleThumbnailUpload} className="hidden" />
 
                 {/* Email Capture Card */}
-                <div className="border border-zinc-200 rounded-2xl p-5 mt-6">
+                <div className="border border-zinc-200 rounded-md p-5 mt-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-[13px] font-extrabold text-zinc-900">Email Capture Form</p>
-                      <p className="text-[11px] font-medium text-zinc-400 mt-0.5">Collect emails directly from your bio.</p>
+                      <p className="text-[13px] font-extrabold text-black">Email Capture Form</p>
+                      <p className="text-[11px] font-medium text-black opacity-60 mt-0.5">Collect emails directly from your bio.</p>
                     </div>
                     <button
                       onClick={() => setEnableEmailCapture(!enableEmailCapture)}
                       className={`w-11 h-6 rounded-full transition-all relative ${enableEmailCapture ? "bg-indigo-500" : "bg-zinc-200"}`}
                     >
-                      <div className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-all shadow-sm ${enableEmailCapture ? "translate-x-5" : ""}`} />
+                      <div className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-all  ${enableEmailCapture ? "translate-x-5" : ""}`} />
                     </button>
                   </div>
                   
                   {enableEmailCapture && (
                     <div className="mt-4 pt-4 border-t border-zinc-100 flex gap-4 animate-in slide-in-from-top-2 duration-300">
                       <div className="flex-1">
-                        <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 block">Form Title</label>
+                        <label className="text-[10px] font-bold text-black opacity-80 uppercase tracking-widest mb-1.5 block">Form Title</label>
                         <input
                           type="text"
                           value={emailCaptureTitle}
                           onChange={(e) => setEmailCaptureTitle(e.target.value)}
                           placeholder="Join my newsletter"
-                          className="w-full px-3 py-2 bg-zinc-50 border-none ring-1 ring-zinc-200 rounded-xl text-xs font-bold text-zinc-800 outline-none focus:ring-2 focus:ring-indigo-400 transition-all"
+                          className="w-full px-3 py-2 bg-zinc-50 border-none ring-1 ring-zinc-200 rounded-md text-xs font-bold text-black outline-none focus:ring-2 focus:ring-indigo-400 transition-all"
                         />
                       </div>
                       <div className="flex-1">
-                        <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 block">Button Text</label>
+                        <label className="text-[10px] font-bold text-black opacity-80 uppercase tracking-widest mb-1.5 block">Button Text</label>
                         <input
                           type="text"
                           value={emailCaptureButtonText}
                           onChange={(e) => setEmailCaptureButtonText(e.target.value)}
                           placeholder="Subscribe"
-                          className="w-full px-3 py-2 bg-zinc-50 border-none ring-1 ring-zinc-200 rounded-xl text-xs font-bold text-zinc-800 outline-none focus:ring-2 focus:ring-indigo-400 transition-all"
+                          className="w-full px-3 py-2 bg-zinc-50 border-none ring-1 ring-zinc-200 rounded-md text-xs font-bold text-black outline-none focus:ring-2 focus:ring-indigo-400 transition-all"
                         />
                       </div>
                     </div>
@@ -623,11 +613,11 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
             {/* PROFILE TAB */}
             {smartBioTab === "profile" && (
               <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-300">
-                <div className="border border-zinc-200 rounded-2xl p-6 flex flex-col items-center text-center gap-4">
+                <div className="border border-zinc-200 rounded-md p-6 flex flex-col items-center text-center gap-4">
                   <div className="relative group">
-                    <div className="w-24 h-24 rounded-full overflow-hidden bg-zinc-100 ring-4 ring-white shadow-xl shadow-zinc-200/50 flex items-center justify-center relative">
+                    <div className="w-24 h-24 rounded-full overflow-hidden bg-zinc-100 ring-4 ring-white  -200/50 flex items-center justify-center relative">
                       {profilePic ? (
-                        <img src={profilePic} alt="Profile" className="w-full h-full object-cover" onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(account?.ig_username || account?.page_name || "User")}&background=6366f1&color=fff&size=150`; }} />
+                        <img src={profilePic} referrerPolicy="no-referrer" alt="Profile" className="w-full h-full object-cover" onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(account?.ig_username || account?.page_name || "User")}&background=6366f1&color=fff&size=150`; }} />
                       ) : (
                         <User size={32} className="text-zinc-300" />
                       )}
@@ -637,30 +627,30 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                     </div>
                   </div>
                   <div>
-                    <p className="text-[15px] font-extrabold text-zinc-900 tracking-tight">{displayName}</p>
-                    <p className="text-[12px] font-medium text-zinc-500">@{igUsername}</p>
+                    <p className="text-[15px] font-extrabold text-black tracking-tight">{displayName}</p>
+                    <p className="text-[12px] font-medium text-black opacity-80">@{igUsername}</p>
                   </div>
                 </div>
 
-                <div className="border border-zinc-200 rounded-2xl p-6 space-y-5">
+                <div className="border border-zinc-200 rounded-md p-6 space-y-5">
                   <div>
-                    <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest mb-2 block">Display Name</label>
+                    <label className="text-[11px] font-bold text-black opacity-80 uppercase tracking-widest mb-2 block">Display Name</label>
                     <input
                       type="text"
                       value={profileTitle}
                       onChange={(e) => setProfileTitle(e.target.value)}
                       placeholder="Your name or brand"
-                      className="w-full px-4 py-3 bg-zinc-50 border-none ring-1 ring-zinc-200/80 rounded-xl text-[13px] font-bold text-zinc-900 outline-none focus:ring-2 focus:ring-indigo-500 transition-all placeholder:font-medium placeholder:text-zinc-400"
+                      className="w-full px-4 py-3 bg-zinc-50 border-none ring-1 ring-zinc-200/80 rounded-md text-[13px] font-bold text-black outline-none focus:ring-2 focus:ring-indigo-500 transition-all placeholder:font-medium placeholder:text-black opacity-60"
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest mb-2 block">Bio / Tagline</label>
+                    <label className="text-[11px] font-bold text-black opacity-80 uppercase tracking-widest mb-2 block">Bio / Tagline</label>
                     <textarea
                       rows={3}
                       value={bioText}
                       onChange={(e) => setBioText(e.target.value)}
                       placeholder="Life coach & nutritionist. Helping you live better."
-                      className="w-full px-4 py-3 bg-zinc-50 border-none ring-1 ring-zinc-200/80 rounded-xl text-[13px] font-medium text-zinc-900 outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none placeholder:text-zinc-400"
+                      className="w-full px-4 py-3 bg-zinc-50 border-none ring-1 ring-zinc-200/80 rounded-md text-[13px] font-medium text-black outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none placeholder:text-black opacity-60"
                     />
                   </div>
                 </div>
@@ -670,8 +660,8 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
             {/* THEME & BACKGROUND TAB */}
             {smartBioTab === "theme" && (
               <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-300">
-                <div className="border border-zinc-200 rounded-2xl p-6">
-                  <p className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest mb-4">Select a Theme</p>
+                <div className="border border-zinc-200 rounded-md p-6">
+                  <p className="text-[11px] font-bold text-black opacity-80 uppercase tracking-widest mb-4">Select a Theme</p>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {THEMES.map((t) => {
                       const isSelected = themeId === t.id;
@@ -679,20 +669,20 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                         <button
                           key={t.id}
                           onClick={() => setThemeId(t.id)}
-                          className={`relative rounded-xl overflow-hidden ring-1 transition-all group ${isSelected ? "ring-2 ring-indigo-500 shadow-md shadow-indigo-100" : "ring-zinc-200 hover:ring-zinc-300"}`}
+                          className={`relative rounded-md overflow-hidden ring-1 transition-all group ${isSelected ? "ring-2 ring-indigo-500  -100" : "ring-zinc-200 hover:ring-zinc-300"}`}
                         >
                           <div className="h-14 w-full" style={t.heroStyle}>
                             <div className="w-full h-full" style={{ backgroundImage: t.heroPattern, opacity: 0.8 }} />
                           </div>
                           <div className="pt-4 pb-2.5 px-2 flex flex-col items-center gap-1" style={{ background: t.pageBg }}>
                             <div className="w-8 h-1 rounded-full" style={{ background: t.textPrimary, opacity: 0.7 }} />
-                            <div className="w-full h-4 mt-1 rounded-[6px]" style={{ background: t.buttonBg, border: `1px solid ${t.buttonBorder}` }} />
+                            <div className="w-full h-4 mt-1 rounded-md" style={{ background: t.buttonBg, border: `1px solid ${t.buttonBorder}` }} />
                           </div>
                           <div className="py-1.5 text-center border-t border-black/5" style={{ background: t.pageBg }}>
                             <span className="text-[10px] font-bold" style={{ color: t.textPrimary }}>{t.name}</span>
                           </div>
                           {isSelected && (
-                            <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center shadow-sm">
+                            <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center ">
                               <Check size={10} className="text-white" />
                             </div>
                           )}
@@ -702,9 +692,9 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                   </div>
                 </div>
 
-                <div className="border border-zinc-200 rounded-2xl p-6 space-y-6">
+                <div className="border border-zinc-200 rounded-md p-6 space-y-6">
                   <div>
-                    <p className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest mb-4">Premium Wallpapers</p>
+                    <p className="text-[11px] font-bold text-black opacity-80 uppercase tracking-widest mb-4">Premium Wallpapers</p>
                     <div className="grid grid-cols-2 gap-4">
                       {IMAGE_WALLPAPERS.map((preset) => {
                         const isSelected = bgImageUrl === preset.src || (preset.id === "none" && !bgImageUrl);
@@ -720,7 +710,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                                 setBgPresetId(preset.id);
                               }
                             }}
-                            className={`relative h-28 rounded-[14px] overflow-hidden border-2 transition-all group ${isSelected ? "border-indigo-500 shadow-md shadow-indigo-100" : "border-zinc-200 hover:border-zinc-300"}`}
+                            className={`relative h-36 rounded-md overflow-hidden border-2 transition-all group ${isSelected ? "border-indigo-500  -100" : "border-zinc-200 hover:border-zinc-300"}`}
                           >
                             {preset.id === "none" ? (
                               <div className="w-full h-full flex items-center justify-center bg-zinc-50">
@@ -730,7 +720,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                               <img src={preset.src} alt={preset.label} className="w-full h-full object-cover" />
                             )}
                             {isSelected && (
-                              <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center shadow-sm">
+                              <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center ">
                                 <Check size={12} className="text-white stroke-[3]" />
                               </div>
                             )}
@@ -753,25 +743,25 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
           className={
             isMobilePreviewOpen 
               ? "fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex flex-col items-center justify-center animate-in fade-in zoom-in-95 duration-200 p-4 pt-16"
-              : "hidden md:flex w-full md:w-[45%] justify-center items-center sticky top-4 h-[calc(100vh-120px)] self-start"
+              : "hidden md:flex fixed right-4 lg:right-8 top-[100px] bottom-8 w-[40%] lg:w-[45%] max-w-[500px] justify-center items-center z-10"
           }
         >
           {isMobilePreviewOpen && (
             <button 
               onClick={() => setIsMobilePreviewOpen(false)}
-              className="absolute top-6 right-4 sm:top-8 sm:right-8 w-12 h-12 bg-zinc-800/80 hover:bg-zinc-700 rounded-full flex items-center justify-center text-white backdrop-blur-md border border-zinc-600 z-[9999] transition-all shadow-2xl cursor-pointer"
+              className="absolute top-6 right-4 sm:top-8 sm:right-8 w-12 h-12 bg-zinc-800/80 hover:bg-zinc-700 rounded-full flex items-center justify-center text-white backdrop-blur-md border border-zinc-600 z-[9999] transition-all  cursor-pointer"
             >
               <X size={24} />
             </button>
           )}
           
-          <div className="w-full max-w-[300px] h-[640px] max-h-[80vh] bg-zinc-900 rounded-[40px] sm:rounded-[48px] border-[6px] sm:border-[8px] border-zinc-800 relative overflow-hidden shrink-0 shadow-2xl shadow-black/50 flex flex-col">
+          <div className="w-full max-w-[300px] h-[640px] max-h-[80vh] bg-zinc-900 rounded-[40px] sm:rounded-[48px] border-[6px] sm:border-[8px] border-zinc-800 relative overflow-hidden shrink-0 shadow-2xl shadow-black/50 flex flex-col transform-gpu antialiased">
             {/* Notch */}
             <div className="absolute top-2 left-1/2 -translate-x-1/2 w-16 h-4 bg-zinc-900 rounded-full z-20" />
 
             {/* Screen */}
             <div
-              className="w-full h-full rounded-[34px] overflow-y-auto overflow-x-hidden relative no-scrollbar"
+              className="w-full h-full rounded-[32px] sm:rounded-[40px] overflow-y-auto overflow-x-hidden relative no-scrollbar"
               style={{
                 background: bgImageUrl ? undefined : theme.pageBg,
                 ...(bgImageUrl ? { backgroundImage: `url("${bgImageUrl}")`, backgroundSize: "cover", backgroundPosition: "center" } : {}),
@@ -794,8 +784,8 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                     fill={bgImageUrl ? "transparent" : theme.pageBg}
                   />
                 </svg>
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-18 h-18 rounded-full border-[3px] border-white overflow-hidden z-10 shadow-sm" style={{ width: 72, height: 72, background: "#e5e7eb" }}>
-                  {profilePic ? <img src={profilePic} alt="Profile" className="w-full h-full object-cover" onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(account?.ig_username || account?.page_name || "User")}&background=6366f1&color=fff&size=150`; }} /> : <div className="w-full h-full flex items-center justify-center"><User size={26} className="text-zinc-400" /></div>}
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-18 h-18 rounded-full border-[3px] border-white overflow-hidden z-10 " style={{ width: 72, height: 72, background: "#e5e7eb" }}>
+                  {profilePic ? <img src={profilePic} referrerPolicy="no-referrer" alt="Profile" className="w-full h-full object-cover" onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(account?.ig_username || account?.page_name || "User")}&background=6366f1&color=fff&size=150`; }} /> : <div className="w-full h-full flex items-center justify-center"><User size={26} className="text-black opacity-60" /></div>}
                 </div>
               </div>
 
@@ -804,14 +794,14 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                   const hasWallpaper = !!bgImageUrl;
                   return (
                     <>
-                      <h2 className="text-[15px] font-extrabold tracking-tight mt-1 text-center drop-shadow-sm" style={{ color: hasWallpaper ? "#fff" : theme.textPrimary }}>
+                      <h2 className="text-[15px] font-extrabold tracking-tight mt-1 text-center drop-" style={{ color: hasWallpaper ? "#fff" : theme.textPrimary }}>
                         {displayName || "Your Name"}
                       </h2>
-                      <p className="text-[10px] font-semibold lowercase tracking-widest mt-0.5 text-center drop-shadow-sm" style={{ color: hasWallpaper ? "rgba(255,255,255,0.7)" : theme.textSub }}>
+                      <p className="text-[10px] font-semibold lowercase tracking-widest mt-0.5 text-center drop-" style={{ color: hasWallpaper ? "rgba(255,255,255,0.7)" : theme.textSub }}>
                         @{igUsername?.toLowerCase()}
                       </p>
                       {bioText && (
-                        <p className="text-[10px] text-center mt-2.5 leading-relaxed px-2 drop-shadow-sm" style={{ color: hasWallpaper ? "rgba(255,255,255,0.8)" : theme.textSub }}>
+                        <p className="text-[10px] text-center mt-2.5 leading-relaxed px-2 drop-" style={{ color: hasWallpaper ? "rgba(255,255,255,0.8)" : theme.textSub }}>
                           {bioText}
                         </p>
                       )}
@@ -821,7 +811,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                           {socialLinks.map((link) => {
                             const meta = getSocialMeta(link.url);
                             return (
-                              <div key={link.id} className="w-8 h-8 rounded-full flex items-center justify-center border shadow-sm"
+                              <div key={link.id} className="w-8 h-8 rounded-full flex items-center justify-center border "
                                 style={{ 
                                   background: hasWallpaper ? "rgba(255,255,255,0.15)" : theme.socialBg, 
                                   borderColor: hasWallpaper ? "rgba(255,255,255,0.3)" : theme.buttonBorder, 
@@ -846,7 +836,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                     const ytUrl = getYoutubeEmbedUrl(link.url);
                     if (ytUrl) {
                       return (
-                        <div key={link.id} className="w-full rounded-xl overflow-hidden border border-zinc-200/40 shadow-sm relative pt-[56.25%] bg-black">
+                        <div key={link.id} className="w-full rounded-md overflow-hidden border border-zinc-200/40  relative pt-[56.25%] bg-black">
                           <iframe
                             src={ytUrl}
                             className="absolute top-0 left-0 w-full h-full"
@@ -903,7 +893,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
                       {/* Email Capture Block */}
                       {enableEmailCapture && (
                         <div 
-                          className="w-full mt-4 p-4 rounded-xl border flex flex-col gap-3 relative"
+                          className="w-full mt-4 p-4 rounded-md border flex flex-col gap-3 relative"
                           style={{
                             background: hasWallpaper ? "rgba(255,255,255,0.15)" : theme.buttonBg,
                             borderColor: hasWallpaper ? "rgba(255,255,255,0.3)" : theme.buttonBorder,
@@ -937,7 +927,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
 
                       {/* Footer */}
                       <div className="mt-auto pt-8 text-center opacity-70">
-                        <p className="text-[10px] font-bold tracking-wide drop-shadow-md" style={{ color: hasWallpaper ? "#fff" : theme.footerText }}>
+                        <p className="text-[10px] font-bold tracking-wide drop-" style={{ color: hasWallpaper ? "#fff" : theme.footerText }}>
                           Powered by Automixa
                         </p>
                       </div>
@@ -954,7 +944,7 @@ export default function SmartBio({ accountId, account, currentPlan = "free", onU
       <div className="md:hidden fixed bottom-24 right-6 z-40">
         <button
           onClick={() => setIsMobilePreviewOpen(true)}
-          className="flex items-center gap-2 px-5 py-3.5 bg-zinc-900 text-white rounded-full shadow-2xl shadow-zinc-900/40 hover:scale-105 active:scale-95 transition-transform border border-zinc-700"
+          className="flex items-center gap-2 px-5 py-3.5 bg-zinc-900 text-white rounded-full  -900/40 hover:scale-105 active:scale-95 transition-transform border border-zinc-700"
         >
           <Play size={16} className="text-emerald-400 fill-emerald-400" />
           <span className="text-[13px] font-bold tracking-wide">Live Preview</span>

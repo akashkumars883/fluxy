@@ -20,7 +20,7 @@ const NAV_ITEMS = [
 const Toggle = ({ checked, onChange }) => (
   <label className="relative inline-flex items-center cursor-pointer shrink-0">
     <input type="checkbox" checked={checked} onChange={onChange} className="sr-only peer" />
-    <div className="w-9 h-5 bg-zinc-200 rounded-xl peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-xl after:h-4 after:w-4 after:transition-all peer-checked:bg-[#6366F1]" />
+    <div className="w-9 h-5 bg-zinc-200 rounded-md peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-md after:h-4 after:w-4 after:transition-all peer-checked:bg-[#6366F1]" />
   </label>
 );
 
@@ -190,21 +190,22 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   const renderAccount = () => (
     <div className="space-y-4">
       {/* Connected account */}
-      <div className="bg-white border border-zinc-200/80 rounded-xl p-4 sm:p-5-200/5 space-y-2 sm:space-y-3">
-        <h4 className="text-sm font-semibold text-zinc-900">Connected Instagram account</h4>
-        <div className="flex items-center gap-3 p-3 bg-zinc-50 rounded-xl border border-zinc-100">
+      <div className="bg-white border border-zinc-200/80 rounded-md p-4 sm:p-5-200/5 space-y-2 sm:space-y-3">
+        <h4 className="text-sm font-semibold text-black">Connected Instagram account</h4>
+        <div className="flex items-center gap-3 p-3 bg-zinc-50 rounded-md border border-zinc-100">
           <img
             src={account?.profile_pic || account?.profile_picture_url || account?.metadata?.profile_picture_url ||
               `https://ui-avatars.com/api/?name=${encodeURIComponent(account?.page_name || "User")}&background=6366f1&color=fff&size=80`}
+            referrerPolicy="no-referrer"
             alt="Profile"
-            className="w-9 h-9 rounded-xl object-cover border border-zinc-200 shrink-0"
+            className="w-9 h-9 rounded-md object-cover border border-zinc-200 shrink-0"
             onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(account?.ig_username || account?.page_name || "User")}&background=6366f1&color=fff&size=80`; }}
           />
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold text-zinc-900 truncate">@{account?.ig_username || account?.page_name || "account"}</p>
-            <p className="text-xs text-zinc-400 mt-0.5">Instagram Creator Account</p>
+            <p className="text-sm font-semibold text-black truncate">@{account?.ig_username || account?.page_name || "account"}</p>
+            <p className="text-xs text-black opacity-60 mt-0.5">Instagram Creator Account</p>
           </div>
-          <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl text-[10px] font-bold shrink-0">Connected</span>
+          <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md text-[10px] font-bold shrink-0">Connected</span>
         </div>
         <button
           onClick={async () => {
@@ -219,30 +220,30 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
             finally { setIsDisconnecting(false); }
           }}
           disabled={isDisconnecting || !account}
-          className="w-full py-2 bg-rose-50 hover:bg-rose-100 border border-rose-100 rounded-xl text-xs font-semibold text-rose-600 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
+          className="w-full py-2 bg-rose-50 hover:bg-rose-100 border border-rose-100 rounded-md text-xs font-semibold text-rose-600 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
         >
           <LogOut size={12} /> {isDisconnecting ? "Disconnecting…" : "Disconnect account"}
         </button>
       </div>
 
       {/* API Quota */}
-      <div className="bg-white border border-zinc-200/80 rounded-xl p-4 sm:p-5-200/5 space-y-2 sm:space-y-3">
+      <div className="bg-white border border-zinc-200/80 rounded-md p-4 sm:p-5-200/5 space-y-2 sm:space-y-3">
         <div className="flex items-center justify-between">
-          <h4 className="text-sm font-semibold text-zinc-900">API quota usage</h4>
-          <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-xl text-[10px] font-bold">
+          <h4 className="text-sm font-semibold text-black">API quota usage</h4>
+          <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-md text-[10px] font-bold">
             {currentPlan === "viral_scale" ? "Business Scale" : currentPlan === "creator_pro" ? "Business Pro" : "Free"}
           </span>
         </div>
         <div className="space-y-2">
           <div className="flex justify-between text-xs">
-            <span className="text-zinc-500">Replies used</span>
-            <span className="font-semibold text-zinc-900">{usedQuota.toLocaleString()} / {maxQuota.toLocaleString()}</span>
+            <span className="text-black opacity-80">Replies used</span>
+            <span className="font-semibold text-black">{usedQuota.toLocaleString()} / {maxQuota.toLocaleString()}</span>
           </div>
-          <div className="w-full bg-zinc-100 rounded-xl h-2 overflow-hidden">
-            <div className="bg-gradient-to-r from-[#6366F1] to-purple-500 h-full rounded-xl transition-all duration-500" style={{ width: `${quotaPercent}%` }} />
+          <div className="w-full bg-zinc-100 rounded-md h-2 overflow-hidden">
+            <div className="bg-gradient-to-r from-[#6366F1] to-purple-500 h-full rounded-md transition-all duration-500" style={{ width: `${quotaPercent}%` }} />
           </div>
           <div className="flex items-center justify-between">
-            <p className="text-xs text-zinc-400">Resets on your next billing cycle.</p>
+            <p className="text-xs text-black opacity-60">Resets on your next billing cycle.</p>
             {onSubscriptionClick && (
               <button onClick={onSubscriptionClick} className="text-xs text-[#6366F1] font-semibold hover:underline underline-offset-2">Upgrade plan →</button>
             )}
@@ -253,10 +254,10 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   );
 
   const renderPayout = () => (
-    <div className="bg-white border border-zinc-200/80 rounded-xl p-4 sm:p-5-200/5 space-y-3 sm:space-y-4">
+    <div className="bg-white border border-zinc-200/80 rounded-md p-4 sm:p-5-200/5 space-y-3 sm:space-y-4">
       <div>
-        <h4 className="text-sm font-semibold text-zinc-900">Payout details</h4>
-        <p className="text-xs text-zinc-400 mt-0.5">Your Mini Store sales and Partner Program commissions will be sent to this account.</p>
+        <h4 className="text-sm font-semibold text-black">Payout details</h4>
+        <p className="text-xs text-black opacity-60 mt-0.5">Your Mini Store sales and Partner Program commissions will be sent to this account.</p>
       </div>
 
       <form onSubmit={handleSavePayout} className="space-y-4 max-w-md">
@@ -264,9 +265,9 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
         <div className="flex gap-2">
           {[{ id: "upi", label: "UPI" }, { id: "bank_transfer", label: "Bank Transfer" }].map((m) => (
             <button key={m.id} type="button" onClick={() => setPayoutMethod(m.id)}
-              className={`flex-1 py-2 text-xs font-semibold rounded-xl border transition-all ${payoutMethod === m.id
+              className={`flex-1 py-2 text-xs font-semibold rounded-md border transition-all ${payoutMethod === m.id
                   ? "bg-indigo-50 border-indigo-300 text-indigo-700"
-                  : "bg-zinc-50 border-zinc-200 text-zinc-500 hover:border-zinc-300"
+                  : "bg-zinc-50 border-zinc-200 text-black opacity-80 hover:border-zinc-300"
                 }`}>
               {m.label}
             </button>
@@ -275,29 +276,29 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
 
         {payoutMethod === "upi" && (
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-zinc-700">UPI ID</label>
+            <label className="text-xs font-semibold text-black">UPI ID</label>
             <input type="text" required placeholder="yourname@okaxis" value={upiId} onChange={(e) => setUpiId(e.target.value)}
-              className="w-full px-3 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white transition-colors" />
+              className="w-full px-3 py-2.5 bg-zinc-50 border border-zinc-200 rounded-md text-sm text-black outline-none focus:border-indigo-400 focus:bg-white transition-colors" />
           </div>
         )}
 
         {payoutMethod === "bank_transfer" && (
           <div className="space-y-3">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-zinc-700">Account holder name</label>
+              <label className="text-xs font-semibold text-black">Account holder name</label>
               <input type="text" required placeholder="Full name as per bank" value={bankHolderName} onChange={(e) => setBankHolderName(e.target.value)}
-                className="w-full px-3 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white transition-colors" />
+                className="w-full px-3 py-2.5 bg-zinc-50 border border-zinc-200 rounded-md text-sm text-black outline-none focus:border-indigo-400 focus:bg-white transition-colors" />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-zinc-700">Account number</label>
+                <label className="text-xs font-semibold text-black">Account number</label>
                 <input type="text" required placeholder="012345678901" value={bankAccountNo} onChange={(e) => setBankAccountNo(e.target.value.replace(/\D/g, ""))}
-                  className="w-full px-3 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white transition-colors" />
+                  className="w-full px-3 py-2.5 bg-zinc-50 border border-zinc-200 rounded-md text-sm text-black outline-none focus:border-indigo-400 focus:bg-white transition-colors" />
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-zinc-700">IFSC code</label>
+                <label className="text-xs font-semibold text-black">IFSC code</label>
                 <input type="text" required placeholder="HDFC0001234" value={bankIfsc} onChange={(e) => setBankIfsc(e.target.value.toUpperCase().replace(/\s+/g, ""))}
-                  className="w-full px-3 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white transition-colors" />
+                  className="w-full px-3 py-2.5 bg-zinc-50 border border-zinc-200 rounded-md text-sm text-black outline-none focus:border-indigo-400 focus:bg-white transition-colors" />
               </div>
             </div>
           </div>
@@ -306,7 +307,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
         {payoutError && <p className="text-xs text-rose-500 font-medium">{payoutError}</p>}
 
         <button type="submit" disabled={payoutSaving}
-          className="px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-xl transition-all flex items-center gap-2 disabled:opacity-60">
+          className="px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-md transition-all flex items-center gap-2 disabled:opacity-60">
           {payoutSaved ? <><Check size={14} /> Saved!</> : payoutSaving ? "Saving…" : "Save payout details"}
         </button>
       </form>
@@ -314,20 +315,20 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   );
 
   const renderNotifications = () => (
-    <div className="bg-white border border-zinc-200/80 rounded-xl p-4 sm:p-5-200/5 space-y-2 sm:space-y-3">
+    <div className="bg-white border border-zinc-200/80 rounded-md p-4 sm:p-5-200/5 space-y-2 sm:space-y-3">
       <div>
-        <h4 className="text-sm font-semibold text-zinc-900">Email notifications</h4>
-        <p className="text-xs text-zinc-400 mt-0.5">Choose what updates you want to receive by email.</p>
+        <h4 className="text-sm font-semibold text-black">Email notifications</h4>
+        <p className="text-xs text-black opacity-60 mt-0.5">Choose what updates you want to receive by email.</p>
       </div>
       <div className="space-y-2 max-w-md">
         {[
           { label: "Contact Alerts", desc: "Get notified when a new lead submits a form", state: emailAlerts, toggle: () => setEmailAlerts(!emailAlerts) },
           { label: "Weekly Summary", desc: "Growth & reply performance report every Monday", state: weeklyReport, toggle: () => setWeeklyReport(!weeklyReport) },
         ].map((item) => (
-          <div key={item.label} className="flex items-center justify-between p-3 bg-zinc-50 border border-zinc-100 rounded-xl">
+          <div key={item.label} className="flex items-center justify-between p-3 bg-zinc-50 border border-zinc-100 rounded-md">
             <div>
-              <p className="text-xs font-semibold text-zinc-900">{item.label}</p>
-              <p className="text-[11px] text-zinc-400 mt-0.5">{item.desc}</p>
+              <p className="text-xs font-semibold text-black">{item.label}</p>
+              <p className="text-[11px] text-black opacity-60 mt-0.5">{item.desc}</p>
             </div>
             <Toggle checked={item.state} onChange={item.toggle} />
           </div>
@@ -337,45 +338,45 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   );
 
   const renderTeam = () => (
-    <div className="bg-white border border-zinc-200/80 rounded-xl p-4 sm:p-5-200/5 space-y-3 sm:space-y-4">
+    <div className="bg-white border border-zinc-200/80 rounded-md p-4 sm:p-5-200/5 space-y-3 sm:space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-100">
         <div>
-          <h4 className="text-sm font-semibold text-zinc-900">Team & Collaboration</h4>
-          <p className="text-xs text-zinc-400 mt-0.5">
+          <h4 className="text-sm font-semibold text-black">Team & Collaboration</h4>
+          <p className="text-xs text-black opacity-60 mt-0.5">
             Workspace: <span className="text-[#6366F1] font-semibold">{`"${selectedWorkspace?.name || "Personal Workspace"}"`}</span>
           </p>
         </div>
         <form onSubmit={handleInviteSubmit} className="flex gap-2 w-full sm:w-auto max-w-sm shrink-0">
           <input type="email" required placeholder="collaborator@email.com" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)}
-            className="flex-1 bg-zinc-50 border border-zinc-200 rounded-xl px-3 py-2 text-xs font-medium text-zinc-900 placeholder:text-zinc-400 focus:bg-white focus:border-[#6366F1] outline-none transition-colors min-w-0" />
+            className="flex-1 bg-zinc-50 border border-zinc-200 rounded-md px-3 py-2 text-xs font-medium text-black placeholder:text-black opacity-60 focus:bg-white focus:border-[#6366F1] outline-none transition-colors min-w-0" />
           <select value={inviteRole} onChange={(e) => setInviteRole(e.target.value)}
-            className="bg-zinc-50 border border-zinc-200 rounded-xl px-2 py-2 text-xs font-medium text-zinc-900 focus:bg-white focus:border-[#6366F1] outline-none transition-colors shrink-0">
+            className="bg-zinc-50 border border-zinc-200 rounded-md px-2 py-2 text-xs font-medium text-black focus:bg-white focus:border-[#6366F1] outline-none transition-colors shrink-0">
             <option value="viewer">Viewer</option>
             <option value="editor">Editor</option>
             <option value="admin">Admin</option>
           </select>
           <button type="submit" disabled={isInviting}
-            className="px-3 py-2 bg-zinc-900 hover:bg-[#6366F1] disabled:opacity-50 text-white rounded-xl text-xs font-semibold transition-all flex items-center gap-1 shrink-0">
+            className="px-3 py-2 bg-zinc-900 hover:bg-[#6366F1] disabled:opacity-50 text-white rounded-md text-xs font-semibold transition-all flex items-center gap-1 shrink-0">
             {isInviting ? "…" : <><UserPlus size={13} /> Invite</>}
           </button>
         </form>
       </div>
 
       {workspaceMembersLoading ? (
-        <div className="py-8 flex items-center justify-center gap-2 text-zinc-400 text-xs">
-          <div className="w-4 h-4 border-2 border-zinc-300 border-t-zinc-600 rounded-xl animate-spin" /> Loading…
+        <div className="py-8 flex items-center justify-center gap-2 text-black opacity-60 text-xs">
+          <div className="w-4 h-4 border-2 border-zinc-300 border-t-zinc-600 rounded-md animate-spin" /> Loading…
         </div>
       ) : !workspaceMembers || workspaceMembers.length === 0 ? (
-        <div className="py-8 text-center border border-dashed border-zinc-200 rounded-xl bg-zinc-50/50">
+        <div className="py-8 text-center border border-dashed border-zinc-200 rounded-md bg-zinc-50/50">
           <Users size={28} className="mx-auto text-zinc-300 mb-2" />
-          <p className="text-sm font-semibold text-zinc-700">No collaborators yet</p>
-          <p className="text-xs text-zinc-400 mt-1">Invite team members above to get started.</p>
+          <p className="text-sm font-semibold text-black">No collaborators yet</p>
+          <p className="text-xs text-black opacity-60 mt-1">Invite team members above to get started.</p>
         </div>
       ) : (
-        <div className="border border-zinc-100 rounded-xl overflow-x-auto">
+        <div className="border border-zinc-100 rounded-md overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-zinc-50 border-b border-zinc-100 text-zinc-500 text-xs font-medium">
+              <tr className="bg-zinc-50 border-b border-zinc-100 text-black opacity-80 text-xs font-medium">
                 <th className="px-4 py-2.5">Collaborator</th>
                 <th className="px-4 py-2.5">Role</th>
                 <th className="px-4 py-2.5">Status</th>
@@ -387,33 +388,33 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
                 <tr key={member.id} className="hover:bg-zinc-50/50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-xl bg-indigo-50 text-[#6366F1] font-bold text-xs flex items-center justify-center border border-indigo-100 shrink-0">
+                      <div className="w-7 h-7 rounded-md bg-indigo-50 text-[#6366F1] font-bold text-xs flex items-center justify-center border border-indigo-100 shrink-0">
                         {member.email.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-zinc-900">{member.email}</p>
-                        <p className="text-xs text-zinc-400">Collaborator</p>
+                        <p className="text-sm font-semibold text-black">{member.email}</p>
+                        <p className="text-xs text-black opacity-60">Collaborator</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-4 py-3">
                     <select value={member.role} onChange={(e) => updateMemberRole(selectedWorkspace?.id, member.id, e.target.value)}
-                      className="bg-zinc-50 border border-zinc-200 rounded-xl px-2 py-1.5 text-xs font-semibold text-zinc-700 focus:outline-none focus:border-indigo-400 transition-all">
+                      className="bg-zinc-50 border border-zinc-200 rounded-md px-2 py-1.5 text-xs font-semibold text-black focus:outline-none focus:border-indigo-400 transition-all">
                       <option value="viewer">Viewer</option>
                       <option value="editor">Editor</option>
                       <option value="admin">Admin</option>
                     </select>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-xl border ${member.status === "active" ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-amber-50 text-amber-700 border-amber-100"
+                    <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-md border ${member.status === "active" ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-amber-50 text-amber-700 border-amber-100"
                       }`}>
-                      <span className={`w-1.5 h-1.5 rounded-xl ${member.status === "active" ? "bg-emerald-500" : "bg-amber-500 animate-pulse"}`} />
+                      <span className={`w-1.5 h-1.5 rounded-md ${member.status === "active" ? "bg-emerald-500" : "bg-amber-500 animate-pulse"}`} />
                       {member.status}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right">
                     <button onClick={() => { if (confirm(`Remove ${member.email}?`)) removeMember(selectedWorkspace?.id, member.id); }}
-                      className="px-3 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-100 rounded-xl transition-all">
+                      className="px-3 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-100 rounded-md transition-all">
                       Revoke
                     </button>
                   </td>
@@ -427,16 +428,16 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
   );
 
   const renderIntegrations = () => (
-    <div className="bg-white border border-zinc-200/80 rounded-xl p-4 sm:p-5-200/5 space-y-3 sm:space-y-4">
+    <div className="bg-white border border-zinc-200/80 rounded-md p-4 sm:p-5-200/5 space-y-3 sm:space-y-4">
       <div className="flex items-center justify-between pb-3 border-b border-zinc-100">
         <div>
-          <h4 className="text-sm font-semibold text-zinc-900">Outbound Webhooks</h4>
-          <p className="text-xs text-zinc-400 mt-0.5">Send lead event payloads to Zapier, Make, or your custom endpoint in real-time.</p>
+          <h4 className="text-sm font-semibold text-black">Outbound Webhooks</h4>
+          <p className="text-xs text-black opacity-60 mt-0.5">Send lead event payloads to Zapier, Make, or your custom endpoint in real-time.</p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-xl border ${webhookEnabled ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-zinc-50 text-zinc-500 border-zinc-200"
+          <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-md border ${webhookEnabled ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-zinc-50 text-black opacity-80 border-zinc-200"
             }`}>
-            <span className={`w-1.5 h-1.5 rounded-xl ${webhookEnabled ? "bg-emerald-500" : "bg-zinc-400"}`} />
+            <span className={`w-1.5 h-1.5 rounded-md ${webhookEnabled ? "bg-emerald-500" : "bg-zinc-400"}`} />
             {webhookEnabled ? "Active" : "Disabled"}
           </span>
           <Toggle checked={webhookEnabled} onChange={(e) => setWebhookEnabled(e.target.checked)} />
@@ -445,19 +446,19 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
 
       <div className="flex flex-col sm:flex-row gap-2 max-w-xl">
         <input type="url" placeholder="https://hooks.zapier.com/hooks/catch/…" value={webhookUrl} onChange={(e) => setWebhookUrl(e.target.value)}
-          className="flex-1 bg-zinc-50 border border-zinc-200 rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-900 placeholder:text-zinc-400 focus:bg-white focus:border-[#6366F1] outline-none transition-colors" />
+          className="flex-1 bg-zinc-50 border border-zinc-200 rounded-md px-3 py-2.5 text-sm font-medium text-black placeholder:text-black opacity-60 focus:bg-white focus:border-[#6366F1] outline-none transition-colors" />
         <button onClick={handleTestWebhook} disabled={isTestingWebhook || !webhookUrl}
-          className="px-4 py-2.5 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 disabled:opacity-50 text-zinc-700 rounded-xl text-sm font-semibold transition-all flex items-center gap-1.5 shrink-0">
+          className="px-4 py-2.5 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 disabled:opacity-50 text-black rounded-md text-sm font-semibold transition-all flex items-center gap-1.5 shrink-0">
           {isTestingWebhook ? <><Loader2 size={13} className="animate-spin" /> Testing…</> : <><RefreshCcw size={13} /> Test</>}
         </button>
         <button onClick={() => handleSave(webhookUrl, webhookEnabled)}
-          className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-sm font-semibold transition-all flex items-center gap-1.5 shrink-0">
+          className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-md text-sm font-semibold transition-all flex items-center gap-1.5 shrink-0">
           {isSaved ? <><Check size={13} /> Saved</> : "Save"}
         </button>
       </div>
 
       {testWebhookResult && (
-        <div className={`p-3 rounded-xl border flex items-start gap-2 text-xs font-semibold max-w-xl animate-in slide-in-from-top-1 duration-300 ${testWebhookResult === "success" ? "bg-emerald-50 border-emerald-100 text-emerald-800" : "bg-rose-50 border-rose-100 text-rose-800"
+        <div className={`p-3 rounded-md border flex items-start gap-2 text-xs font-semibold max-w-xl animate-in slide-in-from-top-1 duration-300 ${testWebhookResult === "success" ? "bg-emerald-50 border-emerald-100 text-emerald-800" : "bg-rose-50 border-rose-100 text-rose-800"
           }`}>
           {testWebhookResult === "success" ? <CheckCircle2 size={14} className="text-emerald-600 shrink-0 mt-0.5" /> : <AlertCircle size={14} className="text-rose-600 shrink-0 mt-0.5" />}
           {testWebhookMessage}
@@ -482,24 +483,24 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
 
       {/* ── Page Header ── */}
       <div>
-        <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1">Configuration</p>
+        <p className="text-xs font-semibold text-black opacity-60 uppercase tracking-widest mb-1">Configuration</p>
         <h2 className="text-2xl sm:text-3xl font-bold text-zinc-950 tracking-tight">Settings</h2>
-        <p className="text-sm text-zinc-400 font-medium mt-1">Manage your account, team, integrations and billing.</p>
+        <p className="text-sm text-black opacity-60 font-medium mt-1">Manage your account, team, integrations and billing.</p>
       </div>
 
       {/* Upgrade Banner */}
       {currentPlan !== 'viral_scale' && (
-        <div className="relative overflow-hidden bg-zinc-950 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+        <div className="relative overflow-hidden bg-zinc-950 rounded-md p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
           <div className="absolute top-0 left-0 w-64 h-full bg-indigo-500/10 blur-3xl pointer-events-none" />
           <div className="flex items-center gap-3.5 relative z-10">
-            <div className="w-9 h-9 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 rounded-md bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
               <Sparkles size={16} />
             </div>
             <div>
               <p className="text-xs font-bold text-white">
                 {currentPlan === 'free' ? 'Unlock Business Pro — 15x more replies' : 'Scale to 50,000 monthly replies'}
               </p>
-              <p className="text-[11px] text-zinc-400 mt-0.5 max-w-md font-medium">
+              <p className="text-[11px] text-black opacity-60 mt-0.5 max-w-md font-medium">
                 {currentPlan === 'free'
                   ? 'Unlimited automations, Mini Store, Smart Bio & priority support.'
                   : 'Advanced CRM, custom persona, white-label & agency workspace.'}
@@ -508,7 +509,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
           </div>
           <button
             onClick={() => onSubscriptionClick?.()}
-            className="shrink-0 inline-flex items-center gap-1.5 px-5 py-2.5 bg-white hover:bg-zinc-100 text-zinc-950 text-xs font-bold rounded-xl transition-all cursor-pointer relative z-10"
+            className="shrink-0 inline-flex items-center gap-1.5 px-5 py-2.5 bg-white hover:bg-zinc-100 text-zinc-950 text-xs font-bold rounded-md transition-all cursor-pointer relative z-10"
           >
             Upgrade Now
           </button>
@@ -519,7 +520,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
       <div className="flex sm:hidden gap-1 overflow-x-auto no-scrollbar pb-3 mb-4 border-b border-zinc-100">
         {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
           <button key={id} onClick={() => setSettingsTab(id)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all shrink-0 ${settingsTab === id ? "bg-[#6366F1] text-white " : "bg-zinc-100 text-zinc-500 hover:text-zinc-900"
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-semibold whitespace-nowrap transition-all shrink-0 ${settingsTab === id ? "bg-[#6366F1] text-white " : "bg-zinc-100 text-black opacity-80 hover:text-black"
               }`}>
             <Icon size={12} /> {label}
           </button>

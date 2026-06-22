@@ -5,6 +5,7 @@ import { ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createClient } from '@/lib/supabase'; // adding this back since it's used
 import * as logger from "@/lib/logger";
+import Image from "next/image";
 
 const COLORS = ["#6366F1", "#EC4899", "#10B981", "#F59E0B", "#3B82F6", "#EF4444", "#A855F7"];
 
@@ -116,14 +117,12 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
     onClose();
   };
 
-  const handleConnectClick = (provider = 'facebook') => {
+  const handleConnectClick = (provider = 'instagram') => {
     setIsConnecting(true);
     // Determine the active role: priority to user's database role, fallback to current state, fallback to 'business'
     const activeRole = user?.user_metadata?.role || role || 'business';
     // Real redirect to Instagram Login for Business authorization endpoint
-    setTimeout(() => {
-      window.location.href = `/api/auth/connect?role=${activeRole}&provider=${provider}`;
-    }, 300);
+    window.location.href = `/api/auth/connect?role=${activeRole}&provider=${provider}`;
   };
 
   return (
@@ -144,7 +143,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="relative w-full max-w-xl bg-white border border-border rounded-xl max-h-[85vh] overflow-y-auto no-scrollbar"
+        className="relative w-full max-w-xl bg-white border border-border rounded-xl max-h-[95vh] sm:max-h-[85vh] overflow-y-auto no-scrollbar pb-6 sm:pb-0"
       >
         {/* Glow effects */}
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-xl blur-[80px] pointer-events-none" />
@@ -162,35 +161,38 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 1, conn
               >
                 {isConnecting ? (
                   <div className="flex flex-col items-center justify-center space-y-6 py-6 sm:py-8 w-full">
-                    <Loader2 size={56} className="text-[#1877F2] animate-spin" />
+                    <Loader2 size={56} className="text-[#E1306C] animate-spin" />
                     <div className="space-y-1 text-center">
-                      <h3 className="text-xl sm:text-2xl font-semibold text-foreground">Connecting to Meta...</h3>
+                      <h3 className="text-xl sm:text-2xl font-semibold text-foreground">Connecting to Instagram...</h3>
                       <p className="text-zinc-muted text-xs sm:text-sm font-medium">Please do not close this window</p>
                     </div>
                   </div>
                 ) : (
                   <>
                     <div className="mx-auto w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center overflow-hidden rounded-xl">
-                      <img
+                      <Image
                         src="/logo.png"
                         alt="Automixa Logo"
+                        width={96}
+                        height={96}
+                        priority
                         className="w-full h-full object-contain"
                       />
                     </div>
 
                     <div className="space-y-1 sm:space-y-2">
-                      <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Connect with Facebook</h2>
+                      <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Connect with Instagram</h2>
                       <p className="text-zinc-muted font-normal text-sm sm:text-base max-w-sm mx-auto px-2">
-                        Log in with Facebook to link your Facebook Page and Instagram Professional account to Automixa.
+                        Log in directly with your Instagram Professional account to enable Automixa.
                       </p>
                     </div>
 
                     <div className="pt-1 sm:pt-2 flex flex-col items-center gap-2">
                       <button
-                        onClick={() => handleConnectClick('facebook')}
-                        className="w-full sm:w-auto px-8 sm:px-12 py-3 sm:py-3.5 bg-[#1877F2] text-white rounded-xl text-sm font-bold  hover: transition-all flex items-center justify-center gap-3 hover:scale-[1.02]"
+                        onClick={() => handleConnectClick('instagram')}
+                        className="w-full sm:w-auto px-8 sm:px-12 py-3 sm:py-3.5 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F56040] text-white rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-3 hover:scale-[1.02] "
                       >
-                        Login with Facebook <ArrowRight size={18} className="sm:w-5 sm:h-5" />
+                        Login with Instagram <ArrowRight size={18} className="sm:w-5 sm:h-5" />
                       </button>
 
                       <div className="flex flex-col gap-1.5 sm:gap-2 items-center mt-1 sm:mt-2">

@@ -32,6 +32,27 @@ export function DashboardProvider({ children, initialData = null }) {
     const supabaseClient = createClient();
 
     const loadData = async (session) => {
+      const isLocalDev = process.env.NODE_ENV === "development";
+
+      if (isLocalDev && !session) {
+        logger.log("DashboardContext: Injecting DEV Mock Data");
+        setUser({ id: "dev-user-123", email: "admin@automixa.com", user_metadata: { full_name: "Admin" } });
+        setAllAccounts([
+          {
+            id: "mock-account-1",
+            user_id: "dev-user-123",
+            ig_username: "automixa_hq",
+            page_name: "Automixa Hub",
+            profile_pic: "https://ui-avatars.com/api/?name=Automixa&background=6366f1&color=fff",
+            is_active: true,
+            persona: "business"
+          }
+        ]);
+        setCurrentPlan("free");
+        setLoading(false);
+        return;
+      }
+
       if (!session) {
         setLoading(false);
         return;
@@ -51,23 +72,7 @@ export function DashboardProvider({ children, initialData = null }) {
           if (accountsData.length > 0) {
             setAllAccounts(accountsData);
           } else {
-            const isLocalDev = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
-            if (isLocalDev) {
-              const mockAccounts = [{
-                id: "mock-account-uuid-12345",
-                user_id: session.user.id,
-                ig_username: "automixa_creator",
-                page_name: "Automixa Creator Page",
-                name: "Automixa Creator",
-                is_active: true,
-                persona: "content_creator",
-                profile_pic: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-                created_at: new Date().toISOString()
-              }];
-              setAllAccounts(mockAccounts);
-            } else {
-              setAllAccounts([]);
-            }
+            setAllAccounts([]);
           }
         }
 
@@ -91,38 +96,8 @@ export function DashboardProvider({ children, initialData = null }) {
           logger.log("DashboardContext: Initial User Found");
           loadData({ user });
         } else {
-          const isLocalDev = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
-          if (isLocalDev) {
-            logger.log("DashboardContext: Local dev mode - simulating session");
-            const mockUser = {
-              id: "mock-user-uuid-12345",
-              email: "test_creator@automixa.in",
-              user_metadata: {
-                full_name: "Automixa Tester",
-                avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-                onboarding_completed: true
-              },
-              app_metadata: { provider: "Email" }
-            };
-            setUser(mockUser);
-            
-            const mockAccounts = [{
-              id: "mock-account-uuid-12345",
-              user_id: mockUser.id,
-              ig_username: "automixa_creator",
-              page_name: "Automixa Creator Page",
-              name: "Automixa Creator",
-              is_active: true,
-              persona: "content_creator",
-              profile_pic: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-              created_at: new Date().toISOString()
-            }];
-            setAllAccounts(mockAccounts);
-            setCurrentPlan("creator_pro");
-            setLoading(false);
-          } else {
-            setLoading(false); // Fix: Remove 3-second blank loading delay
-          }
+          logger.log("DashboardContext: No Initial User. Checking Dev Bypass.");
+          loadData(null); // Call loadData to allow dev mock injection
         }
       });
     }
@@ -136,13 +111,13 @@ export function DashboardProvider({ children, initialData = null }) {
           setUser(session.user);
         }
       } else {
-        const isLocalDev = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+        const isLocalDev = process.env.NODE_ENV === "development";
         if (!isLocalDev) {
           setUser(null);
           setAllAccounts([]);
           setSelectedAccount(null);
+          setLoading(false);
         }
-        setLoading(false);
       }
     });
 

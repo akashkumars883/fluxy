@@ -538,7 +538,7 @@ export default function CampaignWizard({
         className={`flex ${isAI ? "justify-start" : "justify-end"} w-full mb-2`}
       >
         {isAI && (
-          <div className="w-8 h-8 rounded-full bg-white border border-zinc-200 flex items-center justify-center shrink-0 mr-2 sm:mr-3 mt-1 shadow-sm select-none">
+          <div className="w-8 h-8 rounded-full bg-white border border-zinc-200 flex items-center justify-center shrink-0 mr-2 sm:mr-3 mt-1  select-none">
             <img
               src="/logo.png"
               alt="Automixa AI"
@@ -548,8 +548,8 @@ export default function CampaignWizard({
         )}
         <div
           className={`max-w-[92%] sm:max-w-[75%] px-4 py-3 sm:px-5 sm:py-4 ${isAI
-            ? "bg-white border border-zinc-200 shadow-sm shadow-zinc-200/20 rounded-[24px] rounded-[8px] text-zinc-800 text-[14px] font-medium leading-relaxed"
-            : "bg-gradient-to-tr from-[#6366F1] to-indigo-500 text-white rounded-[24px] rounded-[8px] text-[14px] font-medium shadow-md shadow-indigo-500/20"
+            ? "bg-white border border-zinc-200  -200/20 rounded-md text-black text-[14px] font-medium leading-relaxed"
+            : "bg-gradient-to-tr from-[#6366F1] to-indigo-500 text-white rounded-md text-[14px] font-medium  -500/20"
             }`}
         >
           {msg.text.split("\n").map((line, i) => (
@@ -573,13 +573,13 @@ export default function CampaignWizard({
   const renderInputPanel = () => {
     if (isAiBuilding) {
       return (
-        <motion.div key="ai-loading" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center p-8 bg-white border border-zinc-200 rounded-[22px]  text-center space-y-4">
-          <div className="w-12 h-12 bg-[#6366F1]/10 text-[#6366F1] rounded-xl flex items-center justify-center border border-[#6366F1]/20">
+        <motion.div key="ai-loading" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center p-8 bg-white border border-zinc-200 rounded-md  text-center space-y-4">
+          <div className="w-12 h-12 bg-[#6366F1]/10 text-[#6366F1] rounded-md flex items-center justify-center border border-[#6366F1]/20">
             <Sparkles className="animate-spin text-[#6366F1]" size={24} />
           </div>
           <div>
             <h4 className="text-[14px] font-bold text-zinc-950">Automixa AI is building...</h4>
-            <p className="text-[11px] text-zinc-500 mt-1 font-medium leading-relaxed">Drafting copy, configuring triggers, and building your preview.</p>
+            <p className="text-[11px] text-black opacity-80 mt-1 font-medium leading-relaxed">Drafting copy, configuring triggers, and building your preview.</p>
           </div>
         </motion.div>
       );
@@ -602,7 +602,7 @@ export default function CampaignWizard({
             {/* One-Shot AI Input */}
             <form
               onSubmit={currentPlan === "free" ? handleAiBuildClick : handleAiBuildSubmit}
-              className={`bg-white border border-zinc-200 rounded-[22px] p-3 sm:p-4  space-y-3 text-left transition-all ${currentPlan === "free" ? "hover:border-[#6366F1]/50 cursor-pointer" : ""}`}
+              className={`bg-white border border-zinc-200 rounded-md p-3 sm:p-4  space-y-3 text-left transition-all ${currentPlan === "free" ? "hover:border-[#6366F1]/50 cursor-pointer" : ""}`}
               onClick={currentPlan === "free" ? handleAiBuildClick : undefined}
             >
               <div className="flex items-center justify-between text-[#6366F1]">
@@ -611,10 +611,10 @@ export default function CampaignWizard({
                   <span className="text-[11px] font-bold uppercase tracking-wider">Build with Automixa AI</span>
                 </div>
                 {currentPlan === "free" && (
-                  <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[9px] font-bold rounded-xl uppercase">Pro</span>
+                  <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[9px] font-bold rounded-md uppercase">Pro</span>
                 )}
               </div>
-              <div className="relative flex items-center w-full bg-zinc-50 border border-zinc-200 rounded-xl overflow-hidden focus-within:border-[#6366F1] focus-within:bg-white transition-all">
+              <div className="relative flex items-center w-full bg-zinc-50 border border-zinc-200 rounded-md overflow-hidden focus-within:border-[#6366F1] focus-within:bg-white transition-all">
                 <input
                   type="text"
                   value={aiBuildPrompt}
@@ -622,13 +622,13 @@ export default function CampaignWizard({
                   onClick={currentPlan === "free" ? handleAiBuildClick : undefined}
                   readOnly={currentPlan === "free"}
                   placeholder={currentPlan === "free" ? "Upgrade to Pro to unlock AI Builder" : "Describe what you want to automate in 1 sentence..."}
-                  className={`flex-1 w-full pl-4 pr-12 py-3 text-sm outline-none bg-transparent font-medium ${currentPlan === "free" ? "cursor-pointer text-zinc-400 placeholder:text-zinc-400" : ""}`}
+                  className={`flex-1 w-full pl-4 pr-12 py-3 text-sm outline-none bg-transparent font-medium ${currentPlan === "free" ? "cursor-pointer text-black opacity-60 placeholder:text-black opacity-60" : ""}`}
                 />
                 <button
                   type="submit"
                   disabled={currentPlan === "free" || !aiBuildPrompt.trim() || isAiBuilding}
                   onClick={currentPlan === "free" ? handleAiBuildClick : undefined}
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 bg-zinc-950 text-white rounded-xl flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#6366F1]"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 bg-zinc-950 text-white rounded-md flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#6366F1]"
                 >
                   <ArrowRight size={15} />
                 </button>
@@ -636,14 +636,14 @@ export default function CampaignWizard({
               {aiBuildError && (
                 <p className="text-[11px] text-rose-500 font-semibold px-1">{aiBuildError}</p>
               )}
-              <p className="text-[10px] text-zinc-400 font-medium px-1">
+              <p className="text-[10px] text-black opacity-60 font-medium px-1">
                 e.g., &quot;Send a VIP discount code when someone comments &apos;COUPON&apos;&quot;
               </p>
             </form>
 
             <div className="relative flex py-1 items-center">
               <div className="flex-grow border-t border-zinc-200"></div>
-              <span className="flex-shrink mx-4 text-zinc-400 text-[10px] font-bold uppercase tracking-wider">Or start with a template</span>
+              <span className="flex-shrink mx-4 text-black opacity-60 text-[10px] font-bold uppercase tracking-wider">Or start with a template</span>
               <div className="flex-grow border-t border-zinc-200"></div>
             </div>
 
@@ -654,25 +654,25 @@ export default function CampaignWizard({
                   <button
                     key={type.id}
                     onClick={() => handleSelectType(type)}
-                    className={`group flex items-start gap-3 sm:gap-4 p-3.5 sm:p-4 rounded-xl border-2 text-left transition-all duration-200 hover: hover:-translate-y-0.5 ${isLocked
+                    className={`group flex items-start gap-3 sm:gap-4 p-3.5 sm:p-4 rounded-md border-2 text-left transition-all duration-200 hover: hover:-translate-y-0.5 ${isLocked
                       ? "border-zinc-100 bg-zinc-50 opacity-80"
                       : `border-zinc-200 bg-white hover:border-[#6366F1] hover:bg-[#6366F1]/5`
                       }`}
                   >
-                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${type.bg} ${type.color} group-hover:bg-[#6366F1] group-hover:text-white transition-colors`}>
+                    <div className={`w-11 h-11 rounded-md flex items-center justify-center shrink-0 ${type.bg} ${type.color} group-hover:bg-[#6366F1] group-hover:text-white transition-colors`}>
                       <type.icon size={20} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-[13px] font-bold text-zinc-900 group-hover:text-[#6366F1] transition-colors">{type.title}</span>
+                        <span className="text-[13px] font-bold text-black group-hover:text-[#6366F1] transition-colors">{type.title}</span>
                         {type.isAI && (
-                          <span className="px-1.5 py-0.5 bg-gradient-to-r from-[#6366F1] to-purple-500 text-white text-[9px] font-semibold rounded-xl">AI</span>
+                          <span className="px-1.5 py-0.5 bg-gradient-to-r from-[#6366F1] to-purple-500 text-white text-[9px] font-semibold rounded-md">AI</span>
                         )}
                         {isLocked && (
-                          <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[9px] font-bold rounded-xl uppercase">Pro</span>
+                          <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[9px] font-bold rounded-md uppercase">Pro</span>
                         )}
                       </div>
-                      <p className="text-[11px] text-zinc-500 font-medium mt-0.5 leading-snug">{type.desc}</p>
+                      <p className="text-[11px] text-black opacity-80 font-medium mt-0.5 leading-snug">{type.desc}</p>
                     </div>
                   </button>
                 );
@@ -688,9 +688,9 @@ export default function CampaignWizard({
             <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-2 max-h-[185px] overflow-y-auto no-scrollbar p-1">
               <button
                 onClick={() => onSelectPosts([])}
-                className={`relative flex flex-col items-center justify-center aspect-square rounded-[12px] border-2 transition-all gap-1.5 ${selectedPosts.length === 0
+                className={`relative flex flex-col items-center justify-center aspect-square rounded-md border-2 transition-all gap-1.5 ${selectedPosts.length === 0
                   ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]  /10"
-                  : "border-zinc-200 bg-white hover:border-zinc-300 text-zinc-500"
+                  : "border-zinc-200 bg-white hover:border-zinc-300 text-black opacity-80"
                   }`}
               >
                 <Globe size={18} />
@@ -710,12 +710,12 @@ export default function CampaignWizard({
                         isSel ? selectedPosts.filter((id) => id !== item.id) : [...selectedPosts, item.id]
                       )
                     }
-                    className={`relative flex-col aspect-square rounded-[12px] overflow-hidden border-2 transition-all group ${isSel ? "border-[#6366F1] scale-[0.97]  /20" : "border-zinc-200 hover:border-zinc-300"
+                    className={`relative flex-col aspect-square rounded-md overflow-hidden border-2 transition-all group ${isSel ? "border-[#6366F1] scale-[0.97]  /20" : "border-zinc-200 hover:border-zinc-300"
                       }`}
                   >
                     <img src={url} alt="post" className="w-full h-full object-cover" />
                     {isSel && (
-                      <div className="absolute top-1 right-1 w-4.5 h-4.5 bg-[#6366F1] rounded-xl flex items-center justify-center  animate-in zoom-in-75">
+                      <div className="absolute top-1 right-1 w-4.5 h-4.5 bg-[#6366F1] rounded-md flex items-center justify-center  animate-in zoom-in-75">
                         <Check size={10} className="text-white" strokeWidth={3} />
                       </div>
                     )}
@@ -725,7 +725,7 @@ export default function CampaignWizard({
             </div>
             <button
               onClick={handleConfirmPosts}
-              className="w-full py-2.5 bg-[#6366F1] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2  hover:bg-[#4f46e5] transition-all cursor-pointer"
+              className="w-full py-2.5 bg-[#6366F1] text-white rounded-md text-xs font-semibold flex items-center justify-center gap-2  hover:bg-[#4f46e5] transition-all cursor-pointer"
             >
               Confirm Selection <ArrowRight size={14} />
             </button>
@@ -741,13 +741,13 @@ export default function CampaignWizard({
                 <button
                   key={s}
                   onClick={() => handleConfirmKeyword(s.toUpperCase())}
-                  className="shrink-0 px-4 py-2 bg-white border border-zinc-200 hover:border-[#6366F1] hover:text-[#6366F1] rounded-xl text-[13px] font-bold text-zinc-700  transition-all"
+                  className="shrink-0 px-4 py-2 bg-white border border-zinc-200 hover:border-[#6366F1] hover:text-[#6366F1] rounded-md text-[13px] font-bold text-black  transition-all"
                 >
                   {s.toUpperCase()}
                 </button>
               ))}
             </div>
-            <div className="relative flex items-center w-full bg-zinc-50 border border-zinc-200 rounded-xl overflow-hidden focus-within:border-[#6366F1] focus-within:bg-white transition-all">
+            <div className="relative flex items-center w-full bg-zinc-50 border border-zinc-200 rounded-md overflow-hidden focus-within:border-[#6366F1] focus-within:bg-white transition-all">
               <input
                 type="text"
                 value={tempKeyword}
@@ -759,13 +759,13 @@ export default function CampaignWizard({
               <button
                 onClick={() => handleConfirmKeyword()}
                 disabled={!tempKeyword.trim()}
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#6366F1] text-white rounded-xl flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#4f46e5] cursor-pointer"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#6366F1] text-white rounded-md flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#4f46e5] cursor-pointer"
               >
                 <ArrowRight size={15} />
               </button>
             </div>
-            <p className="text-[11px] text-zinc-400 font-medium px-2 mt-1">
-              💡 Tip: Type <span className="font-bold text-zinc-700 font-mono">*</span> to trigger this automation for every comment or message.
+            <p className="text-[11px] text-black opacity-60 font-medium px-2 mt-1">
+              💡 Tip: Type <span className="font-bold text-black font-mono">*</span> to trigger this automation for every comment or message.
             </p>
           </motion.div>
         );
@@ -777,7 +777,7 @@ export default function CampaignWizard({
         return (
           <motion.div key="dm" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-3 mt-2 text-left">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Message Templates</span>
+              <span className="text-[11px] font-bold text-black opacity-80 uppercase tracking-wider">Message Templates</span>
               <button
                 type="button"
                 onClick={() => {
@@ -788,7 +788,7 @@ export default function CampaignWizard({
                   }
                 }}
                 disabled={currentPlan !== "free" && isSuggesting}
-                className="shrink-0 px-3 py-1.5 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 hover:border-indigo-200 rounded-xl text-[11px] font-bold text-indigo-600  transition-all flex items-center gap-1 cursor-pointer"
+                className="shrink-0 px-3 py-1.5 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 hover:border-indigo-200 rounded-md text-[11px] font-bold text-indigo-600  transition-all flex items-center gap-1 cursor-pointer"
               >
                 <Sparkles size={12} />
                 <span>Suggest with AI</span>
@@ -802,14 +802,14 @@ export default function CampaignWizard({
                   key={s}
                   type="button"
                   onClick={() => setTempDM(s)}
-                  className="shrink-0 px-3.5 py-2 bg-white border border-zinc-200 hover:border-[#6366F1] hover:text-[#6366F1] rounded-xl text-[12px] font-semibold text-zinc-700 transition-all max-w-[240px] text-left leading-relaxed whitespace-normal"
+                  className="shrink-0 px-3.5 py-2 bg-white border border-zinc-200 hover:border-[#6366F1] hover:text-[#6366F1] rounded-md text-[12px] font-semibold text-black transition-all max-w-[240px] text-left leading-relaxed whitespace-normal"
                 >
                   {s}
                 </button>
               ))}
             </div>
             
-            <div className="relative flex items-end w-full bg-zinc-50 border border-zinc-200 rounded-[16px] focus-within:border-[#6366F1] focus-within:bg-white transition-all p-1.5">
+            <div className="relative flex items-end w-full bg-zinc-50 border border-zinc-200 rounded-md focus-within:border-[#6366F1] focus-within:bg-white transition-all p-1.5">
               <textarea
                 value={tempDM}
                 onChange={(e) => setTempDM(e.target.value)}
@@ -826,23 +826,23 @@ export default function CampaignWizard({
               <button
                 onClick={handleConfirmDM}
                 disabled={!tempDM.trim()}
-                className="shrink-0 mb-0.5 w-8 h-8 bg-[#6366F1] text-white rounded-xl flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#4f46e5] cursor-pointer"
+                className="shrink-0 mb-0.5 w-8 h-8 bg-[#6366F1] text-white rounded-md flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#4f46e5] cursor-pointer"
               >
                 <ArrowRight size={15} />
               </button>
             </div>
 
             {isSuggesting && suggestType === "dm" && (
-              <div className="flex items-center justify-center py-4 bg-zinc-50 border border-dashed border-zinc-200 rounded-xl animate-pulse">
+              <div className="flex items-center justify-center py-4 bg-zinc-50 border border-dashed border-zinc-200 rounded-md animate-pulse">
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-xl animate-spin" />
-                  <span className="text-xs font-semibold text-zinc-500">Generating copy variants...</span>
+                  <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-md animate-spin" />
+                  <span className="text-xs font-semibold text-black opacity-80">Generating copy variants...</span>
                 </div>
               </div>
             )}
 
             {suggestedTexts.length > 0 && suggestType === "dm" && (
-              <div className="p-3 bg-indigo-50/50 border border-indigo-100/60 rounded-xl space-y-2 text-left animate-in fade-in duration-200">
+              <div className="p-3 bg-indigo-50/50 border border-indigo-100/60 rounded-md space-y-2 text-left animate-in fade-in duration-200">
                 <p className="text-[10px] font-bold text-indigo-650 flex items-center gap-1 uppercase tracking-wider">
                   <Sparkles size={11} /> AI Suggestions (click to apply)
                 </p>
@@ -855,7 +855,7 @@ export default function CampaignWizard({
                         setTempDM(txt);
                         setSuggestedTexts([]);
                       }}
-                      className="w-full text-left p-2.5 bg-white hover:bg-indigo-50/60 border border-zinc-100 hover:border-indigo-200 rounded-xl text-xs font-medium text-zinc-700 transition-all leading-relaxed  block"
+                      className="w-full text-left p-2.5 bg-white hover:bg-indigo-50/60 border border-zinc-100 hover:border-indigo-200 rounded-md text-xs font-medium text-black transition-all leading-relaxed  block"
                     >
                       {txt}
                     </button>
@@ -869,34 +869,34 @@ export default function CampaignWizard({
       // ── Step 4: CTA Button ────────────────────────────────
       case "cta":
         return (
-          <motion.div key="cta" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="bg-white border border-zinc-200 shadow-sm shadow-zinc-200/50 rounded-[24px] p-5 space-y-4 mt-2 animate-in fade-in duration-200">
+          <motion.div key="cta" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="bg-white border border-zinc-200  -200/50 rounded-md p-5 space-y-4 mt-2 animate-in fade-in duration-200">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <input
                 type="text"
                 placeholder="Button text (e.g. Shop Now)"
                 value={tempBtnText}
                 onChange={(e) => setTempBtnText(e.target.value)}
-                className="px-4 py-3.5 bg-zinc-50 border-2 border-zinc-200 rounded-[16px] text-[14px] font-semibold text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                className="px-4 py-3.5 bg-zinc-50 border-2 border-zinc-200 rounded-md text-[14px] font-semibold text-black outline-none focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition-all"
               />
               <input
                 type="text"
                 placeholder="URL (https://...)"
                 value={tempBtnLink}
                 onChange={(e) => setTempBtnLink(e.target.value)}
-                className="px-4 py-3.5 bg-zinc-50 border-2 border-zinc-200 rounded-[16px] text-[14px] font-semibold text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                className="px-4 py-3.5 bg-zinc-50 border-2 border-zinc-200 rounded-md text-[14px] font-semibold text-black outline-none focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition-all"
               />
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => handleConfirmCTA(true)}
-                className="flex-1 py-4 bg-zinc-100 text-zinc-700 rounded-[16px] font-bold text-[14px] hover:bg-zinc-200 transition-all cursor-pointer"
+                className="flex-1 py-4 bg-zinc-100 text-black rounded-md font-bold text-[14px] hover:bg-zinc-200 transition-all cursor-pointer"
               >
                 Skip
               </button>
               <button
                 onClick={() => handleConfirmCTA(false)}
                 disabled={!tempBtnText.trim() || !tempBtnLink.trim()}
-                className="flex-1 py-4 bg-indigo-600 text-white rounded-[16px] font-bold text-[14px] disabled:opacity-40 transition-all hover:bg-indigo-700 cursor-pointer"
+                className="flex-1 py-4 bg-indigo-600 text-white rounded-md font-bold text-[14px] disabled:opacity-40 transition-all hover:bg-indigo-700 cursor-pointer"
               >
                 Add Button
               </button>
@@ -907,9 +907,9 @@ export default function CampaignWizard({
       // ── Step 5: Public reply ──────────────────────────────
       case "public_reply":
         return (
-          <motion.div key="pr" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 text-left bg-white border border-zinc-200 shadow-sm shadow-zinc-200/50 rounded-[24px] p-5 animate-in fade-in duration-200">
+          <motion.div key="pr" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 text-left bg-white border border-zinc-200  -200/50 rounded-md p-5 animate-in fade-in duration-200">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Comment Reply Variations</span>
+              <span className="text-[11px] font-bold text-black opacity-80 uppercase tracking-wider">Comment Reply Variations</span>
               <button
                 type="button"
                 onClick={() => {
@@ -920,7 +920,7 @@ export default function CampaignWizard({
                   }
                 }}
                 disabled={currentPlan !== "free" && isSuggesting}
-                className="px-3 py-1.5 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 hover:border-indigo-200 rounded-xl text-[11px] font-bold text-indigo-600  transition-all flex items-center gap-1 cursor-pointer"
+                className="px-3 py-1.5 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 hover:border-indigo-200 rounded-md text-[11px] font-bold text-indigo-600  transition-all flex items-center gap-1 cursor-pointer"
               >
                 <Sparkles size={11} />
                 <span>Suggest with AI</span>
@@ -941,13 +941,13 @@ export default function CampaignWizard({
                       setPublicReplyVariants(updated);
                     }}
                     placeholder={`e.g. Sent! Check your DMs 📬`}
-                    className="flex-1 px-4 py-3 bg-zinc-50 border-2 border-zinc-200 rounded-[12px] text-sm font-semibold outline-none focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                    className="flex-1 px-4 py-3 bg-zinc-50 border-2 border-zinc-200 rounded-md text-sm font-semibold outline-none focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition-all"
                   />
                   {publicReplyVariants.length > 1 && (
                     <button
                       type="button"
                       onClick={() => setPublicReplyVariants(publicReplyVariants.filter((_, i) => i !== idx))}
-                      className="p-3 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-[12px] transition-all cursor-pointer"
+                      className="p-3 text-black opacity-60 hover:text-red-500 hover:bg-red-50 rounded-md transition-all cursor-pointer"
                     >
                       <Trash2 size={14} />
                     </button>
@@ -960,7 +960,7 @@ export default function CampaignWizard({
               <button
                 type="button"
                 onClick={() => setPublicReplyVariants([...publicReplyVariants, ""])}
-                className="w-full py-2 border border-dashed border-zinc-200 rounded-xl text-xs font-bold text-zinc-500 hover:border-[#6366F1] hover:text-[#6366F1] transition-all flex items-center justify-center gap-1"
+                className="w-full py-2 border border-dashed border-zinc-200 rounded-md text-xs font-bold text-black opacity-80 hover:border-[#6366F1] hover:text-[#6366F1] transition-all flex items-center justify-center gap-1"
               >
                 <Plus size={13} strokeWidth={2.5} /> Add variation reply
               </button>
@@ -968,16 +968,16 @@ export default function CampaignWizard({
 
             {/* Loader / AI Suggestions */}
             {isSuggesting && suggestType === "public_reply" && (
-              <div className="flex items-center justify-center py-4 bg-zinc-50 border border-dashed border-zinc-200 rounded-xl animate-pulse">
+              <div className="flex items-center justify-center py-4 bg-zinc-50 border border-dashed border-zinc-200 rounded-md animate-pulse">
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-xl animate-spin" />
-                  <span className="text-xs font-semibold text-zinc-500">Generating comment variations...</span>
+                  <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-md animate-spin" />
+                  <span className="text-xs font-semibold text-black opacity-80">Generating comment variations...</span>
                 </div>
               </div>
             )}
 
             {suggestedTexts.length > 0 && suggestType === "public_reply" && (
-              <div className="p-3 bg-indigo-50/50 border border-indigo-100/60 rounded-xl space-y-2 animate-in fade-in duration-200">
+              <div className="p-3 bg-indigo-50/50 border border-indigo-100/60 rounded-md space-y-2 animate-in fade-in duration-200">
                 <p className="text-[10px] font-bold text-indigo-650 uppercase tracking-wider">
                   <Sparkles size={11} /> AI Suggestions (click to add as variant)
                 </p>
@@ -1001,7 +1001,7 @@ export default function CampaignWizard({
                         }
                         setSuggestedTexts(suggestedTexts.filter((_, i) => i !== index));
                       }}
-                      className="w-full text-left p-2.5 bg-white hover:bg-indigo-50 border border-zinc-100 hover:border-indigo-200 rounded-xl text-[11px] font-medium text-zinc-700 transition-all leading-normal  block"
+                      className="w-full text-left p-2.5 bg-white hover:bg-indigo-50 border border-zinc-100 hover:border-indigo-200 rounded-md text-[11px] font-medium text-black transition-all leading-normal  block"
                     >
                       {txt}
                     </button>
@@ -1012,7 +1012,7 @@ export default function CampaignWizard({
 
             {/* Presets suggestions */}
             <div className="space-y-1.5 border-t border-zinc-100 pt-3">
-              <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Presets</p>
+              <p className="text-[10px] font-bold text-black opacity-60 uppercase tracking-wider">Presets</p>
               <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
                 {PUBLIC_REPLY_SUGGESTIONS.map((s) => (
                   <button
@@ -1028,7 +1028,7 @@ export default function CampaignWizard({
                         setPublicReplyVariants([...publicReplyVariants, s]);
                       }
                     }}
-                    className="shrink-0 px-3.5 py-1.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 rounded-xl text-xs font-semibold text-zinc-650  transition-all"
+                    className="shrink-0 px-3.5 py-1.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 rounded-md text-xs font-semibold text-zinc-650  transition-all"
                   >
                     {s}
                   </button>
@@ -1039,7 +1039,7 @@ export default function CampaignWizard({
             <button
               onClick={() => handleConfirmPublicReply()}
               disabled={publicReplyVariants.filter(r => r.trim() !== "").length === 0}
-              className="w-full py-4 bg-zinc-950 text-white rounded-[16px] text-sm font-bold flex items-center justify-center gap-2 hover:bg-indigo-600 transition-all disabled:opacity-40 cursor-pointer"
+              className="w-full py-4 bg-zinc-950 text-white rounded-md text-sm font-bold flex items-center justify-center gap-2 hover:bg-indigo-600 transition-all disabled:opacity-40 cursor-pointer"
             >
               Confirm Replies <ArrowRight size={16} />
             </button>
@@ -1054,20 +1054,20 @@ export default function CampaignWizard({
               <div className="flex gap-3">
                 <button
                   onClick={() => handleConfirmFollowGate(false, "")}
-                  className="flex-1 py-3 bg-white border border-zinc-200 text-zinc-700 rounded-xl font-bold  hover:border-zinc-300 transition-all text-sm animate-in fade-in duration-200"
+                  className="flex-1 py-3 bg-white border border-zinc-200 text-black rounded-md font-bold  hover:border-zinc-300 transition-all text-sm animate-in fade-in duration-200"
                 >
                   No, Skip
                 </button>
                 <button
                   onClick={() => setFollowerGateEnabled(true)}
-                  className="flex-1 py-3 bg-[#6366F1] text-white rounded-xl font-bold  hover:bg-[#4f46e5] transition-all text-sm animate-in fade-in duration-200 cursor-pointer"
+                  className="flex-1 py-3 bg-[#6366F1] text-white rounded-md font-bold  hover:bg-[#4f46e5] transition-all text-sm animate-in fade-in duration-200 cursor-pointer"
                 >
                   Yes, Enable 🔒
                 </button>
               </div>
             ) : (
-              <div className="bg-white border border-zinc-200 rounded-xl p-4  space-y-3 animate-in fade-in duration-200">
-                <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider block">
+              <div className="bg-white border border-zinc-200 rounded-md p-4  space-y-3 animate-in fade-in duration-200">
+                <label className="text-[12px] font-bold text-black opacity-80 uppercase tracking-wider block">
                   Customize Follow Gate Message
                 </label>
                 <textarea
@@ -1075,7 +1075,7 @@ export default function CampaignWizard({
                   onChange={(e) => setTempFollowGateMsg(e.target.value)}
                   placeholder="e.g. One final step to unlock! 🎁"
                   rows={2}
-                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-[14px] text-[14px] font-medium outline-none focus:border-[#6366F1] transition-all resize-none"
+                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-md text-[14px] font-medium outline-none focus:border-[#6366F1] transition-all resize-none"
                 />
                 <div className="flex gap-2">
                   <button
@@ -1083,13 +1083,13 @@ export default function CampaignWizard({
                       setFollowerGateEnabled(false);
                       setTempFollowGateMsg("One final step to unlock! 🎁");
                     }}
-                    className="flex-1 py-2 bg-zinc-100 text-zinc-700 rounded-[12px] font-bold text-[13px] hover:bg-zinc-200 transition-all"
+                    className="flex-1 py-2 bg-zinc-100 text-black rounded-md font-bold text-[13px] hover:bg-zinc-200 transition-all"
                   >
                     Back
                   </button>
                   <button
                     onClick={() => handleConfirmFollowGate(true, tempFollowGateMsg)}
-                    className="flex-1 py-2 bg-[#6366F1] text-white rounded-[12px] font-bold text-[13px] hover:bg-[#4f46e5] transition-all cursor-pointer"
+                    className="flex-1 py-2 bg-[#6366F1] text-white rounded-md font-bold text-[13px] hover:bg-[#4f46e5] transition-all cursor-pointer"
                   >
                     Confirm & Continue
                   </button>
@@ -1102,10 +1102,10 @@ export default function CampaignWizard({
       // ── Story setup ───────────────────────────────────────
       case "story_setup":
         return (
-          <motion.div key="story-setup" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 bg-white border border-zinc-200 shadow-sm shadow-zinc-200/50 rounded-[24px] p-5 animate-in fade-in duration-200">
+          <motion.div key="story-setup" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 bg-white border border-zinc-200  -200/50 rounded-md p-5 animate-in fade-in duration-200">
             {/* Trigger type */}
             <div className="space-y-2">
-              <p className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Trigger when...</p>
+              <p className="text-[12px] font-bold text-black opacity-80 uppercase tracking-wider">Trigger when...</p>
               <div className="grid grid-cols-2 gap-3">
                 {[
                   { id: "REPLY", label: "Story Reply", emoji: "💬", desc: "Someone replies to your story" },
@@ -1114,15 +1114,15 @@ export default function CampaignWizard({
                   <button
                     key={t.id}
                     onClick={() => setStoryTriggerType(t.id)}
-                    className={`flex flex-col gap-2 p-4 rounded-[18px] border-2 text-left transition-all ${storyTriggerType === t.id
+                    className={`flex flex-col gap-2 p-4 rounded-md border-2 text-left transition-all ${storyTriggerType === t.id
                       ? "border-[#6366F1] bg-[#6366F1]/5"
                       : "border-zinc-200 bg-white hover:border-zinc-300"
                       }`}
                   >
                     <span className="text-2xl">{t.emoji}</span>
                     <div>
-                      <div className="text-[13px] font-bold text-zinc-900">{t.label}</div>
-                      <div className="text-[11px] text-zinc-500 font-medium">{t.desc}</div>
+                      <div className="text-[13px] font-bold text-black">{t.label}</div>
+                      <div className="text-[11px] text-black opacity-80 font-medium">{t.desc}</div>
                     </div>
                   </button>
                 ))}
@@ -1131,13 +1131,13 @@ export default function CampaignWizard({
 
             {/* Condition */}
             <div className="space-y-2">
-              <p className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Trigger condition</p>
+              <p className="text-[12px] font-bold text-black opacity-80 uppercase tracking-wider">Trigger condition</p>
               <div className="flex gap-2">
                 {["ANY", "KEYWORD"].map((c) => (
                   <button
                     key={c}
                     onClick={() => setStoryCondition(c)}
-                    className={`flex-1 py-3 rounded-[14px] text-[13px] font-bold border-2 transition-all ${storyCondition === c
+                    className={`flex-1 py-3 rounded-md text-[13px] font-bold border-2 transition-all ${storyCondition === c
                       ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]"
                       : "border-zinc-200 bg-white text-zinc-650"
                       }`}
@@ -1154,13 +1154,13 @@ export default function CampaignWizard({
                 placeholder="e.g. COLLAB"
                 value={storyKeyword}
                 onChange={(e) => setStoryKeyword(e.target.value.toUpperCase())}
-                className="w-full px-4 py-3.5 bg-zinc-50 border-2 border-zinc-200 rounded-[16px] text-sm font-bold uppercase outline-none focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                className="w-full px-4 py-3.5 bg-zinc-50 border-2 border-zinc-200 rounded-md text-sm font-bold uppercase outline-none focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition-all"
               />
             )}
 
             <button
               onClick={handleConfirmStory}
-              className="w-full py-4 bg-indigo-600 text-white rounded-[16px] text-sm font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all cursor-pointer"
+              className="w-full py-4 bg-indigo-600 text-white rounded-md text-sm font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all cursor-pointer"
             >
               Next: Set DM Reply <ArrowRight size={16} />
             </button>
@@ -1170,7 +1170,7 @@ export default function CampaignWizard({
       case "story_dm":
         return (
           <motion.div key="story-dm" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-3 mt-2">
-            <div className="relative flex items-end w-full bg-zinc-50 border border-zinc-200 rounded-xl focus-within:border-[#6366F1] focus-within:bg-white transition-all p-1.5">
+            <div className="relative flex items-end w-full bg-zinc-50 border border-zinc-200 rounded-md focus-within:border-[#6366F1] focus-within:bg-white transition-all p-1.5">
               <textarea
                 value={storyDM}
                 onChange={(e) => setStoryDM(e.target.value)}
@@ -1181,7 +1181,7 @@ export default function CampaignWizard({
               <button
                 onClick={handleConfirmStoryDM}
                 disabled={!storyDM.trim()}
-                className="shrink-0 mb-0.5 w-8 h-8 bg-[#6366F1] text-white rounded-xl flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#4f46e5] cursor-pointer"
+                className="shrink-0 mb-0.5 w-8 h-8 bg-[#6366F1] text-white rounded-md flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#4f46e5] cursor-pointer"
               >
                 <ArrowRight size={15} />
               </button>
@@ -1192,13 +1192,13 @@ export default function CampaignWizard({
       // ── FAQ setup ─────────────────────────────────────────
       case "faq_setup":
         return (
-          <motion.div key="faq" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 bg-white border border-zinc-200 shadow-sm shadow-zinc-200/50 rounded-[24px] p-5 animate-in fade-in duration-200">
+          <motion.div key="faq" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 bg-white border border-zinc-200  -200/50 rounded-md p-5 animate-in fade-in duration-200">
             <div className="space-y-3 max-h-[260px] overflow-y-auto no-scrollbar">
               {tempFaqs.map((faq, idx) => (
-                <div key={idx} className="group relative p-4 bg-zinc-50 border border-zinc-200 rounded-[16px] space-y-2">
+                <div key={idx} className="group relative p-4 bg-zinc-50 border border-zinc-200 rounded-md space-y-2">
                   <button
                     onClick={() => setTempFaqs(tempFaqs.filter((_, i) => i !== idx))}
-                    className="absolute top-3 right-3 p-1.5 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+                    className="absolute top-3 right-3 p-1.5 text-black opacity-60 hover:text-red-500 hover:bg-red-50 rounded-md transition-all opacity-0 group-hover:opacity-100"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -1211,7 +1211,7 @@ export default function CampaignWizard({
                       setTempFaqs(f);
                     }}
                     placeholder="Question (e.g. What's the price?)"
-                    className="w-full text-[13px] font-bold text-zinc-900 bg-transparent outline-none pr-8"
+                    className="w-full text-[13px] font-bold text-black bg-transparent outline-none pr-8"
                   />
                   <textarea
                     value={faq.a}
@@ -1228,7 +1228,7 @@ export default function CampaignWizard({
               ))}
               <button
                 onClick={() => setTempFaqs([...tempFaqs, { q: "", a: "" }])}
-                className="w-full py-3 border-2 border-dashed border-zinc-300 rounded-[16px] text-[13px] font-bold text-zinc-500 hover:border-[#6366F1] hover:text-[#6366F1] transition-all flex items-center justify-center gap-2"
+                className="w-full py-3 border-2 border-dashed border-zinc-300 rounded-md text-[13px] font-bold text-black opacity-80 hover:border-[#6366F1] hover:text-[#6366F1] transition-all flex items-center justify-center gap-2"
               >
                 <Plus size={16} strokeWidth={2.5} /> Add Question
               </button>
@@ -1236,7 +1236,7 @@ export default function CampaignWizard({
 
             {/* Persona */}
             <div className="space-y-2 border-t border-zinc-100 pt-3">
-              <p className="text-[12px] font-bold text-zinc-500">AI Tone</p>
+              <p className="text-[12px] font-bold text-black opacity-80">AI Tone</p>
               <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
                 {[
                   { id: "friendly", label: "Friendly 😊" },
@@ -1246,7 +1246,7 @@ export default function CampaignWizard({
                   <button
                     key={p.id}
                     onClick={() => setAiPersona(p.id)}
-                    className={`py-2 text-[11px] sm:text-[12px] font-bold rounded-[12px] border-2 transition-all ${aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-650"
+                    className={`py-2 text-[11px] sm:text-[12px] font-bold rounded-md border-2 transition-all ${aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-650"
                       }`}
                   >
                     {p.label}
@@ -1258,7 +1258,7 @@ export default function CampaignWizard({
             <button
               onClick={handleConfirmFAQ}
               disabled={tempFaqs.filter((f) => f.q.trim() && f.a.trim()).length === 0}
-              className="w-full py-4 bg-indigo-600 text-white rounded-[16px] text-sm font-bold disabled:opacity-40 transition-all hover:bg-indigo-700 flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-4 bg-indigo-600 text-white rounded-md text-sm font-bold disabled:opacity-40 transition-all hover:bg-indigo-700 flex items-center justify-center gap-2 cursor-pointer"
             >
               Launch AI FAQ <Sparkles size={16} />
             </button>
@@ -1268,31 +1268,31 @@ export default function CampaignWizard({
       // ── Step 8: Sales setup ───────────────────────────────
       case "sales_setup":
         return (
-          <motion.div key="sales" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 bg-white border border-zinc-200 shadow-sm shadow-zinc-200/50 rounded-[24px] p-5 animate-in fade-in duration-200">
+          <motion.div key="sales" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-2 bg-white border border-zinc-200  -200/50 rounded-md p-5 animate-in fade-in duration-200">
             <div className="space-y-2">
-              <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Sales Goal</label>
+              <label className="text-[12px] font-bold text-black opacity-80 uppercase tracking-wider">Sales Goal</label>
               <textarea
                 value={aiGoal}
                 onChange={(e) => setAiGoal(e.target.value)}
                 placeholder="e.g. Get users to book a demo call or buy the $99 plan"
                 rows={2}
-                className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-[16px] text-[14px] font-medium outline-none focus:border-[#6366F1] transition-all resize-none"
+                className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-md text-[14px] font-medium outline-none focus:border-[#6366F1] transition-all resize-none"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Product Knowledge (optional)</label>
+              <label className="text-[12px] font-bold text-black opacity-80 uppercase tracking-wider">Product Knowledge (optional)</label>
               <textarea
                 value={aiKnowledge}
                 onChange={(e) => setAiKnowledge(e.target.value)}
                 placeholder="Tell the AI about your product, pricing, and USPs..."
                 rows={3}
-                className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-[16px] text-[14px] font-medium outline-none focus:border-[#6366F1] transition-all resize-none"
+                className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-md text-[14px] font-medium outline-none focus:border-[#6366F1] transition-all resize-none"
               />
             </div>
 
             {/* Persona */}
             <div className="space-y-2">
-              <p className="text-[12px] font-bold text-zinc-500">AI Persona</p>
+              <p className="text-[12px] font-bold text-black opacity-80">AI Persona</p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[
                   { id: "friendly", label: "Friendly" },
@@ -1303,7 +1303,7 @@ export default function CampaignWizard({
                   <button
                     key={p.id}
                     onClick={() => setAiPersona(p.id)}
-                    className={`py-2 text-[12px] font-bold rounded-[12px] border-2 transition-all ${aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-650"
+                    className={`py-2 text-[12px] font-bold rounded-md border-2 transition-all ${aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-650"
                       }`}
                   >
                     {p.label}
@@ -1315,7 +1315,7 @@ export default function CampaignWizard({
             <button
               onClick={handleConfirmSales}
               disabled={!aiGoal.trim()}
-              className="w-full py-4 bg-indigo-600 text-white rounded-[16px] text-sm font-bold disabled:opacity-40 transition-all hover:bg-indigo-700 flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-4 bg-indigo-600 text-white rounded-md text-sm font-bold disabled:opacity-40 transition-all hover:bg-indigo-700 flex items-center justify-center gap-2 cursor-pointer"
             >
               Launch AI Sales Agent <Rocket size={16} />
             </button>
@@ -1329,14 +1329,14 @@ export default function CampaignWizard({
             <button
               onClick={() => handlePublish(false)}
               disabled={isPublishing}
-              className="w-full py-3 bg-gradient-to-r from-[#6366F1] to-purple-600 text-white rounded-xl text-sm font-semibold-100 hover:scale-[1.01] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full py-3 bg-gradient-to-r from-[#6366F1] to-purple-600 text-white rounded-md text-sm font-semibold-100 hover:scale-[1.01] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {isPublishing ? <Sparkles className="animate-spin" size={16} /> : <Rocket size={16} />}
               {isPublishing ? "Launching..." : "Confirm & Launch Automation"}
             </button>
             <button
               onClick={() => handlePublish(true)}
-              className="w-full py-2.5 bg-white border border-zinc-200 text-zinc-650 rounded-xl text-sm font-semibold  hover:bg-zinc-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-2.5 bg-white border border-zinc-200 text-zinc-650 rounded-md text-sm font-semibold  hover:bg-zinc-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               Save as Draft 📝
             </button>
@@ -1368,7 +1368,7 @@ export default function CampaignWizard({
           <h2 className="text-lg font-black text-zinc-950 tracking-tight">
             What would you like to automate today?
           </h2>
-          <p className="text-[11px] font-semibold text-zinc-400 mt-0.5 max-w-md">
+          <p className="text-[11px] font-semibold text-black opacity-60 mt-0.5 max-w-md">
             Choose a template below to get started or describe your automation to the AI helper.
           </p>
         </div>
@@ -1381,26 +1381,26 @@ export default function CampaignWizard({
               <button
                 key={type.id}
                 onClick={() => handleSelectType(type)}
-                className={`group relative overflow-hidden flex flex-col items-center justify-between p-5 rounded-[20px] border text-center transition-all duration-300 ${isLocked
+                className={`group relative overflow-hidden flex flex-col items-center justify-between p-5 rounded-md border text-center transition-all duration-300 ${isLocked
                   ? "border-zinc-200 bg-zinc-50/80 opacity-80"
-                  : "border-zinc-200 bg-white hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1"
+                  : "border-zinc-200 bg-white hover:border-indigo-200 hover: hover:-500/10 hover:-translate-y-1"
                   }`}
               >
                 {!isLocked && <div className="absolute inset-0 bg-gradient-to-b from-white to-zinc-50/30 opacity-0 group-hover:opacity-100 transition-opacity -z-10" />}
                 <div className="flex flex-col items-center w-full relative z-10">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-3 ${type.bg} ${type.color} group-hover:scale-110 transition-transform duration-300`}>
+                  <div className={`w-12 h-12 rounded-md flex items-center justify-center mb-3 ${type.bg} ${type.color} group-hover:scale-110 transition-transform duration-300`}>
                     <type.icon size={22} />
                   </div>
                   <div className="flex items-center gap-1.5 justify-center flex-wrap mb-1.5">
-                    <span className="text-[13px] font-bold text-zinc-900 group-hover:text-indigo-600 transition-colors">{type.title}</span>
+                    <span className="text-[13px] font-bold text-black group-hover:text-indigo-600 transition-colors">{type.title}</span>
                     {type.isAI && (
-                      <span className="px-1.5 py-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[8px] font-bold rounded-xl uppercase tracking-wider shadow-sm">AI</span>
+                      <span className="px-1.5 py-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[8px] font-bold rounded-md uppercase tracking-wider ">AI</span>
                     )}
                     {isLocked && (
-                      <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[8px] font-bold rounded-xl uppercase tracking-wider">Pro</span>
+                      <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[8px] font-bold rounded-md uppercase tracking-wider">Pro</span>
                     )}
                   </div>
-                  <p className="text-[11px] text-zinc-500 font-medium mt-0.5 leading-relaxed px-0.5">{type.desc}</p>
+                  <p className="text-[11px] text-black opacity-80 font-medium mt-0.5 leading-relaxed px-0.5">{type.desc}</p>
                 </div>
                 
                 <span className="mt-4 text-[10px] font-bold text-indigo-600 uppercase tracking-wider group-hover:translate-x-0.5 transition-transform flex items-center gap-1 opacity-0 group-hover:opacity-100">
@@ -1415,7 +1415,7 @@ export default function CampaignWizard({
         <div className="w-full max-w-2xl mx-auto">
           <form
             onSubmit={currentPlan === "free" ? handleAiBuildClick : handleAiBuildSubmit}
-            className={`bg-white border border-zinc-200 shadow-sm shadow-zinc-200/50 rounded-[20px] p-5 space-y-4 text-left transition-all ${currentPlan === "free" ? "hover:border-[#6366F1]/50 cursor-pointer" : ""}`}
+            className={`bg-white border border-zinc-200  -200/50 rounded-md p-5 space-y-4 text-left transition-all ${currentPlan === "free" ? "hover:border-[#6366F1]/50 cursor-pointer" : ""}`}
             onClick={currentPlan === "free" ? handleAiBuildClick : undefined}
           >
             <div className="flex items-center justify-between text-[#6366F1]">
@@ -1424,10 +1424,10 @@ export default function CampaignWizard({
                 <span className="text-[11px] font-black uppercase tracking-wider">Build with Automixa AI</span>
               </div>
               {currentPlan === "free" && (
-                <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[8px] font-bold rounded-xl uppercase">Pro</span>
+                <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[8px] font-bold rounded-md uppercase">Pro</span>
               )}
             </div>
-            <div className="relative flex items-center w-full bg-zinc-50 border border-zinc-200 rounded-[16px] overflow-hidden focus-within:border-indigo-400 focus-within:bg-white focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all p-1">
+            <div className="relative flex items-center w-full bg-zinc-50 border border-zinc-200 rounded-md overflow-hidden focus-within:border-indigo-400 focus-within:bg-white focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all p-1">
               <input
                 type="text"
                 value={aiBuildPrompt}
@@ -1435,13 +1435,13 @@ export default function CampaignWizard({
                 onClick={currentPlan === "free" ? handleAiBuildClick : undefined}
                 readOnly={currentPlan === "free"}
                 placeholder={currentPlan === "free" ? "Upgrade to Pro to unlock AI Builder" : "Describe what you want to automate in 1 sentence..."}
-                className={`flex-1 w-full pl-3 pr-12 py-3 text-[14px] outline-none bg-transparent font-semibold text-zinc-900 placeholder:text-zinc-400 ${currentPlan === "free" ? "cursor-pointer text-zinc-400 placeholder:text-zinc-400" : ""}`}
+                className={`flex-1 w-full pl-3 pr-12 py-3 text-[14px] outline-none bg-transparent font-semibold text-black placeholder:text-black opacity-60 ${currentPlan === "free" ? "cursor-pointer text-black opacity-60 placeholder:text-black opacity-60" : ""}`}
               />
               <button
                 type="submit"
                 disabled={currentPlan === "free" || !aiBuildPrompt.trim() || isAiBuilding}
                 onClick={currentPlan === "free" ? handleAiBuildClick : undefined}
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-zinc-950 text-white rounded-[12px] flex items-center justify-center disabled:opacity-40 transition-all hover:bg-indigo-600 cursor-pointer shadow-sm"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-zinc-950 text-white rounded-md flex items-center justify-center disabled:opacity-40 transition-all hover:bg-indigo-600 cursor-pointer "
               >
                 <ArrowRight size={16} />
               </button>
@@ -1449,7 +1449,7 @@ export default function CampaignWizard({
             {aiBuildError && (
               <p className="text-[11px] text-rose-500 font-semibold px-1">{aiBuildError}</p>
             )}
-            <p className="text-[10px] text-zinc-400 font-medium px-1">
+            <p className="text-[10px] text-black opacity-60 font-medium px-1">
               e.g., &quot;Send a VIP discount code when someone comments &apos;COUPON&apos;&quot;
             </p>
           </form>
@@ -1477,7 +1477,7 @@ export default function CampaignWizard({
             <h2 className="text-[22px] font-black text-zinc-950 tracking-tight mb-1">
               Automixa AI
             </h2>
-            <p className="text-[13px] font-medium text-zinc-500 max-w-xs leading-relaxed">
+            <p className="text-[13px] font-medium text-black opacity-80 max-w-xs leading-relaxed">
               Your intelligent assistant to build powerful Instagram automations in minutes.
             </p>
           </motion.div>
@@ -1500,9 +1500,9 @@ export default function CampaignWizard({
               className="w-8 h-8 object-contain shrink-0 select-none"
             />
             <div className="flex items-center gap-1.5 pt-1">
-              <div className="w-2 h-2 bg-zinc-300 rounded-xl animate-bounce [animation-delay:-0.3s]" />
-              <div className="w-2 h-2 bg-zinc-300 rounded-xl animate-bounce [animation-delay:-0.15s]" />
-              <div className="w-2 h-2 bg-zinc-300 rounded-xl animate-bounce" />
+              <div className="w-2 h-2 bg-zinc-300 rounded-md animate-bounce [animation-delay:-0.3s]" />
+              <div className="w-2 h-2 bg-zinc-300 rounded-md animate-bounce [animation-delay:-0.15s]" />
+              <div className="w-2 h-2 bg-zinc-300 rounded-md animate-bounce" />
             </div>
           </motion.div>
         )}

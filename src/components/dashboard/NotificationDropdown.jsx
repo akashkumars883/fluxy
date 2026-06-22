@@ -201,7 +201,7 @@ export default React.memo(function NotificationDropdown({ accounts = [] }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -4 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="fixed sm:absolute left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0 right-auto sm:right-0 top-[64px] sm:top-auto sm:mt-2 w-[calc(100vw-32px)] sm:w-[370px] bg-white border border-zinc-200/80 rounded-2xl overflow-hidden z-[999] shadow-2xl shadow-zinc-900/10"
+            className="fixed sm:absolute left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0 right-auto sm:right-0 top-[64px] sm:top-auto sm:mt-2 w-[calc(100vw-32px)] sm:w-[370px] bg-white border border-zinc-200/80 rounded-2xl overflow-hidden z-[999]  -900/10"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3.5 border-b border-zinc-100 bg-zinc-50/50">

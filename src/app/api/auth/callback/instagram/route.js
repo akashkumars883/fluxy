@@ -31,23 +31,8 @@ export async function GET(request) {
 
   const supabaseAdmin = createAdminClient();
 
-  // Local development bypass if not logged in to Supabase
   if (!user) {
-    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-      try {
-        const { data: authData } = await supabaseAdmin.auth.admin.listUsers();
-        if (authData?.users?.length > 0) {
-          user = authData.users[0];
-        } else {
-          user = { id: '5de676f1-ea54-414f-93fd-cb7cdd678cc6' }; // Fallback valid UUID
-        }
-      } catch (e) {
-        console.warn("Could not list users for bypass, using fallback UUID:", e.message);
-        user = { id: '5de676f1-ea54-414f-93fd-cb7cdd678cc6' }; // Fallback valid UUID
-      }
-    } else {
-      return NextResponse.redirect(`${origin}/login`);
-    }
+    return NextResponse.redirect(`${origin}/login`);
   }
 
   try {
@@ -134,8 +119,56 @@ export async function GET(request) {
       throw new Error(upsertError.message);
     }
 
+    // --- FIRST 50 USERS GIVEAWAY LOGIC ---
+    let wasGivenaway = false;
+    let giveawayNumber = 0;
+    try {
+      // 1. Check if user already has an active subscription
+      const { data: existingSub } = await supabaseAdmin
+        .from('subscriptions')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .maybeSingle();
+
+      if (!existingSub) {
+        // 2. Count total subscriptions
+        const { count } = await supabaseAdmin
+          .from('subscriptions')
+          .select('*', { count: 'exact', head: true });
+
+        if (count !== null && count < 50) {
+          giveawayNumber = count + 1;
+          console.log(`User ${user.id} is user #${giveawayNumber}. Upgrading to creator_pro for 2 months.`);
+          
+          const startDate = new Date();
+          const endDate = new Date();
+          endDate.setMonth(endDate.getMonth() + 2); // 2 months from now
+          
+          await supabaseAdmin
+            .from('subscriptions')
+            .insert({
+              user_id: user.id,
+              plan_id: 'creator_pro',
+              status: 'active',
+              amount: 0,
+              currency: 'INR',
+              current_period_start: startDate.toISOString(),
+              current_period_end: endDate.toISOString(),
+            });
+
+          wasGivenaway = true;
+        }
+      }
+    } catch (promoErr) {
+      console.error("Error applying 50 user giveaway:", promoErr);
+    }
+    // --- END GIVEAWAY LOGIC ---
+
+    const giveawayParams = wasGivenaway ? `&giveaway=true&giveaway_number=${giveawayNumber}` : '';
+
     return NextResponse.redirect(
-      `${origin}/dashboard?success=instagram_connected&account=${encodeURIComponent(username)}&ig=${encodeURIComponent(finalInstagramId)}&automation=${encodeURIComponent(savedAutomation?.id || "")}&profile_pic=${encodeURIComponent(profile.profile_picture_url || "")}`
+      `${origin}/dashboard?success=instagram_connected&account=${encodeURIComponent(username)}&ig=${encodeURIComponent(finalInstagramId)}&automation=${encodeURIComponent(savedAutomation?.id || "")}&profile_pic=${encodeURIComponent(profile.profile_picture_url || "")}${giveawayParams}`
     );
 
   } catch (err) {

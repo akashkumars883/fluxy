@@ -3,7 +3,7 @@
 import { useDashboard } from "@/context/DashboardContext";
 import { createClient } from "@/lib/supabase";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, BarChart3, CheckCircle2, CreditCard, Sparkles, Tag, X, Zap } from "lucide-react";
+import { ArrowRight, BarChart3, CheckCircle2, CreditCard, Sparkles, Tag, X, Zap, QrCode } from "lucide-react";
 import { useEffect, useState } from "react";
 import * as logger from "@/lib/logger";
 
@@ -121,6 +121,27 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
       numeric = numeric + gst;
     }
     return isIndia ? numeric.toLocaleString('en-IN') : numeric.toLocaleString();
+  };
+
+  const getPriceBreakdown = (plan) => {
+    if (!plan || plan.id === 'free') return { base: 0, annualDiscount: 0, promoDiscount: 0, taxable: 0, gst: 0, total: 0 };
+    let rawPrice = isIndia ? plan.price_inr : plan.price_usd;
+    let base = parseInt(rawPrice.replace(',', ''));
+    
+    if (isAnnual) base = base * 12;
+    
+    let annualDiscount = isAnnual ? Math.round(base * 0.2) : 0;
+    let discountedBase = base - annualDiscount;
+    let promoDiscount = promoApplied ? Math.round(discountedBase * (promoApplied.discountPercent / 100)) : 0;
+    let taxable = discountedBase - promoDiscount;
+    let gst = isIndia ? Math.round(taxable * 0.18) : 0;
+    
+    return { base, annualDiscount, promoDiscount, taxable, gst, total: taxable + gst };
+  };
+
+  const planWeights = { free: 0, creator_pro: 1, viral_scale: 2 };
+  const isDowngradeOrCurrent = (planId) => {
+    return (planWeights[planId] || 0) <= (planWeights[currentPlan] || 0);
   };
 
   const getReasonMessage = () => {
@@ -294,313 +315,258 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
               
               {/* Section: Plans */}
               {activeTab === 'plans' && step === 1 && (
-                <div className="space-y-5 animate-in fade-in duration-300">
-                  {/* Monthly / Yearly Toggle */}
-                  <div className="flex justify-center border-b border-zinc-100 pb-4">
-                    <div className="bg-zinc-100 p-0.5 rounded-xl flex items-center gap-0.5 border border-zinc-200/60 w-fit">
-                      <button 
-                        onClick={() => setIsAnnual(false)} 
-                        className={`px-4 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${!isAnnual ? 'bg-white text-zinc-950' : 'text-zinc-400 hover:text-zinc-800'}`}
-                      >
-                        Monthly
-                      </button>
-                      <button 
-                        onClick={() => setIsAnnual(true)} 
-                        className={`px-4 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1 ${isAnnual ? 'bg-white text-zinc-950' : 'text-zinc-400 hover:text-zinc-800'}`}
-                      >
-                        Yearly 
-                        <span className="text-[9px] px-1 py-0.2 bg-emerald-500 text-white rounded-xl font-semibold">-20%</span>
-                      </button>
-                    </div>
+                <div className="space-y-6 animate-in fade-in duration-300">
+                  {/* Annual Toggle */}
+                  <div className="flex items-center justify-center gap-3 bg-zinc-50/50 py-3 rounded-xl border border-zinc-200/50 mx-auto w-max px-6">
+                    <span className={`text-xs font-semibold ${!isAnnual ? "text-zinc-900" : "text-zinc-400"}`}>Monthly</span>
+                    <button
+                      onClick={() => setIsAnnual(!isAnnual)}
+                      className={`relative w-11 h-6 rounded-full transition-colors duration-300 ${isAnnual ? "bg-[#6366F1]" : "bg-zinc-300"}`}
+                    >
+                      <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform duration-300 shadow-sm ${isAnnual ? "left-6" : "left-1"}`} />
+                    </button>
+                    <span className={`text-xs font-semibold flex items-center gap-1.5 ${isAnnual ? "text-zinc-900" : "text-zinc-400"}`}>
+                      Annual <span className="text-[9px] font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-sm">Save 20%</span>
+                    </span>
                   </div>
 
-                  {/* Plan Picker List */}
-                  <div className="space-y-3">
-                    {plans.map((plan) => {
-                      const isCurrent = plan.id === currentPlan;
-                      const isSelected = selectedPlanId === plan.id;
-                      return (
-                        <div
-                          key={plan.id}
-                          onClick={() => setSelectedPlanId(plan.id)}
-                          className={`relative p-4 rounded-xl border-2 transition-all duration-300 cursor-pointer flex items-center justify-between gap-4 group ${
-                            isSelected
-                              ? "bg-indigo-50/10 border-[#6366F1]"
-                              : "bg-white border-zinc-100 hover:bg-zinc-50/50 hover:border-zinc-200"
-                          }`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 shrink-0 ${
-                              isSelected ? 'bg-[#6366F1]/15 text-[#6366F1]' : 'bg-zinc-50 text-zinc-400 group-hover:bg-zinc-100'
-                            }`}>
-                              {plan.id === 'viral_scale' ? <Sparkles size={16} /> : plan.id === 'creator_pro' ? <Zap size={16} /> : <BarChart3 size={16} />}
-                            </div>
-                            <div>
-                              <div className="flex items-center gap-1.5">
-                                <h4 className="font-semibold text-zinc-900 text-xs tracking-tight">{plan.name}</h4>
-                                {plan.popular && (
-                                  <span className="bg-[#6366F1] text-white text-[8px] font-semibold px-1.5 py-0.5 rounded-xl uppercase tracking-wider">popular</span>
-                                )}
-                                {isCurrent && (
-                                  <span className="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[8px] font-semibold px-1.5 py-0.5 rounded-xl uppercase tracking-wider">Active</span>
-                                )}
-                              </div>
-                              <p className="text-[10px] text-zinc-400 font-medium mt-0.5">
-                                {plan.features.join(" • ")}
-                              </p>
-                            </div>
+                  {/* Premium Plans List View */}
+                  <div className="flex flex-col gap-3 mt-4">
+                    {plans.map((plan) => (
+                      <div
+                        key={plan.id}
+                        onClick={() => {
+                          if (!isDowngradeOrCurrent(plan.id)) {
+                            setSelectedPlanId(plan.id);
+                          }
+                        }}
+                        className={`group relative rounded-2xl p-4 transition-all duration-300 flex items-center justify-between border-2 ${
+                          isDowngradeOrCurrent(plan.id) ? "cursor-not-allowed opacity-60 bg-zinc-50 border-zinc-200/50" : "cursor-pointer"
+                        } ${
+                          selectedPlanId === plan.id && !isDowngradeOrCurrent(plan.id)
+                            ? "border-[#6366F1] bg-[#6366F1]/[0.03] shadow-md shadow-indigo-100/50"
+                            : !isDowngradeOrCurrent(plan.id)
+                              ? "border-zinc-200/60 bg-white hover:border-zinc-300 hover:bg-zinc-50"
+                              : ""
+                        }`}
+                      >
+                        {/* Radio / Selection Indicator */}
+                        <div className="flex items-center gap-4 flex-1">
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+                            selectedPlanId === plan.id
+                              ? "border-[#6366F1] bg-[#6366F1]"
+                              : "border-zinc-300 bg-white group-hover:border-zinc-400"
+                          }`}>
+                            {selectedPlanId === plan.id && <div className="w-2 h-2 bg-white rounded-full" />}
                           </div>
 
-                          <div className="flex items-center gap-3 shrink-0">
-                            <div className="text-right">
-                              <div className="flex items-baseline justify-end gap-0.5">
-                                <span className="text-sm font-semibold text-zinc-900 tracking-tight">
-                                  {isIndia ? '₹' : '$'}{getDisplayPrice(plan, false)}
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-1">
+                              <h4 className={`text-sm font-bold tracking-tight ${selectedPlanId === plan.id && !isDowngradeOrCurrent(plan.id) ? "text-[#6366F1]" : "text-zinc-900"}`}>
+                                {plan.name}
+                              </h4>
+                              {plan.popular && (
+                                <span className="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 text-[9px] font-black uppercase tracking-wider">
+                                  Popular
                                 </span>
-                                <span className="text-[9px] font-medium text-zinc-400">/{isAnnual ? 'yr' : 'mo'}</span>
-                              </div>
+                              )}
+                              {plan.id === currentPlan && (
+                                <span className="px-2 py-0.5 rounded-full bg-zinc-200 text-zinc-600 text-[9px] font-black uppercase tracking-wider">
+                                  Current
+                                </span>
+                              )}
                             </div>
-                            <div className={`w-4 h-4 rounded-xl border flex items-center justify-center transition-all shrink-0 ${
-                              isSelected ? 'border-[#6366F1] bg-[#6366F1]' : 'border-zinc-200 bg-white group-hover:border-zinc-300'
-                            }`}>
-                              {isSelected && <div className="w-1.5 h-1.5 bg-white rounded-xl" />}
+                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                              {plan.features.map((f, i) => (
+                                <div key={i} className="flex items-center gap-1.5 text-xs font-medium text-zinc-500">
+                                  <CheckCircle2 size={12} className={selectedPlanId === plan.id && !isDowngradeOrCurrent(plan.id) ? "text-indigo-400" : "text-zinc-300"} />
+                                  {f}
+                                </div>
+                              ))}
                             </div>
                           </div>
                         </div>
-                      );
-                    })}
+
+                        {/* Price Section */}
+                        <div className="text-right shrink-0 ml-4">
+                          <div className="flex items-baseline justify-end gap-1">
+                            <span className={`text-xl font-extrabold tracking-tight ${selectedPlanId === plan.id && !isDowngradeOrCurrent(plan.id) ? "text-indigo-900" : "text-zinc-900"}`}>
+                              {isIndia ? '₹' : '$'}{getDisplayPrice(plan)}
+                            </span>
+                            {plan.id !== 'free' && <span className="text-xs font-semibold text-zinc-400">/mo</span>}
+                          </div>
+                          {plan.id !== 'free' && (
+                            <p className="text-[10px] text-zinc-400 font-medium">{isAnnual ? "Billed Annually" : "Billed Monthly"}</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   </div>
 
-                  {/* Proceed to Checkout CTA */}
-                  <div className="pt-3">
+                  {/* Proceed Button */}
+                  <div className="pt-4 border-t border-zinc-100 flex justify-end">
                     <button
                       onClick={() => setStep(2)}
-                      disabled={selectedPlanId === currentPlan}
-                      className="w-full py-3 bg-zinc-950 text-white rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5 hover:bg-zinc-800 disabled:opacity-50 transition-all active:scale-[0.99] cursor-pointer"
+                      disabled={isDowngradeOrCurrent(selectedPlanId)}
+                      className="px-8 py-3.5 bg-zinc-950 hover:bg-zinc-800 disabled:opacity-50 text-white rounded-xl font-bold text-xs shadow-xl shadow-zinc-950/20 transition-all flex items-center gap-2"
                     >
-                      <span>{selectedPlanId === currentPlan ? "Current Plan Active" : "Proceed to Checkout"}</span>
-                      <ArrowRight size={13} />
+                      Continue to Payment
+                      <ArrowRight size={14} />
                     </button>
                   </div>
                 </div>
               )}
 
-              {activeTab === 'plans' && step === 2 && (
-                <div className="animate-in fade-in duration-300 flex flex-col">
-                  {/* Back button */}
-                  {!paymentSuccess && (
-                    <button 
-                      onClick={() => setStep(1)} 
-                      className="flex items-center gap-1.5 text-xs font-semibold text-zinc-500 hover:text-zinc-800 transition-colors cursor-pointer mb-4"
-                    >
-                      <span>← Back to plans</span>
+              {/* Checkout Step */}
+              {step === 2 && activeTab === 'plans' && (
+                <div className="animate-in slide-in-from-right-4 duration-300">
+                  <div className="flex items-center gap-3 mb-6">
+                    <button onClick={() => setStep(1)} className="p-1.5 hover:bg-zinc-100 rounded-lg text-zinc-500 transition-colors">
+                      <ArrowRight size={18} className="rotate-180" />
                     </button>
-                  )}
+                    <h3 className="text-lg font-bold text-zinc-900">Checkout</h3>
+                  </div>
 
-                  {paymentSuccess ? (
-                    <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6 sm:p-8 text-center space-y-4">
-                      <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-2">
-                        <CheckCircle2 size={32} />
-                      </div>
-                      <h3 className="text-xl font-bold text-zinc-900">Payment Submitted!</h3>
-                      <p className="text-sm text-zinc-600 max-w-sm mx-auto">
-                        Your UPI Reference Number has been received. Our team will verify the payment and upgrade your account within 1-2 hours.
-                      </p>
-                      <button
-                        onClick={onClose}
-                        className="mt-4 px-6 py-2.5 bg-zinc-950 text-white rounded-xl font-semibold text-xs hover:bg-zinc-800 transition-all cursor-pointer"
-                      >
-                        Back to Dashboard
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
-                      {/* Left Side: Order Summary */}
-                      <div className="bg-zinc-50/80 border border-zinc-200/60 rounded-xl p-5 sm:p-6 space-y-5 flex flex-col">
-                        <div>
-                          <h4 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest border-b border-zinc-200/50 pb-2 mb-4">Order Summary</h4>
-                          
-                          {/* Selected Plan Summary card */}
-                          <div className="bg-white border border-zinc-200 rounded-xl p-3 flex items-center justify-between mb-5">
-                            <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border border-indigo-100/50">
-                                {selectedPlanId === 'viral_scale' ? <Sparkles size={16} /> : selectedPlanId === 'creator_pro' ? <Zap size={16} /> : <BarChart3 size={16} />}
-                              </div>
-                              <div>
-                                <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider">Plan</span>
-                                <h5 className="text-sm font-bold text-zinc-900 leading-none mt-0.5">{plans.find(p => p.id === selectedPlanId)?.name}</h5>
-                              </div>
-                            </div>
-                            <div className="text-right">
-                              <span className="text-sm font-bold text-indigo-600">
-                                {isIndia ? '₹' : '$'}{getDisplayPrice(plans.find(p => p.id === selectedPlanId), false)}
-                              </span>
-                              <p className="text-[9px] text-zinc-400 font-semibold mt-0.5">/{isAnnual ? 'yr' : 'mo'}</p>
-                            </div>
-                          </div>
-
-                      {/* Promo Code Input (Hidden for free plan) */}
-                      {selectedPlanId !== 'free' && (
-                        <div className="space-y-2 mb-4">
-                          {promoApplied ? (
-                            <div className="flex items-center justify-between px-3 py-2 bg-emerald-50 border border-emerald-200/80 rounded-xl animate-in zoom-in-95 duration-200">
-                              <div className="flex items-center gap-1.5">
-                                <Tag size={12} className="text-emerald-600" />
-                                <span className="text-[11px] font-semibold text-emerald-700">{promoApplied.code}</span>
-                                <span className="text-[10px] font-medium text-emerald-600">({promoApplied.discountPercent}% off)</span>
-                              </div>
-                              <button onClick={handleRemovePromo} className="text-[10px] text-emerald-600 hover:text-emerald-800 font-semibold underline cursor-pointer">Remove</button>
-                            </div>
-                          ) : (
-                            <div className="flex gap-1.5">
-                              <div className="relative flex-1">
-                                <Tag size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
-                                <input
-                                  type="text"
-                                  placeholder="Promo code?"
-                                  value={promoInput}
-                                  onChange={(e) => { setPromoInput(e.target.value); setPromoError(""); }}
-                                  onKeyDown={(e) => e.key === 'Enter' && handleApplyPromo()}
-                                  className="w-full pl-8 pr-2 py-2 bg-white border border-zinc-200 rounded-xl text-[11px] font-medium text-zinc-800 outline-none focus:border-indigo-400 transition-colors placeholder:text-zinc-400"
-                                />
-                              </div>
-                              <button
-                                onClick={handleApplyPromo}
-                                disabled={promoLoading || !promoInput.trim()}
-                                className="px-3 py-2 bg-zinc-950 hover:bg-zinc-800 text-white font-semibold text-[10px] rounded-xl transition-all disabled:opacity-50 whitespace-nowrap cursor-pointer"
-                              >
-                                {promoLoading ? "..." : "Apply"}
-                              </button>
-                            </div>
-                          )}
-                          {promoError && <p className="text-[10px] text-rose-500 font-semibold px-1">{promoError}</p>}
-                        </div>
-                      )}
-
-                      {/* Cost Breakdown */}
-                      {selectedPlanId !== 'free' ? (
-                        <div className="border-t border-zinc-200/60 pt-3 space-y-2">
-                          <div className="flex justify-between text-[11px] font-medium text-zinc-400">
-                            <span>Subtotal</span>
-                            <span>{isIndia ? '₹' : '$'}{
-                              (isAnnual 
-                                ? Math.round((parseInt(plans.find(p => p.id === selectedPlanId).price_inr.replace(',', '')) * 0.8) * 12) 
-                                : parseInt(plans.find(p => p.id === selectedPlanId).price_inr.replace(',', ''))
-                              ).toLocaleString(isIndia ? 'en-IN' : 'en-US')
-                            }</span>
-                          </div>
-                          
-                          {promoApplied && (
-                            <div className="flex justify-between text-[11px] font-semibold text-emerald-600">
-                              <span>Discount ({promoApplied.discountPercent}%)</span>
-                              <span>-{isIndia ? '₹' : '$'}{
-                                Math.round(
-                                  (isAnnual 
-                                    ? (parseInt(plans.find(p => p.id === selectedPlanId).price_inr.replace(',', '')) * 0.8) * 12 
-                                    : parseInt(plans.find(p => p.id === selectedPlanId).price_inr.replace(',', '')))
-                                  * (promoApplied.discountPercent / 100)
-                                ).toLocaleString(isIndia ? 'en-IN' : 'en-US')
-                              }</span>
-                            </div>
-                          )}
-
-                          {isIndia && (
-                            <div className="flex justify-between text-[11px] font-medium text-zinc-400">
-                              <span>GST (18%)</span>
-                              <span>₹{
-                                Math.round(
-                                  (promoApplied
-                                    ? Math.round(
-                                        (isAnnual 
-                                          ? (parseInt(plans.find(p => p.id === selectedPlanId).price_inr.replace(',', '')) * 0.8) * 12 
-                                          : parseInt(plans.find(p => p.id === selectedPlanId).price_inr.replace(',', '')))
-                                        * ((100 - promoApplied.discountPercent) / 100)
-                                      )
-                                    : (isAnnual 
-                                        ? Math.round((parseInt(plans.find(p => p.id === selectedPlanId).price_inr.replace(',', '')) * 0.8) * 12) 
-                                        : parseInt(plans.find(p => p.id === selectedPlanId).price_inr.replace(',', '')))
-                                  ) * 0.18
-                                ).toLocaleString('en-IN')
-                              }</span>
-                            </div>
-                          )}
-
-                        <div className="border-t border-zinc-200/60 pt-4 mt-auto">
-                          <div className="flex justify-between items-end">
-                            <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Total Payable</span>
-                            <span className="text-xl font-black text-zinc-950 tracking-tight">{isIndia ? '₹' : '$'}{getDisplayPrice(plans.find(p => p.id === selectedPlanId), true)}</span>
-                          </div>
-                        </div>
-                        </div>
-                      ) : (
-                        <div className="border-t border-zinc-200/60 pt-4 mt-auto flex justify-between items-end">
-                          <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Total Payable</span>
-                          <span className="text-xl font-black text-zinc-950 tracking-tight">₹0 / $0</span>
-                        </div>
-                      )}
-                      </div>
-                    </div>
-
-                    {/* Right Side: Payment Action */}
-                    <div className="relative bg-white border border-indigo-100/80 rounded-xl p-5 sm:p-6 flex flex-col justify-between overflow-hidden">
-                      {/* Decorative Background Accents */}
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50/50 rounded-xl-full pointer-events-none -z-10" />
-                      <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-50/30 rounded-xl-full pointer-events-none -z-10" />
-
-                      <div>
-                        <div className="flex items-center gap-2 mb-4">
-                          <div className="w-6 h-6 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-                            <Zap size={12} className="fill-current" />
-                          </div>
-                          <h4 className="text-sm font-bold text-zinc-900">Secure UPI Payment</h4>
-                        </div>
-                        
-                        {selectedPlanId !== 'free' && (
-                          <div className="space-y-5">
-                            <div className="text-center">
-                              <p className="text-[11px] font-semibold text-zinc-500 mb-3">Scan with PhonePe, GPay, or Paytm</p>
-                              <div className="mx-auto w-44 h-44 bg-white p-2 rounded-xl flex items-center justify-center border-2 border-indigo-100">
-                                <img 
-                                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=6201231875@pthdfc&pn=Automixa&am=${getDisplayPrice(plans.find(p => p.id === selectedPlanId), true).replace(/,/g, '')}`} 
-                                  alt="UPI QR Code" 
-                                  className="w-full h-full object-contain"
-                                />
-                              </div>
-                              <p className="text-[10px] text-zinc-500 font-medium mt-3 bg-zinc-50 inline-block px-3 py-1 rounded-xl border border-zinc-200">
-                                UPI ID: <strong className="text-zinc-800 select-all tracking-wide">6201231875@pthdfc</strong>
-                              </p>
-                            </div>
+                  {!paymentSuccess ? (
+                    <div className="flex flex-col md:flex-row gap-6">
+                      
+                      {/* Left: Price Breakup */}
+                      <div className="flex-1 space-y-4">
+                        <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-5">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-4">Order Summary</h4>
+                          {(() => {
+                            const p = plans.find(p => p.id === selectedPlanId);
+                            const breakdown = getPriceBreakdown(p);
+                            const sym = isIndia ? '₹' : '$';
                             
-                            <div className="space-y-2">
-                              <label className="text-[10px] font-bold text-zinc-700 uppercase tracking-widest block ml-1">Enter 12-Digit UPI Ref No.</label>
+                            return (
+                              <div className="space-y-3 text-sm font-medium">
+                                <div className="flex justify-between text-zinc-700">
+                                  <span>{p?.name} ({isAnnual ? 'Annual' : 'Monthly'})</span>
+                                  <span>{sym}{breakdown.base.toLocaleString()}</span>
+                                </div>
+                                
+                                {breakdown.annualDiscount > 0 && (
+                                  <div className="flex justify-between text-emerald-600">
+                                    <span>Annual Discount (20%)</span>
+                                    <span>-{sym}{breakdown.annualDiscount.toLocaleString()}</span>
+                                  </div>
+                                )}
+                                
+                                {breakdown.promoDiscount > 0 && (
+                                  <div className="flex justify-between text-emerald-600">
+                                    <span>Promo Code ({promoApplied?.code})</span>
+                                    <span>-{sym}{breakdown.promoDiscount.toLocaleString()}</span>
+                                  </div>
+                                )}
+
+                                {isIndia && (
+                                  <div className="flex justify-between text-zinc-500 border-t border-zinc-200 pt-3 mt-3">
+                                    <span>Taxable Amount</span>
+                                    <span>{sym}{breakdown.taxable.toLocaleString()}</span>
+                                  </div>
+                                )}
+                                
+                                {isIndia && (
+                                  <div className="flex justify-between text-zinc-500">
+                                    <span>GST (18%)</span>
+                                    <span>{sym}{breakdown.gst.toLocaleString()}</span>
+                                  </div>
+                                )}
+                                
+                                <div className="flex justify-between text-lg font-bold text-zinc-900 border-t border-zinc-200 pt-3 mt-3">
+                                  <span>Total Amount</span>
+                                  <span className="text-[#6366F1]">{sym}{breakdown.total.toLocaleString()}</span>
+                                </div>
+                              </div>
+                            );
+                          })()}
+                        </div>
+
+                        {/* Promo Code Form */}
+                        <div className="space-y-2">
+                          <label className="text-xs font-semibold text-zinc-900 ml-1">Have a Promo Code?</label>
+                          <div className="flex gap-2">
+                            <div className="relative flex-1">
+                              <Tag className="absolute left-3 top-2.5 text-zinc-400" size={14} />
                               <input
                                 type="text"
-                                placeholder="e.g. 315482910384"
-                                value={utrNumber}
-                                onChange={(e) => setUtrNumber(e.target.value.replace(/[^0-9a-zA-Z]/g, '').slice(0, 22))}
-                                className="w-full px-4 py-3 bg-zinc-50/50 border border-zinc-200 rounded-xl text-sm font-bold text-zinc-900 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder:text-zinc-400 placeholder:font-medium"
+                                placeholder="Code"
+                                value={promoInput}
+                                onChange={(e) => setPromoInput(e.target.value)}
+                                className="w-full pl-9 pr-3 py-2 bg-white border border-zinc-200 rounded-xl text-xs font-bold text-zinc-900 outline-none focus:border-[#6366F1] uppercase"
                               />
                             </div>
+                            <button
+                              onClick={handleApplyPromo}
+                              disabled={promoLoading}
+                              className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-xs rounded-xl transition-all"
+                            >
+                              Apply
+                            </button>
                           </div>
-                        )}
+                          {promoApplied && (
+                            <div className="flex justify-between items-center text-[10px] font-bold text-emerald-600 ml-1">
+                              <span>Promo '{promoApplied.code}' applied! ({promoApplied.discountPercent}% off)</span>
+                              <button onClick={handleRemovePromo} className="text-zinc-400 hover:text-rose-500">Remove</button>
+                            </div>
+                          )}
+                          {promoError && <p className="text-[10px] font-semibold text-rose-500 ml-1">{promoError}</p>}
+                        </div>
                       </div>
 
-                      <div className="space-y-3 pt-6 mt-auto">
-                        <button
-                          onClick={handleCheckout}
-                          disabled={selectedPlanId !== 'free' && (!utrNumber || isSubmittingUtr || utrNumber.length < 12)}
-                          className="w-full py-3.5 bg-zinc-950 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-zinc-800 hover:-translate-y-0.5 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:hover:translate-y-0 disabled:cursor-not-allowed"
-                        >
-                          <span>{isSubmittingUtr ? "Verifying..." : selectedPlanId === 'free' ? "Confirm Switch" : `Submit Payment`}</span>
-                          <ArrowRight size={16} />
-                        </button>
-                        <p className="text-center text-[10px] font-semibold text-emerald-600 flex items-center justify-center gap-1.5 bg-emerald-50 py-1.5 rounded-xl border border-emerald-100">
-                          {selectedPlanId !== 'free' ? <><CheckCircle2 size={12} /> Direct Bank Transfer (No Extra Fees)</> : ""}
-                        </p>
+                      {/* Right: Payment & UTR */}
+                      <div className="flex-1 flex flex-col justify-between space-y-4">
+                        <div className="bg-white border-2 border-indigo-50 rounded-xl p-5 text-center flex-1 flex flex-col justify-center">
+                          {(() => {
+                            const p = plans.find(p => p.id === selectedPlanId);
+                            const breakdown = getPriceBreakdown(p);
+                            const upiString = `upi://pay?pa=6201231875@pthdfc&pn=Automixa&am=${breakdown.total}&cu=INR`;
+                            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiString)}`;
+                            return (
+                              <>
+                                <img src={qrUrl} alt="UPI QR Code" className="w-36 h-36 mx-auto mb-3 rounded-lg border-4 border-white shadow-md" />
+                                <p className="text-xs font-semibold text-zinc-500 mb-0.5">Scan to pay exactly <strong className="text-indigo-600 font-black">₹{breakdown.total.toLocaleString()}</strong></p>
+                                <p className="text-[10px] font-medium text-zinc-400">Supported apps: GPay, PhonePe, Paytm, etc.</p>
+                              </>
+                            );
+                          })()}
+                        </div>
+
+                      <div className="space-y-2">
+                        <label className="text-xs font-semibold text-zinc-900 ml-1 block">Enter 12-digit UTR/Reference No.</label>
+                        <input
+                          type="text"
+                          maxLength="12"
+                          value={utrNumber}
+                          onChange={(e) => setUtrNumber(e.target.value.replace(/\D/g, ''))}
+                          placeholder="e.g. 325412345678"
+                          className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 focus:border-[#6366F1] focus:bg-white outline-none rounded-xl text-sm font-semibold text-zinc-900 transition-all tracking-widest placeholder:tracking-normal"
+                        />
                       </div>
+                      <button
+                        onClick={handleCheckout}
+                        disabled={isSubmittingUtr || utrNumber.length < 12}
+                        className="w-full py-3.5 bg-[#6366F1] hover:bg-indigo-600 disabled:opacity-50 disabled:hover:bg-[#6366F1] text-white rounded-xl font-bold text-xs shadow-md shadow-indigo-200 transition-all flex justify-center items-center gap-2"
+                      >
+                        {isSubmittingUtr ? "Verifying..." : "Confirm Payment"}
+                      </button>
                     </div>
                   </div>
-                )}
+                ) : (
+                  <div className="py-8 text-center space-y-4">
+                      <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+                        <CheckCircle2 size={32} />
+                      </div>
+                      <h4 className="text-xl font-bold text-zinc-900">Payment Submitted!</h4>
+                      <p className="text-xs font-medium text-zinc-500 max-w-sm mx-auto leading-relaxed">
+                        Your UTR number has been received. Our team will verify the payment and activate your <span className="text-zinc-900 font-bold">{plans.find(p => p.id === selectedPlanId)?.name}</span> within 2 hours.
+                      </p>
+                      <button onClick={onClose} className="mt-4 px-6 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-xs font-bold">
+                        Return to Dashboard
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 

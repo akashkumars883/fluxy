@@ -109,7 +109,7 @@ export default function Dashboard() {
   } = useDashboard();
 
   // --- CONFIG: SET TO false TO RE-ENABLE PAYWALLS ---
-  const BYPASS_PLAN_LIMITS = true;
+  const BYPASS_PLAN_LIMITS = false;
   const effectivePlan = BYPASS_PLAN_LIMITS ? "viral_scale" : currentPlan;
 
   const router = useRouter();
@@ -119,7 +119,7 @@ export default function Dashboard() {
   const [connectedAccount, setConnectedAccount] = useState(initialOnboardingState.connectedAccount);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+
 
   const [realtimeHistory, setRealtimeHistory] = useState([]);
   const [realtimeTriggers, setRealtimeTriggers] = useState([]);
@@ -129,6 +129,8 @@ export default function Dashboard() {
 
   const [isAccountSettingsOpen, setIsAccountSettingsOpen] = useState(false);
   const [isSubscriptionOpen, setIsSubscriptionOpen] = useState(false);
+  const [showGiveawayModal, setShowGiveawayModal] = useState(false);
+  const [giveawayNumber, setGiveawayNumber] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingTrigger, setEditingTrigger] = useState(null);
@@ -265,7 +267,15 @@ export default function Dashboard() {
 
     const successParam = params.get("success");
     if (successParam === "instagram_connected") {
-      toast.success("Instagram account connected successfully! 🔗");
+      // Check if this was a giveaway upgrade
+      const isGiveaway = params.get("giveaway") === "true";
+      const giveawayNum = params.get("giveaway_number");
+      if (isGiveaway && giveawayNum) {
+        setGiveawayNumber(parseInt(giveawayNum));
+        setTimeout(() => setShowGiveawayModal(true), 1200);
+      } else {
+        toast.success("Instagram account connected successfully! 🔗");
+      }
       shouldClean = true;
     } else if (successParam === "subscribed") {
       toast.success("Subscription upgraded successfully! Welcome to Business Pro!");
@@ -717,7 +727,7 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    const isLocalDev = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+    const isLocalDev = process.env.NODE_ENV === "development";
 
     if (!loading && !user && !isLocalDev) {
       router.push("/login");
@@ -774,6 +784,7 @@ export default function Dashboard() {
                 : activeTab;
 
   return (
+    <>
     <AppShell>
       <div className="h-screen flex flex-col bg-[#faf8f5] relative overflow-hidden selection:bg-indigo-500/10 selection:text-indigo-600">
         <SystemBroadcast />
@@ -812,31 +823,40 @@ export default function Dashboard() {
           <main
             className="flex-1 overflow-y-auto w-full flex flex-col relative"
           >
+            {/* Early Access Static Banner */}
+            <div className="bg-indigo-600 text-white px-3 sm:px-4 py-2 sm:py-1.5 text-center text-[10px] sm:text-xs font-medium sm:font-semibold flex items-start sm:items-center justify-center gap-1.5 sm:gap-2  shrink-0 z-30">
+              <Sparkles size={12} className="animate-pulse shrink-0 mt-0.5 sm:mt-0" />
+              <p className="leading-tight sm:leading-normal text-left sm:text-center">
+                <strong className="block sm:inline font-bold mb-0.5 sm:mb-0">Early Access Beta:</strong> 
+                <span className="opacity-90 sm:opacity-100"> All premium features and automations are currently 100% free!</span>
+              </p>
+            </div>
+
             {/* Global Page Header (Navbar elements + Actions on the right, Title on the left) */}
-            <div className="flex flex-row items-center justify-between gap-2 py-3 px-1 sm:px-6 lg:px-8 border-b border-zinc-200/50 shrink-0 sticky top-0 z-20 bg-[#faf8f5]">
+            <div className="flex flex-row items-center justify-between gap-2 p-3 sm:px-4 lg:px-6 border-b border-zinc-200/50 shrink-0 sticky top-0 z-20 bg-[#faf8f5]">
               {/* Left: Title + inline account badge */}
               <div className="flex items-center gap-3 min-w-0">
-                <div className="min-w-0 flex flex-wrap items-center gap-2 sm:gap-4">
-                  <h1 className="text-lg sm:text-xl font-bold tracking-tight text-zinc-950 leading-tight flex items-center gap-2">
-                    <span className={builderActive && activeTab === "automations" ? "inline sm:hidden" : "inline"}>
+                <div className="min-w-0 flex flex-nowrap items-center gap-2 sm:gap-4">
+                  <h1 className="text-lg sm:text-xl font-bold tracking-tight text-black leading-tight flex flex-nowrap items-center gap-2 min-w-0 truncate">
+                    <span className={`truncate ${builderActive && activeTab === "automations" ? "inline sm:hidden" : "inline"}`}>
                       {builderActive && activeTab === "automations" ? "Campaign Builder" : tabTitle}
                     </span>
                     {activeTab === "automations" && builderActive && (
                       <>
                         <span className="text-zinc-300 font-medium select-none hidden sm:inline">/</span>
-                        <span className="text-zinc-500 text-base sm:text-lg font-semibold truncate max-w-[120px] xs:max-w-[150px] sm:max-w-xs">{builderCampaignName || "New Campaign"}</span>
+                        <span className="text-black opacity-80 text-base sm:text-lg font-semibold truncate max-w-[120px] xs:max-w-[150px] sm:max-w-xs">{builderCampaignName || "New Campaign"}</span>
                       </>
                     )}
                   </h1>
                   {selectedAccount && (
-                    <div className="flex items-center gap-2 border-l border-zinc-200 pl-2 sm:pl-4">
-                      <span className={`px-2 py-0.5 rounded-xl text-[9px] font-bold border ${(selectedAccount.persona || "content_creator") === "content_creator"
+                    <div className="hidden sm:flex items-center gap-2 border-l border-zinc-200 pl-2 sm:pl-4">
+                      <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold border ${(selectedAccount.persona || "content_creator") === "content_creator"
                         ? "bg-indigo-50 text-indigo-600 border-indigo-200"
                         : "bg-blue-50 text-blue-600 border-blue-200"
-                        } ${builderActive ? 'hidden sm:inline-block' : 'inline-block'}`}>
+                        }`}>
                         {(selectedAccount.persona || "content_creator") === "content_creator" ? "Creator" : "Business"}
                       </span>
-                      <p className={`text-xs text-zinc-400 font-medium truncate ${builderActive ? 'hidden sm:block' : 'block'}`}>
+                      <p className="text-xs text-black opacity-60 font-medium truncate max-w-[150px]">
                         @{selectedAccount.ig_username || selectedAccount.name || selectedAccount.page_name || "automixa_user"}
                       </p>
                     </div>
@@ -849,7 +869,7 @@ export default function Dashboard() {
                 {/* Search Icon Button */}
                 <button
                   onClick={() => setIsSearchOpen(true)}
-                  className="hidden lg:inline-flex items-center justify-center w-9 h-9 rounded-xl text-zinc-400 hover:text-[#6366F1] hover:bg-zinc-100/80 transition-all"
+                  className="hidden lg:inline-flex items-center justify-center w-9 h-9 rounded-md text-black opacity-60 hover:text-[#6366F1] hover:bg-zinc-100/80 transition-all"
                   title="Search (⌘K)"
                 >
                   <Search size={17} strokeWidth={1.5} />
@@ -858,7 +878,7 @@ export default function Dashboard() {
                 {/* Help Button */}
                 <button
                   onClick={() => setIsHelpOpen(true)}
-                  className="inline-flex items-center justify-center w-9 h-9 rounded-xl text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100/80 transition-all"
+                  className="hidden sm:inline-flex items-center justify-center w-9 h-9 rounded-md text-black opacity-60 hover:text-black hover:bg-zinc-100/80 transition-all"
                   title="Help"
                 >
                   <HelpCircle size={17} strokeWidth={1.5} />
@@ -892,7 +912,7 @@ export default function Dashboard() {
 
 
                     {activeTab === "partner" && partnerAppStatus === "approved" && (
-                      <span className="px-2 py-1 bg-zinc-950 text-white font-bold text-[9px] rounded-xl uppercase tracking-wider border border-zinc-800">
+                      <span className="px-2 py-1 bg-zinc-950 text-white font-bold text-[9px] rounded-md uppercase tracking-wider border border-zinc-800">
                         {partnerActiveTier} · {partnerCommissionRate}%
                       </span>
                     )}
@@ -919,9 +939,9 @@ export default function Dashboard() {
                   (!selectedAccount?.is_active || usedQuota >= maxQuota) && (
                     <div className="shrink-0 animate-in slide-in-from-top-4 duration-300">
                       {!selectedAccount?.is_active ? (
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-amber-50 border border-amber-200/60 rounded-xl text-amber-800">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-amber-50 border border-amber-200/60 rounded-md text-amber-800">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+                            <div className="w-9 h-9 rounded-md bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
                               <AlertCircle size={18} className="animate-pulse" />
                             </div>
                             <div>
@@ -933,15 +953,15 @@ export default function Dashboard() {
                           </div>
                           <button
                             onClick={() => updateSelectedAccount({ is_active: true })}
-                            className="w-full sm:w-auto px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold transition-all hover:scale-[1.02] shrink-0"
+                            className="w-full sm:w-auto px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-md text-xs font-semibold transition-all hover:scale-[1.02] shrink-0"
                           >
                             Activate Shield
                           </button>
                         </div>
                       ) : usedQuota >= maxQuota ? (
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-rose-50 border border-rose-200/60 rounded-xl text-rose-800">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-rose-50 border border-rose-200/60 rounded-md text-rose-800">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0">
+                            <div className="w-9 h-9 rounded-md bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0">
                               <AlertCircle size={18} className="animate-pulse" />
                             </div>
                             <div>
@@ -956,9 +976,9 @@ export default function Dashboard() {
                               setUpgradeReason("automation_limit");
                               setIsSubscriptionOpen(true);
                             }}
-                            className="w-full sm:w-auto px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-semibold transition-all hover:scale-[1.02] shrink-0"
+                            className="w-full sm:w-auto px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-md text-xs font-semibold transition-all hover:scale-[1.02] shrink-0"
                           >
-                            Upgrade Now
+                            Early Access Active
                           </button>
                         </div>
                       ) : null}
@@ -969,7 +989,7 @@ export default function Dashboard() {
                 {
                   activeTab === "home" && (
                     <div
-                      onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
+
                       className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar px-4 sm:px-6 lg:px-8 pt-4 pb-24 md:pb-8"
                     >
                       <CreatorOverview
@@ -998,7 +1018,7 @@ export default function Dashboard() {
                 {
                   activeTab === "automations" && (
                     <div
-                      onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
+
                       className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar flex flex-col px-4 sm:px-6 lg:px-8 pt-4 pb-24 md:pb-8"
                     >
                       {builderActive ? (
@@ -1046,7 +1066,7 @@ export default function Dashboard() {
                 {
                   activeTab === "audience" && (
                     <div
-                      onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
+
                       className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar px-4 sm:px-6 lg:px-8 pt-4 pb-24 md:pb-8"
                     >
                       <AudienceCRM
@@ -1064,7 +1084,7 @@ export default function Dashboard() {
                 {
                   activeTab === "store" && (
                     <div
-                      onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
+
                       className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar px-4 sm:px-6 lg:px-8 pt-4 pb-24 md:pb-8"
                     >
                       <StoreManager accountId={selectedAccount.id} currentPlan={effectivePlan} onUpgradeClick={(reason) => {
@@ -1077,7 +1097,7 @@ export default function Dashboard() {
                 {
                   activeTab === "smart_bio" && (
                     <div
-                      onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
+
                       className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar px-4 sm:px-6 lg:px-8 pt-4 pb-24 md:pb-8"
                     >
                       <SmartBio accountId={selectedAccount.id} account={selectedAccount} currentPlan={effectivePlan} onUpgradeClick={(reason) => {
@@ -1090,7 +1110,7 @@ export default function Dashboard() {
                 {
                   activeTab === "settings" && (
                     <div
-                      onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
+
                       className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar px-4 sm:px-6 lg:px-8 pt-4 pb-24 md:pb-8"
                     >
                       <SettingsDashboard account={selectedAccount} currentPlan={effectivePlan} realtimeStats={realtimeStats} onSubscriptionClick={() => {
@@ -1104,7 +1124,7 @@ export default function Dashboard() {
                 {
                   activeTab === "partner" && (
                     <div
-                      onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 20)}
+
                       className="flex-1 min-h-0 overflow-y-auto sm:pr-1 no-scrollbar px-4 sm:px-6 lg:px-8 pt-4 pb-24 md:pb-8"
                     >
                       <PartnerDashboard
@@ -1119,44 +1139,43 @@ export default function Dashboard() {
                 }
               </div >
             ) : (
-              <div className="flex-1 flex flex-col min-h-0 relative overflow-y-auto no-scrollbar bg-white gap-6 px-4 sm:px-6 lg:px-8 pt-6 pb-6">
-                {/* Mock Stats Cards (No blur, shown as blank dashboard) */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pointer-events-none select-none">
+              <div className="flex-1 flex flex-col min-h-0 relative overflow-y-auto no-scrollbar gap-6 px-4 sm:px-6 lg:px-8 pt-6 pb-6">
+                {/* Mock Stats Cards (No blur, shown as blank dashboard) - Hidden on mobile so Connect is at the top */}
+                <div className="hidden sm:grid grid-cols-2 md:grid-cols-4 gap-4 pointer-events-none select-none">
                   {[
                     { label: "Total Replies", value: "1,245", trend: "+12.4%" },
                     { label: "DM Automations", value: "328", trend: "+8.2%" },
                     { label: "Engagement Rate", value: "4.8%", trend: "+1.2%" },
                     { label: "New Leads", value: "89", trend: "+14.6%" }
                   ].map((card, i) => (
-                    <div key={i} className="p-4 rounded-xl border border-zinc-200 bg-zinc-50/50">
-                      <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">{card.label}</div>
-                      <div className="text-xl font-bold text-zinc-900 mt-1">{card.value}</div>
+                    <div key={i} className="p-4 rounded-md border border-zinc-200 bg-white">
+                      <div className="text-[10px] font-bold text-black opacity-60 uppercase tracking-wider">{card.label}</div>
+                      <div className="text-xl font-bold text-black mt-1">{card.value}</div>
                       <div className="text-[9px] font-bold text-emerald-600 mt-1">{card.trend} vs last week</div>
                     </div>
                   ))}
                 </div>
 
-                {/* Inline Connect Card replacing the charts to act as part of the dashboard */}
-                <div className="flex-1 flex items-start md:items-center justify-center min-h-0">
-                  <div className="w-full h-full bg-white border border-zinc-200 rounded-xl p-6 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 relative overflow-hidden group">
+                <div className="flex items-start justify-center pb-10">
+                  <div className="w-full bg-white border border-zinc-200 rounded-md p-6 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 relative overflow-hidden group">
                     
                     {/* Left Side: Copy and Call to Action */}
                     <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left w-full max-w-xl">
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold mb-4 border border-[#6366F1]/20 uppercase tracking-widest">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#6366F1]/10 text-[#6366F1] text-[10px] font-bold mb-4 border border-[#6366F1]/20 uppercase tracking-widest">
                         <Sparkles size={11} /> Connect Profile
                       </div>
 
-                      <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-zinc-900 tracking-tight leading-tight mb-3">
+                      <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-black tracking-tight leading-tight mb-3">
                         Unlock Your Marketing Workspace
                       </h2>
 
-                      <p className="text-zinc-500 text-sm md:text-base font-medium leading-relaxed mb-8 max-w-md">
+                      <p className="text-black opacity-80 text-sm md:text-base font-medium leading-relaxed mb-8 max-w-md">
                         Connect your Instagram Business account to view live analytics, manage automations, and track leads in real-time.
                       </p>
 
                       <button
                         onClick={handleConnectClick}
-                        className="w-full md:w-auto px-8 py-3.5 bg-[#6366F1] hover:bg-[#5558e3] text-white rounded-xl text-sm font-bold-[0_4px_20px_-4px_rgba(99,102,241,0.4)] transition-all hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 hover:scale-[1.02]"
+                        className="w-full md:w-auto px-8 py-3.5 bg-[#6366F1] hover:bg-[#5558e3] text-white rounded-md text-sm font-bold-[0_4px_20px_-4px_rgba(99,102,241,0.4)] transition-all hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 hover:scale-[1.02]"
                       >
                         <Plus size={16} strokeWidth={2.5} /> Connect Instagram
                       </button>
@@ -1164,24 +1183,24 @@ export default function Dashboard() {
 
                     {/* Right Side: Quick Onboarding Steps Checklist */}
                     <div className="w-full md:w-auto md:flex-1 max-w-md flex justify-center md:justify-end">
-                      <div className="w-full text-left space-y-4 bg-zinc-50/50 border border-zinc-200/60 rounded-xl p-6 sm:p-8">
-                        <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest border-b border-zinc-200/50 pb-3 mb-4 flex items-center gap-2">
+                      <div className="w-full text-left space-y-4 bg-zinc-50/50 border border-zinc-200/60 rounded-md p-6 sm:p-8">
+                        <div className="text-[10px] font-bold text-black opacity-60 uppercase tracking-widest border-b border-zinc-200/50 pb-3 mb-4 flex items-center gap-2">
                           <Zap size={14} className="text-[#6366F1]" /> Getting Started
                         </div>
 
                         <div className="flex items-center gap-3">
-                          <div className="w-6 h-6 rounded-xl bg-[#6366F1]/10 text-[#6366F1] text-xs font-bold flex items-center justify-center shrink-0">1</div>
-                          <span className="text-sm font-semibold text-zinc-800">Connect your Instagram profile</span>
+                          <div className="w-6 h-6 rounded-md bg-[#6366F1]/10 text-[#6366F1] text-xs font-bold flex items-center justify-center shrink-0">1</div>
+                          <span className="text-sm font-semibold text-black">Connect your Instagram profile</span>
                         </div>
 
                         <div className="flex items-center gap-3 opacity-60">
-                          <div className="w-6 h-6 rounded-xl bg-zinc-200 text-zinc-500 text-xs font-bold flex items-center justify-center shrink-0">2</div>
-                          <span className="text-sm font-medium text-zinc-500">Set up comment auto-replies</span>
+                          <div className="w-6 h-6 rounded-md bg-zinc-200 text-black opacity-80 text-xs font-bold flex items-center justify-center shrink-0">2</div>
+                          <span className="text-sm font-medium text-black opacity-80">Set up comment auto-replies</span>
                         </div>
 
                         <div className="flex items-center gap-3 opacity-60">
-                          <div className="w-6 h-6 rounded-xl bg-zinc-200 text-zinc-500 text-xs font-bold flex items-center justify-center shrink-0">3</div>
-                          <span className="text-sm font-medium text-zinc-500">Collect leads & grow audience</span>
+                          <div className="w-6 h-6 rounded-md bg-zinc-200 text-black opacity-80 text-xs font-bold flex items-center justify-center shrink-0">3</div>
+                          <span className="text-sm font-medium text-black opacity-80">Collect leads & grow audience</span>
                         </div>
                       </div>
                     </div>
@@ -1264,7 +1283,7 @@ export default function Dashboard() {
                 initial={{ opacity: 0, scale: 0.95, y: -20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                className="relative w-full max-w-2xl bg-white rounded-xl-[32px]-2xl border border-zinc-200/60 overflow-hidden"
+                className="relative w-full max-w-2xl bg-white rounded-md-[32px]-2xl border border-zinc-200/60 overflow-hidden"
               >
                 <div className="p-6 border-b border-zinc-100 flex items-center gap-4">
                   <Search className="text-[#6366F1]" size={24} />
@@ -1274,11 +1293,11 @@ export default function Dashboard() {
                     placeholder="Search campaigns, users, or automation logs..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="flex-1 bg-transparent border-none outline-none text-lg font-medium text-zinc-900 placeholder:text-zinc-400"
+                    className="flex-1 bg-transparent border-none outline-none text-lg font-medium text-black placeholder:text-black opacity-60"
                   />
                   <button
                     onClick={() => setIsSearchOpen(false)}
-                    className="p-2 hover:bg-zinc-100 rounded-xl transition-colors text-zinc-400"
+                    className="p-2 hover:bg-zinc-100 rounded-md transition-colors text-black opacity-60"
                   >
                     <X size={20} />
                   </button>
@@ -1288,7 +1307,7 @@ export default function Dashboard() {
                   {searchQuery.length === 0 ? (
                     <div className="space-y-8">
                       <div>
-                        <h3 className="text-[10px] font-semibold text-zinc-400 mb-4">Quick Actions</h3>
+                        <h3 className="text-[10px] font-semibold text-black opacity-60 mb-4">Quick Actions</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           {quickActions.map((action, i) => (
                             <button
@@ -1297,13 +1316,13 @@ export default function Dashboard() {
                                 setActiveTab(action.tab);
                                 setIsSearchOpen(false);
                               }}
-                              className="flex items-center justify-between p-4 rounded-xl-2xl bg-zinc-50 border border-zinc-100 hover:border-[#6366F1]/30 hover:bg-[#6366F1]/5 transition-all group"
+                              className="flex items-center justify-between p-4 rounded-md-2xl bg-zinc-50 border border-zinc-100 hover:border-[#6366F1]/30 hover:bg-[#6366F1]/5 transition-all group"
                             >
                               <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-[#6366F1]">
+                                <div className="w-10 h-10 rounded-md bg-white border border-zinc-200 flex items-center justify-center text-[#6366F1]">
                                   <action.icon size={18} />
                                 </div>
-                                <span className="text-sm font-semibold text-zinc-700 group-hover:text-zinc-900">{action.name}</span>
+                                <span className="text-sm font-semibold text-black group-hover:text-black">{action.name}</span>
                               </div>
                               <ArrowRight size={16} className="text-zinc-300 group-hover:text-[#6366F1] transition-colors" />
                             </button>
@@ -1312,15 +1331,15 @@ export default function Dashboard() {
                       </div>
 
                       <div>
-                        <h3 className="text-[10px] font-semibold text-zinc-400 mb-4">Recent Searches</h3>
+                        <h3 className="text-[10px] font-semibold text-black opacity-60 mb-4">Recent Searches</h3>
                         <div className="space-y-2">
                           {recentSearches.map((search, i) => (
                             <button
                               key={i}
                               onClick={() => setSearchQuery(search)}
-                              className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-50 transition-colors text-sm text-zinc-600 group"
+                              className="w-full flex items-center gap-3 p-3 rounded-md hover:bg-zinc-50 transition-colors text-sm text-black opacity-90 group"
                             >
-                              <Clock size={16} className="text-zinc-300 group-hover:text-zinc-500" />
+                              <Clock size={16} className="text-zinc-300 group-hover:text-black opacity-80" />
                               {search}
                             </button>
                           ))}
@@ -1331,7 +1350,7 @@ export default function Dashboard() {
                     <div className="space-y-2">
                       {filteredResults.length > 0 ? (
                         <>
-                          <h3 className="text-[10px] font-semibold text-zinc-400 mb-4 px-2">Search Results</h3>
+                          <h3 className="text-[10px] font-semibold text-black opacity-60 mb-4 px-2">Search Results</h3>
                           {filteredResults.map((result, i) => (
                             <button
                               key={i}
@@ -1339,15 +1358,15 @@ export default function Dashboard() {
                                 setActiveTab(result.url);
                                 setIsSearchOpen(false);
                               }}
-                              className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-zinc-50 transition-colors text-sm group"
+                              className="w-full flex items-center justify-between p-3 rounded-md hover:bg-zinc-50 transition-colors text-sm group"
                             >
                               <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-500">
+                                <div className="w-10 h-10 rounded-md bg-zinc-100 flex items-center justify-center text-black opacity-80">
                                   <result.icon size={18} />
                                 </div>
                                 <div className="text-left">
-                                  <div className="font-semibold text-zinc-900">{result.title}</div>
-                                  <div className="text-xs text-zinc-500">{result.type}</div>
+                                  <div className="font-semibold text-black">{result.title}</div>
+                                  <div className="text-xs text-black opacity-80">{result.type}</div>
                                 </div>
                               </div>
                               <ArrowRight size={16} className="text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -1356,11 +1375,11 @@ export default function Dashboard() {
                         </>
                       ) : (
                         <div className="py-12 text-center">
-                          <div className="w-16 h-16 bg-zinc-50 rounded-xl flex items-center justify-center mx-auto mb-4">
+                          <div className="w-16 h-16 bg-zinc-50 rounded-md flex items-center justify-center mx-auto mb-4">
                             <Search className="text-zinc-300" size={32} />
                           </div>
-                          <h3 className="text-zinc-900 font-semibold mb-1">{`No results for "${searchQuery}"`}</h3>
-                          <p className="text-sm text-zinc-500">Try searching for campaigns, keywords, or account settings.</p>
+                          <h3 className="text-black font-semibold mb-1">{`No results for "${searchQuery}"`}</h3>
+                          <p className="text-sm text-black opacity-80">Try searching for campaigns, keywords, or account settings.</p>
                         </div>
                       )}
                     </div>
@@ -1369,12 +1388,12 @@ export default function Dashboard() {
 
                 <div className="p-4 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1.5 text-[10px] text-zinc-400">
-                      <span className="px-1.5 py-0.5 bg-white border border-zinc-200 rounded-xl text-zinc-500 font-bold">ESC</span>
+                    <div className="flex items-center gap-1.5 text-[10px] text-black opacity-60">
+                      <span className="px-1.5 py-0.5 bg-white border border-zinc-200 rounded-md text-black opacity-80 font-bold">ESC</span>
                       <span>to close</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-[10px] text-zinc-400">
-                      <span className="px-1.5 py-0.5 bg-white border border-zinc-200 rounded-xl text-zinc-500 font-bold">↵</span>
+                    <div className="flex items-center gap-1.5 text-[10px] text-black opacity-60">
+                      <span className="px-1.5 py-0.5 bg-white border border-zinc-200 rounded-md text-black opacity-80 font-bold">↵</span>
                       <span>to select</span>
                     </div>
                   </div>
@@ -1386,5 +1405,69 @@ export default function Dashboard() {
         </AnimatePresence>
       </div>
     </AppShell>
+
+      {/* ── Giveaway Congratulations Modal ── */}
+      {showGiveawayModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="absolute inset-0 bg-zinc-950/70 backdrop-blur-sm" onClick={() => setShowGiveawayModal(false)} />
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-4 duration-500">
+            {/* Top gradient bar */}
+            <div className="h-1.5 w-full bg-gradient-to-r from-indigo-500 via-violet-500 to-purple-500" />
+
+            {/* Confetti-like decorative blobs */}
+            <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-100/60 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-violet-100/40 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+
+            <div className="relative p-8 text-center">
+              {/* Icon */}
+              <div className="mx-auto mb-4 w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-xl shadow-indigo-200">
+                <span className="text-4xl">🎉</span>
+              </div>
+
+              {/* Number Badge */}
+              {giveawayNumber && (
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 border border-indigo-100 rounded-full mb-4">
+                  <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Early Adopter #{giveawayNumber}</span>
+                </div>
+              )}
+
+              <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-2">
+                Welcome to Business Pro!
+              </h2>
+              <p className="text-sm font-medium text-zinc-500 leading-relaxed mb-6">
+                You connected Instagram as one of our <strong className="text-zinc-800">first 50 users</strong>, so we&apos;re giving you <strong className="text-indigo-600">Business Pro absolutely FREE</strong> for the next <strong className="text-zinc-800">2 months</strong> as a thank you! 🚀
+              </p>
+
+              {/* What you unlocked */}
+              <div className="bg-indigo-50/60 border border-indigo-100/80 rounded-xl p-4 mb-6 text-left space-y-2.5">
+                <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-3">What you&apos;ve unlocked</p>
+                {[
+                  "15,000 AI Credits / month",
+                  "Unlimited Automations",
+                  "Story Mention Triggers",
+                  "Mini Store & Smart Bio",
+                  "Priority Support",
+                ].map((feature) => (
+                  <div key={feature} className="flex items-center gap-2.5 text-sm font-medium text-zinc-700">
+                    <div className="w-4 h-4 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
+                      <svg className="w-2.5 h-2.5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    </div>
+                    {feature}
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={() => setShowGiveawayModal(false)}
+                className="w-full py-3.5 bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-sm rounded-xl transition-all shadow-lg active:scale-95"
+              >
+                Start Exploring 🚀
+              </button>
+              <p className="text-[10px] text-zinc-400 font-medium mt-3">No credit card needed. Auto-expires after 2 months.</p>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

@@ -226,7 +226,7 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       const actualPlan = subData?.[0]?.plan_id || subData?.[0]?.plan || "free";
 
       // --- CONFIG: SET TO false TO RE-ENABLE PAYWALLS ---
-      const BYPASS_PLAN_LIMITS = true;
+      const BYPASS_PLAN_LIMITS = false;
 
       // Treat user as premium for features, but use actual plan for execution limits
       userPlan = BYPASS_PLAN_LIMITS ? "viral_scale" : actualPlan;

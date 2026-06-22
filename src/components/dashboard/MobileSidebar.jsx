@@ -44,7 +44,7 @@ export default function MobileSidebar({
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 220 }}
-            className="fixed inset-x-0 bottom-0 top-auto h-auto max-h-[88vh] w-full rounded-t-3xl bg-white border-t border-zinc-200/80 z-50 flex flex-col md:hidden select-none shadow-2xl shadow-zinc-200/60"
+            className="fixed inset-x-0 bottom-0 top-auto h-auto max-h-[88vh] w-full rounded-t-3xl bg-white border-t border-zinc-200/80 z-50 flex flex-col md:hidden select-none  -200/60"
           >
             {/* Drag Handle */}
             <div className="flex justify-center pt-3 pb-1">
@@ -58,7 +58,13 @@ export default function MobileSidebar({
                   <img src="/logo.png" alt="Automixa Logo" className="w-7 h-7 object-contain" />
                   <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-white" />
                 </div>
-                <span className="text-base font-bold tracking-tight text-zinc-900">automixa</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-base font-bold tracking-tight text-zinc-900">automixa</span>
+                  <span className="px-1.5 py-0.5 rounded-md bg-indigo-500/10 text-indigo-600 border border-indigo-500/20 text-[9px] font-extrabold uppercase tracking-widest flex items-center gap-1">
+                    <span className="w-1 h-1 rounded-full bg-indigo-500 animate-pulse" />
+                    Beta
+                  </span>
+                </div>
               </div>
               <button
                 onClick={onClose}
@@ -80,6 +86,7 @@ export default function MobileSidebar({
                       <div className="relative shrink-0">
                         <img
                           src={selectedAccount.profile_pic || selectedAccount.profile_picture_url || selectedAccount.metadata?.profile_picture_url || selectedAccount.metadata?.profile_pic || "https://ui-avatars.com/api/?name=" + encodeURIComponent(selectedAccount.page_name || "User") + "&background=6366f1&color=fff&size=150"}
+                          referrerPolicy="no-referrer"
                           alt={selectedAccount.ig_username || selectedAccount.page_name}
                           className="w-10 h-10 rounded-xl object-cover shrink-0 ring-1 ring-zinc-200"
                           onError={(e) => { e.target.onerror = null; e.target.src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(selectedAccount.ig_username || selectedAccount.page_name || "User") + "&background=6366f1&color=fff&size=150"; }}
@@ -106,7 +113,7 @@ export default function MobileSidebar({
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -6, scale: 0.97 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute top-full left-0 mt-2 bg-white border border-zinc-200 rounded-2xl p-2 z-50 w-full shadow-xl shadow-zinc-200/60"
+                        className="absolute top-full left-0 mt-2 bg-white border border-zinc-200 rounded-2xl p-2 z-50 w-full  -200/60"
                       >
                         <div className="px-2 py-1.5 text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Switch Account</div>
                         <div className="space-y-0.5 max-h-36 overflow-y-auto no-scrollbar py-1">
@@ -123,6 +130,7 @@ export default function MobileSidebar({
                             >
                               <img
                                 src={acc.profile_pic || acc.profile_picture_url || acc.metadata?.profile_picture_url || acc.metadata?.profile_pic || "https://ui-avatars.com/api/?name=" + encodeURIComponent(acc.page_name || "User") + "&background=6366f1&color=fff&size=150"}
+                                referrerPolicy="no-referrer"
                                 alt={acc.name || acc.page_name}
                                 className="w-8 h-8 rounded-xl object-cover shrink-0"
                                 onError={(e) => { e.target.onerror = null; e.target.src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(acc.ig_username || acc.page_name || "User") + "&background=6366f1&color=fff&size=150"; }}

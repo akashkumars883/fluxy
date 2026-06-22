@@ -228,7 +228,7 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
   };
 
   const tierColors = {
-    silver: "bg-zinc-100 text-zinc-700 border-zinc-200",
+    silver: "bg-zinc-100 text-black border-zinc-200",
     gold: "bg-amber-50 text-amber-700 border-amber-200",
     platinum: "bg-indigo-50 text-indigo-700 border-indigo-200",
   };
@@ -238,26 +238,26 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
 
       {/* ── Page Header ── */}
       <div>
-        <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1">Affiliate</p>
+        <p className="text-xs font-semibold text-black opacity-60 uppercase tracking-widest mb-1">Affiliate</p>
         <h2 className="text-2xl sm:text-3xl font-bold text-zinc-950 tracking-tight">Partner Program</h2>
-        <p className="text-sm text-zinc-400 font-medium mt-1">Earn recurring commissions by referring new users to Automixa.</p>
+        <p className="text-sm text-black opacity-60 font-medium mt-1">Earn recurring commissions by referring new users to Automixa.</p>
       </div>
 
       {/* STATE 1: UNAPPLIED */}
       {appStatus === "unapplied" && (
-        <div className="bg-white border border-zinc-200/80 rounded-xl p-10-200/5 text-center space-y-4 max-w-2xl mx-auto">
-          <div className="w-14 h-14 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto border border-indigo-100">
+        <div className="bg-white border border-zinc-200/80 rounded-md p-10-200/5 text-center space-y-4 max-w-2xl mx-auto">
+          <div className="w-14 h-14 rounded-md bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto border border-indigo-100">
             <Users size={26} />
           </div>
           <div className="space-y-2">
-            <h2 className="text-2xl font-semibold text-zinc-900 tracking-tight">Become an ambassador</h2>
-            <p className="text-sm text-zinc-500 leading-relaxed max-w-md mx-auto">
+            <h2 className="text-2xl font-semibold text-black tracking-tight">Become an ambassador</h2>
+            <p className="text-sm text-black opacity-80 leading-relaxed max-w-md mx-auto">
               Automixa partners earn up to 25% recurring commission on every subscriber. All applications are manually vetted to maintain top-tier ecosystem quality.
             </p>
           </div>
           <button
             onClick={handleApplyNow}
-            className="mt-2 px-7 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-xl  transition-all inline-flex items-center gap-2"
+            className="mt-2 px-7 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-md  transition-all inline-flex items-center gap-2"
           >
             Apply now <ArrowRight size={15} />
           </button>
@@ -266,14 +266,14 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
 
       {/* STATE 2: PENDING */}
       {appStatus === "pending" && (
-        <div className="bg-white border border-amber-200/80 rounded-xl p-8-200/5 text-center space-y-4 max-w-xl mx-auto relative overflow-hidden">
+        <div className="bg-white border border-amber-200/80 rounded-md p-8-200/5 text-center space-y-4 max-w-xl mx-auto relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-amber-400" />
-          <div className="w-14 h-14 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto border border-amber-100">
+          <div className="w-14 h-14 rounded-md bg-amber-50 text-amber-600 flex items-center justify-center mx-auto border border-amber-100">
             <Clock size={26} className="animate-pulse" />
           </div>
           <div className="space-y-1">
-            <h2 className="text-xl font-semibold text-zinc-900">Application under review</h2>
-            <p className="text-sm text-zinc-500 leading-relaxed max-w-sm mx-auto">
+            <h2 className="text-xl font-semibold text-black">Application under review</h2>
+            <p className="text-sm text-black opacity-80 leading-relaxed max-w-sm mx-auto">
               Our partner team evaluates applications within 24 hours. We&apos;ll notify you once approved.
             </p>
           </div>
@@ -285,14 +285,14 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
         <div className="space-y-4">
 
           {/* Hero Banner */}
-          <div className="relative rounded-xl p-4 sm:p-8 text-white  flex flex-col justify-center overflow-hidden group mb-2">
+          <div className="relative rounded-md p-4 sm:p-8 text-white  flex flex-col justify-center overflow-hidden group mb-2">
             <div className="absolute inset-0 z-0">
               <div className="absolute inset-0 bg-gradient-to-r from-[#6366F1] via-indigo-800 to-purple-900" />
               <div className="absolute inset-0 bg-black/10 mix-blend-overlay" />
             </div>
             <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-white/20 rounded-xl  border border-white/20 ">
+                <div className="p-3 bg-white/20 rounded-md  border border-white/20 ">
                   <Sparkles size={28} className="text-white drop-" />
                 </div>
                 <div>
@@ -304,8 +304,8 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
                   </p>
                 </div>
               </div>
-              <div className="shrink-0 flex items-center gap-2 bg-black/60  px-4 py-2 rounded-xl border border-white/10">
-                <div className="w-2 h-2 rounded-xl bg-emerald-400 animate-pulse" />
+              <div className="shrink-0 flex items-center gap-2 bg-black/60  px-4 py-2 rounded-md border border-white/10">
+                <div className="w-2 h-2 rounded-md bg-emerald-400 animate-pulse" />
                 <span className="text-sm font-bold tracking-wide">Active Partner</span>
               </div>
             </div>
@@ -313,9 +313,9 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
 
           {/* Metrics Row (Overview Style) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            <div className="bg-white rounded-xl p-4 sm:p-5 flex flex-col justify-between-200/10 border border-zinc-200/80 hover: transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
+            <div className="bg-white rounded-md p-4 sm:p-5 flex flex-col justify-between-200/10 border border-zinc-200/80 hover: transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
               <div className="flex items-center justify-between mb-4 relative z-10">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-emerald-200  transition-all duration-500 group-hover:scale-110 text-emerald-600 bg-emerald-50">
+                <div className="w-10 h-10 rounded-md flex items-center justify-center border border-emerald-200  transition-all duration-500 group-hover:scale-110 text-emerald-600 bg-emerald-50">
                   <DollarSign size={18} />
                 </div>
               </div>
@@ -323,15 +323,15 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
                 <span className="text-3xl sm:text-4xl font-bold text-zinc-950 tracking-tighter leading-none block group-hover:text-emerald-600 transition-colors duration-300">
                   ₹{partnerProfile.monthly_recurring_revenue.toLocaleString("en-IN")}
                 </span>
-                <span className="text-[12px] font-semibold text-zinc-500 tracking-wide block mt-1">
+                <span className="text-[12px] font-semibold text-black opacity-80 tracking-wide block mt-1">
                   Monthly Revenue
                 </span>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-4 sm:p-5 flex flex-col justify-between-200/10 border border-zinc-200/80 hover: transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
+            <div className="bg-white rounded-md p-4 sm:p-5 flex flex-col justify-between-200/10 border border-zinc-200/80 hover: transition-all duration-300 group cursor-default relative overflow-hidden hover:-translate-y-0.5">
               <div className="flex items-center justify-between mb-4 relative z-10">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-blue-200  transition-all duration-500 group-hover:scale-110 text-blue-600 bg-blue-50">
+                <div className="w-10 h-10 rounded-md flex items-center justify-center border border-blue-200  transition-all duration-500 group-hover:scale-110 text-blue-600 bg-blue-50">
                   <Users size={18} />
                 </div>
               </div>
@@ -339,7 +339,7 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
                 <span className="text-3xl sm:text-4xl font-bold text-zinc-950 tracking-tighter leading-none block group-hover:text-blue-600 transition-colors duration-300">
                   {partnerProfile.total_referrals_count}
                 </span>
-                <span className="text-[12px] font-semibold text-zinc-500 tracking-wide block mt-1">
+                <span className="text-[12px] font-semibold text-black opacity-80 tracking-wide block mt-1">
                   Total Referrals
                 </span>
               </div>
@@ -350,7 +350,7 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 items-stretch">
 
             {/* Left Card: Promotion & Links */}
-            <div className="bg-white rounded-xl p-4 sm:p-6-200/5 border border-zinc-200/80 hover: transition-all duration-300 flex flex-col h-full relative">
+            <div className="bg-white rounded-md p-4 sm:p-6-200/5 border border-zinc-200/80 hover: transition-all duration-300 flex flex-col h-full relative">
               <h3 className="font-bold text-xl text-zinc-950 tracking-tight flex items-center gap-2 mb-6 border-b border-zinc-100 pb-4">
                 <LinkIcon size={20} className="text-[#6366F1]" /> Promotion & Links
               </h3>
@@ -358,17 +358,17 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
               <div className="space-y-6 flex-1 flex flex-col">
                 {/* Tracking Link */}
                 <div className="space-y-3">
-                  <h4 className="text-sm font-semibold text-zinc-900">Master tracking link</h4>
+                  <h4 className="text-sm font-semibold text-black">Master tracking link</h4>
                   <div className="flex items-center gap-2">
-                    <div className="flex-1 bg-zinc-50 border border-zinc-200 rounded-xl px-3 py-2.5 flex items-center justify-between overflow-hidden min-w-0">
-                      <span className="text-sm text-zinc-700 truncate">{displayTrackingLink}</span>
-                      <a href={displayTrackingLink} target="_blank" rel="noreferrer" className="text-zinc-400 hover:text-indigo-600 transition-colors shrink-0 ml-2">
+                    <div className="flex-1 bg-zinc-50 border border-zinc-200 rounded-md px-3 py-2.5 flex items-center justify-between overflow-hidden min-w-0">
+                      <span className="text-sm text-black truncate">{displayTrackingLink}</span>
+                      <a href={displayTrackingLink} target="_blank" rel="noreferrer" className="text-black opacity-60 hover:text-indigo-600 transition-colors shrink-0 ml-2">
                         <ExternalLink size={14} />
                       </a>
                     </div>
                     <button
                       onClick={handleCopyLink}
-                      className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-xl transition-all flex items-center gap-1.5 shrink-0"
+                      className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm rounded-md transition-all flex items-center gap-1.5 shrink-0"
                     >
                       {copied ? <Check size={14} /> : <Copy size={14} />}
                       {copied ? "Copied" : "Copy"}
@@ -379,26 +379,26 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
                 {/* Promo Codes */}
                 <div className="flex-1 flex flex-col">
                   <div className="mb-3">
-                    <h4 className="text-sm font-semibold text-zinc-900">Custom promo codes</h4>
-                    <p className="text-xs text-zinc-500 mt-0.5">Create unique codes to share with your audience.</p>
+                    <h4 className="text-sm font-semibold text-black">Custom promo codes</h4>
+                    <p className="text-xs text-black opacity-80 mt-0.5">Create unique codes to share with your audience.</p>
                   </div>
 
                   <form onSubmit={handleGenerateCode} className="flex flex-col sm:flex-row gap-2 mb-4">
                     <div className="relative flex-1">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-sm">#</span>
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-black opacity-60 text-sm">#</span>
                       <input
                         type="text"
                         required
                         placeholder="code name"
                         value={newCodeInput}
                         onChange={(e) => setNewCodeInput(e.target.value.replace(/\s+/g, "").toLowerCase())}
-                        className="w-full pl-7 pr-3 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-sm text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white transition-colors"
+                        className="w-full pl-7 pr-3 py-2 bg-zinc-50 border border-zinc-200 rounded-md text-sm text-black outline-none focus:border-indigo-400 focus:bg-white transition-colors"
                       />
                     </div>
                     <select
                       value={newSplit}
                       onChange={(e) => setNewSplit(e.target.value)}
-                      className="w-full sm:w-auto px-2 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-xs sm:text-sm text-zinc-900 outline-none focus:border-indigo-400 focus:bg-white transition-colors appearance-none"
+                      className="w-full sm:w-auto px-2 py-2 bg-zinc-50 border border-zinc-200 rounded-md text-xs sm:text-sm text-black outline-none focus:border-indigo-400 focus:bg-white transition-colors appearance-none"
                     >
                       <option value="10_20">10% Off / 20% Comm.</option>
                       <option value="15_15">15% Off / 15% Comm.</option>
@@ -407,22 +407,22 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
                     <button
                       type="submit"
                       disabled={generating}
-                      className="px-3 sm:px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm rounded-xl transition-all whitespace-nowrap disabled:opacity-60"
+                      className="px-3 sm:px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm rounded-md transition-all whitespace-nowrap disabled:opacity-60"
                     >
                       {generating ? "Adding…" : "Add code"}
                     </button>
                   </form>
 
                   {genSuccess && (
-                    <div className="flex items-center gap-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 mb-4">
+                    <div className="flex items-center gap-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-md px-3 py-2 mb-4">
                       <Check size={13} /> Promo code created successfully.
                     </div>
                   )}
 
-                  <div className="border border-zinc-100 rounded-xl overflow-x-auto flex-1">
+                  <div className="border border-zinc-100 rounded-md overflow-x-auto flex-1">
                     <table className="w-full text-left">
                       <thead>
-                        <tr className="bg-zinc-50 border-b border-zinc-100 text-zinc-500 text-xs font-medium">
+                        <tr className="bg-zinc-50 border-b border-zinc-100 text-black opacity-80 text-xs font-medium">
                           <th className="px-3 py-2.5">Code</th>
                           <th className="px-3 py-2.5 hidden sm:table-cell">Split</th>
                           <th className="px-3 py-2.5 text-right">Actions</th>
@@ -431,27 +431,27 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
                       <tbody className="divide-y divide-zinc-100">
                         {promoCodes.length === 0 ? (
                           <tr>
-                            <td colSpan={3} className="px-3 py-6 text-center text-zinc-400 text-sm">No promo codes yet.</td>
+                            <td colSpan={3} className="px-3 py-6 text-center text-black opacity-60 text-sm">No promo codes yet.</td>
                           </tr>
                         ) : (
                           promoCodes.map((item, idx) => (
                             <tr key={idx} className="hover:bg-zinc-50/50 transition-colors">
                               <td className="px-3 py-2.5">
-                                <span className="font-semibold text-zinc-900 uppercase text-sm">{item.code}</span>
-                                <div className="text-xs text-zinc-500 sm:hidden mt-0.5">{item.discount}</div>
+                                <span className="font-semibold text-black uppercase text-sm">{item.code}</span>
+                                <div className="text-xs text-black opacity-80 sm:hidden mt-0.5">{item.discount}</div>
                               </td>
-                              <td className="px-3 py-2.5 hidden sm:table-cell text-xs text-zinc-500">{item.split}</td>
+                              <td className="px-3 py-2.5 hidden sm:table-cell text-xs text-black opacity-80">{item.split}</td>
                               <td className="px-3 py-2.5 text-right">
                                 <div className="flex items-center justify-end gap-1.5">
                                   <button
                                     onClick={() => handleCopyCode(item.code)}
-                                    className="p-1.5 text-zinc-400 hover:text-indigo-600 bg-white border border-zinc-200 hover:border-indigo-200 rounded-xl transition-colors "
+                                    className="p-1.5 text-black opacity-60 hover:text-indigo-600 bg-white border border-zinc-200 hover:border-indigo-200 rounded-md transition-colors "
                                   >
                                     {copiedCode === item.code ? <Check size={13} /> : <Copy size={13} />}
                                   </button>
                                   <button
                                     onClick={() => handleDeleteCode(item.code)}
-                                    className="p-1.5 text-zinc-400 hover:text-rose-600 bg-white border border-zinc-200 hover:border-rose-200 rounded-xl transition-colors "
+                                    className="p-1.5 text-black opacity-60 hover:text-rose-600 bg-white border border-zinc-200 hover:border-rose-200 rounded-md transition-colors "
                                   >
                                     <Trash2 size={13} />
                                   </button>
@@ -468,12 +468,12 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
             </div>
 
             {/* Right Card: Earnings & Tiers */}
-            <div className="bg-white rounded-xl p-4 sm:p-6-200/5 border border-zinc-200/80 hover: transition-all duration-300 flex flex-col h-full relative">
+            <div className="bg-white rounded-md p-4 sm:p-6-200/5 border border-zinc-200/80 hover: transition-all duration-300 flex flex-col h-full relative">
               <h3 className="font-bold text-xl text-zinc-950 tracking-tight flex items-center justify-between gap-2 mb-6 border-b border-zinc-100 pb-4">
                 <div className="flex items-center gap-2">
                   <Award size={20} className="text-emerald-500" /> Earnings & Tiers
                 </div>
-                <span className={`px-2.5 py-1 text-[10px] font-bold uppercase rounded-xl border ${tierColors[partnerProfile.active_tier] || tierColors.silver}`}>
+                <span className={`px-2.5 py-1 text-[10px] font-bold uppercase rounded-md border ${tierColors[partnerProfile.active_tier] || tierColors.silver}`}>
                   {partnerProfile.active_tier} Tier
                 </span>
               </h3>
@@ -481,7 +481,7 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
               <div className="space-y-6 flex-1 flex flex-col">
                 {/* Commission tiers */}
                 <div>
-                  <h4 className="text-sm font-semibold text-zinc-900 mb-3">Commission tiers</h4>
+                  <h4 className="text-sm font-semibold text-black mb-3">Commission tiers</h4>
                   <div className="space-y-2">
                     {[
                       { tier: "Silver", range: "0–9 referrals", rate: "15%", active: partnerProfile.active_tier === "silver" },
@@ -490,16 +490,16 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
                     ].map((t) => (
                       <div
                         key={t.tier}
-                        className={`flex items-center justify-between rounded-xl px-4 py-3 border text-sm transition-all  ${t.active
+                        className={`flex items-center justify-between rounded-md px-4 py-3 border text-sm transition-all  ${t.active
                             ? "bg-indigo-50 border-indigo-200 text-indigo-900 scale-[1.02]"
-                            : "bg-white border-zinc-100 text-zinc-500"
+                            : "bg-white border-zinc-100 text-black opacity-80"
                           }`}
                       >
                         <div>
-                          <span className={`font-semibold ${t.active ? "text-indigo-700" : "text-zinc-700"}`}>{t.tier}</span>
+                          <span className={`font-semibold ${t.active ? "text-indigo-700" : "text-black"}`}>{t.tier}</span>
                           <span className="text-xs ml-2 opacity-70">{t.range}</span>
                         </div>
-                        <span className={`text-sm font-bold ${t.active ? "text-indigo-600" : "text-zinc-400"}`}>{t.rate}</span>
+                        <span className={`text-sm font-bold ${t.active ? "text-indigo-600" : "text-black opacity-60"}`}>{t.rate}</span>
                       </div>
                     ))}
                   </div>
@@ -507,18 +507,18 @@ export default function PartnerDashboard({ currentPlan = "free", onUpgradeClick 
 
                 {/* Recent Payouts */}
                 <div className="flex-1 flex flex-col">
-                  <h4 className="text-sm font-semibold text-zinc-900 mb-3">Recent payouts</h4>
-                  <div className="space-y-2 flex-1 border border-zinc-100 rounded-xl p-4 bg-zinc-50/50">
+                  <h4 className="text-sm font-semibold text-black mb-3">Recent payouts</h4>
+                  <div className="space-y-2 flex-1 border border-zinc-100 rounded-md p-4 bg-zinc-50/50">
                     {payouts.length === 0 ? (
-                      <p className="text-xs text-zinc-400 text-center py-6">No payouts yet.</p>
+                      <p className="text-xs text-black opacity-60 text-center py-6">No payouts yet.</p>
                     ) : (
                       payouts.slice(0, 6).map((item, idx) => (
                         <div key={idx} className="flex items-center justify-between py-2 border-b border-zinc-100 last:border-0">
                           <div>
-                            <p className="text-sm font-medium text-zinc-900">{item.period_month}</p>
-                            <p className="text-xs text-zinc-500 capitalize">{item.status}</p>
+                            <p className="text-sm font-medium text-black">{item.period_month}</p>
+                            <p className="text-xs text-black opacity-80 capitalize">{item.status}</p>
                           </div>
-                          <p className="text-sm font-bold text-zinc-900">₹{item.amount.toLocaleString("en-IN")}</p>
+                          <p className="text-sm font-bold text-black">₹{item.amount.toLocaleString("en-IN")}</p>
                         </div>
                       ))
                     )}
