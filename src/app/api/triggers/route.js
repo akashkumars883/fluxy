@@ -21,9 +21,21 @@ export async function POST(req) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
+    // 2. Verify ownership of the automation_id
+    const { data: userAutomation, error: verifyError } = await supabase
+      .from("automations")
+      .select("id")
+      .eq("id", automation_id)
+      .eq("user_id", user.id)
+      .single();
+
+    if (verifyError || !userAutomation) {
+      return NextResponse.json({ error: "Forbidden: You do not own this automation." }, { status: 403 });
+    }
+
     const supabaseAdmin = createAdminClient();
 
-    // 2. Fetch user's active plan
+    // 3. Fetch user's active plan
     const { data: subData, error: subError } = await supabaseAdmin
       .from("subscriptions")
       .select("plan_id, plan")
@@ -33,7 +45,7 @@ export async function POST(req) {
 
     const userPlan = subData?.[0]?.plan_id || subData?.[0]?.plan || "free";
 
-    // 3. Enforce Free Plan Limits (Max 5 Automations)
+    // 4. Enforce Free Plan Limits (Max 5 Automations)
     if (userPlan === "free") {
       const { count, error: countError } = await supabaseAdmin
         .from("triggers")
@@ -56,7 +68,7 @@ export async function POST(req) {
       }
     }
 
-    // 4. Insert the new trigger
+    // 5. Insert the new trigger
     const triggerPayload = {
       automation_id,
       keyword,

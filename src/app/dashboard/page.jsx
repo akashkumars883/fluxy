@@ -92,6 +92,22 @@ function getInitialOnboardingState() {
   };
 }
 
+const PLAN_HIERARCHY = {
+  "free": 0,
+  "creator_pro": 1,
+  "viral_scale": 2
+};
+
+const BASE_NAVIGATION_ITEMS = [
+  { id: "home", label: "Home", icon: Home, reqPlan: "free" },
+  { id: "automations", label: "Automations", icon: Cpu, reqPlan: "free" },
+  { id: "audience", label: "Contacts", icon: Users, reqPlan: "free" },
+  { id: "store", label: "Mini Store", icon: Package, reqPlan: "creator_pro" },
+  { id: "smart_bio", label: "Smart Bio", icon: Link2, reqPlan: "free" },
+  { id: "partner", label: "Partner Program", icon: Sparkles, reqPlan: "free" },
+  { id: "settings", label: "Settings", icon: Settings, reqPlan: "free" },
+];
+
 export default function Dashboard() {
   const {
     user,
@@ -325,8 +341,10 @@ export default function Dashboard() {
           const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString();
 
           const results = await Promise.allSettled([
-            supabase.from("automation_history").select("*", { count: 'exact', head: true }).eq("automation_id", selectedAccount.id).eq("status", "SUCCESS").neq("type", "COMMENT"),
-            supabase.from("automation_history").select("*", { count: 'exact', head: true }).eq("automation_id", selectedAccount.id).eq("status", "SUCCESS").eq("type", "COMMENT"),
+            // DM Sent = all SUCCESS records (since every success results in a DM)
+            supabase.from("automation_history").select("*", { count: 'exact', head: true }).eq("automation_id", selectedAccount.id).eq("status", "SUCCESS"),
+            // Auto Replies = COMMENT type that were successfully replied to
+            supabase.from("automation_history").select("*", { count: 'exact', head: true }).eq("automation_id", selectedAccount.id).in("status", ["SUCCESS", "INTERACTED"]).eq("type", "COMMENT"),
             supabase.from("automation_history").select("*", { count: 'exact', head: true }).eq("automation_id", selectedAccount.id), // total attempts
             supabase.from("automation_history").select("*").eq("automation_id", selectedAccount.id).order("created_at", { ascending: false }).limit(200), // recent history for charts/campaigns
             supabase.from("triggers").select("*").eq("automation_id", selectedAccount.id).order("created_at", { ascending: false }),
@@ -344,7 +362,7 @@ export default function Dashboard() {
           const dmCount = dmRes.status === 'fulfilled' ? dmRes.value.count : 0;
           const commentCount = commentRes.status === 'fulfilled' ? commentRes.value.count : 0;
           const totalAttempts = totalAttemptsRes.status === 'fulfilled' ? totalAttemptsRes.value.count : 0;
-          const totalSuccess = dmCount + commentCount;
+          const totalSuccess = dmCount; // dmCount already represents all SUCCESS records
           const historyData = historyRes.status === 'fulfilled' ? historyRes.value.data : [];
           const triggersData = triggersRes.status === 'fulfilled' ? triggersRes.value.data : [];
           
@@ -434,9 +452,19 @@ export default function Dashboard() {
           logger.log('Supabase Realtime subscription status:', status);
         });
 
+      const handleSimulatedEvent = (e) => {
+        logger.log('Simulated Event received in Dashboard');
+        const { accountId } = e.detail;
+        if (accountId === selectedAccount.id) {
+          debouncedFetchCoreStats();
+        }
+      };
+      window.addEventListener("automixa-simulated-event", handleSimulatedEvent);
+
       return () => {
         if (fetchDebounceTimeout) clearTimeout(fetchDebounceTimeout);
         supabase.removeChannel(historyChannel);
+        window.removeEventListener("automixa-simulated-event", handleSimulatedEvent);
       };
     } else if (selectedAccount) {
       // Mock data injection for local testing on localhost
@@ -736,15 +764,7 @@ export default function Dashboard() {
 
   if (loading) return <SkeletonDashboard />;
 
-  const navigationItems = [
-    { id: "home", label: "Home", icon: Home, reqPlan: "free" },
-    { id: "automations", label: "Automations", icon: Cpu, reqPlan: "free" },
-    { id: "audience", label: "Contacts", icon: Users, reqPlan: "free" },
-    { id: "store", label: "Mini Store", icon: Package, reqPlan: "creator_pro" },
-    { id: "smart_bio", label: "Smart Bio", icon: Link2, reqPlan: "free" },
-    { id: "partner", label: "Partner Program", icon: Sparkles, reqPlan: "free" },
-    { id: "settings", label: "Settings", icon: Settings, reqPlan: "free" },
-  ].map(item => {
+  const navigationItems = BASE_NAVIGATION_ITEMS.map(item => {
     // Agar account connected nahi hai, toh Home ke alawa sab lock
     if (!selectedAccount) {
       return {
@@ -753,14 +773,8 @@ export default function Dashboard() {
       };
     }
 
-    const planHierarchy = {
-      "free": 0,
-      "creator_pro": 1,
-      "viral_scale": 2
-    };
-
-    const userPlanLevel = planHierarchy[effectivePlan] || 0;
-    const reqPlanLevel = planHierarchy[item.reqPlan] || 0;
+    const userPlanLevel = PLAN_HIERARCHY[effectivePlan] || 0;
+    const reqPlanLevel = PLAN_HIERARCHY[item.reqPlan] || 0;
 
     const isLockedByPlan = userPlanLevel < reqPlanLevel;
 

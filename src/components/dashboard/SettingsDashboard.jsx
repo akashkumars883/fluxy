@@ -29,7 +29,7 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
     selectedWorkspace, workspaceMembers, workspaceMembersLoading,
     inviteMember, removeMember, updateMemberRole,
     disconnectAccount, updateSelectedAccount,
-    settingsTab, setSettingsTab
+    settingsTab, setSettingsTab, isGiveaway
   } = useDashboard();
 
   // Quota
@@ -229,7 +229,14 @@ export default function SettingsDashboard({ account, currentPlan = "free", realt
       {/* API Quota */}
       <div className="bg-white border border-zinc-200/80 rounded-md p-4 sm:p-5-200/5 space-y-2 sm:space-y-3">
         <div className="flex items-center justify-between">
-          <h4 className="text-sm font-semibold text-black">API quota usage</h4>
+          <div className="flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-black">API quota usage</h4>
+            {isGiveaway && (
+              <span className="px-1.5 py-0.5 bg-pink-50 text-pink-700 border border-pink-100 rounded text-[9px] font-bold uppercase tracking-wide flex items-center gap-1">
+                <Sparkles size={10} /> Early Adopter Giveaway
+              </span>
+            )}
+          </div>
           <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-md text-[10px] font-bold">
             {currentPlan === "viral_scale" ? "Business Scale" : currentPlan === "creator_pro" ? "Business Pro" : "Free"}
           </span>

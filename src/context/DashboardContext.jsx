@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase";
 import * as logger from "@/lib/logger";
+import toast from "react-hot-toast";
 
 const DashboardContext = createContext();
 
@@ -24,6 +25,7 @@ export function DashboardProvider({ children, initialData = null }) {
     engagementRate: "0%",
     followerGrowth: 0,
   });
+  const [isGiveaway, setIsGiveaway] = useState(false);
 
   const accounts = allAccounts.filter(acc => acc != null && typeof acc === "object" && acc.id);
 
@@ -64,7 +66,7 @@ export function DashboardProvider({ children, initialData = null }) {
 
         const [accRes, subRes] = await Promise.allSettled([
           supabaseClient.from("automations").select("*").eq("user_id", session.user.id),
-          supabaseClient.from("subscriptions").select("plan_id").eq("user_id", session.user.id).maybeSingle()
+          supabaseClient.from("subscriptions").select("plan_id, razorpay_subscription_id").eq("user_id", session.user.id).maybeSingle()
         ]);
 
         if (accRes.status === 'fulfilled' && accRes.value.data) {
@@ -78,11 +80,14 @@ export function DashboardProvider({ children, initialData = null }) {
 
         if (subRes.status === 'fulfilled' && subRes.value.data) {
           setCurrentPlan(subRes.value.data.plan_id);
+          setIsGiveaway(subRes.value.data.plan_id !== 'free' && !subRes.value.data.razorpay_subscription_id);
         } else {
           setCurrentPlan("free");
+          setIsGiveaway(false);
         }
       } catch (err) {
         logger.error("DashboardContext: Unexpected Fetch Error ->", err);
+        toast.error("Failed to load dashboard data. Please refresh.");
       } finally {
         setLoading(false);
       }
@@ -159,6 +164,7 @@ export function DashboardProvider({ children, initialData = null }) {
     setUpgradeReason,
     realtimeStats,
     setRealtimeStats,
+    isGiveaway,
 
     updateSelectedAccount: async (updates) => {
       if (!selectedAccount) return;
@@ -199,20 +205,24 @@ export function DashboardProvider({ children, initialData = null }) {
     disconnectAccount: async (accountId) => {
       if (!accountId) return { error: "No account selected" };
       try {
-        const supabase = createClient();
+        const response = await fetch("/api/automations/delete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ accountId }),
+        });
 
-        await supabase.from("triggers").delete().eq("automation_id", accountId);
+        const data = await response.json();
 
-        const { error } = await supabase.from("automations").delete().eq("id", accountId);
-
-        if (error) return { error };
+        if (!response.ok) {
+          return { error: data.error || "Failed to disconnect account" };
+        }
 
         setAllAccounts(prev => prev.filter(acc => acc.id !== accountId));
         setSelectedAccount(prev => prev?.id === accountId ? null : prev);
 
         return { success: true };
       } catch (err) {
-        return { error: err };
+        return { error: err.message || "An unexpected error occurred" };
       }
     }
   };

@@ -31,6 +31,10 @@ export function TriggerInputModal({ isOpen, onClose, onSelect, currentPlan = "fr
 
   const handleCreate = () => {
     if (!campaignName.trim()) return;
+    if (currentPlan === "free" && rulesRemaining === 0) {
+      if (onUpgradeClick) onUpgradeClick("automation_limit");
+      return;
+    }
     onSelect("unified", campaignName.trim());
   };
 

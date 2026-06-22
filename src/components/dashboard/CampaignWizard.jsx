@@ -1245,7 +1245,13 @@ export default function CampaignWizard({
                 ].map((p) => (
                   <button
                     key={p.id}
-                    onClick={() => setAiPersona(p.id)}
+                    onClick={() => {
+                      if (currentPlan !== "viral_scale" && p.id !== "friendly") {
+                        onUpgradeClick?.("custom_persona");
+                      } else {
+                        setAiPersona(p.id);
+                      }
+                    }}
                     className={`py-2 text-[11px] sm:text-[12px] font-bold rounded-md border-2 transition-all ${aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-650"
                       }`}
                   >
@@ -1302,7 +1308,13 @@ export default function CampaignWizard({
                 ].map((p) => (
                   <button
                     key={p.id}
-                    onClick={() => setAiPersona(p.id)}
+                    onClick={() => {
+                      if (currentPlan !== "viral_scale" && p.id !== "friendly") {
+                        onUpgradeClick?.("custom_persona");
+                      } else {
+                        setAiPersona(p.id);
+                      }
+                    }}
                     className={`py-2 text-[12px] font-bold rounded-md border-2 transition-all ${aiPersona === p.id ? "border-[#6366F1] bg-[#6366F1]/5 text-[#6366F1]" : "border-zinc-200 text-zinc-650"
                       }`}
                   >

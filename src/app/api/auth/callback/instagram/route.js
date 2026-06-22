@@ -126,16 +126,18 @@ export async function GET(request) {
       // 1. Check if user already has an active subscription
       const { data: existingSub } = await supabaseAdmin
         .from('subscriptions')
-        .select('id')
+        .select('id, plan_id')
         .eq('user_id', user.id)
         .eq('status', 'active')
         .maybeSingle();
 
-      if (!existingSub) {
-        // 2. Count total subscriptions
+      // Proceed if no subscription or if on free plan
+      if (!existingSub || existingSub.plan_id === 'free') {
+        // 2. Count total paid/giveaway subscriptions to track the 50 limit
         const { count } = await supabaseAdmin
           .from('subscriptions')
-          .select('*', { count: 'exact', head: true });
+          .select('*', { count: 'exact', head: true })
+          .neq('plan_id', 'free');
 
         if (count !== null && count < 50) {
           giveawayNumber = count + 1;
@@ -145,17 +147,26 @@ export async function GET(request) {
           const endDate = new Date();
           endDate.setMonth(endDate.getMonth() + 2); // 2 months from now
           
-          await supabaseAdmin
-            .from('subscriptions')
-            .insert({
-              user_id: user.id,
-              plan_id: 'creator_pro',
-              status: 'active',
-              amount: 0,
-              currency: 'INR',
-              current_period_start: startDate.toISOString(),
-              current_period_end: endDate.toISOString(),
-            });
+          if (existingSub) {
+            await supabaseAdmin
+              .from('subscriptions')
+              .update({
+                plan_id: 'creator_pro',
+                current_period_start: startDate.toISOString(),
+                current_period_end: endDate.toISOString(),
+              })
+              .eq('id', existingSub.id);
+          } else {
+            await supabaseAdmin
+              .from('subscriptions')
+              .insert({
+                user_id: user.id,
+                plan_id: 'creator_pro',
+                status: 'active',
+                current_period_start: startDate.toISOString(),
+                current_period_end: endDate.toISOString(),
+              });
+          }
 
           wasGivenaway = true;
         }

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import * as logger from "@/lib/logger";
 
 export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free", realtimeStats, upgradeReason = "" }) {
-  const { user, setCurrentPlan } = useDashboard();
+  const { user, setCurrentPlan, isGiveaway } = useDashboard();
   const [isIndia, setIsIndia] = useState(true);
   const [isAnnual, setIsAnnual] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState(currentPlan);
@@ -370,9 +370,14 @@ export default function SubscriptionModal({ isOpen, onClose, currentPlan = "free
                                   Popular
                                 </span>
                               )}
-                              {plan.id === currentPlan && (
+                              {plan.id === currentPlan && !isGiveaway && (
                                 <span className="px-2 py-0.5 rounded-full bg-zinc-200 text-zinc-600 text-[9px] font-black uppercase tracking-wider">
                                   Current
+                                </span>
+                              )}
+                              {plan.id === currentPlan && isGiveaway && (
+                                <span className="px-2 py-0.5 rounded-full bg-pink-100 text-pink-700 text-[9px] font-black uppercase tracking-wider flex items-center gap-1">
+                                  <Sparkles size={10} /> Early Adopter Giveaway
                                 </span>
                               )}
                             </div>
