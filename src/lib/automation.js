@@ -520,12 +520,20 @@ export async function processAutomation(senderId, text, type, recipientId, comme
       );
 
       const introCardPayload = {
-        text: introTitle || "Welcome! Tap below for access.",
-        quick_replies: [{
-          content_type: "text",
-          title: match.metadata?.intro_button_text || "Send me the access",
-          payload: match.id
-        }]
+        attachment: {
+          type: "template",
+          payload: {
+            template_type: "button",
+            text: introTitle || "Welcome! Tap below for access.",
+            buttons: [
+              {
+                type: "postback",
+                title: (match.metadata?.intro_button_text || "Send me the access").substring(0, 20),
+                payload: match.id
+              }
+            ]
+          }
+        }
       };
       const privateReplyResult = await MetaService.sendPrivateReply(commentId, introCardPayload, pageAccessToken);
       if (!privateReplyResult.success) {
